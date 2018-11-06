@@ -1,0 +1,44 @@
+create:
+  handler: services/checklists/create.main
+  events:
+    - http:
+        path: checklist
+        method: post
+        cors: true
+        authorizer: aws_iam
+
+get:
+  handler: services/checklists/get.main
+  events:
+    - http:
+        path: checklist/{id}
+        method: get
+        cors: true
+        authorizer: aws_iam
+
+list:
+  handler: services/checklists/list.main
+  events:
+    - http:
+        path: checklist
+        method: get
+        cors: true
+        authorizer: aws_iam
+
+update:
+  handler: services/checklists/update.main
+  events:
+    - http:
+        path: checklist/{id}
+        method: put
+        cors: true
+        authorizer: aws_iam
+
+delete:
+  handler: services/checklists/delete.main
+  events:
+    - http:
+        path: checklist/{id}
+        method: delete
+        cors: true
+        authorizer: aws_iam

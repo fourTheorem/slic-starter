@@ -1,0 +1,91 @@
+slicTable:
+  Type: AWS::DynamoDB::Table
+  Properties:
+    TableName: checklists
+    AttributeDefinitions:
+      - AttributeName: userId
+        AttributeType: S
+      - AttributeName: listId
+        AttributeType: S
+    KeySchema:
+      - AttributeName: userId
+        KeyType: HASH
+      - AttributeName: listId
+        KeyType: RANGE
+    ProvisionedThroughput:
+      ReadCapacityUnits: 2
+      WriteCapacityUnits: 2
+
+slicUserPool:
+  Type: AWS::Cognito::UserPool
+  Properties:
+    UserPoolName: ${self:custom.stage}-slic-user-pool
+    UsernameAttributes: [email]
+
+slicUserPoolClient:
+  Type: AWS::Cognito::UserPoolClient
+  Properties:
+    ClientName: ${self:custom.stage}-slic-user-pool-client
+    ExplicitAuthFlows: [ADMIN_NO_SRP_AUTH]
+    RefreshTokenValidity: 30
+    UserPoolId:
+      Ref: slicUserPool
+
+slicIdentityPool:
+  Type: AWS::Cognito::IdentityPool
+  Properties:
+    AllowUnauthenticatedIdentities: false
+    CognitoIdentityProviders:
+      - ClientId:
+          Ref: slicUserPoolClient
+        ProviderName: { Fn::GetAtt: [slicUserPool, ProviderName] }
+
+slicAuthenticatedIdentityPoolRole:
+  Type: AWS::IAM::Role
+  Properties:
+    AssumeRolePolicyDocument:
+      Version: "2012-10-17"
+      Statement:
+        - Effect: "Allow"
+          Principal:
+            Federated: "cognito-identity.amazonaws.com"
+          Action:
+            - "sts:AssumeRoleWithWebIdentity"
+          Condition:
+            StringEquals:
+              "cognito-identity.amazonaws.com:aud":
+                Ref: slicIdentityPool
+            ForAnyValue:StringLike:
+              "cognito-identity.amazonaws.com:amr": authenticated
+    Policies:
+      - PolicyName: SlicCognitoAuthenticatedPolicy
+        PolicyDocument:
+          Version: "2012-10-17"
+          Statement:
+            - Effect: Allow
+              Action:
+                - cognito-identity:*
+                - cognito-sync:*
+              Resource: "*"
+            - Effect: Allow
+              Action: execute-api:Invoke
+              Resource:
+                {
+                  "Fn::Join":
+                    [
+                      "",
+                      [
+                        "arn:aws:execute-api:${self:provider.region}:*:",
+                        { "Ref": "ApiGatewayRestApi" },
+                        "/*/*/*",
+                      ],
+                    ],
+                }
+
+slicIdentityPoolRoleAttachment:
+  Type: AWS::Cognito::IdentityPoolRoleAttachment
+  Properties:
+    IdentityPoolId:
+      Ref: slicIdentityPool
+    Roles:
+      authenticated: { Fn::GetAtt: [slicAuthenticatedIdentityPoolRole, Arn] }
