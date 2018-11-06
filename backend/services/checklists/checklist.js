@@ -1,13 +1,13 @@
-"use strict";
+'use strict'
 
-const AWS = require("aws-sdk");
-const Uuid = require("uuid");
+const AWS = require('aws-sdk')
+const Uuid = require('uuid')
 
-AWS.config.update({ region: process.env.AWS_REGION });
+AWS.config.update({ region: process.env.AWS_REGION })
 
-const dynamoDb = new AWS.DynamoDB.DocumentClient();
+const dynamoDb = new AWS.DynamoDB.DocumentClient()
 
-const tableName = "checklists";
+const tableName = 'checklists'
 
 module.exports = {
   create,
@@ -15,7 +15,7 @@ module.exports = {
   remove,
   get,
   list
-};
+}
 
 async function create({ userId, name, tasks }) {
   const item = {
@@ -23,31 +23,31 @@ async function create({ userId, name, tasks }) {
     tasks,
     listId: Uuid.v4(),
     createdAt: Date.now()
-  };
+  }
   await dynamoDb
     .put({
       TableName: tableName,
       Item: item
     })
-    .promise();
-  return item;
+    .promise()
+  return item
 }
 
 async function update({ listId, userId, name = null, tasks = null }) {
-  const updatedAt = Date.now();
+  const updatedAt = Date.now()
   await dynamoDb
     .update({
       TableName: tableName,
       Key: { userId, listId },
       UpdateExpression:
-        "SET name = :name, tasks = :tasks, updatedAt = :updatedAt",
+        'SET name = :name, tasks = :tasks, updatedAt = :updatedAt',
       ExpressionAttributeValues: {
-        ":name": name,
-        ":tasks": tasks,
-        ":updatedAt": updatedAt
+        ':name': name,
+        ':tasks': tasks,
+        ':updatedAt': updatedAt
       }
     })
-    .promise();
+    .promise()
 }
 
 async function remove({ listId, userId }) {
@@ -56,7 +56,7 @@ async function remove({ listId, userId }) {
       TableName: tableName,
       Key: { userId, listId }
     })
-    .promise();
+    .promise()
 }
 
 async function get({ listId, userId }) {
@@ -65,15 +65,15 @@ async function get({ listId, userId }) {
       TableName: tableName,
       Key: { userId, listId }
     }.promise
-  )).Item;
+  )).Item
 }
 
 async function list({ userId }) {
   return (await dynamoDb.query({
     TableName: tableName,
-    KeyConditionExpression: "userId = :userId",
+    KeyConditionExpression: 'userId = :userId',
     ExpressionAttributeValues: {
-      ":userId": userId
+      ':userId': userId
     }
-  })).Items;
+  })).Items
 }
