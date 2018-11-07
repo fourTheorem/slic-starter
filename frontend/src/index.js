@@ -1,10 +1,16 @@
 import React from 'react'
-import ReactDOM from 'react-dom'
+import { render } from 'react-dom'
 import './index.css'
-import App from './App'
+import App from './components/App'
 import * as serviceWorker from './serviceWorker'
 
-ReactDOM.render(<App />, document.getElementById('root'))
+import configureStore from './configureStore'
+import createHistory from 'history/createBrowserHistory'
+
+const history = createHistory()
+const store = configureStore(history)
+
+render(<App store={store} history={history} />, document.getElementById('root'))
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.
