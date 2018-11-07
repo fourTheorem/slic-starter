@@ -10,8 +10,8 @@ export default class Root extends Component {
     return (
       <Route>
         <Switch>
-          <Route path="/" component={Home} />
           <Route exact path="/login" component={Login} />
+          <Route path="/" component={Home} />
         </Switch>
       </Route>
     )
