@@ -16,7 +16,19 @@ class App extends Component {
         useNextVariants: true
       },
       palette: {
-        type: 'light'
+        /* https://material.io/tools/color/#!/?view.left=0&view.right=1&primary.color=1A237E&secondary.color=D81B60 */
+        primary: {
+          light: '#534bae',
+          main: '#1a237e',
+          dark: '#000051',
+          contrastText: '#fff'
+        },
+        secondary: {
+          light: '#ff5c8d',
+          main: '#d81b60',
+          dark: '#a00037',
+          contrastText: '#fff'
+        }
       }
     })
 
