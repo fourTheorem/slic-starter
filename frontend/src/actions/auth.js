@@ -23,8 +23,11 @@ function translateCognitoError(cognitoErr) {
     case 'UserNotConfirmedException':
       errorId = errors.USER_NOT_CONFIRMED
       break
+    case 'UserNotFoundException':
+      errorId = errors.USER_NOT_FOUND
+      break
     default:
-      errorId = errors.UNKNOWN
+      errorId = errors.UNKNOWN_AUTHENTICATION_ERROR
       break
   }
 

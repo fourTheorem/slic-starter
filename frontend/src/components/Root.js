@@ -1,19 +1,42 @@
 import React, { Component } from 'react'
+import PropTypes from 'prop-types'
+import { connect } from 'react-redux'
 
-import { Route, Switch } from 'react-router'
+import { withRouter, Redirect, Route, Switch } from 'react-router'
 
 import Home from './Home'
 import Login from './Login'
 
-export default class Root extends Component {
+class Root extends Component {
   render() {
+    const {
+      authenticated,
+      history: { location }
+    } = this.props
     return (
-      <Route>
+      <React.Fragment>
         <Switch>
           <Route exact path="/login" component={Login} />
           <Route path="/" component={Home} />
         </Switch>
-      </Route>
+        {location.pathname === '/login' && authenticated ? (
+          <Redirect to="/" />
+        ) : null}
+        {location.pathname !== '/login' && !authenticated ? (
+          <Redirect to="/login" />
+        ) : null}
+      </React.Fragment>
     )
   }
 }
+
+Root.propTypes = {
+  authenticated: PropTypes.bool.isRequired,
+  history: PropTypes.object.isRequired
+}
+
+const mapStateToProps = ({ auth: { authenticated } }) => ({
+  authenticated
+})
+
+export default withRouter(connect(mapStateToProps)(Root))
