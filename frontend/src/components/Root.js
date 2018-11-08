@@ -6,8 +6,13 @@ import { withRouter, Redirect, Route, Switch } from 'react-router'
 
 import Home from './Home'
 import Login from './Login'
+import { checkAuthentication } from '../actions/auth'
 
 class Root extends Component {
+  componentDidMount() {
+    this.props.dispatch(checkAuthentication())
+  }
+
   render() {
     const {
       authenticated,
@@ -22,7 +27,7 @@ class Root extends Component {
         {location.pathname === '/login' && authenticated ? (
           <Redirect to="/" />
         ) : null}
-        {location.pathname !== '/login' && !authenticated ? (
+        {location.pathname !== '/login' && authenticated === false ? (
           <Redirect to="/login" />
         ) : null}
       </React.Fragment>
@@ -32,6 +37,7 @@ class Root extends Component {
 
 Root.propTypes = {
   authenticated: PropTypes.bool.isRequired,
+  dispatch: PropTypes.func.isRequired,
   history: PropTypes.object.isRequired
 }
 

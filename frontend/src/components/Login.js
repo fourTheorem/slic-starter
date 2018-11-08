@@ -55,11 +55,13 @@ class Login extends Component {
   render() {
     const { classes } = this.props
 
-    const { loggingIn, error } = this.props.auth
+    const { loggingIn, loginError } = this.props.auth
 
-    const errorItem = error ? (
+    const errorItem = loginError ? (
       <Grid item>
-        <Typography className={classes.error}>{messages[error.id]}</Typography>
+        <Typography className={classes.error}>
+          {messages[loginError.id]}
+        </Typography>
       </Grid>
     ) : null
 

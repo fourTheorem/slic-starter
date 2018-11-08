@@ -1,8 +1,13 @@
-import { LOGIN_REQUEST, LOGIN_FAILURE, LOGIN_SUCCESS } from '../actions/auth'
+import {
+  LOGIN_REQUEST,
+  LOGIN_FAILURE,
+  LOGIN_SUCCESS,
+  LOGIN_VALIDATED,
+  LOGOUT_SUCCESS
+} from '../actions/auth'
 
 const defaultState = {
   loggingIn: false,
-  authenticated: false,
   loginFailed: false
 }
 
@@ -13,21 +18,27 @@ export default (state = defaultState, { type, meta, payload, error }) => {
         ...state,
         loggingIn: true,
         authenticated: false,
-        error: null
+        loginError: null
       }
     case LOGIN_SUCCESS:
+    case LOGIN_VALIDATED:
       return {
         ...state,
         loggingIn: false,
         authenticated: true,
-        error: null
+        loginError: null
       }
     case LOGIN_FAILURE:
       return {
         ...state,
         loggingIn: false,
         authenticated: false,
-        error
+        loginError: error
+      }
+    case LOGOUT_SUCCESS:
+      return {
+        ...state,
+        authenticated: false
       }
     default:
       return state

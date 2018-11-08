@@ -1,11 +1,11 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { Link } from 'react-router-dom'
-
+import { connect } from 'react-redux'
 import { withStyles } from '@material-ui/core/styles'
 import { AppBar, Button, Toolbar, Typography } from '@material-ui/core'
 
-import { connect } from 'react-redux'
+import { logOut } from '../actions/auth'
 
 const styles = {
   grow: {
@@ -14,6 +14,10 @@ const styles = {
 }
 
 class NavigationBar extends Component {
+  handleLogout = () => {
+    this.props.dispatch(logOut())
+  }
+
   render() {
     const { classes } = this.props
 
@@ -23,8 +27,8 @@ class NavigationBar extends Component {
           <Typography variant="h6" color="inherit" className={classes.grow}>
             SLIC Starter
           </Typography>
-          <Button color="inherit" component={Link} to="/login">
-            Log In
+          <Button color="inherit" onClick={this.handleLogout}>
+            Log Out
           </Button>
         </Toolbar>
       </AppBar>

@@ -16,6 +16,28 @@ export function logIn({ username, password }) {
   }
 }
 
+export const LOGIN_VALIDATED = 'LOGIN_VALIDATED'
+
+export function checkAuthentication() {
+  return function(dispatch) {
+    Auth.currentSession().then(() => dispatch({ type: LOGIN_VALIDATED }))
+  }
+}
+
+export const LOGOUT_REQUEST = 'LOGOUT_REQUEST'
+export const LOGOUT_SUCCESS = 'LOGOUT_SUCCESS'
+export const LOGOUT_FAILURE = 'LOGOUT_FAILURE'
+
+export function logOut() {
+  return function(dispatch) {
+    dispatch({ type: LOGOUT_REQUEST })
+    Auth.signOut().then(
+      () => dispatch({ type: LOGOUT_SUCCESS }),
+      err => dispatch({ type: LOGOUT_FAILURE, error: err })
+    )
+  }
+}
+
 function translateCognitoError(cognitoErr) {
   let errorId
 
