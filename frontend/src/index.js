@@ -1,11 +1,15 @@
 import React from 'react'
 import { render } from 'react-dom'
+import Amplify from 'aws-amplify'
+import createHistory from 'history/createBrowserHistory'
+
 import './index.css'
 import App from './components/App'
 import * as serviceWorker from './serviceWorker'
-
 import configureStore from './configureStore'
-import createHistory from 'history/createBrowserHistory'
+import amplifyConfig from './amplifyConfig'
+
+Amplify.configure(amplifyConfig)
 
 const history = createHistory()
 const store = configureStore(history)

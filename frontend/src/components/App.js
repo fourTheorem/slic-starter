@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles'
+import { CssBaseline } from '@material-ui/core'
 import { Provider } from 'react-redux'
 import { ConnectedRouter } from 'connected-react-router'
 
@@ -23,6 +24,7 @@ class App extends Component {
       <Provider store={store}>
         <ConnectedRouter history={history}>
           <MuiThemeProvider theme={theme}>
+            <CssBaseline />
             <Root />
           </MuiThemeProvider>
         </ConnectedRouter>
