@@ -1,24 +1,51 @@
 import {
+  LOAD_LISTS_REQUEST,
+  LOAD_LISTS_SUCCESS,
+  LOAD_LISTS_FAILURE,
   CREATE_LIST_REQUEST,
   CREATE_LIST_SUCCESS,
-  CREATE_LIST_FAILURE
+  CREATE_LIST_FAILURE,
+  REMOVE_LIST_REQUEST,
+  REMOVE_LIST_SUCCESS,
+  REMOVE_LIST_FAILURE
 } from '../actions/checklists'
 
 const defaultState = {
   creating: false,
-  listIds: ['a', 'b'],
-  listsById: {
-    a: {
-      name: 'List A'
-    },
-    b: {
-      name: 'List B'
-    }
-  }
+  loading: false,
+  listIds: [],
+  listsById: {}
 }
 
 export default (state = defaultState, { type, meta, payload, error }) => {
   switch (type) {
+    case LOAD_LISTS_REQUEST:
+      return {
+        ...state,
+        loading: true,
+        loadingError: null
+      }
+    case LOAD_LISTS_SUCCESS:
+      const listIds = []
+      const listsById = {}
+      payload.forEach(list => {
+        listIds.push(list.listId)
+        listsById[list.listId] = list
+      })
+
+      return {
+        ...state,
+        loading: false,
+        loadingError: null,
+        listIds,
+        listsById
+      }
+    case LOAD_LISTS_FAILURE:
+      return {
+        ...state,
+        loading: false,
+        loadingError: error
+      }
     case CREATE_LIST_REQUEST:
       return {
         ...state,
@@ -46,6 +73,33 @@ export default (state = defaultState, { type, meta, payload, error }) => {
         ...state,
         creating: false,
         creationError: error
+      }
+    case REMOVE_LIST_REQUEST:
+      return {
+        ...state,
+        removing: true,
+        removalError: null
+      }
+    case REMOVE_LIST_SUCCESS:
+      const deletedId = meta.listId
+      const {
+        // eslint-disable-next-line no-unused-vars
+        [deletedId]: deletedList,
+        ...restListsById
+      } = state.listsById
+
+      return {
+        ...state,
+        listIds: state.listIds.filter(listId => listId !== deletedId),
+        listsById: restListsById,
+        removing: false,
+        removalError: null
+      }
+    case REMOVE_LIST_FAILURE:
+      return {
+        ...state,
+        removing: false,
+        removalError: error
       }
     default:
       return state

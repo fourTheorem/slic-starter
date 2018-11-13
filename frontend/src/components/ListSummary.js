@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
+import { Link } from 'react-router-dom'
 import {
   Card,
   CardActionArea,
@@ -14,7 +15,7 @@ class ListSummary extends Component {
 
     return (
       <Card>
-        <CardActionArea>
+        <CardActionArea component={Link} to={`/list/${list.listId}`}>
           <CardContent>
             <Typography variant="h2">{list.name}</Typography>
           </CardContent>
