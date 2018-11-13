@@ -1,7 +1,15 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
+import { Link } from 'react-router-dom'
 import { connect } from 'react-redux'
-import { Button, Grid, TextField, Typography } from '@material-ui/core'
+import {
+  Button,
+  Grid,
+  IconButton,
+  TextField,
+  Typography
+} from '@material-ui/core'
+import { ArrowBack } from '@material-ui/icons'
 import { withStyles } from '@material-ui/core/styles'
 
 import { createList } from '../actions/checklists'
@@ -68,15 +76,23 @@ class NewList extends Component {
             lg={3}
             spacing={8}
           >
-            <Grid item>
-              <TextField
-                id="name"
-                label="List Name"
-                form="new-list-form"
-                className={classes.textField}
-                autoFocus
-                onChange={this.handleChange}
-              />
+            <Grid item container layout="row" justify="flex-start" />
+            <Grid item container layout="row" justify="flex-start">
+              <Grid item>
+                <IconButton color="primary" component={Link} to="/">
+                  <ArrowBack />
+                </IconButton>
+              </Grid>
+              <Grid item xs>
+                <TextField
+                  id="name"
+                  label="List Name"
+                  form="new-list-form"
+                  className={classes.textField}
+                  autoFocus
+                  onChange={this.handleChange}
+                />
+              </Grid>
             </Grid>
             {errorItem}
             <Grid item container layout="row" justify="flex-end">
