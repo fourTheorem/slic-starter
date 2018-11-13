@@ -18,13 +18,13 @@ class NavigationBar extends Component {
   }
 
   render() {
-    const { classes } = this.props
+    const { classes, titles } = this.props
 
     return (
       <AppBar position="static">
         <Toolbar>
           <Typography variant="h6" color="inherit" className={classes.grow}>
-            SLIC Starter
+            {titles.join(' > ')}
           </Typography>
           <Button color="inherit" onClick={this.handleLogout}>
             Log Out
@@ -36,9 +36,12 @@ class NavigationBar extends Component {
 }
 
 NavigationBar.propTypes = {
-  classes: PropTypes.object.isRequired
+  classes: PropTypes.object.isRequired,
+  titles: PropTypes.array.isRequired
 }
 
-const mapStateToProps = () => ({})
+const mapStateToProps = ({ app: { titles } }) => ({
+  titles
+})
 
 export default connect(mapStateToProps)(withStyles(styles)(NavigationBar))
