@@ -10,6 +10,8 @@ const headers = {
 async function createResponse(promise, options = { successCode: 200 }) {
   try {
     const result = await promise
+    log.info({ result }, 'Result received')
+
     return {
       statusCode: options.successCode,
       body: JSON.stringify(result || {}),

@@ -61,20 +61,22 @@ async function remove({ listId, userId }) {
 }
 
 async function get({ listId, userId }) {
-  return (await dynamoDb.get(
-    {
+  return (await dynamoDb
+    .get({
       TableName: tableName,
       Key: { userId, listId }
-    }.promise
-  )).Item
+    })
+    .promise()).Item
 }
 
 async function list({ userId }) {
-  return (await dynamoDb.query({
-    TableName: tableName,
-    KeyConditionExpression: 'userId = :userId',
-    ExpressionAttributeValues: {
-      ':userId': userId
-    }
-  })).Items
+  return (await dynamoDb
+    .query({
+      TableName: tableName,
+      KeyConditionExpression: 'userId = :userId',
+      ExpressionAttributeValues: {
+        ':userId': userId
+      }
+    })
+    .promise()).Items
 }
