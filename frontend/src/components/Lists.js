@@ -23,8 +23,8 @@ class Lists extends Component {
     return (
       <Grid container layout="row" spacing={16} className={classes.padded}>
         {listIds.map(listId => (
-          <Grid item xl={3} lg={4} md={6} xs={12}>
-            <ListSummary key={listId} listId={listId} />
+          <Grid item key={listId} xl={3} lg={4} md={6} xs={12}>
+            <ListSummary listId={listId} />
           </Grid>
         ))}
       </Grid>

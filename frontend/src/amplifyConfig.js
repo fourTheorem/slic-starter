@@ -2,7 +2,8 @@ const envVars = {
   region: 'REACT_APP_AWS_REGION',
   userPoolId: 'REACT_APP_AWS_COGNITO_USER_POOL_ID',
   userPoolWebClientId: 'REACT_APP_AWS_COGNITO_WEB_CLIENT_ID',
-  identityPoolId: 'REACT_APP_AWS_COGNITO_IDENTITY_POOL_ID'
+  identityPoolId: 'REACT_APP_AWS_COGNITO_IDENTITY_POOL_ID',
+  checklistEndpoint: 'REACT_APP_CHECKLIST_API_ENDPOINT'
 }
 
 const config = {}
@@ -18,9 +19,20 @@ Object.entries(envVars).forEach(([key, env]) => {
   config[key] = value
 })
 
+const { checklistEndpoint, ...authConfig } = config
+
 export default {
   Auth: {
     mandatorySignIn: true,
-    ...config
+    ...authConfig
+  },
+  API: {
+    endpoints: [
+      {
+        name: 'checklists',
+        endpoint: checklistEndpoint,
+        region: config.region
+      }
+    ]
   }
 }

@@ -36,7 +36,7 @@ class Root extends Component {
 }
 
 Root.propTypes = {
-  authenticated: PropTypes.bool.isRequired,
+  authenticated: PropTypes.bool,
   dispatch: PropTypes.func.isRequired,
   history: PropTypes.object.isRequired
 }
