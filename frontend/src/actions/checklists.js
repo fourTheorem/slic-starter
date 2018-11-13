@@ -15,7 +15,7 @@ export function createList({ name }) {
     })
       .then(result => {
         console.log('Result', result)
-        dispatch({ type: CREATE_LIST_SUCCESS })
+        dispatch({ type: CREATE_LIST_SUCCESS, payload: result })
       })
       .catch(err => {
         console.log('Error', err)

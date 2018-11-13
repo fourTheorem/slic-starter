@@ -19,7 +19,9 @@
     "pretty-quick": "^1.8.0",
     "serverless-offline": "^3.25.6"
   },
-  "dependencies": {},
+  "dependencies": {
+    "pino": "^5.8.1"
+  },
   "husky": {
     "hooks": {
       "pre-commit": "pretty-quick --staged"

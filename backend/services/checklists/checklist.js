@@ -20,6 +20,7 @@ module.exports = {
 async function create({ userId, name, tasks }) {
   const item = {
     userId,
+    name,
     tasks,
     listId: Uuid.v4(),
     createdAt: Date.now()

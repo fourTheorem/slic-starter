@@ -85,7 +85,6 @@ class NewList extends Component {
                   variant="contained"
                   color="secondary"
                   type="submit"
-                  form="new-list-form"
                   disabled={creating || !this.validate()}
                 >
                   {creating ? 'Creating...' : 'Create'}

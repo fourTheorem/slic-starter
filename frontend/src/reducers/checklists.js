@@ -26,8 +26,18 @@ export default (state = defaultState, { type, meta, payload, error }) => {
         creationError: null
       }
     case CREATE_LIST_SUCCESS:
+      const { listId, name, createdAt } = payload
       return {
         ...state,
+        listIds: [...state.listIds, listId],
+        listsById: {
+          ...state.listsById,
+          [listId]: {
+            listId,
+            name,
+            createdAt
+          }
+        },
         creating: false,
         creationError: null
       }
