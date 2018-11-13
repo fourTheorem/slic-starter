@@ -48,8 +48,7 @@ class Login extends Component {
 
   handleSubmit = event => {
     event.preventDefault()
-    const { dispatch } = this.props
-    dispatch(logIn(this.state))
+    this.props.dispatch(logIn(this.state))
   }
 
   render() {
