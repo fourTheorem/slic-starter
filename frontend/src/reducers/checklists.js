@@ -13,6 +13,7 @@ import {
 const defaultState = {
   creating: false,
   loading: false,
+  removing: false,
   listIds: [],
   listsById: {}
 }
