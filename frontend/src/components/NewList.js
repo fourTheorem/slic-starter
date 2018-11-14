@@ -24,7 +24,7 @@ const styles = theme => ({
     width: '100%'
   },
   form: {
-    height: '100%'
+    height: 'calc(100% - 64px)'
   },
   error: {
     color: theme.palette.error.main

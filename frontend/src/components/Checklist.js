@@ -11,6 +11,7 @@ import {
   Typography
 } from '@material-ui/core'
 import { Delete } from '@material-ui/icons'
+import { CircularProgress } from '@material-ui/core'
 import { withStyles } from '@material-ui/core/styles'
 
 import Loading from './Loading'
@@ -35,7 +36,7 @@ class Checklist extends Component {
   }
 
   render() {
-    const { classes, list } = this.props
+    const { removing, classes, list } = this.props
 
     return list ? (
       <Grid container layout="row" className={classes.root} justify="center">
@@ -47,9 +48,13 @@ class Checklist extends Component {
               </Typography>
             </CardContent>
             <CardActions>
-              <IconButton onClick={this.handleRemove}>
-                <Delete />
-              </IconButton>
+              {removing ? (
+                <CircularProgress />
+              ) : (
+                <IconButton onClick={this.handleRemove}>
+                  <Delete />
+                </IconButton>
+              )}
             </CardActions>
           </Card>
         </Grid>
@@ -61,6 +66,7 @@ class Checklist extends Component {
 }
 
 Checklist.propTypes = {
+  removing: PropTypes.bool.isRequired,
   classes: PropTypes.object.isRequired,
   list: PropTypes.object
 }
@@ -72,9 +78,10 @@ const makeMapStateToProps = (initialState, ownProps) => {
       params: { id: listId }
     }
   } = ownProps
-  return ({ checklists: { listsById } }) => {
+  return ({ checklists: { listsById, removing } }) => {
     const list = listId ? listsById[listId] : {}
     return {
+      removing,
       list
     }
   }

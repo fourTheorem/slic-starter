@@ -21,7 +21,7 @@ class NavigationBar extends Component {
     const { classes, titles } = this.props
 
     return (
-      <AppBar position="static">
+      <AppBar position="sticky">
         <Toolbar>
           <Typography variant="h6" color="inherit" className={classes.grow}>
             {titles.join(' > ')}

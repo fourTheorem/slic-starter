@@ -30,7 +30,7 @@ class Home extends Component {
     )
 
     return (
-      <div style={{ height: 'calc(100% - 64px)', overflowX: 'hidden' }}>
+      <div style={{ height: '100%', overflowX: 'hidden' }}>
         <NavigationBar />
         {body}
       </div>
