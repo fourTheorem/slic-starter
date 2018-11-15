@@ -50,4 +50,4 @@ See [CONTRIBUTING.md](CONTRIBUTING.md)
 
 ## License
 
-Copyright fourTheorem Ltd. 2018. Distributed under the MIT License. See [LICENCE.md](LICENCE.md)
+Copyright fourTheorem Ltd. 2018. Distributed under the MIT License. See [LICENCE](LICENCE)
