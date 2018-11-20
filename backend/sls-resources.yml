@@ -44,40 +44,40 @@ slicAuthenticatedIdentityPoolRole:
   Type: AWS::IAM::Role
   Properties:
     AssumeRolePolicyDocument:
-      Version: "2012-10-17"
+      Version: '2012-10-17'
       Statement:
-        - Effect: "Allow"
+        - Effect: 'Allow'
           Principal:
-            Federated: "cognito-identity.amazonaws.com"
+            Federated: 'cognito-identity.amazonaws.com'
           Action:
-            - "sts:AssumeRoleWithWebIdentity"
+            - 'sts:AssumeRoleWithWebIdentity'
           Condition:
             StringEquals:
-              "cognito-identity.amazonaws.com:aud":
+              'cognito-identity.amazonaws.com:aud':
                 Ref: slicIdentityPool
             ForAnyValue:StringLike:
-              "cognito-identity.amazonaws.com:amr": authenticated
+              'cognito-identity.amazonaws.com:amr': authenticated
     Policies:
-      - PolicyName: SlicCognitoAuthenticatedPolicy
+      - PolicyName: ${self:custom.stage}-slic-cognito-authenticated-policy
         PolicyDocument:
-          Version: "2012-10-17"
+          Version: '2012-10-17'
           Statement:
             - Effect: Allow
               Action:
                 - cognito-identity:*
                 - cognito-sync:*
-              Resource: "*"
+              Resource: '*'
             - Effect: Allow
               Action: execute-api:Invoke
               Resource:
                 {
-                  "Fn::Join":
+                  'Fn::Join':
                     [
-                      "",
+                      '',
                       [
-                        "arn:aws:execute-api:${self:provider.region}:*:",
-                        { "Ref": "ApiGatewayRestApi" },
-                        "/*/*/*",
+                        'arn:aws:execute-api:${self:provider.region}:*:',
+                        { 'Ref': 'ApiGatewayRestApi' },
+                        '/*/*/*',
                       ],
                     ],
                 }

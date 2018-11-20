@@ -1,0 +1,90 @@
+service: deployment-target-resources
+
+provider:
+  name: aws
+  runtime: ${self:custom.runtime}
+  stage: ${self:custom.stage}
+  region: ${self:custom.region}
+
+custom: ${file(../custom.yml)}
+
+resources:
+  Resources:
+    deploymentRole:
+      Type: AWS::IAM::Role
+      Properties:
+        RoleName: slic-cicd-deployment-role
+        AssumeRolePolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+            - Effect: Allow
+              Principal:
+                AWS: ${self:custom.accountIds.cicd}
+              Action: [sts:AssumeRole]
+        Path: /
+
+    deploymentPolicy:
+      Type: AWS::IAM::Policy
+      Properties:
+        PolicyName: slic-cicd-deployment-policy
+        PolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+            - Effect: Allow
+              Action:
+                - codebuild:StartBuild
+                - codebuild:BatchGetBuilds
+                - codebuild:StopBuild
+              Resource: '*'
+            - Effect: Allow
+              Action:
+                - cloudformation:List*
+                - cloudformation:Get*
+                - cloudformation:PreviewStackUpdate
+                - cloudformation:ValidateTemplate
+              Resource:
+                - '*'
+            - Effect: Allow
+              Action:
+                - cloudformation:CreateStack
+                - cloudformation:CreateUploadBucket
+                - cloudformation:DeleteStack
+                - cloudformation:Describe*
+                - cloudformation:UpdateStack
+              Resource:
+                - arn:aws:cloudformation:${self:custom.region}:*:stack/*/*
+            - Effect: Allow
+              Action:
+                - s3:CreateBucket
+                - s3:ListBucket
+                - s3:PutObject
+              Resource:
+                - arn:aws:s3:::*
+            - Effect: Allow
+              Action:
+                - s3:DeleteObject
+                - s3:GetBucket*
+                - s3:GetObject
+                - s3:GetObjectVersion
+                - s3:ListBucket
+                - s3:PutObject
+                - s3:GetBucketPolicy
+              Resource:
+                - arn:aws:s3:::${self:custom.buildBucket}
+                - arn:aws:s3:::${self:custom.buildBucket}/*
+            - Effect: Allow
+              Action:
+                - lambda:Get*
+                - lambda:List*
+                - lambda:CreateFunction
+                - lambda:AddPermission
+                - lambda:CreateAlias
+                - lambda:DeleteFunction
+                - lambda:InvokeFunction
+                - lambda:PublishVersion
+                - lambda:RemovePermission
+                - lambda:Update*
+              Resource:
+                - arn:aws:lambda:${self:custom.region}:*:function:*
+        Roles:
+          - Ref: deploymentRole
