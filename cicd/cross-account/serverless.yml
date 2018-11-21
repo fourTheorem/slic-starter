@@ -42,24 +42,42 @@ resources:
                 - cloudformation:Get*
                 - cloudformation:PreviewStackUpdate
                 - cloudformation:ValidateTemplate
-              Resource:
-                - '*'
-            - Effect: Allow
-              Action:
                 - cloudformation:CreateStack
                 - cloudformation:CreateUploadBucket
                 - cloudformation:DeleteStack
                 - cloudformation:Describe*
                 - cloudformation:UpdateStack
               Resource:
-                - arn:aws:cloudformation:${self:custom.region}:*:stack/*/*
+                - '*'
+            - Effect: Allow
+              Action:
+                - apigateway:GET
+                - apigateway:POST
+                - apigateway:PUT
+                - apigateway:DELETE
+              Resource:
+                - 'arn:aws:apigateway:*::/restapis*'
+            - Effect: Allow
+              Action:
+                - iam:GetRole
+                - iam:CreateRole
+                - iam:PassRole
+                - iam:PutRolePolicy
+                - iam:DeleteRolePolicy
+                - iam:DeleteRole
+              Resource:
+                - '*'
             - Effect: Allow
               Action:
                 - s3:CreateBucket
+                - s3:GetBucket*
+                - s3:GetBucketPolicy
+                - s3:GetObject
+                - s3:GetObjectVersion
                 - s3:ListBucket
                 - s3:PutObject
               Resource:
-                - arn:aws:s3:::*
+                - arn:aws:s3:::slic-*
             - Effect: Allow
               Action:
                 - s3:DeleteObject
@@ -86,5 +104,64 @@ resources:
                 - lambda:Update*
               Resource:
                 - arn:aws:lambda:${self:custom.region}:*:function:*
+            - Effect: Allow
+              Action:
+                - dynamodb:CreateTable
+                - dynamodb:DescribeTable
+                - dynamodb:Query
+                - dynamodb:Scan
+                - dynamodb:GetItem
+                - dynamodb:PutItem
+                - dynamodb:UpdateItem
+                - dynamodb:DeleteItem
+              Resource: 'arn:aws:dynamodb:${self:custom.region}:${self:custom.accountIds.dev}:*'
+            - Effect: Allow
+              Action: 'sqs:*'
+              Resource:
+                - arn:aws:sqs:*:*:*
+            - Effect: Allow
+              Action:
+                - cloudwatch:GetMetricStatistics
+              Resource:
+                - '*'
+            - Effect: Allow
+              Action:
+                - logs:CreateLogGroup
+                - logs:CreateLogStream
+                - logs:DeleteLogGroup
+              Resource:
+                - arn:aws:logs:*:*:*
+            - Effect: Allow
+              Action:
+                - logs:PutLogEvents
+              Resource:
+                - arn:aws:logs:*:*:*
+            - Effect: Allow
+              Action:
+                - logs:DescribeLogStreams
+                - logs:DescribeLogGroups
+                - logs:FilterLogEvents
+              Resource:
+                - '*'
+            - Effect: Allow
+              Action:
+                - events:Put*
+                - events:Remove*
+                - events:Delete*
+              Resource:
+                - 'arn:aws:events:*:*:rule/*'
+            - Effect: Allow
+              Action:
+                - cognito-idp:CreateUserPool*
+                - cognito-idp:DeleteUserPool*
+                - cognito-idp:ListUserPool*
+                - cognito-identity:CreateIdentityPool
+                - cognito-identity:DeleteIdentityPool
+                - cognito-identity:UpdateIdentityPool
+                - cognito-identity:ListIdentityPools
+                - cognito-identity:GetIdentityPoolRoles
+                - cognito-identity:SetIdentityPoolRoles
+              Resource:
+                - '*'
         Roles:
           - Ref: deploymentRole
