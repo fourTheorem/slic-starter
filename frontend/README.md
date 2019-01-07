@@ -1,5 +1,11 @@
 # SLIC Starter Frontend
 
+## Building
+
+```
+NODE_ENV=dev AWS_PROFILE=<profile_name> AWS_REGION=eu-west-1 npm run build
+```
+
 ## Configuration
 
 Create a file called `.env.local` with these values. You can also define these sipmly as environment variables. Note that `.env.local` is in `.gitignore` so it will not be committed to the repository.

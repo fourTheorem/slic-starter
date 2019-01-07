@@ -7,9 +7,7 @@ provider:
   name: aws
   runtime: ${self:custom.runtime}
   stage: ${opt:stage, self:custom.defaultStage}
-  # Certificates for CloudFront Distributions must be in us-east-1
-  # so we deploy everything into us-east-1
-  region: us-east-1
+  region: ${self:custom.region}
 
 custom: ${file(./custom.yml)}
 
@@ -41,15 +39,6 @@ resources:
                     - '/*'
               Principal: '*'
 
-    siteCert:
-      Type: AWS::CertificateManager::Certificate
-      Properties:
-        DomainName: ${self:custom.siteDomainName}
-        DomainValidationOptions:
-          - DomainName: ${self:custom.siteDomainName}
-            ValidationDomain: ${self:custom.nsDomain}
-        ValidationMethod: EMAIL
-
     siteDistribution:
       Type: AWS::CloudFront::Distribution
       Properties:
@@ -80,7 +69,7 @@ resources:
                 Forward: none
             ViewerProtocolPolicy: redirect-to-https
           ViewerCertificate:
-            AcmCertificateArn: !Ref siteCert
+            AcmCertificateArn: ${self:custom.siteConfig.siteCert}
             SslSupportMethod: sni-only
           CustomErrorResponses:
             - ErrorCode: 403
@@ -93,7 +82,7 @@ resources:
     webRecordSets:
       Type: AWS::Route53::RecordSetGroup
       Properties:
-        HostedZoneId: !Ref publicHostedZone
+        HostedZoneId: ${self:custom.siteConfig.publicHostedZone}
         RecordSets:
           - Name: ${self:custom.siteDomainName}
             Type: A
