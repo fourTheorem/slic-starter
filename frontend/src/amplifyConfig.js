@@ -1,8 +1,8 @@
 const envVars = {
   region: 'REACT_APP_AWS_REGION',
-  userPoolId: 'REACT_APP_AWS_COGNITO_USER_POOL_ID',
-  userPoolWebClientId: 'REACT_APP_AWS_COGNITO_WEB_CLIENT_ID',
-  identityPoolId: 'REACT_APP_AWS_COGNITO_IDENTITY_POOL',
+  userPoolId: 'REACT_APP_USER_POOL_ID',
+  userPoolWebClientId: 'REACT_APP_USER_POOL_CLIENT_ID',
+  identityPoolId: 'REACT_APP_IDENTITY_POOL',
   apiEndpoint: 'REACT_APP_API_ENDPOINT'
 }
 
