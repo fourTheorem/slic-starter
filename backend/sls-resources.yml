@@ -89,3 +89,49 @@ slicIdentityPoolRoleAttachment:
       Ref: slicIdentityPool
     Roles:
       authenticated: { Fn::GetAtt: [slicAuthenticatedIdentityPoolRole, Arn] }
+
+publicHostedZone:
+  Type: AWS::Route53::HostedZone
+  Properties:
+    Name: ${self:custom.nsDomain}
+
+apiCert:
+  Type: AWS::CertificateManager::Certificate
+  Properties:
+    DomainName: ${self:custom.apiDomainName}
+    DomainValidationOptions:
+      - DomainName: ${self:custom.apiDomainName}
+        ValidationDomain: ${self:custom.nsDomain}
+    ValidationMethod: EMAIL
+
+apiCustomDomain:
+  Type: AWS::ApiGateway::DomainName
+  Properties:
+    CertificateArn: !Ref apiCert
+    DomainName: ${self:custom.apiDomainDomainName}
+
+apiCustomDomainPathMappings:
+  Type: AWS::ApiGateway::BasePathMapping
+  Properties:
+    BasePath: ''
+    RestApiId:
+      Ref: ApiGatewayRestApi
+    DomainName:
+      Ref: apiCustomDomain
+    Stage: ${self:provider.stage}
+
+apiDomainDns:
+  Type: AWS::Route53::RecordSetGroup
+  Properties:
+    HostedZoneId: ${self:custom.changeThisTodo}
+    RecordSets:
+      - Name: ${self:resources.Resources.apiCustomDomain.Properties.DomainName}
+        Type: A
+        AliasTarget:
+          DNSName: { Fn::GetAtt: [apiCustomDomain, DistributionDomainName] }
+          HostedZoneId: ${self:custom.cloudFrontHostedZoneId}
+      - Name: ${self:resources.Resources.apiCustomDomain.Properties.DomainName}
+        Type: AAAA
+        AliasTarget:
+          DNSName: { Fn::GetAtt: [apiCustomDomain, DistributionDomainName] }
+          HostedZoneId: ${self:custom.cloudFrontHostedZoneId}

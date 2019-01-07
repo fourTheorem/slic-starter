@@ -90,11 +90,6 @@ resources:
               ResponseCode: 200
               ResponsePagePath: /
 
-    publicHostedZone:
-      Type: AWS::Route53::HostedZone
-      Properties:
-        Name: ${self:custom.nsDomain}
-
     webRecordSets:
       Type: AWS::Route53::RecordSetGroup
       Properties:
