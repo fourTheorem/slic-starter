@@ -3,11 +3,13 @@ region: eu-west-1
 runtime: nodejs8.10
 nsDomain: sliclists.com
 domainPrefixes:
-  dev: api.dev.
-  stg: api.stg.
-  prod: api
-apiDomainName: ${self:custom.domainPrefixes.${self:provider.stage}}${self:custom.nsDomain}
+  dev: dev.
+  stg: stg.
+  prod: ''
+siteDomainName: ${self:custom.domainPrefixes.${self:provider.stage}}${self:custom.nsDomain}
+apiDomainName: api.${self:custom.siteDomainName}
 # The HostedZoneId for CloudFront distributions is always this value.
 # See http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-route53-aliastarget.html
 # AND http://docs.aws.amazon.com/general/latest/gr/rande.html
 cloudFrontHostedZoneId: Z2FDTNDATAQYW2
+apiConfig: ${file(./api-config.js)}

@@ -90,25 +90,11 @@ slicIdentityPoolRoleAttachment:
     Roles:
       authenticated: { Fn::GetAtt: [slicAuthenticatedIdentityPoolRole, Arn] }
 
-publicHostedZone:
-  Type: AWS::Route53::HostedZone
-  Properties:
-    Name: ${self:custom.nsDomain}
-
-apiCert:
-  Type: AWS::CertificateManager::Certificate
-  Properties:
-    DomainName: ${self:custom.apiDomainName}
-    DomainValidationOptions:
-      - DomainName: ${self:custom.apiDomainName}
-        ValidationDomain: ${self:custom.nsDomain}
-    ValidationMethod: EMAIL
-
 apiCustomDomain:
   Type: AWS::ApiGateway::DomainName
   Properties:
-    CertificateArn: !Ref apiCert
-    DomainName: ${self:custom.apiDomainDomainName}
+    CertificateArn: ${self:custom.apiConfig.apiCert}
+    DomainName: ${self:custom.apiDomainName}
 
 apiCustomDomainPathMappings:
   Type: AWS::ApiGateway::BasePathMapping
@@ -123,7 +109,7 @@ apiCustomDomainPathMappings:
 apiDomainDns:
   Type: AWS::Route53::RecordSetGroup
   Properties:
-    HostedZoneId: ${self:custom.changeThisTodo}
+    HostedZoneId: ${self:custom.apiConfig.publicHostedZone}
     RecordSets:
       - Name: ${self:resources.Resources.apiCustomDomain.Properties.DomainName}
         Type: A

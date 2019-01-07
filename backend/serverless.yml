@@ -28,9 +28,5 @@ resources:
       Value: !Ref slicIdentityPool
       Export:
         Name: ${self:provider.stage}-identity-pool
-    apiGatewayEndpoint:
-      Value: !Ref ApiGatewayRestApi
-      Export:
-        Name: ${self:provider.stage}-api-gateway-endpoint
 
   Resources: ${file(./sls-resources.yml)}
