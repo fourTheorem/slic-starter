@@ -6,12 +6,12 @@ import { Button, Grid, Paper, TextField, Typography } from '@material-ui/core'
 
 import { connect } from 'react-redux'
 
-import { logIn } from '../actions/auth'
+import { signUp } from '../actions/auth'
 import { messages } from '../errors'
 
 const styles = theme => ({
   root: {
-    background: 'linear-gradient(to right, #4A00E0, #8E2DE2)',
+    background: 'linear-gradient(to right, #1fa2ff, #12d8fa, #a6ffcb)',
     display: 'flex',
     flexDirection: 'column',
     minWidth: '100%',
@@ -20,7 +20,7 @@ const styles = theme => ({
     justifyContent: 'center'
   },
   paper: {
-    minWidth: '300px',
+    minWidth: '340px',
     padding: theme.spacing.unit * 2
   },
   input: {
@@ -35,7 +35,7 @@ const styles = theme => ({
   }
 })
 
-class Login extends Component {
+class Signup extends Component {
   state = {
     email: '',
     password: ''
@@ -47,18 +47,18 @@ class Login extends Component {
 
   handleSubmit = event => {
     event.preventDefault()
-    this.props.dispatch(logIn(this.state))
+    this.props.dispatch(signUp(this.state))
   }
 
   render() {
     const { classes } = this.props
 
-    const { loggingIn, loginError } = this.props.auth
+    const { signingUp, signupError } = this.props.auth
 
-    const errorItem = loginError ? (
+    const errorItem = signupError ? (
       <Grid item>
         <Typography className={classes.error}>
-          {messages[loginError.id]}
+          {messages[signupError.id]}
         </Typography>
       </Grid>
     ) : null
@@ -75,7 +75,7 @@ class Login extends Component {
               spacing={8}
             >
               <Grid item>
-                <Typography variant="h3">Log In</Typography>
+                <Typography variant="h3">Sign Up</Typography>
               </Grid>
               <Grid item>
                 <TextField
@@ -101,9 +101,9 @@ class Login extends Component {
                   color="secondary"
                   type="submit"
                   className={classes.button}
-                  disabled={loggingIn || !this.validate()}
+                  disabled={signingUp || !this.validate()}
                 >
-                  {loggingIn ? 'Logging in...' : 'Log In'}
+                  {signingUp ? 'Signing up...' : 'Sign Up'}
                 </Button>
               </Grid>
             </Grid>
@@ -114,7 +114,7 @@ class Login extends Component {
   }
 }
 
-Login.propTypes = {
+Signup.propTypes = {
   auth: PropTypes.object.isRequired,
   classes: PropTypes.object.isRequired,
   dispatch: PropTypes.func.isRequired
@@ -122,4 +122,4 @@ Login.propTypes = {
 
 const mapStateToProps = ({ auth }) => ({ auth })
 
-export default connect(mapStateToProps)(withStyles(styles)(Login))
+export default connect(mapStateToProps)(withStyles(styles)(Signup))

@@ -3,7 +3,10 @@ import {
   LOGIN_FAILURE,
   LOGIN_SUCCESS,
   LOGIN_VALIDATED,
-  LOGOUT_SUCCESS
+  LOGOUT_SUCCESS,
+  SIGNUP_REQUEST,
+  SIGNUP_FAILURE,
+  SIGNUP_SUCCESS
 } from '../actions/auth'
 
 const defaultState = {
@@ -39,6 +42,25 @@ export default (state = defaultState, { type, meta, payload, error }) => {
       return {
         ...state,
         authenticated: false
+      }
+    case SIGNUP_REQUEST:
+      return {
+        ...state,
+        signingUp: true,
+        loginError: null
+      }
+    case SIGNUP_SUCCESS:
+      // TODO - Add post-signup authentication
+      return {
+        ...state,
+        signingUp: false,
+        signupError: null
+      }
+    case SIGNUP_FAILURE:
+      return {
+        ...state,
+        signingUp: false,
+        signupError: error
       }
     default:
       return state

@@ -6,6 +6,8 @@ import { withRouter, Redirect, Route, Switch } from 'react-router'
 
 import Home from './Home'
 import Login from './Login'
+import Signup from './Signup'
+
 import { checkAuthentication } from '../actions/auth'
 
 class Root extends Component {
@@ -22,6 +24,7 @@ class Root extends Component {
       <React.Fragment>
         <Switch>
           <Route exact path="/login" component={Login} />
+          <Route exact path="/signup" component={Signup} />
           <Route path="/" component={Home} />
         </Switch>
         {location.pathname === '/login' && authenticated ? (
@@ -29,6 +32,12 @@ class Root extends Component {
         ) : null}
         {location.pathname !== '/login' && authenticated === false ? (
           <Redirect to="/login" />
+        ) : null}
+        {location.pathname === '/signup' && authenticated ? (
+          <Redirect to="/" />
+        ) : null}
+        {location.pathname !== '/signup' && authenticated === false ? (
+          <Redirect to="/signup" />
         ) : null}
       </React.Fragment>
     )

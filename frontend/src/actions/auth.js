@@ -1,14 +1,29 @@
 import { Auth } from 'aws-amplify'
 import * as errors from '../errors'
 
+export const SIGNUP_REQUEST = 'SIGNUP_REQUEST'
+export const SIGNUP_SUCCESS = 'SIGNUP_SUCCESS'
+export const SIGNUP_FAILURE = 'SIGNUP_FAILURE'
+
+export function signUp({ email, password }) {
+  return function(dispatch) {
+    dispatch({ type: SIGNUP_REQUEST })
+    Auth.signUp(email, password).then(
+      () => dispatch({ type: SIGNUP_SUCCESS }),
+      err =>
+        dispatch({ type: SIGNUP_FAILURE, error: translateCognitoError(err) })
+    )
+  }
+}
+
 export const LOGIN_REQUEST = 'LOGIN_REQUEST'
 export const LOGIN_SUCCESS = 'LOGIN_SUCCESS'
 export const LOGIN_FAILURE = 'LOGIN_FAILURE'
 
-export function logIn({ username, password }) {
+export function logIn({ email, password }) {
   return function(dispatch) {
     dispatch({ type: LOGIN_REQUEST })
-    Auth.signIn(username, password).then(
+    Auth.signIn(email, password).then(
       () => dispatch({ type: LOGIN_SUCCESS }),
       err =>
         dispatch({ type: LOGIN_FAILURE, error: translateCognitoError(err) })
@@ -47,6 +62,9 @@ function translateCognitoError(cognitoErr) {
       break
     case 'UserNotFoundException':
       errorId = errors.USER_NOT_FOUND
+      break
+    case 'InvalidPasswordException':
+      errorId = errors.INVALID_PASSWORD
       break
     default:
       errorId = errors.UNKNOWN_AUTHENTICATION_ERROR
