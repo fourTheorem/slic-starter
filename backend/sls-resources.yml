@@ -21,6 +21,7 @@ slicUserPool:
   Properties:
     UserPoolName: ${self:custom.stage}-slic-user-pool
     UsernameAttributes: [email]
+    AutoVerifiedAttributes: [email]
 
 slicUserPoolClient:
   Type: AWS::Cognito::UserPoolClient
