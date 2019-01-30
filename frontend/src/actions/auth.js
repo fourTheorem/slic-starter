@@ -9,7 +9,7 @@ export function signUp({ email, password }) {
   return function(dispatch) {
     dispatch({ type: SIGNUP_REQUEST })
     Auth.signUp(email, password).then(
-      () => dispatch({ type: SIGNUP_SUCCESS }),
+      () => dispatch({ type: SIGNUP_SUCCESS, payload: { email } }),
       err =>
         dispatch({ type: SIGNUP_FAILURE, error: translateCognitoError(err) })
     )
@@ -26,7 +26,10 @@ export function logIn({ email, password }) {
     Auth.signIn(email, password).then(
       () => dispatch({ type: LOGIN_SUCCESS }),
       err =>
-        dispatch({ type: LOGIN_FAILURE, error: translateCognitoError(err) })
+        dispatch(
+          { type: LOGIN_FAILURE, error: translateCognitoError(err) },
+          console.log({ email, password })
+        )
     )
   }
 }
@@ -53,6 +56,24 @@ export function logOut() {
   }
 }
 
+export const SIGNUP_CONFIRM_REQUEST = 'SIGNUP_CONFIRM_REQUEST'
+export const SIGNUP_CONFIRM_SUCCESS = 'SIGNUP_CONFIRM_SUCCESS'
+export const SIGNUP_CONFIRM_FAILURE = 'SIGNUP_CONFIRM_FAILURE'
+
+export function confirmSignup(email, confirmationCode) {
+  return function(dispatch) {
+    dispatch({ type: SIGNUP_CONFIRM_REQUEST })
+    Auth.confirmSignUp(email, confirmationCode).then(
+      () => dispatch({ type: SIGNUP_CONFIRM_SUCCESS }),
+      err =>
+        dispatch(
+          { type: SIGNUP_CONFIRM_FAILURE, error: translateCognitoError(err) },
+          console.log({ email, confirmationCode })
+        )
+    )
+  }
+}
+
 function translateCognitoError(cognitoErr) {
   let errorId
 
@@ -66,7 +87,17 @@ function translateCognitoError(cognitoErr) {
     case 'InvalidPasswordException':
       errorId = errors.INVALID_PASSWORD
       break
+    case 'UsernameExistsException':
+      errorId = errors.USER_ALREADY_EXISTS
+      break
+    case 'InvalidParameterException':
+      errorId = errors.INVALID_EMAIL
+      break
+    case 'NotAuthorizedException':
+      errorId = errors.NOT_AUTHORIZED_EXCEPTION
+      break
     default:
+      console.warn({ cognitoErr }, 'Unrecognised cognito error')
       errorId = errors.UNKNOWN_AUTHENTICATION_ERROR
       break
   }

@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { Route, Switch } from 'react-router'
+import { Redirect } from 'react-router-dom'
 
 import Checklist from './Checklist'
 import NewList from './NewList'
@@ -18,6 +19,10 @@ class Home extends Component {
 
   render() {
     const { loading } = this.props
+
+    const { authenticated } = this.props.auth
+
+    const authCheck = !authenticated ? <Redirect to="/login" /> : null
 
     const body = loading ? (
       <Loading />

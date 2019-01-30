@@ -9,6 +9,7 @@ import Login from './Login'
 import Signup from './Signup'
 
 import { checkAuthentication } from '../actions/auth'
+import ConfirmSignup from './ConfirmSignup'
 
 class Root extends Component {
   componentDidMount() {
@@ -20,25 +21,27 @@ class Root extends Component {
       authenticated,
       history: { location }
     } = this.props
+
+    let redirect = null
+
+    switch (location.pathname) {
+      case '/login':
+      case '/signup':
+        redirect = authenticated ? <Redirect to="/" /> : null
+        break
+
+      default:
+        redirect = !authenticated ? <Redirect to="/login" /> : null
+    }
+
     return (
       <React.Fragment>
         <Switch>
           <Route exact path="/login" component={Login} />
           <Route exact path="/signup" component={Signup} />
+          <Route exact path="/ConfirmSignup" component={ConfirmSignup} />
           <Route path="/" component={Home} />
         </Switch>
-        {location.pathname === '/login' && authenticated ? (
-          <Redirect to="/" />
-        ) : null}
-        {location.pathname !== '/login' && authenticated === false ? (
-          <Redirect to="/login" />
-        ) : null}
-        {location.pathname === '/signup' && authenticated ? (
-          <Redirect to="/" />
-        ) : null}
-        {location.pathname !== '/signup' && authenticated === false ? (
-          <Redirect to="/signup" />
-        ) : null}
       </React.Fragment>
     )
   }

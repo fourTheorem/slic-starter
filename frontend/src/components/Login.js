@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
+import { Redirect } from 'react-router-dom'
 
 import { withStyles } from '@material-ui/core/styles'
 import { Button, Grid, Paper, TextField, Typography } from '@material-ui/core'
@@ -8,6 +9,7 @@ import { connect } from 'react-redux'
 
 import { logIn } from '../actions/auth'
 import { messages } from '../errors'
+import MenuBar from './menuBar'
 
 const styles = theme => ({
   root: {
@@ -53,18 +55,22 @@ class Login extends Component {
   render() {
     const { classes } = this.props
 
-    const { loggingIn, loginError } = this.props.auth
+    const { loggingIn, loginError, authenticated } = this.props.auth
 
-    const errorItem = loginError ? (
-      <Grid item>
-        <Typography className={classes.error}>
-          {messages[loginError.id]}
-        </Typography>
-      </Grid>
-    ) : null
+    const success = authenticated ? <Redirect to="/Home" /> : null
+
+    let errorItem =
+      !loggingIn && loginError ? (
+        <Grid item>
+          <Typography className={classes.error}>
+            {messages[loginError.id]}
+          </Typography>
+        </Grid>
+      ) : null
 
     return (
       <div className={classes.root}>
+        <MenuBar />
         <form onSubmit={this.handleSubmit}>
           <Paper className={classes.paper}>
             <Grid
@@ -95,6 +101,7 @@ class Login extends Component {
                 />
               </Grid>
               {errorItem}
+              {success}
               <Grid item>
                 <Button
                   variant="contained"

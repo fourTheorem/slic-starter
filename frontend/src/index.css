@@ -17,3 +17,17 @@ body {
 #root {
   height: 100%;
 }
+
+.logged-out-menuBar {
+  width: 100%;
+  position: fixed;
+  top: 0;
+  overflow: hidden;
+}
+
+.MenuLink1 .MenuLink2 ul,
+li {
+  list-style: none;
+  text-decoration: none;
+  display: inline-block;
+}

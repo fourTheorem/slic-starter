@@ -3,11 +3,12 @@ import PropTypes from 'prop-types'
 
 import { withStyles } from '@material-ui/core/styles'
 import { Button, Grid, Paper, TextField, Typography } from '@material-ui/core'
-
+import { Redirect } from 'react-router-dom'
 import { connect } from 'react-redux'
 
 import { signUp } from '../actions/auth'
 import { messages } from '../errors'
+import MenuBar from './menuBar'
 
 const styles = theme => ({
   root: {
@@ -41,7 +42,7 @@ class Signup extends Component {
     password: ''
   }
 
-  validate = () => this.state.email.length > 0 && this.state.password.length > 0
+  validate = () => this.state.email.length > 0 && this.state.password.length > 5
 
   handleChange = ({ target: { id, value } }) => this.setState({ [id]: value })
 
@@ -53,7 +54,9 @@ class Signup extends Component {
   render() {
     const { classes } = this.props
 
-    const { signingUp, signupError } = this.props.auth
+    const { signingUp, signupError, signedUp, userConfirmed } = this.props.auth
+
+    const email = this.props.auth
 
     const errorItem = signupError ? (
       <Grid item>
@@ -63,8 +66,12 @@ class Signup extends Component {
       </Grid>
     ) : null
 
+    const confirmSection =
+      signedUp && !userConfirmed ? <Redirect to="/ConfirmSignup" /> : null
+
     return (
       <div className={classes.root}>
+        <MenuBar />
         <form onSubmit={this.handleSubmit}>
           <Paper className={classes.paper}>
             <Grid
@@ -106,6 +113,7 @@ class Signup extends Component {
                   {signingUp ? 'Signing up...' : 'Sign Up'}
                 </Button>
               </Grid>
+              {confirmSection}
             </Grid>
           </Paper>
         </form>

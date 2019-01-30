@@ -6,7 +6,10 @@ import {
   LOGOUT_SUCCESS,
   SIGNUP_REQUEST,
   SIGNUP_FAILURE,
-  SIGNUP_SUCCESS
+  SIGNUP_SUCCESS,
+  SIGNUP_CONFIRM_REQUEST,
+  SIGNUP_CONFIRM_SUCCESS,
+  SIGNUP_CONFIRM_FAILURE
 } from '../actions/auth'
 
 const defaultState = {
@@ -47,21 +50,50 @@ export default (state = defaultState, { type, meta, payload, error }) => {
       return {
         ...state,
         signingUp: true,
-        loginError: null
+        signupError: null,
+        userConfirmed: false,
+        signedUp: false
       }
     case SIGNUP_SUCCESS:
       // TODO - Add post-signup authentication
       return {
         ...state,
         signingUp: false,
-        signupError: null
+        signupError: null,
+        userConfirmed: false,
+        signedUp: true,
+        email: payload.email
       }
     case SIGNUP_FAILURE:
       return {
         ...state,
         signingUp: false,
-        signupError: error
+        signupError: error,
+        userConfirmed: false,
+        signedUp: false
       }
+    case SIGNUP_CONFIRM_REQUEST:
+      return {
+        ...state,
+        confirmingSignup: true,
+        confirmationError: null,
+        signupConfirmed: false
+      }
+    case SIGNUP_CONFIRM_SUCCESS:
+      return {
+        ...state,
+        confirmingSignup: false,
+        confirmationError: null,
+        signupConfirmed: true
+      }
+    case SIGNUP_CONFIRM_FAILURE:
+      return {
+        ...state,
+        confirmingSignup: false,
+        confirmationError: error,
+        signupConfirmed: false
+      }
+
     default:
       return state
   }
