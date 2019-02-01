@@ -4,11 +4,12 @@ import { connect } from 'react-redux'
 import { Redirect } from 'react-router-dom'
 import { confirmSignup } from '../actions/auth'
 import { messages } from '../errors'
-import MenuBar from './menuBar'
 import { Button, Grid, Paper, TextField, Typography } from '@material-ui/core'
 import { withStyles } from '@material-ui/core/styles'
+import { resendConfirmationCode } from '../actions/auth'
+import { Link } from 'react-router-dom'
 
-const styling = theme => ({
+const style = theme => ({
   root: {
     background: 'linear-gradient(to right, #4A00E0, #8E2DE2)',
     display: 'flex',
@@ -19,8 +20,10 @@ const styling = theme => ({
     justifyContent: 'center'
   },
   paper: {
-    minWidth: '300px',
-    padding: theme.spacing.unit * 2
+    alignItems: 'center',
+    minWidth: '600px',
+    padding: theme.spacing.unit * 2,
+    minHeight: '300px'
   },
   input: {
     width: '100%'
@@ -40,7 +43,24 @@ class ConfirmSignup extends Component {
     confirmationCode: ''
   }
 
+  validate = () => this.state.confirmationCode.length > 5
+
   handleChange = ({ target: { id, value } }) => this.setState({ [id]: value })
+
+  // const email
+
+  /* if(this.props.auth.email.length > 0){
+
+    email = this.props.email
+    }else{
+      email = this.props.auth.confirmationEmail
+}
+ */
+
+  resendConfirmation = event => {
+    event.preventDefault()
+    this.props.dispatch(resendConfirmationCode(this.state.email))
+  }
 
   handleSubmit = event => {
     event.preventDefault()
@@ -50,8 +70,7 @@ class ConfirmSignup extends Component {
   }
 
   render() {
-    const classes = this.props
-
+    const { classes } = this.props
     const {
       confirmingSignup,
       confirmationError,
@@ -60,31 +79,47 @@ class ConfirmSignup extends Component {
 
     const confirmed = signupConfirmed ? <Redirect to="/login" /> : null
 
-    console.log('ConfirmSignup props', this.props)
+    const noEmail = !this.state.email ? (
+      <Grid item>
+        <Typography className={classes.error}>
+          No email specified, Try logging in again
+          <br />
+          <Link to="/login">Go to Login</Link>
+        </Typography>
+      </Grid>
+    ) : null
 
     const errorItem = confirmationError ? (
       <Grid item>
-        <Typography>{messages[confirmationError.id]}</Typography>
+        <Typography className={classes.error}>
+          {messages[confirmationError.id]}
+        </Typography>
       </Grid>
     ) : null
 
     return (
       <div className={classes.root}>
-        <Paper className={classes.paper}>
-          <Grid
-            container
-            direction="column"
-            justify="center"
-            alignItems="stretch"
-            spacing={8}
-          >
-            <Grid item>
-              <Typography variant="h2">Confirmation Code</Typography>
-            </Grid>
+        <form onSubmit={this.handleSubmit}>
+          <Paper className={classes.paper}>
+            <Grid
+              className={classes.input}
+              container
+              direction="column"
+              justify="center"
+              alignItems="stretch"
+              spacing={8}
+            >
+              <Grid item>
+                <Typography variant="h4">Enter Confirmation Code</Typography>
+              </Grid>
 
-            <Typography variant="h4">{this.props.auth.email}</Typography>
+              <Grid item>
+                <Typography>
+                  The code was sent by email to: <br />
+                  {this.state.email}
+                </Typography>
+              </Grid>
 
-            <form onSubmit={this.handleSubmit}>
               <Grid item>
                 <TextField
                   id="confirmationCode"
@@ -95,21 +130,39 @@ class ConfirmSignup extends Component {
               </Grid>
 
               <Grid item>
+                {errorItem}
+                {noEmail}
+              </Grid>
+              <Grid item>
                 <Button
                   vavriant="contained"
                   color="secondary"
                   type="submit"
                   className={classes.button}
-                  disabled={confirmingSignup}
+                  disabled={
+                    confirmingSignup || !this.validate() || !this.state.email
+                  }
                 >
-                  Confirm Account
+                  {confirmingSignup ? 'Confirming...' : 'Confirm'}
                 </Button>
               </Grid>
-            </form>
-            {errorItem}
-            {confirmed}
+              <Grid item>{confirmed}</Grid>
+            </Grid>
+          </Paper>
+        </form>
+        <form onSubmit={this.resendConfirmation}>
+          <Grid item>
+            <Button
+              variant="contained"
+              color="secondary"
+              type="submit"
+              className={classes.button}
+              disabled={!this.state.email}
+            >
+              Resend Code
+            </Button>
           </Grid>
-        </Paper>
+        </form>
       </div>
     )
   }
@@ -117,9 +170,10 @@ class ConfirmSignup extends Component {
 
 ConfirmSignup.propTypes = {
   auth: PropTypes.object.isRequired,
-  dispatch: PropTypes.func.isRequired
+  dispatch: PropTypes.func.isRequired,
+  classes: PropTypes.object.isRequired
 }
 
 const mapStateToProps = ({ auth }) => ({ auth })
 
-export default connect(mapStateToProps)(withStyles(styling)(ConfirmSignup))
+export default connect(mapStateToProps)(withStyles(style)(ConfirmSignup))

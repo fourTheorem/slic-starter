@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { Redirect } from 'react-router-dom'
-
+import { Link } from 'react-router-dom'
 import { withStyles } from '@material-ui/core/styles'
 import { Button, Grid, Paper, TextField, Typography } from '@material-ui/core'
 
@@ -9,7 +9,6 @@ import { connect } from 'react-redux'
 
 import { logIn } from '../actions/auth'
 import { messages } from '../errors'
-import MenuBar from './menuBar'
 
 const styles = theme => ({
   root: {
@@ -34,6 +33,10 @@ const styles = theme => ({
   },
   error: {
     color: theme.palette.error.main
+  },
+  link: {
+    textAlign: 'center',
+    minWidth: '100%'
   }
 })
 
@@ -55,9 +58,13 @@ class Login extends Component {
   render() {
     const { classes } = this.props
 
-    const { loggingIn, loginError, authenticated } = this.props.auth
-
-    const success = authenticated ? <Redirect to="/Home" /> : null
+    const {
+      loggingIn,
+      loginError,
+      authenticated,
+      signupConfirmed,
+      userUnconfirmed
+    } = this.props.auth
 
     let errorItem =
       !loggingIn && loginError ? (
@@ -68,9 +75,12 @@ class Login extends Component {
         </Grid>
       ) : null
 
+    let signedIn = authenticated ? <Redirect to="/Home" /> : null
+
+    let notConfirmed = userUnconfirmed ? <Redirect to="/confirmSignup" /> : null
+
     return (
       <div className={classes.root}>
-        <MenuBar />
         <form onSubmit={this.handleSubmit}>
           <Paper className={classes.paper}>
             <Grid
@@ -101,7 +111,8 @@ class Login extends Component {
                 />
               </Grid>
               {errorItem}
-              {success}
+              {signedIn}
+
               <Grid item>
                 <Button
                   variant="contained"
@@ -112,6 +123,15 @@ class Login extends Component {
                 >
                   {loggingIn ? 'Logging in...' : 'Log In'}
                 </Button>
+                <div>
+                  <br />
+                  <Grid container spacing={24} justify="center">
+                    <Grid item xs={6}>
+                      {notConfirmed}
+                      <Link to="/signup">Need to Sign Up?</Link>
+                    </Grid>
+                  </Grid>
+                </div>
               </Grid>
             </Grid>
           </Paper>

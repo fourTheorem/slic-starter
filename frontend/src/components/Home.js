@@ -38,6 +38,7 @@ class Home extends Component {
       <div style={{ height: '100%', overflowX: 'hidden' }}>
         <NavigationBar />
         {body}
+        {authCheck}
       </div>
     )
   }
@@ -45,11 +46,13 @@ class Home extends Component {
 
 Home.propTypes = {
   dispatch: PropTypes.func.isRequired,
-  loading: PropTypes.bool.isRequired
+  loading: PropTypes.bool.isRequired,
+  auth: PropTypes.object.isRequired
 }
 
-const mapStateToProps = ({ checklists: { loading } }) => ({
-  loading
+const mapStateToProps = ({ checklists: { loading }, auth }) => ({
+  loading,
+  auth
 })
 
 export default connect(mapStateToProps)(Home)

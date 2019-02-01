@@ -22,7 +22,7 @@ export const LOGIN_FAILURE = 'LOGIN_FAILURE'
 
 export function logIn({ email, password }) {
   return function(dispatch) {
-    dispatch({ type: LOGIN_REQUEST })
+    dispatch({ type: LOGIN_REQUEST, payload: { email } })
     Auth.signIn(email, password).then(
       () => dispatch({ type: LOGIN_SUCCESS }),
       err =>
@@ -74,6 +74,24 @@ export function confirmSignup(email, confirmationCode) {
   }
 }
 
+export const RESEND_CODE_REQUEST = 'RESEND_CODE_REQUEST'
+export const RESEND_CODE_SUCCESS = 'RESEND_CODE_SUCCESS'
+export const RESEND_CODE_FAILURE = 'RESEND_CODE_FAILURE'
+
+export function resendConfirmationCode(email) {
+  return function(dispatch) {
+    dispatch({ type: RESEND_CODE_REQUEST })
+    Auth.resendSignUp(email).then(
+      () => dispatch({ type: RESEND_CODE_SUCCESS }),
+      err =>
+        dispatch({
+          type: RESEND_CODE_FAILURE,
+          error: translateCognitoError(err)
+        })
+    )
+  }
+}
+
 function translateCognitoError(cognitoErr) {
   let errorId
 
@@ -95,6 +113,15 @@ function translateCognitoError(cognitoErr) {
       break
     case 'NotAuthorizedException':
       errorId = errors.NOT_AUTHORIZED_EXCEPTION
+      break
+    case 'CodeMismatchException':
+      errorId = errors.CODE_MISMATCH_EXCEPTION
+      break
+    case 'ExpiredCodeException':
+      errorId = errors.EXPIRED_CODE_EXCEPTION
+      break
+    case 'LimitExceededException':
+      errorId = errors.LIMIT_EXCEEDED_EXCEPTION
       break
     default:
       console.warn({ cognitoErr }, 'Unrecognised cognito error')

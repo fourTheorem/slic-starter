@@ -5,10 +5,10 @@ import { withStyles } from '@material-ui/core/styles'
 import { Button, Grid, Paper, TextField, Typography } from '@material-ui/core'
 import { Redirect } from 'react-router-dom'
 import { connect } from 'react-redux'
+import { Link } from 'react-router-dom'
 
 import { signUp } from '../actions/auth'
 import { messages } from '../errors'
-import MenuBar from './menuBar'
 
 const styles = theme => ({
   root: {
@@ -56,8 +56,6 @@ class Signup extends Component {
 
     const { signingUp, signupError, signedUp, userConfirmed } = this.props.auth
 
-    const email = this.props.auth
-
     const errorItem = signupError ? (
       <Grid item>
         <Typography className={classes.error}>
@@ -71,7 +69,6 @@ class Signup extends Component {
 
     return (
       <div className={classes.root}>
-        <MenuBar />
         <form onSubmit={this.handleSubmit}>
           <Paper className={classes.paper}>
             <Grid
@@ -112,8 +109,16 @@ class Signup extends Component {
                 >
                   {signingUp ? 'Signing up...' : 'Sign Up'}
                 </Button>
+                <div>
+                  <br />
+                  <Grid container spacing={24} justify="center">
+                    <Grid item xs={8}>
+                      <Link to="/login">Already Signed up? Log in</Link>
+                    </Grid>
+                    {confirmSection}
+                  </Grid>
+                </div>
               </Grid>
-              {confirmSection}
             </Grid>
           </Paper>
         </form>

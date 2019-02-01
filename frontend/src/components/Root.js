@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 
-import { withRouter, Redirect, Route, Switch } from 'react-router'
+import { withRouter, Route, Switch } from 'react-router'
 
 import Home from './Home'
 import Login from './Login'
@@ -18,20 +18,16 @@ class Root extends Component {
 
   render() {
     const {
-      authenticated,
       history: { location }
     } = this.props
-
-    let redirect = null
 
     switch (location.pathname) {
       case '/login':
       case '/signup':
-        redirect = authenticated ? <Redirect to="/" /> : null
         break
 
       default:
-        redirect = !authenticated ? <Redirect to="/login" /> : null
+      // !authenticated ?(<Redirect to="/login" /> ):null
     }
 
     return (

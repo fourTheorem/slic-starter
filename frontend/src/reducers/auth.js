@@ -9,7 +9,10 @@ import {
   SIGNUP_SUCCESS,
   SIGNUP_CONFIRM_REQUEST,
   SIGNUP_CONFIRM_SUCCESS,
-  SIGNUP_CONFIRM_FAILURE
+  SIGNUP_CONFIRM_FAILURE,
+  RESEND_CODE_REQUEST,
+  RESEND_CODE_SUCCESS,
+  RESEND_CODE_FAILURE
 } from '../actions/auth'
 
 const defaultState = {
@@ -24,7 +27,8 @@ export default (state = defaultState, { type, meta, payload, error }) => {
         ...state,
         loggingIn: true,
         authenticated: false,
-        loginError: null
+        loginError: null,
+        email: payload.email
       }
     case LOGIN_SUCCESS:
     case LOGIN_VALIDATED:
@@ -39,12 +43,8 @@ export default (state = defaultState, { type, meta, payload, error }) => {
         ...state,
         loggingIn: false,
         authenticated: false,
-        loginError: error
-      }
-    case LOGOUT_SUCCESS:
-      return {
-        ...state,
-        authenticated: false
+        loginError: error,
+        userUnconfirmed: (error.code = 'UserNotConfirmedException')
       }
     case SIGNUP_REQUEST:
       return {
@@ -92,6 +92,29 @@ export default (state = defaultState, { type, meta, payload, error }) => {
         confirmingSignup: false,
         confirmationError: error,
         signupConfirmed: false
+      }
+    case RESEND_CODE_REQUEST:
+      return {
+        ...state,
+        resendingCode: true,
+        resendError: null,
+        codeSent: false
+      }
+
+    case RESEND_CODE_SUCCESS:
+      return {
+        ...state,
+        resendingCode: false,
+        resendError: null,
+        codeSent: true
+      }
+
+    case RESEND_CODE_FAILURE:
+      return {
+        ...state,
+        resendingCode: false,
+        resendError: error,
+        codeSent: false
       }
 
     default:
