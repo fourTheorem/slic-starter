@@ -35,7 +35,7 @@ class Root extends Component {
         <Switch>
           <Route exact path="/login" component={Login} />
           <Route exact path="/signup" component={Signup} />
-          <Route exact path="/ConfirmSignup" component={ConfirmSignup} />
+          <Route exact path="/confirm-signup" component={ConfirmSignup} />
           <Route path="/" component={Home} />
         </Switch>
       </React.Fragment>
@@ -44,7 +44,6 @@ class Root extends Component {
 }
 
 Root.propTypes = {
-  authenticated: PropTypes.bool,
   dispatch: PropTypes.func.isRequired,
   history: PropTypes.object.isRequired
 }

@@ -62,7 +62,6 @@ class Login extends Component {
       loggingIn,
       loginError,
       authenticated,
-      signupConfirmed,
       userUnconfirmed
     } = this.props.auth
 
@@ -75,9 +74,11 @@ class Login extends Component {
         </Grid>
       ) : null
 
-    let signedIn = authenticated ? <Redirect to="/Home" /> : null
+    const signedIn = authenticated ? <Redirect to="/Home" /> : null
 
-    let notConfirmed = userUnconfirmed ? <Redirect to="/confirmSignup" /> : null
+    const notConfirmed = userUnconfirmed ? (
+      <Redirect to="/confirm-signup" />
+    ) : null
 
     return (
       <div className={classes.root}>
@@ -112,7 +113,6 @@ class Login extends Component {
               </Grid>
               {errorItem}
               {signedIn}
-
               <Grid item>
                 <Button
                   variant="contained"
@@ -123,16 +123,13 @@ class Login extends Component {
                 >
                   {loggingIn ? 'Logging in...' : 'Log In'}
                 </Button>
-                <div>
-                  <br />
-                  <Grid container spacing={24} justify="center">
-                    <Grid item xs={6}>
-                      {notConfirmed}
-                      <Link to="/signup">Need to Sign Up?</Link>
-                    </Grid>
-                  </Grid>
-                </div>
               </Grid>
+              <Grid item>
+                <Typography>
+                  Not registered? <Link to="/signup">Sign up here</Link>
+                </Typography>
+              </Grid>
+              {notConfirmed}
             </Grid>
           </Paper>
         </form>

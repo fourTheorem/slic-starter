@@ -21,9 +21,8 @@ const style = theme => ({
   },
   paper: {
     alignItems: 'center',
-    minWidth: '600px',
-    padding: theme.spacing.unit * 2,
-    minHeight: '300px'
+    minWidth: '460px',
+    padding: theme.spacing.unit * 2
   },
   input: {
     width: '100%'
@@ -46,16 +45,6 @@ class ConfirmSignup extends Component {
   validate = () => this.state.confirmationCode.length > 5
 
   handleChange = ({ target: { id, value } }) => this.setState({ [id]: value })
-
-  // const email
-
-  /* if(this.props.auth.email.length > 0){
-
-    email = this.props.email
-    }else{
-      email = this.props.auth.confirmationEmail
-}
- */
 
   resendConfirmation = event => {
     event.preventDefault()
@@ -82,9 +71,8 @@ class ConfirmSignup extends Component {
     const noEmail = !this.state.email ? (
       <Grid item>
         <Typography className={classes.error}>
-          No email specified, Try logging in again
-          <br />
-          <Link to="/login">Go to Login</Link>
+          No email specified. Try logging in again.{' '}
+          <Link to="/login">Log in here</Link>
         </Typography>
       </Grid>
     ) : null
@@ -133,35 +121,40 @@ class ConfirmSignup extends Component {
                 {errorItem}
                 {noEmail}
               </Grid>
-              <Grid item>
-                <Button
-                  vavriant="contained"
-                  color="secondary"
-                  type="submit"
-                  className={classes.button}
-                  disabled={
-                    confirmingSignup || !this.validate() || !this.state.email
-                  }
-                >
-                  {confirmingSignup ? 'Confirming...' : 'Confirm'}
-                </Button>
+
+              <Grid
+                item
+                container
+                layout="row"
+                justify="flex-end"
+                alignItems="center"
+              >
+                <Grid item>
+                  <Button
+                    className={classes.button}
+                    onClick={this.resendConfirmation}
+                    disabled={!this.state.email}
+                  >
+                    Resend Code
+                  </Button>
+                </Grid>
+                <Grid item>
+                  <Button
+                    vavriant="contained"
+                    color="secondary"
+                    type="submit"
+                    className={classes.button}
+                    disabled={
+                      confirmingSignup || !this.validate() || !this.state.email
+                    }
+                  >
+                    {confirmingSignup ? 'Confirming...' : 'Confirm'}
+                  </Button>
+                </Grid>
               </Grid>
               <Grid item>{confirmed}</Grid>
             </Grid>
           </Paper>
-        </form>
-        <form onSubmit={this.resendConfirmation}>
-          <Grid item>
-            <Button
-              variant="contained"
-              color="secondary"
-              type="submit"
-              className={classes.button}
-              disabled={!this.state.email}
-            >
-              Resend Code
-            </Button>
-          </Grid>
         </form>
       </div>
     )

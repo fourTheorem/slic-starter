@@ -65,7 +65,7 @@ class Signup extends Component {
     ) : null
 
     const confirmSection =
-      signedUp && !userConfirmed ? <Redirect to="/ConfirmSignup" /> : null
+      signedUp && !userConfirmed ? <Redirect to="/confirm-signup" /> : null
 
     return (
       <div className={classes.root}>
@@ -109,15 +109,12 @@ class Signup extends Component {
                 >
                   {signingUp ? 'Signing up...' : 'Sign Up'}
                 </Button>
-                <div>
-                  <br />
-                  <Grid container spacing={24} justify="center">
-                    <Grid item xs={8}>
-                      <Link to="/login">Already Signed up? Log in</Link>
-                    </Grid>
-                    {confirmSection}
-                  </Grid>
-                </div>
+              </Grid>
+              <Grid item>
+                {confirmSection}
+                <Typography>
+                  Already registered? <Link to="/login">Log in here</Link>
+                </Typography>
               </Grid>
             </Grid>
           </Paper>

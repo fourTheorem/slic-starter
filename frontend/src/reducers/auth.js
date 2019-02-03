@@ -3,7 +3,6 @@ import {
   LOGIN_FAILURE,
   LOGIN_SUCCESS,
   LOGIN_VALIDATED,
-  LOGOUT_SUCCESS,
   SIGNUP_REQUEST,
   SIGNUP_FAILURE,
   SIGNUP_SUCCESS,
@@ -55,7 +54,6 @@ export default (state = defaultState, { type, meta, payload, error }) => {
         signedUp: false
       }
     case SIGNUP_SUCCESS:
-      // TODO - Add post-signup authentication
       return {
         ...state,
         signingUp: false,
