@@ -3,8 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@material-ui/core": "^3.4.0",
-    "@material-ui/icons": "^3.0.1",
+    "@material-ui/core": "^3.9.0",
+    "@material-ui/icons": "^3.0.2",
     "aws-amplify": "^1.1.9",
     "connected-react-router": "^5.0.1",
     "husky": "^1.1.3",

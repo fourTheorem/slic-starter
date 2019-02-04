@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { Route, Switch } from 'react-router'
+import { Redirect } from 'react-router-dom'
 
 import Checklist from './Checklist'
 import NewList from './NewList'
@@ -19,6 +20,10 @@ class Home extends Component {
   render() {
     const { loading } = this.props
 
+    const { authenticated } = this.props.auth
+
+    const authCheck = !authenticated ? <Redirect to="/login" /> : null
+
     const body = loading ? (
       <Loading />
     ) : (
@@ -33,6 +38,7 @@ class Home extends Component {
       <div style={{ height: '100%', overflowX: 'hidden' }}>
         <NavigationBar />
         {body}
+        {authCheck}
       </div>
     )
   }
@@ -40,11 +46,13 @@ class Home extends Component {
 
 Home.propTypes = {
   dispatch: PropTypes.func.isRequired,
-  loading: PropTypes.bool.isRequired
+  loading: PropTypes.bool.isRequired,
+  auth: PropTypes.object.isRequired
 }
 
-const mapStateToProps = ({ checklists: { loading } }) => ({
-  loading
+const mapStateToProps = ({ checklists: { loading }, auth }) => ({
+  loading,
+  auth
 })
 
 export default connect(mapStateToProps)(Home)

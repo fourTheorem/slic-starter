@@ -2,11 +2,14 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 
-import { withRouter, Redirect, Route, Switch } from 'react-router'
+import { withRouter, Route, Switch } from 'react-router'
 
 import Home from './Home'
 import Login from './Login'
+import Signup from './Signup'
+
 import { checkAuthentication } from '../actions/auth'
+import ConfirmSignup from './ConfirmSignup'
 
 class Root extends Component {
   componentDidMount() {
@@ -15,28 +18,32 @@ class Root extends Component {
 
   render() {
     const {
-      authenticated,
       history: { location }
     } = this.props
+
+    switch (location.pathname) {
+      case '/login':
+      case '/signup':
+        break
+
+      default:
+      // !authenticated ?(<Redirect to="/login" /> ):null
+    }
+
     return (
       <React.Fragment>
         <Switch>
           <Route exact path="/login" component={Login} />
+          <Route exact path="/signup" component={Signup} />
+          <Route exact path="/confirm-signup" component={ConfirmSignup} />
           <Route path="/" component={Home} />
         </Switch>
-        {location.pathname === '/login' && authenticated ? (
-          <Redirect to="/" />
-        ) : null}
-        {location.pathname !== '/login' && authenticated === false ? (
-          <Redirect to="/login" />
-        ) : null}
       </React.Fragment>
     )
   }
 }
 
 Root.propTypes = {
-  authenticated: PropTypes.bool,
   dispatch: PropTypes.func.isRequired,
   history: PropTypes.object.isRequired
 }

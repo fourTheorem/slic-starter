@@ -51,7 +51,8 @@ export default (state = defaultState, { type, meta, payload, error }) => {
       return {
         ...state,
         creating: true,
-        creationError: null
+        creationError: null,
+        created: false
       }
     case CREATE_LIST_SUCCESS:
       const { listId, name, createdAt } = payload
@@ -67,13 +68,15 @@ export default (state = defaultState, { type, meta, payload, error }) => {
           }
         },
         creating: false,
-        creationError: null
+        creationError: null,
+        created: true
       }
     case CREATE_LIST_FAILURE:
       return {
         ...state,
         creating: false,
-        creationError: error
+        creationError: error,
+        created: false
       }
     case REMOVE_LIST_REQUEST:
       return {

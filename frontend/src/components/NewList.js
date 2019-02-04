@@ -95,6 +95,7 @@ class NewList extends Component {
               </Grid>
             </Grid>
             {errorItem}
+
             <Grid item container layout="row" justify="flex-end">
               <Grid item>
                 <Button
