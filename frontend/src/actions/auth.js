@@ -26,10 +26,7 @@ export function logIn({ email, password }) {
     Auth.signIn(email, password).then(
       () => dispatch({ type: LOGIN_SUCCESS }),
       err =>
-        dispatch(
-          { type: LOGIN_FAILURE, error: translateCognitoError(err) },
-          console.log({ email, password })
-        )
+        dispatch({ type: LOGIN_FAILURE, error: translateCognitoError(err) })
     )
   }
 }
@@ -64,7 +61,7 @@ export function confirmSignup(email, confirmationCode) {
   return function(dispatch) {
     dispatch({ type: SIGNUP_CONFIRM_REQUEST })
     Auth.confirmSignUp(email, confirmationCode).then(
-      () => dispatch({ type: SIGNUP_CONFIRM_SUCCESS }),
+      () => dispatch({ type: SIGNUP_CONFIRM_SUCCESS, payload: { email } }),
       err =>
         dispatch(
           { type: SIGNUP_CONFIRM_FAILURE, error: translateCognitoError(err) },

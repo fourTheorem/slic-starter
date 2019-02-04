@@ -7,7 +7,6 @@ import { messages } from '../errors'
 import { Button, Grid, Paper, TextField, Typography } from '@material-ui/core'
 import { withStyles } from '@material-ui/core/styles'
 import { resendConfirmationCode } from '../actions/auth'
-import { Link } from 'react-router-dom'
 
 const style = theme => ({
   root: {
@@ -33,6 +32,9 @@ const style = theme => ({
   },
   error: {
     color: theme.palette.error.main
+  },
+  success: {
+    color: 'green'
   }
 })
 
@@ -63,19 +65,21 @@ class ConfirmSignup extends Component {
     const {
       confirmingSignup,
       confirmationError,
-      signupConfirmed
+      signupConfirmed,
+      codeSent
     } = this.props.auth
 
-    const confirmed = signupConfirmed ? <Redirect to="/login" /> : null
-
-    const noEmail = !this.state.email ? (
+    const codeResent = codeSent ? (
       <Grid item>
-        <Typography className={classes.error}>
-          No email specified. Try logging in again.{' '}
-          <Link to="/login">Log in here</Link>
+        <Typography className={classes.success}>
+          Code successfully sent!
         </Typography>
       </Grid>
     ) : null
+
+    const noEmail = !this.state.email ? <Redirect to="/login" /> : null
+
+    const signupSuccess = signupConfirmed ? <Redirect to="/login" /> : null
 
     const errorItem = confirmationError ? (
       <Grid item>
@@ -120,6 +124,8 @@ class ConfirmSignup extends Component {
               <Grid item>
                 {errorItem}
                 {noEmail}
+                {signupSuccess}
+                {codeResent}
               </Grid>
 
               <Grid
@@ -152,7 +158,6 @@ class ConfirmSignup extends Component {
                   </Button>
                 </Grid>
               </Grid>
-              <Grid item>{confirmed}</Grid>
             </Grid>
           </Paper>
         </form>

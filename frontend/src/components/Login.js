@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { Redirect } from 'react-router-dom'
-import { Link } from 'react-router-dom'
+import { Redirect, Link } from 'react-router-dom'
 import { withStyles } from '@material-ui/core/styles'
 import { Button, Grid, Paper, TextField, Typography } from '@material-ui/core'
 
@@ -33,10 +32,6 @@ const styles = theme => ({
   },
   error: {
     color: theme.palette.error.main
-  },
-  link: {
-    textAlign: 'center',
-    minWidth: '100%'
   }
 })
 
@@ -56,14 +51,12 @@ class Login extends Component {
   }
 
   render() {
-    const { classes } = this.props
-
     const {
-      loggingIn,
-      loginError,
-      authenticated,
-      userUnconfirmed
-    } = this.props.auth
+      classes,
+      auth: { userUnconfirmed }
+    } = this.props
+
+    const { loggingIn, loginError, authenticated } = this.props.auth
 
     let errorItem =
       !loggingIn && loginError ? (
@@ -76,7 +69,7 @@ class Login extends Component {
 
     const signedIn = authenticated ? <Redirect to="/Home" /> : null
 
-    const notConfirmed = userUnconfirmed ? (
+    const unconfirmed = userUnconfirmed ? (
       <Redirect to="/confirm-signup" />
     ) : null
 
@@ -111,8 +104,10 @@ class Login extends Component {
                   onChange={this.handleChange}
                 />
               </Grid>
+              {unconfirmed}
               {errorItem}
               {signedIn}
+
               <Grid item>
                 <Button
                   variant="contained"
@@ -129,7 +124,6 @@ class Login extends Component {
                   Not registered? <Link to="/signup">Sign up here</Link>
                 </Typography>
               </Grid>
-              {notConfirmed}
             </Grid>
           </Paper>
         </form>

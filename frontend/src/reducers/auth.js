@@ -1,4 +1,5 @@
 import {
+  LOGOUT_SUCCESS,
   LOGIN_REQUEST,
   LOGIN_FAILURE,
   LOGIN_SUCCESS,
@@ -13,6 +14,7 @@ import {
   RESEND_CODE_SUCCESS,
   RESEND_CODE_FAILURE
 } from '../actions/auth'
+import * as errors from '../errors'
 
 const defaultState = {
   loggingIn: false,
@@ -43,7 +45,11 @@ export default (state = defaultState, { type, meta, payload, error }) => {
         loggingIn: false,
         authenticated: false,
         loginError: error,
-        userUnconfirmed: (error.code = 'UserNotConfirmedException')
+        userUnconfirmed: error.id === errors.USER_NOT_CONFIRMED
+      }
+    case LOGOUT_SUCCESS:
+      return {
+        authenticated: false
       }
     case SIGNUP_REQUEST:
       return {
@@ -79,10 +85,10 @@ export default (state = defaultState, { type, meta, payload, error }) => {
       }
     case SIGNUP_CONFIRM_SUCCESS:
       return {
-        ...state,
         confirmingSignup: false,
         confirmationError: null,
-        signupConfirmed: true
+        signupConfirmed: true,
+        email: payload.email
       }
     case SIGNUP_CONFIRM_FAILURE:
       return {
