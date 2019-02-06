@@ -168,4 +168,5 @@ Properties:
               - codebuild:StopBuild
             Resource:
               - { Fn::GetAtt: [codebuildInstallDepsProject, Arn] }
-              - { Fn::GetAtt: [codebuildDeployProject, Arn] }
+              - { Fn::GetAtt: [codebuildDeployBackend, Arn] }
+              - { Fn::GetAtt: [codebuildDeployFrontend, Arn] }

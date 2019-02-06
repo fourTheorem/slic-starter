@@ -29,7 +29,8 @@
     "format": "prettier --write \"**/*.js\"",
     "fetch-deployment-config": "node scripts/fetch-deployment-config",
     "start": "react-scripts start",
-    "build": "npm run fetch-deployment-config && react-scripts build",
+    "react-app-build": "node node_modules/react-scripts/bin/react-scripts build",
+    "build": "npm run fetch-deployment-config && npm run react-app-build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
