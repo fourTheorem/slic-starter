@@ -62,7 +62,7 @@ resources:
                   Repo: ${self:custom.sourceRepoName}
                   Branch: master
                   OAuthToken: '{{resolve:secretsmanager:CICD:SecretString:GitHubPersonalAccessToken}}'
-                  PollForSourceChanges: false
+                  PollForSourceChanges: true
                 OutputArtifacts:
                   - Name: ${self:custom.stage}-slic-service-source
           - Name: InstallDeps
