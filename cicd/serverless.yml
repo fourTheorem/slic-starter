@@ -80,20 +80,31 @@ resources:
                 Configuration:
                   ProjectName: slic-codebuild-install-deps
                 RunOrder: 1
-          - Name: Deploy
+          - Name: DeployBackend
             Actions:
-              - Name: Deploy
+              - Name: DeployBackend
                 InputArtifacts:
                   - Name: ${self:custom.stage}-slic-service-installed-deps
-                OutputArtifacts:
-                  - Name: ${self:custom.stage}-slic-service-deployed
                 ActionTypeId:
                   Category: Build
                   Owner: AWS
                   Version: 1
                   Provider: CodeBuild
                 Configuration:
-                  ProjectName: slic-codebuild-deploy
+                  ProjectName: slic-codebuild-deploy-backend
+                RunOrder: 1
+          - Name: DeployFrontend
+            Actions:
+              - Name: DeployFrontend
+                InputArtifacts:
+                  - Name: ${self:custom.stage}-slic-service-installed-deps
+                ActionTypeId:
+                  Category: Build
+                  Owner: AWS
+                  Version: 1
+                  Provider: CodeBuild
+                Configuration:
+                  ProjectName: slic-codebuild-deploy-frontend
                 RunOrder: 1
         ArtifactStore:
           Type: S3
@@ -112,14 +123,27 @@ resources:
           Packaging: NONE
         Environment: ${file(./codebuild-environment.yml)}
 
-    codebuildDeployProject:
+    codebuildDeployBackend:
       Type: AWS::CodeBuild::Project
       Properties:
-        Name: slic-codebuild-deploy
+        Name: slic-codebuild-deploy-backend
         ServiceRole: { Fn::GetAtt: [codeBuildRole, Arn] }
         Source:
           Type: CODEPIPELINE
-          BuildSpec: ${file(./buildspec-deploy.yml.js)}
+          BuildSpec: ${file(./buildspec-deploy-backend.yml.js)}
+        Artifacts:
+          Type: CODEPIPELINE
+          Packaging: NONE
+        Environment: ${file(./codebuild-environment.yml)}
+
+    codebuildDeployFrontend:
+      Type: AWS::CodeBuild::Project
+      Properties:
+        Name: slic-codebuild-deploy-frontend
+        ServiceRole: { Fn::GetAtt: [codeBuildRole, Arn] }
+        Source:
+          Type: CODEPIPELINE
+          BuildSpec: ${file(./buildspec-deploy-frontend.yml.js)}
         Artifacts:
           Type: CODEPIPELINE
           Packaging: NONE

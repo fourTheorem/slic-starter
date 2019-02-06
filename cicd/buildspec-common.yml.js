@@ -1,4 +1,4 @@
-module.exports = () => `
+module.exports = buildCommands => `
 version: 0.2
 
 phases:
@@ -13,11 +13,5 @@ phases:
 
   build:
     commands:
-      - echo Building frontend
-      - cd frontend
-      - npm run build
-      - cd ../backend
-      - serverless deploy
-      - cd ../frontend
-      - serverless deploy
+${buildCommands}
 `
