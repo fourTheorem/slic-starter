@@ -47,7 +47,7 @@ addItem:
   handler: services/checklists/items/addItem.main
   events:
     - http:
-        path: checklist/{id}/items
+        path: checklist/{id}/entries
         method: post
         cors: true
         authorizer: aws_iam
@@ -56,7 +56,7 @@ listItems:
   handler: services/checklists/items/listItems.main
   events:
     - http:
-        path: checklist/{id}/items
+        path: checklist/{id}/entries
         method: get
         cors: true
         authorizer: aws_iam
@@ -65,7 +65,7 @@ updateItem:
   handler: services/checklists/items/updateItem.main
   events:
     - http:
-        path: checklist/{id}/items/{entId}
+        path: checklist/{id}/entries/{entId}
         method: put
         cors: true
         authorizer: aws_iam
@@ -74,7 +74,7 @@ deleteItem:
   handler: services/checklists/items/deleteItem.main
   events:
     - http:
-        path: checklist/{id}/items/{entId}
+        path: checklist/{id}/entries/{entId}
         method: delete
         cors: true
         authorizer: aws_iam
