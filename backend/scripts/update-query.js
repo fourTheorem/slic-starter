@@ -8,8 +8,8 @@ const dynamoDb = new AWS.DynamoDB.DocumentClient()
 
 const tableName = 'checklists'
 
-const userId = 'TODO'
-const listId = 'TODO'
+const userId = 'TODO1'
+const listId = 'TODO1'
 
 async function test() {
   const updatedAt = Date.now()
