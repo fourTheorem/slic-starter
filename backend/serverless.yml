@@ -2,6 +2,7 @@ service: slic-starter-backend
 
 plugins:
   - serverless-offline
+  - serverless-localstack
 
 provider:
   name: aws

@@ -40,6 +40,22 @@ This project is free to use by enterprise, startups, students, educators, enthus
 
 ### Logging
 
+## Getting Started
+
+## Local Development
+
+```
+pip install localstack
+```
+
+```
+pip install --user localstack
+```
+
+```
+SERVICES="s3,dynamodb,cloudformation,sns,sqs,lambda,kinesis" localstack start
+```
+
 ## Demo
 
 SLIC Starter provides a fully-featured application for managing checklists called _SLIC Lists_. SLIC Starter is self hosting, so SLIC Lists is continuously deployed to [sliclists.com](https://sliclists.com) from _this repository!_
