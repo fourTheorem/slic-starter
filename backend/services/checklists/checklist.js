@@ -1,7 +1,6 @@
 'use strict'
 
 const Uuid = require('uuid')
-
 const { dynamoDocClient } = require('../../lib/aws')
 
 const tableName = 'checklists'
@@ -14,11 +13,14 @@ module.exports = {
   list
 }
 
-async function create({ userId, name, tasks }) {
+function dynamoClient() {
+  return new AWS.DynamoDB.DocumentClient()
+}
+
+async function create({ userId, name }) {
   const item = {
     userId,
     name,
-    tasks,
     listId: Uuid.v4(),
     createdAt: Date.now()
   }
@@ -31,17 +33,19 @@ async function create({ userId, name, tasks }) {
   return item
 }
 
-async function update({ listId, userId, name = null, tasks = null }) {
+async function update({ listId, userId, name = null }) {
   const updatedAt = Date.now()
+<<<<<<< 91691d5ab35c8d02768b40bf12bec6bb2a800842
   await dynamoDocClient()
+=======
+  await dynamoClient()
+>>>>>>> Add first unit test for checklist.create()
     .update({
       TableName: tableName,
       Key: { userId, listId },
-      UpdateExpression:
-        'SET name = :name, tasks = :tasks, updatedAt = :updatedAt',
+      UpdateExpression: 'SET name = :name, updatedAt = :updatedAt',
       ExpressionAttributeValues: {
         ':name': name,
-        ':tasks': tasks,
         ':updatedAt': updatedAt
       }
     })
@@ -49,7 +53,11 @@ async function update({ listId, userId, name = null, tasks = null }) {
 }
 
 async function remove({ listId, userId }) {
+<<<<<<< 91691d5ab35c8d02768b40bf12bec6bb2a800842
   await dynamoDocClient()
+=======
+  await dynamoClient()
+>>>>>>> Add first unit test for checklist.create()
     .delete({
       TableName: tableName,
       Key: { userId, listId }
@@ -67,7 +75,6 @@ async function get({ listId, userId }) {
 }
 
 async function list({ userId }) {
-  debugger
   return (await dynamoDocClient()
     .query({
       TableName: tableName,

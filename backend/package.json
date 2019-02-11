@@ -5,7 +5,9 @@
   "scripts": {
     "start": "sls offline start --migrate",
     "lint": "prettier -l \"**/*.js\"",
-    "format": "prettier --write \"**/*.js\""
+    "coverage": "npm run test -- --cov --coverage-report=html",
+    "format": "prettier --write \"**/*.js\"",
+    "test": "tap \"test/**/*.test.js\" --branches=100 --statements=100 --functions=100 --lines=100"
   },
   "author": "Eoin Shanaghy <eoin.shanaghy@fourtheorem.com>",
   "license": "MIT",
@@ -16,10 +18,12 @@
   "devDependencies": {
     "@dathuis/serverless-dynamodb-local": "^0.2.40",
     "aws-sdk": "^2.339.0",
+    "aws-sdk-mock": "^4.3.0",
     "husky": "^1.1.3",
     "prettier": "1.14.3",
     "pretty-quick": "^1.8.0",
-    "serverless-offline": "^3.25.6"
+    "serverless-offline": "^3.25.6",
+    "tap": "^12.5.2"
   },
   "dependencies": {
     "pino": "^5.8.1"
@@ -28,5 +32,10 @@
     "hooks": {
       "pre-commit": "pretty-quick --staged"
     }
+  },
+  "nyc": {
+    "exclude": [
+      "**/test/**/*.js"
+    ]
   }
 }
