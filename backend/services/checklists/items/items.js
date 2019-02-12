@@ -3,8 +3,6 @@ const Uuid = require('uuid')
 
 AWS.config.update({ region: process.env.AWS_REGION })
 
-const dynamoDb = new AWS.DynamoDB.DocumentClient()
-
 const tableName = 'checklists'
 
 module.exports = {
@@ -12,6 +10,10 @@ module.exports = {
   updateItem,
   listItems,
   deleteItem
+}
+
+function dynamoClient() {
+  return new AWS.DynamoDB.DocumentClient()
 }
 
 async function addItem({ userId, listId, title, value }) {
@@ -40,7 +42,7 @@ async function addItem({ userId, listId, title, value }) {
     ReturnValues: 'ALL_NEW'
   }
 
-  dynamoDb.update(params, function(err, data) {
+  dynamoClient().update(params, function(err, data) {
     if (err) console.log(err)
     else console.log(data)
   })
@@ -55,7 +57,7 @@ async function updateItem({ entId, value }) {
       value: value
     }
   }
-  await dynamoDb.update(params, function(err, data) {
+  await dynamoClient().update(params, function(err, data) {
     if (err) console.log(err)
     else console.log(data)
   })
@@ -70,7 +72,7 @@ async function listItems({ listId }) {
     }
   }
 
-  dynamoDb.query(params, function(err, data) {
+  dynamoClient().query(params, function(err, data) {
     if (err) console.log(err)
     else console.log(data)
   })
@@ -93,7 +95,7 @@ async function deleteItem(userId, listId, entId) {
     ReturnValues: 'ALL_NEW'
   }
 
-  dynamoDb.update(params, function(err, data) {
+  dynamoClient().update(params, function(err, data) {
     if (err) console.log(err)
     else console.log(data)
   })

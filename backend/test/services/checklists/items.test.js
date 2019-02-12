@@ -16,6 +16,11 @@ awsMock.mock('DynamoDB.DocumentClient', 'put', function(params, callback) {
   callback(null, { ...params })
 })
 
+awsMock.mock('DynamoDB.DocumentClient', 'get', function(params, callback) {
+  received.dynamoDb.get = params
+  callback(null, { ...params })
+})
+
 test('add new list item', async t => {
   const record = {
     userId,
@@ -26,5 +31,14 @@ test('add new list item', async t => {
 
   const response = await items.addItem(record)
 
-  t.equal(received.dynamoDb.put.Key.userId, record.userId)
+  //
+})
+
+test('add new list item', async t => {
+  const record = {
+    entId: '1',
+    value: 'Done'
+  }
+
+  const response = await items.updateItem(record)
 })
