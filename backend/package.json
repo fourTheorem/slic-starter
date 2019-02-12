@@ -4,7 +4,7 @@
   "description": "Backend for SLIC Starter",
   "scripts": {
     "start": "sls offline start --migrate",
-    "lint": "prettier -l \"**/*.js\"",
+    "lint": "eslint .",
     "coverage": "npm run test -- --cov --coverage-report=html",
     "format": "prettier --write \"**/*.js\"",
     "test": "tap \"test/**/*.test.js\" --branches=100 --statements=100 --functions=100 --lines=100"

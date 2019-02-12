@@ -64,6 +64,13 @@ When working in local development, the backend configuration is pulled from `.en
 
 SLIC Starter provides a fully-featured application for managing checklists called _SLIC Lists_. SLIC Starter is self hosting, so SLIC Lists is continuously deployed to [sliclists.com](https://sliclists.com) from _this repository!_
 
+## Code Style and Syntax
+
+SLIC Starter uses [Prettier](https://github.com/prettier/prettier) for code formatting and [ESLint](https://eslint.org/) for syntax checking.
+
+- Prettier is configured to format the code on commit (run manually with `npm run format` in each project)
+- Linting can be run with `npm run lint` in each project
+
 ## Contributing
 
 See [CONTRIBUTING.md](CONTRIBUTING.md)
