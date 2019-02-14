@@ -1,6 +1,9 @@
 service: slic-starter-backend
 
 plugins:
+  # Order of plugins is important for dynamodb-local
+  # Using fork of serverless-dynamodb-local due to https://github.com/99xt/dynamodb-localhost/issues/25
+  - '@dathuis/serverless-dynamodb-local'
   - serverless-offline
 
 provider:

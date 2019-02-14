@@ -1,11 +1,8 @@
 'use strict'
 
-const AWS = require('aws-sdk')
 const Uuid = require('uuid')
 
-AWS.config.update({ region: process.env.AWS_REGION })
-
-const dynamoDb = new AWS.DynamoDB.DocumentClient()
+const { dynamoDocClient } = require('../../lib/aws')
 
 const tableName = 'checklists'
 
@@ -25,7 +22,7 @@ async function create({ userId, name, tasks }) {
     listId: Uuid.v4(),
     createdAt: Date.now()
   }
-  await dynamoDb
+  await dynamoDocClient()
     .put({
       TableName: tableName,
       Item: item
@@ -36,7 +33,7 @@ async function create({ userId, name, tasks }) {
 
 async function update({ listId, userId, name = null, tasks = null }) {
   const updatedAt = Date.now()
-  await dynamoDb
+  await dynamoDocClient()
     .update({
       TableName: tableName,
       Key: { userId, listId },
@@ -52,7 +49,7 @@ async function update({ listId, userId, name = null, tasks = null }) {
 }
 
 async function remove({ listId, userId }) {
-  await dynamoDb
+  await dynamoDocClient()
     .delete({
       TableName: tableName,
       Key: { userId, listId }
@@ -61,7 +58,7 @@ async function remove({ listId, userId }) {
 }
 
 async function get({ listId, userId }) {
-  return (await dynamoDb
+  return (await dynamoDocClient()
     .get({
       TableName: tableName,
       Key: { userId, listId }
@@ -70,7 +67,8 @@ async function get({ listId, userId }) {
 }
 
 async function list({ userId }) {
-  return (await dynamoDb
+  debugger
+  return (await dynamoDocClient()
     .query({
       TableName: tableName,
       KeyConditionExpression: 'userId = :userId',

@@ -1,8 +1,9 @@
-stage: ${opt:stage, 'dev'}
+stage: ${opt:stage, 'local'}
 region: eu-west-1
 runtime: nodejs8.10
 nsDomain: sliclists.com
 domainPrefixes:
+  local: ''
   dev: dev.
   stg: stg.
   prod: ''
@@ -13,3 +14,5 @@ apiDomainName: api.${self:custom.siteDomainName}
 # AND http://docs.aws.amazon.com/general/latest/gr/rande.html
 cloudFrontHostedZoneId: Z2FDTNDATAQYW2
 apiConfig: ${file(./api-config.js)}
+serverless-offline:
+  port: 4000

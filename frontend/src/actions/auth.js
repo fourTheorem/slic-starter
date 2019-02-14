@@ -1,4 +1,4 @@
-import { Auth } from 'aws-amplify'
+import { Auth } from '../auth-provider'
 import * as errors from '../errors'
 
 export const SIGNUP_REQUEST = 'SIGNUP_REQUEST'
@@ -127,6 +127,7 @@ function translateCognitoError(cognitoErr) {
   }
 
   return {
-    id: errorId
+    id: errorId,
+    source: cognitoErr
   }
 }

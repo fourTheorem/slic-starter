@@ -1,6 +1,13 @@
 module.exports = serverless => {
   const stage = serverless.service.provider.stage
+  if (stage === 'local') {
+    return {
+      apiCert: '',
+      publicHostedZone: ''
+    }
+  }
 
+  const values = {}
   const region = 'us-east-1'
   const stackName = `slic-starter-certs-${stage}`
   const exports = {
@@ -13,7 +20,6 @@ module.exports = serverless => {
 
   const cf = new provider.sdk.CloudFormation({ credentials, region })
 
-  const values = {}
   return cf
     .describeStacks({ StackName: stackName })
     .promise()

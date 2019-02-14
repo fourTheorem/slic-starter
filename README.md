@@ -40,6 +40,26 @@ This project is free to use by enterprise, startups, students, educators, enthus
 
 ### Logging
 
+## Getting Started
+
+## Local Development
+
+In backend:
+
+```
+sls dynamodb install
+```
+
+Ensure that your AWS credentials are set to _some reasonable values_. For local development, any dummy value for `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY` is sufficient. You can also opt to use an AWS profile if that's your preferred method for specifying AWS credentials.
+
+```
+sls offline start --migrate true
+```
+
+## Backend configuration for Frontend
+
+When working in local development, the backend configuration is pulled from `.env.local`. When building the production frontend for any deployed _stage_, `npm run build` will, by default, generate a `.env.production` file. This file is `,gitignore`d so it will not be committed. The values for this file are dynamically generated using the CloudFormation outputs retrieved from the stage specified using the `SLIC_STAGE` environment variable.
+
 ## Demo
 
 SLIC Starter provides a fully-featured application for managing checklists called _SLIC Lists_. SLIC Starter is self hosting, so SLIC Lists is continuously deployed to [sliclists.com](https://sliclists.com) from _this repository!_
