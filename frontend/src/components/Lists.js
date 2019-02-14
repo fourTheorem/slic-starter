@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { Link } from 'react-router-dom'
 import { connect } from 'react-redux'
-import { Button, Grid, Typography } from '@material-ui/core'
+import { Fab, Grid, Typography } from '@material-ui/core'
 import { withStyles } from '@material-ui/core/styles'
 import { Add } from '@material-ui/icons'
 
@@ -47,15 +47,14 @@ class Lists extends Component {
         >
           {body}
         </Grid>
-        <Button
-          variant="fab"
+        <Fab
           className={classes.fab}
           color="primary"
           component={Link}
           to="/new-list"
         >
           <Add />
-        </Button>
+        </Fab>
       </React.Fragment>
     )
   }
