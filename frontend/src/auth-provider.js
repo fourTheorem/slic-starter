@@ -6,9 +6,15 @@ export let Auth
 if (simulatedAuth) {
   console.log('Using simulated authentication')
 
-  function timerPromise(ms, reject = false) {
+  function timerPromise(ms, success = true) {
     return new Promise((resolve, reject) =>
-      setTimeout(() => (reject ? reject : resolve)(), ms)
+      setTimeout(
+        () =>
+          (success ? resolve : reject)({
+            source: 'Simulated Auth Provider'
+          }),
+        ms
+      )
     )
   }
 
@@ -24,7 +30,7 @@ if (simulatedAuth) {
     },
     currentSession: () => {
       return new Promise((resolve, reject) => {
-        return timerPromise(400, !authState.loggedIn)
+        return timerPromise(400, authState.loggedIn)
       })
     },
     confirmSignUp: () => {
