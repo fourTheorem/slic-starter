@@ -14,15 +14,5 @@ apiDomainName: api.${self:custom.siteDomainName}
 # AND http://docs.aws.amazon.com/general/latest/gr/rande.html
 cloudFrontHostedZoneId: Z2FDTNDATAQYW2
 apiConfig: ${file(./api-config.js)}
-localstack:
-  host: http://localhost
-  endpoints:
-    S3: http://localhost:4572
-    DynamoDB: http://localhost:4570
-    CloudFormation: http://localhost:4581
-    SNS: http://localhost:4575
-    SQS: http://localhost:4576
-    Lambda: http://localhost:4574
-    Kinesis: http://localhost:4568
-  stages:
-    - local
+serverless-offline:
+  port: 4000

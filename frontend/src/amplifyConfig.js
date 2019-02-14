@@ -1,3 +1,5 @@
+import { simulatedAuth } from './mode'
+
 const envVars = {
   region: 'REACT_APP_AWS_REGION',
   userPoolId: 'REACT_APP_USER_POOL_ID',
@@ -21,11 +23,7 @@ Object.entries(envVars).forEach(([key, env]) => {
 
 const { apiEndpoint, ...authConfig } = config
 
-export default {
-  Auth: {
-    mandatorySignIn: true,
-    ...authConfig
-  },
+const amplifyConfig = {
   API: {
     endpoints: [
       {
@@ -36,3 +34,12 @@ export default {
     ]
   }
 }
+
+if (!simulatedAuth) {
+  amplifyConfig.Auth = {
+    mandatorySignIn: true,
+    ...authConfig
+  }
+}
+
+export default amplifyConfig

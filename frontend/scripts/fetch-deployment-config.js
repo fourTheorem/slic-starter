@@ -44,7 +44,7 @@ cf.describeStacks({ StackName: stackName })
 REACT_APP_AWS_REGION=${process.env.AWS_REGION}
 ${stageEnvContents}`
 
-      const envFilename = `.env.local`
+      const envFilename = `.env.production`
       console.log('Writing', envFilename)
       fs.writeFileSync(envFilename, envContents)
     } else {

@@ -46,3 +46,4 @@ build/Release
 **/.idea
 .serverless
 *.sw?
+vim-markdown-preview.html
