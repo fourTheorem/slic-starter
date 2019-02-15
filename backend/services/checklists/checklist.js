@@ -35,11 +35,7 @@ async function create({ userId, name }) {
 
 async function update({ listId, userId, name = null }) {
   const updatedAt = Date.now()
-<<<<<<< 91691d5ab35c8d02768b40bf12bec6bb2a800842
   await dynamoDocClient()
-=======
-  await dynamoClient()
->>>>>>> Add first unit test for checklist.create()
     .update({
       TableName: tableName,
       Key: { userId, listId },
@@ -53,11 +49,7 @@ async function update({ listId, userId, name = null }) {
 }
 
 async function remove({ listId, userId }) {
-<<<<<<< 91691d5ab35c8d02768b40bf12bec6bb2a800842
   await dynamoDocClient()
-=======
-  await dynamoClient()
->>>>>>> Add first unit test for checklist.create()
     .delete({
       TableName: tableName,
       Key: { userId, listId }
