@@ -1,4 +1,4 @@
-stage: ${opt:stage, 'local'}
+stage: ${opt:stage, 'dev'}
 region: eu-west-1
 runtime: nodejs8.10
 nsDomain: sliclists.com

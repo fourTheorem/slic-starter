@@ -37,4 +37,11 @@ module.exports = serverless => {
         throw new Error(`No stack found with name ${stackName}`)
       }
     })
+    .catch(err => {
+      console.error(
+        'ERROR: Failed to fetch certificate for API gateway configuration',
+        err
+      )
+      throw err
+    })
 }
