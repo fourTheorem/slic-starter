@@ -13,10 +13,6 @@ module.exports = {
   list
 }
 
-function dynamoClient() {
-  return new AWS.DynamoDB.DocumentClient()
-}
-
 async function create({ userId, name }) {
   const item = {
     userId,

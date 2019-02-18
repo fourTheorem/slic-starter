@@ -1,7 +1,7 @@
-const AWS = require('aws-sdk')
-const Uuid = require('uuid')
+'use strict'
 
-AWS.config.update({ region: process.env.AWS_REGION })
+const Uuid = require('uuid')
+const { dynamoDocClient } = require('../../../lib/aws')
 
 const tableName = 'checklists'
 
@@ -10,10 +10,6 @@ module.exports = {
   updateItem,
   listItems,
   deleteItem
-}
-
-function dynamoClient() {
-  return new AWS.DynamoDB.DocumentClient()
 }
 
 async function addItem({ userId, listId, title, value }) {
@@ -42,10 +38,9 @@ async function addItem({ userId, listId, title, value }) {
     ReturnValues: 'ALL_NEW'
   }
 
-  dynamoClient().update(params, function(err, data) {
-    if (err) console.log(err)
-    else console.log(data)
-  })
+  await dynamoDocClient()
+    .update(params)
+    .promise()
 }
 
 async function updateItem({ entId, value }) {
@@ -57,10 +52,9 @@ async function updateItem({ entId, value }) {
       value: value
     }
   }
-  await dynamoClient().update(params, function(err, data) {
-    if (err) console.log(err)
-    else console.log(data)
-  })
+  await dynamoDocClient()
+    .update(params)
+    .promise()
 }
 
 async function listItems({ listId }) {
@@ -68,17 +62,16 @@ async function listItems({ listId }) {
     TableName: tableName,
     KeyConditionExpression: 'listId = :listId',
     ExpressionAttributeValues: {
-      listId: listId
+      ':listId': listId
     }
   }
 
-  dynamoClient().query(params, function(err, data) {
-    if (err) console.log(err)
-    else console.log(data)
-  })
+  await dynamoDocClient()
+    .query(params)
+    .promise()
 }
 
-async function deleteItem(userId, listId, entId) {
+async function deleteItem({ userId, listId, entId }) {
   const params = {
     TableName: tableName,
     Key: {
@@ -95,8 +88,7 @@ async function deleteItem(userId, listId, entId) {
     ReturnValues: 'ALL_NEW'
   }
 
-  dynamoClient().update(params, function(err, data) {
-    if (err) console.log(err)
-    else console.log(data)
-  })
+  dynamoDocClient()
+    .update(params)
+    .promise()
 }
