@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
+import { Redirect } from 'react-router-dom'
 import { push } from 'connected-react-router'
 import {
   Button,
@@ -60,6 +61,11 @@ class Checklist extends Component {
 
   render() {
     const { removing, classes, list } = this.props
+
+    if (!list) {
+      // List was deleted, go home
+      return <Redirect to="/" />
+    }
 
     const confirmDeleteDialog = (
       <Dialog
