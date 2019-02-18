@@ -92,6 +92,7 @@ class Login extends Component {
                   className={classes.input}
                   id="email"
                   label="Email"
+                  autoComplete="username"
                   onChange={this.handleChange}
                 />
               </Grid>
@@ -101,6 +102,7 @@ class Login extends Component {
                   id="password"
                   label="Password"
                   type="password"
+                  autoComplete="current-password"
                   onChange={this.handleChange}
                 />
               </Grid>

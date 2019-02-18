@@ -123,7 +123,6 @@ Checklist.propTypes = {
 }
 
 const makeMapStateToProps = (initialState, ownProps) => {
-  console.log('ownProps', ownProps, initialState)
   const {
     match: {
       params: { id: listId }

@@ -1,6 +1,13 @@
 import { API as AmplifyApi } from 'aws-amplify'
 import * as errors from '../errors'
 
+export const PREPARE_NEW_LIST = 'PREPARE_NEW_LIST'
+export function prepareNewList() {
+  return function(dispatch) {
+    dispatch({ type: PREPARE_NEW_LIST })
+  }
+}
+
 export const LOAD_LISTS_REQUEST = 'LOAD_LISTS_REQUEST'
 export const LOAD_LISTS_SUCCESS = 'LOAD_LISTS_SUCCESS'
 export const LOAD_LISTS_FAILURE = 'LOAD_LISTS_FAILURE'

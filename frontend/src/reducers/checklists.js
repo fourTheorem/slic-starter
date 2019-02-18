@@ -7,7 +7,8 @@ import {
   CREATE_LIST_FAILURE,
   REMOVE_LIST_REQUEST,
   REMOVE_LIST_SUCCESS,
-  REMOVE_LIST_FAILURE
+  REMOVE_LIST_FAILURE,
+  PREPARE_NEW_LIST
 } from '../actions/checklists'
 
 const defaultState = {
@@ -20,6 +21,12 @@ const defaultState = {
 
 export default (state = defaultState, { type, meta, payload, error }) => {
   switch (type) {
+    case PREPARE_NEW_LIST:
+      return {
+        ...state,
+        createdListId: null,
+        creating: false
+      }
     case LOAD_LISTS_REQUEST:
       return {
         ...state,
@@ -52,7 +59,7 @@ export default (state = defaultState, { type, meta, payload, error }) => {
         ...state,
         creating: true,
         creationError: null,
-        created: false
+        createdListId: null
       }
     case CREATE_LIST_SUCCESS:
       const { listId, name, createdAt } = payload
@@ -69,14 +76,13 @@ export default (state = defaultState, { type, meta, payload, error }) => {
         },
         creating: false,
         creationError: null,
-        created: true
+        createdListId: listId
       }
     case CREATE_LIST_FAILURE:
       return {
         ...state,
         creating: false,
-        creationError: error,
-        created: false
+        creationError: error
       }
     case REMOVE_LIST_REQUEST:
       return {

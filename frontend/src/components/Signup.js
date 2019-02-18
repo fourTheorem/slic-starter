@@ -86,6 +86,7 @@ class Signup extends Component {
                   className={classes.input}
                   id="email"
                   label="Email"
+                  autoComplete="username"
                   onChange={this.handleChange}
                 />
               </Grid>
@@ -95,6 +96,7 @@ class Signup extends Component {
                   id="password"
                   label="Password"
                   type="password"
+                  autoComplete="new-password"
                   onChange={this.handleChange}
                 />
               </Grid>
