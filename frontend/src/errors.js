@@ -25,3 +25,18 @@ export const messages = {
   [EXPIRED_CODE_EXCEPTION]: 'That code is expired, request a new code',
   [LIMIT_EXCEEDED_EXCEPTION]: 'Attempt limit exceeded, try again later'
 }
+
+export function translateError(err) {
+  let errorId
+
+  switch (err.message) {
+    default:
+      errorId = UNKNOWN
+      break
+  }
+
+  return {
+    id: errorId,
+    src: err
+  }
+}

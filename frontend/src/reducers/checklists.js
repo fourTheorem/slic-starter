@@ -15,6 +15,7 @@ const defaultState = {
   creating: false,
   loading: false,
   removing: false,
+  entriesByListId: {},
   listIds: [],
   listsById: {}
 }

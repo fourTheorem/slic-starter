@@ -13,8 +13,12 @@ import {
   DialogTitle,
   DialogContent,
   DialogContentText,
+  List,
+  ListItem,
+  ListItemText,
   Grid,
   Slide,
+  TextField,
   IconButton,
   Typography
 } from '@material-ui/core'
@@ -24,9 +28,14 @@ import { withStyles } from '@material-ui/core/styles'
 
 import Loading from './Loading'
 import { removeList } from '../actions/checklists'
+import { addEntry } from '../actions/entries'
+
 const styles = theme => ({
   root: {
     padding: theme.spacing.unit * 2
+  },
+  textField: {
+    width: '100%'
   }
 })
 
@@ -38,6 +47,23 @@ class Checklist extends Component {
   state = {
     confirmDeleteOpen: false
   }
+
+  validate = () => this.state.newEntryTitle.trim().length > 0
+
+  handleSubmit = event => {
+    event.preventDefault()
+    if (this.validate()) {
+      this.props.dispatch(
+        addEntry({
+          listId: this.props.list.listId,
+          title: this.state.newEntryTitle
+        })
+      )
+    }
+  }
+
+  handleEntryTitleChange = ({ target: { value } }) =>
+    this.setState({ newEntryTitle: value })
 
   componentDidUpdate(prevProps) {
     if (prevProps.list && !this.props.list) {
@@ -60,7 +86,7 @@ class Checklist extends Component {
   }
 
   render() {
-    const { removing, classes, list } = this.props
+    const { removing, classes, entries, list } = this.props
 
     if (!list) {
       // List was deleted, go home
@@ -102,6 +128,26 @@ class Checklist extends Component {
                 <Typography variant="h5" component="h2">
                   {list.name}
                 </Typography>
+                <List>
+                  {entries.map(entry => (
+                    <ListItem>
+                      <ListItemText>{entry.title}</ListItemText>
+                    </ListItem>
+                  ))}
+                  {
+                    <ListItem>
+                      <form onSubmit={this.handleSubmit}>
+                        <TextField
+                          id="newEntryTitle"
+                          label="New Item..."
+                          className={classes.textField}
+                          autoFocus
+                          onChange={this.handleEntryTitleChange}
+                        />
+                      </form>
+                    </ListItem>
+                  }
+                </List>
               </CardContent>
               <CardActions>
                 {removing ? (
@@ -125,6 +171,7 @@ class Checklist extends Component {
 Checklist.propTypes = {
   removing: PropTypes.bool.isRequired,
   classes: PropTypes.object.isRequired,
+  entries: PropTypes.array.isRequired,
   list: PropTypes.object
 }
 
@@ -134,10 +181,13 @@ const makeMapStateToProps = (initialState, ownProps) => {
       params: { id: listId }
     }
   } = ownProps
-  return ({ checklists: { listsById, removing } }) => {
+
+  return ({ checklists: { listsById, entriesByListId, removing } }) => {
     const list = listId ? listsById[listId] : {}
+    const entries = entriesByListId[listId] || []
     return {
       removing,
+      entries,
       list
     }
   }

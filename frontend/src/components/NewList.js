@@ -81,7 +81,6 @@ class NewList extends Component {
               <TextField
                 id="name"
                 label="List Name"
-                form="new-list-form"
                 className={classes.textField}
                 autoFocus
                 onChange={this.handleChange}

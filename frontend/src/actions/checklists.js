@@ -1,5 +1,5 @@
 import { API as AmplifyApi } from 'aws-amplify'
-import * as errors from '../errors'
+import { translateError } from '../errors'
 
 export const PREPARE_NEW_LIST = 'PREPARE_NEW_LIST'
 export function prepareNewList() {
@@ -61,19 +61,5 @@ export function removeList({ listId }) {
       .catch(err => {
         dispatch({ type: REMOVE_LIST_FAILURE, error: translateError(err) })
       })
-  }
-}
-
-function translateError(err) {
-  let errorId
-
-  switch (err.message) {
-    default:
-      errorId = errors.UNKNOWN
-      break
-  }
-
-  return {
-    id: errorId
   }
 }
