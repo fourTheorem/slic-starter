@@ -3,6 +3,7 @@ import {
   LOGIN_REQUEST,
   LOGIN_FAILURE,
   LOGIN_SUCCESS,
+  LOGIN_INVALIDATED,
   LOGIN_VALIDATED,
   SIGNUP_REQUEST,
   SIGNUP_FAILURE,
@@ -38,6 +39,11 @@ export default (state = defaultState, { type, meta, payload, error }) => {
         loggingIn: false,
         authenticated: true,
         loginError: null
+      }
+    case LOGIN_INVALIDATED:
+      return {
+        ...state,
+        authenticated: false
       }
     case LOGIN_FAILURE:
       return {
