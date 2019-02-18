@@ -53,7 +53,7 @@ sls dynamodb install
 Ensure that your AWS credentials are set to _some reasonable values_. For local development, any dummy value for `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY` is sufficient. You can also opt to use an AWS profile if that's your preferred method for specifying AWS credentials.
 
 ```
-sls offline start --migrate true
+SLIC_STAGE=local sls offline start --migrate true
 ```
 
 ## Backend configuration for Frontend

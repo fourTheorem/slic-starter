@@ -1,5 +1,5 @@
 module.exports = serverless => {
-  const stage = serverless.service.provider.stage
+  const stage = process.env.SLIC_STAGE
   if (stage === 'local') {
     return {
       apiCert: '',
@@ -38,10 +38,9 @@ module.exports = serverless => {
       }
     })
     .catch(err => {
-      console.error(
-        'ERROR: Failed to fetch certificate for API gateway configuration',
-        err
-      )
-      throw err
+      const errMsg =
+        'ERROR: Failed to fetch certificate for API gateway configuration - ' +
+        err.message
+      throw new Error(errMsg)
     })
 }

@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Backend for SLIC Starter",
   "scripts": {
-    "start": "sls offline start --migrate",
+    "start": "SLIC_STAGE=local sls offline start --migrate",
     "lint": "eslint .",
     "coverage": "npm run test -- --cov --coverage-report=html",
     "format": "prettier --write \"**/*.js\"",
