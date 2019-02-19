@@ -48,6 +48,12 @@ test('add new list item', async t => {
     received.dynamoDb.update.ExpressionAttributeValues[':entry'].title,
     record.title
   )
+
+  t.equal(
+    received.dynamoDb.update.ExpressionAttributeValues[':entry'].value,
+    record.value
+  )
+
   t.end()
   //
 })
@@ -89,5 +95,8 @@ test('Delete Item', async t => {
     received.dynamoDb.update.ExpressionAttributeNames['#entId'],
     record.entId
   )
+  t.equal(received.dynamoDb.update.Key.userId, record.userId)
+  t.equal(received.dynamoDb.update.Key.listId, record.listId)
+
   t.end()
 })
