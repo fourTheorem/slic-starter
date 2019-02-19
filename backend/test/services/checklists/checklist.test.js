@@ -49,6 +49,7 @@ test('create puts a dynamodb item', async t => {
   t.equal(received.dynamoDb.put.Item.name, record.name)
   t.ok(received.dynamoDb.put.Item.createdAt)
   t.ok(received.dynamoDb.put.Item.listId)
+  t.same(received.dynamoDb.put.Item.entries, {})
 
   t.match(response, record)
 
