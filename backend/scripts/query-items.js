@@ -3,7 +3,8 @@ var params = {
   KeyConditionExpression: 'userId = :userId', // a string representing a constraint on the attribute
   ExpressionAttributeValues: {
     // a map of substitutions for all attribute values
-    ':userId': 'eoin'
+    // ':userId': 'eoin'
+    ':userId': 'offlineContext_cognitoIdentityId'
   }
 }
 docClient.query(params, function(err, data) {

@@ -17,6 +17,7 @@ async function create({ userId, name }) {
   const item = {
     userId,
     name,
+    entries: {},
     listId: Uuid.v4(),
     createdAt: Date.now()
   }
