@@ -80,6 +80,7 @@ test('Update item', async t => {
     received.dynamoDb.update.ExpressionAttributeValues.value,
     record.value
   )
+  //Test condition for name=null
   t.equal(received.dynamoDb.update.Key.entId, record.entId)
   t.end()
 })
