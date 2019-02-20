@@ -31,6 +31,7 @@ async function create({ userId, name }) {
 }
 
 async function update({ listId, userId, name = null }) {
+  //Test condition for name=null??
   const updatedAt = Date.now()
   await dynamoDocClient()
     .update({

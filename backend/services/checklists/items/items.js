@@ -88,7 +88,7 @@ async function deleteItem({ userId, listId, entId }) {
     ReturnValues: 'ALL_NEW'
   }
 
-  dynamoDocClient()
+  await dynamoDocClient()
     .update(params)
     .promise()
 }
