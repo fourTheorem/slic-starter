@@ -27,7 +27,10 @@ test('get handler gets checklists', async t => {
 
   const result = await getHandler.main(event)
 
-  t.ok(received.getParams.listId)
-  t.ok(received.getParams.userId)
+  t.equal(received.getParams.listId, event.pathParameters.id)
+  t.equal(
+    received.getParams.userId,
+    event.requestContext.identity.cognitoIdentityId
+  )
   t.end()
 })

@@ -27,7 +27,10 @@ test('list handler executes checklist service', async t => {
 
   const result = await deleteHandler.main(event)
 
-  t.ok(received.deleteParams.listId)
-  t.ok(received.deleteParams.userId)
+  t.equal(received.deleteParams.listId, event.pathParameters.id)
+  t.equal(
+    received.deleteParams.userId,
+    event.requestContext.identity.cognitoIdentityId
+  )
   t.end()
 })

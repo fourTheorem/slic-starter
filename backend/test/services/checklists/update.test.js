@@ -14,16 +14,28 @@ const updateHandler = proxyquire('../../../services/checklists/update', {
 })
 
 test('update handler updates current checklist', async t => {
+  const payload = { name: 'checklist name' }
   const event = {
     requestContext: {
       identity: {
         cognitoIdentityId: 'testUser'
-      },
-      body: { name: 'checklist' }
-    }
+      }
+    },
+
+    pathParameters: {
+      id: '1234'
+    },
+
+    body: JSON.stringify(payload)
   }
 
   const result = await updateHandler.main(event)
+
+  t.equal(
+    received.updateParams.userId,
+    event.requestContext.identity.cognitoIdentityId
+  )
+  t.equal(received.updateParams.name, payload.name)
 
   t.end()
 })
