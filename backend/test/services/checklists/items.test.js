@@ -55,7 +55,6 @@ test('add new list item', async t => {
   )
 
   t.end()
-  //
 })
 
 test('list all items', async t => {
