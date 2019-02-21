@@ -4,7 +4,7 @@ const { createResponse } = require('../../../lib/response')
 const log = require('../../../lib/log')
 const item = require('./items')
 
-async function main(event, context, callback) {
+async function main(event) {
   const { pathParameters, requestContext } = event
   log.info({ requestContext }, 'Delete Request Received')
   const userId = requestContext.identity.cognitoIdentityId

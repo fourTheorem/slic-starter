@@ -4,7 +4,7 @@ const { createResponse } = require('../../../lib/response')
 
 const items = require('./items')
 
-async function main(event, context, callback) {
+async function main(event) {
   debugger
   const { body, pathParameters, requestContext } = event
 

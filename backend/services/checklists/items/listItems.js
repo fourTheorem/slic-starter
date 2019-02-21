@@ -4,7 +4,7 @@ const { createResponse } = require('../../../lib/response')
 const log = require('../../../lib/log')
 const items = require('./items')
 
-async function main(event, context, callback) {
+async function main(event) {
   const { pathParameters, requestContext } = event
   log.info({ requestContext }, 'List Request Received')
   const { id: listId } = pathParameters
