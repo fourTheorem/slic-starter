@@ -126,7 +126,9 @@ class Checklist extends Component {
       </Dialog>
     )
 
-    const newItemEntry = addingEntry ? null : (
+    const newItemEntry = addingEntry ? (
+      <Loading />
+    ) : (
       <ListItem>
         <TextField
           id="newEntryTitle"

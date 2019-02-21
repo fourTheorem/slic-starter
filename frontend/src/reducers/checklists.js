@@ -142,7 +142,7 @@ export default (state = defaultState, { type, meta, payload, error }) => {
     case ADD_ENTRY_FAILURE:
       return {
         ...state,
-        addEntryError: payload,
+        addEntryError: error,
         addingEntry: false
       }
     default:
