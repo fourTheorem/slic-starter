@@ -93,6 +93,7 @@ export default (state = defaultState, { type, meta, payload, error }) => {
       return {
         confirmingSignup: false,
         confirmationError: null,
+        authenticated: false,
         signupConfirmed: true,
         email: payload.email
       }
@@ -101,6 +102,7 @@ export default (state = defaultState, { type, meta, payload, error }) => {
         ...state,
         confirmingSignup: false,
         confirmationError: error,
+        authenticated: false,
         signupConfirmed: false
       }
     case RESEND_CODE_REQUEST:

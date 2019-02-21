@@ -2,10 +2,11 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { Redirect } from 'react-router-dom'
-import { confirmSignup } from '../actions/auth'
-import { messages } from '../errors'
 import { Button, Grid, Paper, TextField, Typography } from '@material-ui/core'
 import { withStyles } from '@material-ui/core/styles'
+
+import ErrorMessage from './ErrorMessage'
+import { confirmSignup } from '../actions/auth'
 import { resendConfirmationCode } from '../actions/auth'
 
 const style = theme => ({
@@ -29,9 +30,6 @@ const style = theme => ({
   button: {
     width: '100%',
     marginTop: theme.spacing.unit
-  },
-  error: {
-    color: theme.palette.error.main
   },
   success: {
     color: 'green'
@@ -83,9 +81,7 @@ class ConfirmSignup extends Component {
 
     const errorItem = confirmationError ? (
       <Grid item>
-        <Typography className={classes.error}>
-          {messages[confirmationError.id]}
-        </Typography>
+        <ErrorMessage messageId={confirmationError.id} />
       </Grid>
     ) : null
 

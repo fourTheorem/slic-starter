@@ -26,6 +26,7 @@ import { Delete } from '@material-ui/icons'
 import { CircularProgress } from '@material-ui/core'
 import { withStyles } from '@material-ui/core/styles'
 
+import ErrorMessage from './ErrorMessage'
 import Loading from './Loading'
 import { removeList } from '../actions/checklists'
 import { addEntry } from '../actions/entries'
@@ -86,7 +87,14 @@ class Checklist extends Component {
   }
 
   render() {
-    const { removing, classes, entries, list } = this.props
+    const {
+      addingEntry,
+      addEntryError,
+      removing,
+      classes,
+      entries,
+      list
+    } = this.props
 
     if (!list) {
       // List was deleted, go home
@@ -118,6 +126,26 @@ class Checklist extends Component {
       </Dialog>
     )
 
+    const newItemEntry = addingEntry ? null : (
+      <ListItem>
+        <TextField
+          id="newEntryTitle"
+          placeholder="Add an Item..."
+          autoFocus
+          form="new-item-form"
+          className={classes.textField}
+          onChange={this.handleEntryTitleChange}
+        />
+      </ListItem>
+    )
+
+    const errorItem =
+      !addingEntry && addEntryError ? (
+        <ListItem>
+          <ErrorMessage messageId={addEntryError.id} />
+        </ListItem>
+      ) : null
+
     return list ? (
       <form id="new-item-form" onSubmit={this.handleSubmit}>
         {confirmDeleteDialog}
@@ -129,22 +157,13 @@ class Checklist extends Component {
                   {list.name}
                 </Typography>
                 <List>
-                  {entries.map(entry => (
-                    <ListItem>
+                  {entries.map((entry, index) => (
+                    <ListItem key={index}>
                       <ListItemText>{entry.title}</ListItemText>
                     </ListItem>
                   ))}
-                  {
-                    <ListItem>
-                      <TextField
-                        id="newEntryTitle"
-                        placeholder="Add an Item..."
-                        form="new-item-form"
-                        className={classes.textField}
-                        onChange={this.handleEntryTitleChange}
-                      />
-                    </ListItem>
-                  }
+                  {newItemEntry}
+                  {errorItem}
                 </List>
               </CardContent>
               <CardActions>
@@ -182,11 +201,18 @@ const makeMapStateToProps = (initialState, ownProps) => {
   } = ownProps
 
   return ({
-    checklists: { addEntryError, listsById, entriesByListId, removing }
+    checklists: {
+      addingEntry,
+      addEntryError,
+      listsById,
+      entriesByListId,
+      removing
+    }
   }) => {
     const list = listId ? listsById[listId] : {}
     const entries = entriesByListId[listId] || []
     return {
+      addingEntry,
       addEntryError,
       removing,
       entries,

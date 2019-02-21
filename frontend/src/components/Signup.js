@@ -7,8 +7,8 @@ import { Redirect } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 
+import ErrorMessage from './ErrorMessage'
 import { signUp } from '../actions/auth'
-import { messages } from '../errors'
 
 const styles = theme => ({
   root: {
@@ -30,9 +30,6 @@ const styles = theme => ({
   button: {
     width: '100%',
     marginTop: theme.spacing.unit
-  },
-  error: {
-    color: theme.palette.error.main
   }
 })
 
@@ -59,7 +56,7 @@ class Signup extends Component {
     const errorItem = signupError ? (
       <Grid item>
         <Typography className={classes.error}>
-          {messages[signupError.id]}
+          <ErrorMessage messageId={signupError.id} />
         </Typography>
       </Grid>
     ) : null
