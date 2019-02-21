@@ -71,8 +71,23 @@ test('update function updates current checklists', async t => {
   t.ok(received.dynamoDb.update.ExpressionAttributeValues[':updatedAt'])
   t.equal(received.dynamoDb.update.Key.userId, record.userId)
   t.equal(received.dynamoDb.update.Key.listId, record.listId)
-  t.notEqual(received.dynamoDb.update.ExpressionAttributeValues[':name'], null)
+  t.end()
+})
 
+test('update function updates current checklists when name not specified', async t => {
+  const record = {
+    listId: '1234',
+    userId
+  }
+
+  const checklist = require('../../../services/checklists/checklist')
+
+  const updateResponse = await checklist.update(record)
+
+  t.equal(received.dynamoDb.update.ExpressionAttributeValues[':name'], null)
+  t.ok(received.dynamoDb.update.ExpressionAttributeValues[':updatedAt'])
+  t.equal(received.dynamoDb.update.Key.userId, record.userId)
+  t.equal(received.dynamoDb.update.Key.listId, record.listId)
   t.end()
 })
 

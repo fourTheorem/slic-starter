@@ -36,6 +36,7 @@ test('update handler updates current checklist', async t => {
     event.requestContext.identity.cognitoIdentityId
   )
   t.equal(received.updateParams.name, payload.name)
+  t.notEqual(received.updateParams.name, null)
 
   t.end()
 })
