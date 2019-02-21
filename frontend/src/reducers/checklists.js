@@ -11,6 +11,12 @@ import {
   PREPARE_NEW_LIST
 } from '../actions/checklists'
 
+import {
+  ADD_ENTRY_REQUEST,
+  ADD_ENTRY_SUCCESS,
+  ADD_ENTRY_FAILURE
+} from '../actions/entries'
+
 const defaultState = {
   creating: false,
   loading: false,
@@ -111,6 +117,33 @@ export default (state = defaultState, { type, meta, payload, error }) => {
         ...state,
         removing: false,
         removalError: error
+      }
+    case ADD_ENTRY_REQUEST:
+      return {
+        ...state,
+        addEntryError: null,
+        addingEntry: true
+      }
+    case ADD_ENTRY_SUCCESS:
+      return {
+        ...state,
+        addingEntry: false,
+        entriesByListId: {
+          ...state.entriesByListId,
+          [meta.listId]: [
+            ...(state.entriesByListId[meta.listId] || []),
+            {
+              title: meta.title,
+              ...payload
+            }
+          ]
+        }
+      }
+    case ADD_ENTRY_FAILURE:
+      return {
+        ...state,
+        addEntryError: payload,
+        addingEntry: false
       }
     default:
       return state

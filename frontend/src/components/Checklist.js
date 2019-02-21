@@ -119,7 +119,7 @@ class Checklist extends Component {
     )
 
     return list ? (
-      <React.Fragment>
+      <form id="new-item-form" onSubmit={this.handleSubmit}>
         {confirmDeleteDialog}
         <Grid container layout="row" className={classes.root} justify="center">
           <Grid item xs={10} sm={8} md={4} lg={3}>
@@ -136,15 +136,13 @@ class Checklist extends Component {
                   ))}
                   {
                     <ListItem>
-                      <form onSubmit={this.handleSubmit}>
-                        <TextField
-                          id="newEntryTitle"
-                          label="New Item..."
-                          className={classes.textField}
-                          autoFocus
-                          onChange={this.handleEntryTitleChange}
-                        />
-                      </form>
+                      <TextField
+                        id="newEntryTitle"
+                        placeholder="Add an Item..."
+                        form="new-item-form"
+                        className={classes.textField}
+                        onChange={this.handleEntryTitleChange}
+                      />
                     </ListItem>
                   }
                 </List>
@@ -161,7 +159,7 @@ class Checklist extends Component {
             </Card>
           </Grid>
         </Grid>
-      </React.Fragment>
+      </form>
     ) : (
       <Loading />
     )
@@ -169,6 +167,7 @@ class Checklist extends Component {
 }
 
 Checklist.propTypes = {
+  addEntryError: PropTypes.object,
   removing: PropTypes.bool.isRequired,
   classes: PropTypes.object.isRequired,
   entries: PropTypes.array.isRequired,
@@ -182,10 +181,13 @@ const makeMapStateToProps = (initialState, ownProps) => {
     }
   } = ownProps
 
-  return ({ checklists: { listsById, entriesByListId, removing } }) => {
+  return ({
+    checklists: { addEntryError, listsById, entriesByListId, removing }
+  }) => {
     const list = listId ? listsById[listId] : {}
     const entries = entriesByListId[listId] || []
     return {
+      addEntryError,
       removing,
       entries,
       list
