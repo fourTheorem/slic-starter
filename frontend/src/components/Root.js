@@ -5,6 +5,7 @@ import { connect } from 'react-redux'
 import { withRouter, Route, Switch } from 'react-router'
 
 import Home from './Home'
+import Loading from './Loading'
 import Login from './Login'
 import Signup from './Signup'
 
@@ -17,35 +18,25 @@ class Root extends Component {
   }
 
   render() {
-    const {
-      history: { location }
-    } = this.props
+    const { authenticated } = this.props
 
-    switch (location.pathname) {
-      case '/login':
-      case '/signup':
-        break
-
-      default:
-      // !authenticated ?(<Redirect to="/login" /> ):null
+    if (typeof authenticated === 'undefined') {
+      return <Loading />
     }
 
     return (
-      <React.Fragment>
-        <Switch>
-          <Route exact path="/login" component={Login} />
-          <Route exact path="/signup" component={Signup} />
-          <Route exact path="/confirm-signup" component={ConfirmSignup} />
-          <Route path="/" component={Home} />
-        </Switch>
-      </React.Fragment>
+      <Switch>
+        <Route exact path="/login" component={Login} />
+        <Route exact path="/signup" component={Signup} />
+        <Route exact path="/confirm-signup" component={ConfirmSignup} />
+        <Route path="/" component={Home} />
+      </Switch>
     )
   }
 }
 
 Root.propTypes = {
-  dispatch: PropTypes.func.isRequired,
-  history: PropTypes.object.isRequired
+  dispatch: PropTypes.func.isRequired
 }
 
 const mapStateToProps = ({ auth: { authenticated } }) => ({

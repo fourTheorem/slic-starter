@@ -32,10 +32,14 @@ export function logIn({ email, password }) {
 }
 
 export const LOGIN_VALIDATED = 'LOGIN_VALIDATED'
+export const LOGIN_INVALIDATED = 'LOGIN_INVALIDATED'
 
 export function checkAuthentication() {
   return function(dispatch) {
-    Auth.currentSession().then(() => dispatch({ type: LOGIN_VALIDATED }))
+    Auth.currentSession().then(
+      () => dispatch({ type: LOGIN_VALIDATED }),
+      err => dispatch({ type: LOGIN_INVALIDATED })
+    )
   }
 }
 

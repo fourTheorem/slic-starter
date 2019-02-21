@@ -18,9 +18,10 @@ class Home extends Component {
   }
 
   render() {
-    const { loading } = this.props
-
-    const { authenticated } = this.props.auth
+    const {
+      auth: { authenticated },
+      loading
+    } = this.props
 
     const authCheck = !authenticated ? <Redirect to="/login" /> : null
 

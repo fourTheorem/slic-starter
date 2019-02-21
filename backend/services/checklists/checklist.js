@@ -1,7 +1,6 @@
 'use strict'
 
 const Uuid = require('uuid')
-
 const { dynamoDocClient } = require('../../lib/aws')
 
 const tableName = 'checklists'
@@ -14,11 +13,11 @@ module.exports = {
   list
 }
 
-async function create({ userId, name, tasks }) {
+async function create({ userId, name }) {
   const item = {
     userId,
     name,
-    tasks,
+    entries: {},
     listId: Uuid.v4(),
     createdAt: Date.now()
   }
@@ -31,17 +30,15 @@ async function create({ userId, name, tasks }) {
   return item
 }
 
-async function update({ listId, userId, name = null, tasks = null }) {
+async function update({ listId, userId, name = null }) {
   const updatedAt = Date.now()
   await dynamoDocClient()
     .update({
       TableName: tableName,
       Key: { userId, listId },
-      UpdateExpression:
-        'SET name = :name, tasks = :tasks, updatedAt = :updatedAt',
+      UpdateExpression: 'SET name = :name, updatedAt = :updatedAt',
       ExpressionAttributeValues: {
         ':name': name,
-        ':tasks': tasks,
         ':updatedAt': updatedAt
       }
     })
@@ -67,7 +64,6 @@ async function get({ listId, userId }) {
 }
 
 async function list({ userId }) {
-  debugger
   return (await dynamoDocClient()
     .query({
       TableName: tableName,

@@ -3,6 +3,7 @@ import {
   LOGIN_REQUEST,
   LOGIN_FAILURE,
   LOGIN_SUCCESS,
+  LOGIN_INVALIDATED,
   LOGIN_VALIDATED,
   SIGNUP_REQUEST,
   SIGNUP_FAILURE,
@@ -38,6 +39,11 @@ export default (state = defaultState, { type, meta, payload, error }) => {
         loggingIn: false,
         authenticated: true,
         loginError: null
+      }
+    case LOGIN_INVALIDATED:
+      return {
+        ...state,
+        authenticated: false
       }
     case LOGIN_FAILURE:
       return {
@@ -87,6 +93,7 @@ export default (state = defaultState, { type, meta, payload, error }) => {
       return {
         confirmingSignup: false,
         confirmationError: null,
+        authenticated: false,
         signupConfirmed: true,
         email: payload.email
       }
@@ -95,6 +102,7 @@ export default (state = defaultState, { type, meta, payload, error }) => {
         ...state,
         confirmingSignup: false,
         confirmationError: error,
+        authenticated: false,
         signupConfirmed: false
       }
     case RESEND_CODE_REQUEST:

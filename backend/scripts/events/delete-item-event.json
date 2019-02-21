@@ -1,0 +1,13 @@
+{
+  "body": "{\"title\":\"new list\",\"value\":\"list item\"}",
+  "pathParameters": {
+    "listId": "1234",
+    "entId": "12"
+  },
+
+  "requestContext": {
+    "identity": {
+      "cognitoIdentityId": "USER-SUB-1234"
+    }
+  }
+}

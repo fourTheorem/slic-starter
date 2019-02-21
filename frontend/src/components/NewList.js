@@ -1,18 +1,11 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { Link } from 'react-router-dom'
+import { Redirect } from 'react-router-dom'
 import { connect } from 'react-redux'
-import {
-  Button,
-  Grid,
-  IconButton,
-  TextField,
-  Typography
-} from '@material-ui/core'
-import { ArrowBack } from '@material-ui/icons'
+import { Button, Grid, TextField, Typography } from '@material-ui/core'
 import { withStyles } from '@material-ui/core/styles'
 
-import { createList } from '../actions/checklists'
+import { createList, prepareNewList } from '../actions/checklists'
 import { messages } from '../errors'
 
 const styles = theme => ({
@@ -36,6 +29,10 @@ class NewList extends Component {
     name: ''
   }
 
+  componentDidMount() {
+    this.props.dispatch(prepareNewList())
+  }
+
   handleSubmit = event => {
     event.preventDefault()
     this.props.dispatch(createList(this.state))
@@ -46,7 +43,11 @@ class NewList extends Component {
   handleChange = ({ target: { id, value } }) => this.setState({ [id]: value })
 
   render() {
-    const { creating, creationError, classes } = this.props
+    const { creating, createdListId, creationError, classes } = this.props
+
+    if (createdListId && !creating) {
+      return <Redirect to={`/list/${createdListId}`} />
+    }
 
     const errorItem = creationError ? (
       <Grid item>
@@ -76,23 +77,14 @@ class NewList extends Component {
             lg={3}
             spacing={8}
           >
-            <Grid item container layout="row" justify="flex-start" />
-            <Grid item container layout="row" justify="flex-start">
-              <Grid item>
-                <IconButton color="primary" component={Link} to="/">
-                  <ArrowBack />
-                </IconButton>
-              </Grid>
-              <Grid item xs>
-                <TextField
-                  id="name"
-                  label="List Name"
-                  form="new-list-form"
-                  className={classes.textField}
-                  autoFocus
-                  onChange={this.handleChange}
-                />
-              </Grid>
+            <Grid item>
+              <TextField
+                id="name"
+                label="List Name"
+                className={classes.textField}
+                autoFocus
+                onChange={this.handleChange}
+              />
             </Grid>
             {errorItem}
 
@@ -117,13 +109,17 @@ class NewList extends Component {
 
 NewList.propTypes = {
   creating: PropTypes.bool.isRequired,
+  createdListId: PropTypes.string,
   creationError: PropTypes.object,
   classes: PropTypes.object.isRequired
 }
 
-const mapStateToProps = ({ checklists: { creationError, creating } }) => ({
-  creationError,
-  creating
+const mapStateToProps = ({
+  checklists: { creationError, createdListId, creating }
+}) => ({
+  createdListId,
+  creating,
+  creationError
 })
 
 export default connect(mapStateToProps)(withStyles(styles)(NewList))

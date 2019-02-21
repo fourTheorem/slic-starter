@@ -15,8 +15,6 @@ const options = process.env.IS_OFFLINE
     }
   : undefined
 
-console.log('Options', options)
-
 function dynamoDocClient() {
   return new AWS.DynamoDB.DocumentClient(options)
 }

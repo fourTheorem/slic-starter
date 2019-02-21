@@ -1,13 +1,12 @@
 import React, { Component } from 'react'
+import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { Redirect, Link } from 'react-router-dom'
 import { withStyles } from '@material-ui/core/styles'
 import { Button, Grid, Paper, TextField, Typography } from '@material-ui/core'
 
-import { connect } from 'react-redux'
-
+import ErrorMessage from './ErrorMessage'
 import { logIn } from '../actions/auth'
-import { messages } from '../errors'
 
 const styles = theme => ({
   root: {
@@ -29,9 +28,6 @@ const styles = theme => ({
   button: {
     width: '100%',
     marginTop: theme.spacing.unit
-  },
-  error: {
-    color: theme.palette.error.main
   }
 })
 
@@ -58,12 +54,10 @@ class Login extends Component {
 
     const { loggingIn, loginError, authenticated } = this.props.auth
 
-    let errorItem =
+    const errorItem =
       !loggingIn && loginError ? (
         <Grid item>
-          <Typography className={classes.error}>
-            {messages[loginError.id]}
-          </Typography>
+          <ErrorMessage messageId={loginError.id} />
         </Grid>
       ) : null
 
@@ -92,6 +86,7 @@ class Login extends Component {
                   className={classes.input}
                   id="email"
                   label="Email"
+                  autoComplete="username"
                   onChange={this.handleChange}
                 />
               </Grid>
@@ -101,6 +96,7 @@ class Login extends Component {
                   id="password"
                   label="Password"
                   type="password"
+                  autoComplete="current-password"
                   onChange={this.handleChange}
                 />
               </Grid>

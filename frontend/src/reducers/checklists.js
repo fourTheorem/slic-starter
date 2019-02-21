@@ -7,19 +7,33 @@ import {
   CREATE_LIST_FAILURE,
   REMOVE_LIST_REQUEST,
   REMOVE_LIST_SUCCESS,
-  REMOVE_LIST_FAILURE
+  REMOVE_LIST_FAILURE,
+  PREPARE_NEW_LIST
 } from '../actions/checklists'
+
+import {
+  ADD_ENTRY_REQUEST,
+  ADD_ENTRY_SUCCESS,
+  ADD_ENTRY_FAILURE
+} from '../actions/entries'
 
 const defaultState = {
   creating: false,
   loading: false,
   removing: false,
+  entriesByListId: {},
   listIds: [],
   listsById: {}
 }
 
 export default (state = defaultState, { type, meta, payload, error }) => {
   switch (type) {
+    case PREPARE_NEW_LIST:
+      return {
+        ...state,
+        createdListId: null,
+        creating: false
+      }
     case LOAD_LISTS_REQUEST:
       return {
         ...state,
@@ -52,7 +66,7 @@ export default (state = defaultState, { type, meta, payload, error }) => {
         ...state,
         creating: true,
         creationError: null,
-        created: false
+        createdListId: null
       }
     case CREATE_LIST_SUCCESS:
       const { listId, name, createdAt } = payload
@@ -69,14 +83,13 @@ export default (state = defaultState, { type, meta, payload, error }) => {
         },
         creating: false,
         creationError: null,
-        created: true
+        createdListId: listId
       }
     case CREATE_LIST_FAILURE:
       return {
         ...state,
         creating: false,
-        creationError: error,
-        created: false
+        creationError: error
       }
     case REMOVE_LIST_REQUEST:
       return {
@@ -104,6 +117,33 @@ export default (state = defaultState, { type, meta, payload, error }) => {
         ...state,
         removing: false,
         removalError: error
+      }
+    case ADD_ENTRY_REQUEST:
+      return {
+        ...state,
+        addEntryError: null,
+        addingEntry: true
+      }
+    case ADD_ENTRY_SUCCESS:
+      return {
+        ...state,
+        addingEntry: false,
+        entriesByListId: {
+          ...state.entriesByListId,
+          [meta.listId]: [
+            ...(state.entriesByListId[meta.listId] || []),
+            {
+              title: meta.title,
+              ...payload
+            }
+          ]
+        }
+      }
+    case ADD_ENTRY_FAILURE:
+      return {
+        ...state,
+        addEntryError: error,
+        addingEntry: false
       }
     default:
       return state

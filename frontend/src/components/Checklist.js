@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
+import { Redirect } from 'react-router-dom'
 import { push } from 'connected-react-router'
 import {
   Button,
@@ -12,8 +13,12 @@ import {
   DialogTitle,
   DialogContent,
   DialogContentText,
+  List,
+  ListItem,
+  ListItemText,
   Grid,
   Slide,
+  TextField,
   IconButton,
   Typography
 } from '@material-ui/core'
@@ -21,11 +26,17 @@ import { Delete } from '@material-ui/icons'
 import { CircularProgress } from '@material-ui/core'
 import { withStyles } from '@material-ui/core/styles'
 
+import ErrorMessage from './ErrorMessage'
 import Loading from './Loading'
 import { removeList } from '../actions/checklists'
+import { addEntry } from '../actions/entries'
+
 const styles = theme => ({
   root: {
     padding: theme.spacing.unit * 2
+  },
+  textField: {
+    width: '100%'
   }
 })
 
@@ -37,6 +48,23 @@ class Checklist extends Component {
   state = {
     confirmDeleteOpen: false
   }
+
+  validate = () => this.state.newEntryTitle.trim().length > 0
+
+  handleSubmit = event => {
+    event.preventDefault()
+    if (this.validate()) {
+      this.props.dispatch(
+        addEntry({
+          listId: this.props.list.listId,
+          title: this.state.newEntryTitle
+        })
+      )
+    }
+  }
+
+  handleEntryTitleChange = ({ target: { value } }) =>
+    this.setState({ newEntryTitle: value })
 
   componentDidUpdate(prevProps) {
     if (prevProps.list && !this.props.list) {
@@ -59,7 +87,19 @@ class Checklist extends Component {
   }
 
   render() {
-    const { removing, classes, list } = this.props
+    const {
+      addingEntry,
+      addEntryError,
+      removing,
+      classes,
+      entries,
+      list
+    } = this.props
+
+    if (!list) {
+      // List was deleted, go home
+      return <Redirect to="/" />
+    }
 
     const confirmDeleteDialog = (
       <Dialog
@@ -86,8 +126,30 @@ class Checklist extends Component {
       </Dialog>
     )
 
+    const newItemEntry = addingEntry ? (
+      <Loading />
+    ) : (
+      <ListItem>
+        <TextField
+          id="newEntryTitle"
+          placeholder="Add an Item..."
+          autoFocus
+          form="new-item-form"
+          className={classes.textField}
+          onChange={this.handleEntryTitleChange}
+        />
+      </ListItem>
+    )
+
+    const errorItem =
+      !addingEntry && addEntryError ? (
+        <ListItem>
+          <ErrorMessage messageId={addEntryError.id} />
+        </ListItem>
+      ) : null
+
     return list ? (
-      <React.Fragment>
+      <form id="new-item-form" onSubmit={this.handleSubmit}>
         {confirmDeleteDialog}
         <Grid container layout="row" className={classes.root} justify="center">
           <Grid item xs={10} sm={8} md={4} lg={3}>
@@ -96,6 +158,15 @@ class Checklist extends Component {
                 <Typography variant="h5" component="h2">
                   {list.name}
                 </Typography>
+                <List>
+                  {entries.map((entry, index) => (
+                    <ListItem key={index}>
+                      <ListItemText>{entry.title}</ListItemText>
+                    </ListItem>
+                  ))}
+                  {newItemEntry}
+                  {errorItem}
+                </List>
               </CardContent>
               <CardActions>
                 {removing ? (
@@ -109,7 +180,7 @@ class Checklist extends Component {
             </Card>
           </Grid>
         </Grid>
-      </React.Fragment>
+      </form>
     ) : (
       <Loading />
     )
@@ -117,22 +188,36 @@ class Checklist extends Component {
 }
 
 Checklist.propTypes = {
+  addEntryError: PropTypes.object,
   removing: PropTypes.bool.isRequired,
   classes: PropTypes.object.isRequired,
+  entries: PropTypes.array.isRequired,
   list: PropTypes.object
 }
 
 const makeMapStateToProps = (initialState, ownProps) => {
-  console.log('ownProps', ownProps, initialState)
   const {
     match: {
       params: { id: listId }
     }
   } = ownProps
-  return ({ checklists: { listsById, removing } }) => {
+
+  return ({
+    checklists: {
+      addingEntry,
+      addEntryError,
+      listsById,
+      entriesByListId,
+      removing
+    }
+  }) => {
     const list = listId ? listsById[listId] : {}
+    const entries = entriesByListId[listId] || []
     return {
+      addingEntry,
+      addEntryError,
       removing,
+      entries,
       list
     }
   }
