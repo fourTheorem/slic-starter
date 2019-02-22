@@ -26,6 +26,8 @@ Properties:
               - s3:ListBucket
               - s3:PutObject
               - s3:GetBucketPolicy
+              - s3:GetEncryptionConfiguration
+              - s3:PutEncryptionConfiguration
             Resource:
               - arn:aws:s3:::codepipeline-${self:custom.region}-*
               - arn:aws:s3:::${self:custom.buildBucket}
@@ -133,5 +135,7 @@ Properties:
           - Effect: Allow
             Action:
               - s3:CreateBucket
+              - s3:GetEncryptionConfiguration
+              - s3:PutEncryptionConfiguration
             Resource:
               - arn:aws:s3:::*
