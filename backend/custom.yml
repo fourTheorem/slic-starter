@@ -16,3 +16,6 @@ cloudFrontHostedZoneId: Z2FDTNDATAQYW2
 apiConfig: ${file(./api-config.js)}
 serverless-offline:
   port: 4000
+prune:
+  automatic: true
+number: 3
