@@ -32,5 +32,6 @@ test('list handler executes checklist service', async t => {
     received.deleteParams.userId,
     event.requestContext.identity.cognitoIdentityId
   )
+  t.equal(result.statusCode, 200)
   t.end()
 })

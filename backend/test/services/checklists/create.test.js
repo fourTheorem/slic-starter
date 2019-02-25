@@ -31,6 +31,7 @@ test('create handler creates new checklists', async t => {
     event.requestContext.identity.cognitoIdentityId
   )
   t.equal(received.createParams.name, payload.name)
+  t.equal(result.statusCode, 201)
 
   t.end()
 })

@@ -8,7 +8,9 @@ async function main(event) {
   const userId = requestContext.identity.cognitoIdentityId
   const { id: listId } = pathParameters
 
-  return await createResponse(items.addItem({ userId, listId, title, value }))
+  return await createResponse(items.addItem({ userId, listId, title, value }), {
+    successCode: 201
+  })
 }
 
 module.exports = { main }

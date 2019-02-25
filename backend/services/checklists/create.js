@@ -9,8 +9,9 @@ async function main(event) {
   log.info({ body, requestContext }, 'Create request received')
   const { name } = JSON.parse(body)
   const userId = requestContext.identity.cognitoIdentityId
-
-  return await createResponse(checklist.create({ userId, name }))
+  return await createResponse(checklist.create({ userId, name }), {
+    successCode: 201
+  })
 }
 
 module.exports = { main }

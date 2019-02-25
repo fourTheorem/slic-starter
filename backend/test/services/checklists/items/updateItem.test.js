@@ -35,6 +35,7 @@ test('update item handler allows updating of checklist items', async t => {
 
   t.equal(received.updateItemParams.entId, event.pathParameters.entId)
   t.equal(received.updateItemParams.value, event.pathParameters.value)
+  t.equal(result.statusCode, 200)
 
   t.end()
 })

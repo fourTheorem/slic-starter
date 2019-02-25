@@ -32,5 +32,6 @@ test('get handler gets checklists', async t => {
     received.getParams.userId,
     event.requestContext.identity.cognitoIdentityId
   )
+  t.equal(result.statusCode, 200)
   t.end()
 })

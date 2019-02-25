@@ -38,6 +38,7 @@ test('delete item handler removes items from checklists', async t => {
   )
   t.equal(received.deleteItemParams.listId, event.pathParameters.id)
   t.equal(received.deleteItemParams.entId, event.pathParameters.entId)
+  t.equal(result.statusCode, 200)
 
   t.end()
 })

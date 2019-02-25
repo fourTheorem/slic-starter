@@ -40,6 +40,6 @@ test('add item handler creates items for checklists', async t => {
   t.equal(received.addItemParams.listId, event.pathParameters.id)
   t.equal(received.addItemParams.title, payload.title)
   t.equal(received.addItemParams.value, payload.value)
-
+  t.equal(result.statusCode, 201)
   t.end()
 })

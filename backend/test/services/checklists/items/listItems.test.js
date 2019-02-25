@@ -32,6 +32,7 @@ test('list item handler lists items contained in a checklists', async t => {
   const result = await listItemsHandler.main(event)
 
   t.equal(received.listItemsParams.listId, event.pathParameters.id)
+  t.equal(result.statusCode, 200)
 
   t.end()
 })

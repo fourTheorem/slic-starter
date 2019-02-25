@@ -2,10 +2,10 @@
 
 const path = require('path')
 const awsMock = require('aws-sdk-mock')
-awsMock.setSDK(path.resolve('./node_modules/aws-sdk'))
 const { test } = require('tap')
 
 const userId = 'my-test-user'
+awsMock.setSDK(path.resolve('./node_modules/aws-sdk'))
 
 const received = {
   dynamoDb: {}
