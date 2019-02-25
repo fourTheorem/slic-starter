@@ -14,7 +14,10 @@ import {
 import {
   ADD_ENTRY_REQUEST,
   ADD_ENTRY_SUCCESS,
-  ADD_ENTRY_FAILURE
+  ADD_ENTRY_FAILURE,
+  LIST_ENTRIES_REQUEST,
+  LIST_ENTRIES_SUCCESS,
+  LIST_ENTRIES_FAILURE
 } from '../actions/entries'
 
 const defaultState = {
@@ -145,6 +148,24 @@ export default (state = defaultState, { type, meta, payload, error }) => {
         addEntryError: error,
         addingEntry: false
       }
+
+    case LIST_ENTRIES_REQUEST:
+      return {
+        ...state,
+        listEntriesError: null
+      }
+
+    case LIST_ENTRIES_SUCCESS:
+      return {
+        ...state,
+        listEntriesError: null
+      }
+    case LIST_ENTRIES_FAILURE:
+      return {
+        ...state,
+        listEntriesError: error
+      }
+
     default:
       return state
   }

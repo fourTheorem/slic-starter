@@ -25,11 +25,11 @@ import {
 import { Delete } from '@material-ui/icons'
 import { CircularProgress } from '@material-ui/core'
 import { withStyles } from '@material-ui/core/styles'
-
 import ErrorMessage from './ErrorMessage'
 import Loading from './Loading'
 import { removeList } from '../actions/checklists'
-import { addEntry } from '../actions/entries'
+import { addEntry, listEntries } from '../actions/entries'
+import Entries from './Entries'
 
 const styles = theme => ({
   root: {
@@ -165,6 +165,7 @@ class Checklist extends Component {
                     </ListItem>
                   ))}
                   {newItemEntry}
+
                   {errorItem}
                 </List>
               </CardContent>
@@ -213,6 +214,7 @@ const makeMapStateToProps = (initialState, ownProps) => {
   }) => {
     const list = listId ? listsById[listId] : {}
     const entries = entriesByListId[listId] || []
+    const allEntries = listEntries(listId) || []
     return {
       addingEntry,
       addEntryError,
