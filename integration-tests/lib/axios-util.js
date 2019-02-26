@@ -1,26 +1,43 @@
 'use strict'
 
+const pick = require('lodash/pick')
+
 const suppressedProperties = ['nativeProtocols']
 
 function toneAxiosError(error) {
-  debugger
   if (!process.env.VERBOSE_AXIOS_ERRORS) {
-    // Remove verbose properties from request options
-    const requestOptions = { ...error.request._options }
-    Object.keys(error.request._options).forEach(property => {
-      if (suppressedProperties.indexOf(property) > -1) {
-        delete requestOptions[property]
-      }
-    })
+    const summarized = {}
 
-    const summarized = {
-      request: {
-        _options: requestOptions
+    // Remove verbose properties from request options
+    if (error.request) {
+      summarized.request = pick(error.request, [
+        'headers',
+        'method',
+        'path',
+        '_header'
+      ])
+      if (error.request._options) {
+        const requestOptions = { ...error.request._options }
+        Object.keys(error.request._options).forEach(property => {
+          if (suppressedProperties.indexOf(property) > -1) {
+            delete requestOptions[property]
+          }
+        })
+        summarized.request = {
+          _options: requestOptions
+        }
       }
     }
 
     if (error.response) {
       // TODO Add relevant response details
+      summarized.response = pick(error.response, [
+        'headers',
+        'status',
+        'statusText',
+        'config.url',
+        'data'
+      ])
     }
 
     error._full_request = error.request
