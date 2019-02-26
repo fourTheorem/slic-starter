@@ -1,6 +1,5 @@
-'use strict'
-
 const fs = require('fs')
+const awscred = require('awscred')
 const { CloudFormation } = require('aws-sdk')
 
 const stage = process.env.SLIC_STAGE
@@ -14,11 +13,11 @@ if (!stage) {
 
 const domainSuffix = stage === 'prod' ? '' : `${stage}.`
 const stackName = `slic-starter-backend-${stage}`
-const awsRegion = process.env.AWS_REGION
+const awsRegion = awscred.loadRegionSync()
 
 if (!awsRegion) {
   throw new Error(
-    'AWS_REGION must be set to the region of the deployed backend'
+    'The region must be set using any of the AWS-SDK-supported methods to the region of the deployed backend'
   )
 }
 

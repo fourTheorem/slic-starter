@@ -1,15 +1,15 @@
 'use strict'
 
+const { processEvent } = require('../../../lib/event-util')
 const { createResponse } = require('../../../lib/response')
-const items = require('./items')
-const { processEvent } = require('../../lib/event-util')
+const entries = require('./entries')
 
 async function main(event) {
   const { body, pathParameters, userId } = processEvent(event)
   const { title, value } = body
   const { id: listId } = pathParameters
 
-  return createResponse(items.addItem({ userId, listId, title, value }), {
+  return createResponse(entries.addEntry({ userId, listId, title, value }), {
     successCode: 201
   })
 }

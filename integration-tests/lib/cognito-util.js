@@ -56,6 +56,7 @@ async function createUser() {
     .adminRespondToAuthChallenge(challengeRequest)
     .promise()
 
+  debugger
   return {
     username: email,
     email,

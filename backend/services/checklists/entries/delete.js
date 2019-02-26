@@ -1,14 +1,13 @@
 'use strict'
 
+const { processEvent } = require('../../../lib/event-util')
 const { createResponse } = require('../../../lib/response')
-const items = require('./items')
-const { processEvent } = require('../../lib/event-util')
+const entries = require('./entries')
 
 async function main(event) {
   const { pathParameters, userId } = processEvent(event)
   const { id: listId, entId } = pathParameters
-
-  return createResponse(items.deleteItem({ userId, listId, entId }))
+  return createResponse(entries.deleteEntry({ userId, listId, entId }))
 }
 
 module.exports = { main }

@@ -1,32 +1,39 @@
 'use strict'
 const proxyquire = require('proxyquire')
-
 const { test } = require('tap')
 
+const { userId, userRequestContext } = require('../../fixtures')
+
 const received = {}
+const testLists = [
+  {
+    listId: 1,
+    name: 'List One'
+  },
+  {
+    listId: 2,
+    name: 'List Two'
+  }
+]
+
 const listHandler = proxyquire('../../../services/checklists/list', {
   './checklist.js': {
     list: params => {
       received.listParams = params
-      return received
+      return testLists
     }
   }
 })
 
 test('list handler executes checklist service', async t => {
   const event = {
-    requestContext: {
-      identity: {
-        cognitoIdentityId: 'testUser'
-      }
-    }
+    requestContext: userRequestContext
   }
 
   const result = await listHandler.main(event)
-  t.equals(
-    received.listParams.userId,
-    event.requestContext.identity.cognitoIdentityId
-  )
+  t.equal(received.listParams.userId, userId)
+  t.equal(result.statusCode, 200)
+  t.same(JSON.parse(result.body), testLists)
 
   t.end()
 })

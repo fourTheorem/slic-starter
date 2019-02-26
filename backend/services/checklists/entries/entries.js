@@ -6,13 +6,13 @@ const { dynamoDocClient } = require('../../../lib/aws')
 const tableName = 'checklists'
 
 module.exports = {
-  addItem,
-  updateItem,
-  listItems,
-  deleteItem
+  addEntry,
+  updateEntry,
+  listEntries,
+  deleteEntry
 }
 
-async function addItem({ userId, listId, title, value }) {
+async function addEntry({ userId, listId, title, value }) {
   const entId = Uuid.v4()
   const params = {
     TableName: tableName,
@@ -43,7 +43,7 @@ async function addItem({ userId, listId, title, value }) {
     .promise()
 }
 
-async function updateItem({ entId, value }) {
+async function updateEntry({ entId, value }) {
   const params = {
     TableName: tableName,
     Key: { entId },
@@ -57,7 +57,7 @@ async function updateItem({ entId, value }) {
     .promise()
 }
 
-async function listItems({ listId }) {
+async function listEntries({ listId }) {
   const params = {
     TableName: tableName,
     KeyConditionExpression: 'listId = :listId',
@@ -66,12 +66,12 @@ async function listItems({ listId }) {
     }
   }
 
-  await dynamoDocClient()
+  return (await dynamoDocClient()
     .query(params)
-    .promise()
+    .promise()).Items
 }
 
-async function deleteItem({ userId, listId, entId }) {
+async function deleteEntry({ userId, listId, entId }) {
   const params = {
     TableName: tableName,
     Key: {

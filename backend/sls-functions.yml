@@ -58,8 +58,8 @@ delete:
           authorizerId:
             Ref: cognitoAuthorizer
 
-addItem:
-  handler: services/checklists/items/addItem.main
+addEntry:
+  handler: services/checklists/entries/add.main
   events:
     - http:
         path: checklist/{id}/entries
@@ -70,8 +70,8 @@ addItem:
           authorizerId:
             Ref: cognitoAuthorizer
 
-listItems:
-  handler: services/checklists/items/listItems.main
+listEntries:
+  handler: services/checklists/entries/list.main
   events:
     - http:
         path: checklist/{id}/entries
@@ -82,8 +82,8 @@ listItems:
           authorizerId:
             Ref: cognitoAuthorizer
 
-updateItem:
-  handler: services/checklists/items/updateItem.main
+updateEntry:
+  handler: services/checklists/entries/update.main
   events:
     - http:
         path: checklist/{id}/entries/{entId}
@@ -94,8 +94,8 @@ updateItem:
           authorizerId:
             Ref: cognitoAuthorizer
 
-deleteItem:
-  handler: services/checklists/items/deleteItem.main
+deleteEntry:
+  handler: services/checklists/entries/delete.main
   events:
     - http:
         path: checklist/{id}/entries/{entId}
