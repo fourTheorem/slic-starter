@@ -1,16 +1,14 @@
 'use strict'
 
 const { createResponse } = require('../../../lib/response')
-const log = require('../../../lib/log')
-const item = require('./items')
+const items = require('./items')
+const { processEvent } = require('../../lib/event-util')
 
 async function main(event) {
-  const { pathParameters, requestContext } = event
-  log.info({ requestContext }, 'Delete Request Received')
-  const userId = requestContext.identity.cognitoIdentityId
-  const { id: listId, entId: entId } = pathParameters
+  const { pathParameters, userId } = processEvent(event)
+  const { id: listId, entId } = pathParameters
 
-  return await createResponse(item.deleteItem({ userId, listId, entId }))
+  return createResponse(items.deleteItem({ userId, listId, entId }))
 }
 
 module.exports = { main }

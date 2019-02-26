@@ -1,14 +1,15 @@
 'use strict'
+
 const { createResponse } = require('../../../lib/response')
 const items = require('./items')
+const { processEvent } = require('../../lib/event-util')
 
 async function main(event) {
-  const { body, pathParameters, requestContext } = event
-  const { title, value } = JSON.parse(body)
-  const userId = requestContext.identity.cognitoIdentityId
+  const { body, pathParameters, userId } = processEvent(event)
+  const { title, value } = body
   const { id: listId } = pathParameters
 
-  return await createResponse(items.addItem({ userId, listId, title, value }), {
+  return createResponse(items.addItem({ userId, listId, title, value }), {
     successCode: 201
   })
 }

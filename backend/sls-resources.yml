@@ -122,3 +122,14 @@ apiDomainDns:
         AliasTarget:
           DNSName: { Fn::GetAtt: [apiCustomDomain, DistributionDomainName] }
           HostedZoneId: ${self:custom.cloudFrontHostedZoneId}
+
+cognitoAuthorizer:
+  Type: AWS::ApiGateway::Authorizer
+  Properties:
+    IdentitySource: method.request.header.Authorization
+    Name: slic-user-pool-authorizer
+    RestApiId:
+      Ref: ApiGatewayRestApi
+    Type: COGNITO_USER_POOLS
+    ProviderARNs:
+      - !GetAtt slicUserPool.Arn

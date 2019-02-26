@@ -8,7 +8,7 @@ async function main(event) {
   const { requestContext } = event
   log.info({ requestContext }, 'List request received')
   const userId = requestContext.identity.cognitoIdentityId
-  return await createResponse(checklist.list({ userId }))
+  return createResponse(checklist.list({ userId }))
 }
 
 module.exports = { main }

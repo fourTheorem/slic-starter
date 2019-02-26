@@ -5,7 +5,10 @@ create:
         path: checklist
         method: post
         cors: true
-        authorizer: aws_iam
+        authorizer:
+          type: COGNITO_USER_POOLS
+          authorizerId:
+            Ref: cognitoAuthorizer
 
 get:
   handler: services/checklists/get.main
@@ -14,7 +17,10 @@ get:
         path: checklist/{id}
         method: get
         cors: true
-        authorizer: aws_iam
+        authorizer:
+          type: COGNITO_USER_POOLS
+          authorizerId:
+            Ref: cognitoAuthorizer
 
 list:
   handler: services/checklists/list.main
@@ -23,7 +29,10 @@ list:
         path: checklist
         method: get
         cors: true
-        authorizer: aws_iam
+        authorizer:
+          type: COGNITO_USER_POOLS
+          authorizerId:
+            Ref: cognitoAuthorizer
 
 update:
   handler: services/checklists/update.main
@@ -32,7 +41,10 @@ update:
         path: checklist/{id}
         method: put
         cors: true
-        authorizer: aws_iam
+        authorizer:
+          type: COGNITO_USER_POOLS
+          authorizerId:
+            Ref: cognitoAuthorizer
 
 delete:
   handler: services/checklists/delete.main
@@ -41,7 +53,10 @@ delete:
         path: checklist/{id}
         method: delete
         cors: true
-        authorizer: aws_iam
+        authorizer:
+          type: COGNITO_USER_POOLS
+          authorizerId:
+            Ref: cognitoAuthorizer
 
 addItem:
   handler: services/checklists/items/addItem.main
@@ -50,7 +65,10 @@ addItem:
         path: checklist/{id}/entries
         method: post
         cors: true
-        authorizer: aws_iam
+        authorizer:
+          type: COGNITO_USER_POOLS
+          authorizerId:
+            Ref: cognitoAuthorizer
 
 listItems:
   handler: services/checklists/items/listItems.main
@@ -59,7 +77,10 @@ listItems:
         path: checklist/{id}/entries
         method: get
         cors: true
-        authorizer: aws_iam
+        authorizer:
+          type: COGNITO_USER_POOLS
+          authorizerId:
+            Ref: cognitoAuthorizer
 
 updateItem:
   handler: services/checklists/items/updateItem.main
@@ -68,7 +89,10 @@ updateItem:
         path: checklist/{id}/entries/{entId}
         method: put
         cors: true
-        authorizer: aws_iam
+        authorizer:
+          type: COGNITO_USER_POOLS
+          authorizerId:
+            Ref: cognitoAuthorizer
 
 deleteItem:
   handler: services/checklists/items/deleteItem.main
@@ -77,4 +101,7 @@ deleteItem:
         path: checklist/{id}/entries/{entId}
         method: delete
         cors: true
-        authorizer: aws_iam
+        authorizer:
+          type: COGNITO_USER_POOLS
+          authorizerId:
+            Ref: cognitoAuthorizer
