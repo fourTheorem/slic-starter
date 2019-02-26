@@ -28,8 +28,7 @@ import { withStyles } from '@material-ui/core/styles'
 import ErrorMessage from './ErrorMessage'
 import Loading from './Loading'
 import { removeList } from '../actions/checklists'
-import { addEntry, listEntries } from '../actions/entries'
-import Entries from './Entries'
+import { addEntry, loadEntries } from '../actions/entries'
 
 const styles = theme => ({
   root: {
@@ -70,6 +69,16 @@ class Checklist extends Component {
     if (prevProps.list && !this.props.list) {
       // The list was deleted - go back home
       this.props.dispatch(push('/'))
+    } else if (!prevProps.list && this.props.list) {
+      const { list, dispatch } = this.props
+      dispatch(loadEntries({ listId: list.listId }))
+    }
+  }
+
+  componentDidMount() {
+    const { list, dispatch } = this.props
+    if (this.props.list) {
+      dispatch(loadEntries({ listId: list.listId }))
     }
   }
 
@@ -93,7 +102,8 @@ class Checklist extends Component {
       removing,
       classes,
       entries,
-      list
+      list,
+      fetchedListEntries
     } = this.props
 
     if (!list) {
@@ -148,6 +158,10 @@ class Checklist extends Component {
         </ListItem>
       ) : null
 
+    //Check if no list id is found
+
+    //Check if list entries returned successfully
+
     return list ? (
       <form id="new-item-form" onSubmit={this.handleSubmit}>
         {confirmDeleteDialog}
@@ -165,7 +179,6 @@ class Checklist extends Component {
                     </ListItem>
                   ))}
                   {newItemEntry}
-
                   {errorItem}
                 </List>
               </CardContent>
@@ -214,7 +227,6 @@ const makeMapStateToProps = (initialState, ownProps) => {
   }) => {
     const list = listId ? listsById[listId] : {}
     const entries = entriesByListId[listId] || []
-    const allEntries = listEntries(listId) || []
     return {
       addingEntry,
       addEntryError,

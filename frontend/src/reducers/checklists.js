@@ -15,9 +15,9 @@ import {
   ADD_ENTRY_REQUEST,
   ADD_ENTRY_SUCCESS,
   ADD_ENTRY_FAILURE,
-  LIST_ENTRIES_REQUEST,
-  LIST_ENTRIES_SUCCESS,
-  LIST_ENTRIES_FAILURE
+  LOAD_ENTRIES_REQUEST,
+  LOAD_ENTRIES_SUCCESS,
+  LOAD_ENTRIES_FAILURE
 } from '../actions/entries'
 
 const defaultState = {
@@ -149,21 +149,34 @@ export default (state = defaultState, { type, meta, payload, error }) => {
         addingEntry: false
       }
 
-    case LIST_ENTRIES_REQUEST:
+    case LOAD_ENTRIES_REQUEST:
       return {
         ...state,
-        listEntriesError: null
+        listEntriesError: null,
+        gettingListEntries: true,
+        fetchedListEntries: false
       }
 
-    case LIST_ENTRIES_SUCCESS:
+    case LOAD_ENTRIES_SUCCESS:
       return {
         ...state,
-        listEntriesError: null
+        listEntriesError: null,
+        gettingListEntries: false,
+        fetchedListEntries: true,
+        entriesByListId: {
+          ...state.entriesByListId,
+          [meta.listId]: Object.entries(payload).map(pair => ({
+            entId: pair[0],
+            ...pair[1]
+          }))
+        }
       }
-    case LIST_ENTRIES_FAILURE:
+    case LOAD_ENTRIES_FAILURE:
       return {
         ...state,
-        listEntriesError: error
+        listEntriesError: error,
+        gettingListEntries: false,
+        fetchedListEntries: false
       }
 
     default:
