@@ -41,6 +41,12 @@ async function addEntry({ userId, listId, title, value }) {
   await dynamoDocClient()
     .update(params)
     .promise()
+
+  return {
+    entId,
+    title,
+    value
+  }
 }
 
 async function updateEntry({ entId, value }) {
@@ -57,18 +63,14 @@ async function updateEntry({ entId, value }) {
     .promise()
 }
 
-async function listEntries({ listId }) {
-  const params = {
-    TableName: tableName,
-    KeyConditionExpression: 'listId = :listId',
-    ExpressionAttributeValues: {
-      ':listId': listId
-    }
-  }
-
+async function listEntries({ listId, userId }) {
   return (await dynamoDocClient()
-    .query(params)
-    .promise()).Items
+    .get({
+      TableName: tableName,
+      Key: { userId, listId },
+      ProjectionExpression: 'entries'
+    })
+    .promise()).Item.entries
 }
 
 async function deleteEntry({ userId, listId, entId }) {
