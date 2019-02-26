@@ -6,6 +6,8 @@ const { getUser } = require('../../lib/user-util')
 
 const httpClient = require('../../lib/http-client')
 
+const testLists = [{ name: 'List One' }, { name: 'Second List' }]
+
 test('checklist tests', async t => {
   const { userId } = await getUser()
 
@@ -15,18 +17,101 @@ test('checklist tests', async t => {
     t.same(response.data, [])
   })
 
-  test('checklist can be added', async t => {
-    const name = 'Test Checklist'
-    const response = await httpClient.post('/checklist', {
-      name
-    })
+  let listId1, listId2
+  test('checklists can be added', async t => {
+    const response = await httpClient.post('/checklist', testLists[0])
 
     const { data, status } = response
     t.equal(status, 201)
-    t.match(data, { name, userId })
+    t.match(data, { ...testLists[0], userId })
     t.ok(data.createdAt)
     const { listId } = data
     t.ok(listId)
+    listId1 = data.listId
+
+    const { data: data2 } = await httpClient.post('/checklist', testLists[1])
+    listId2 = data2.listId
+
+    const { data: lists } = await httpClient.get('/checklist')
+    t.match(lists.sort((a, b) => a.name > b.name), testLists)
+  })
+
+  test('checklists can be read by ID', async t => {
+    const { data, status } = await httpClient.get(`/checklist/${listId2}`)
+    t.equal(status, 200)
+    t.match(data, testLists[1])
+    t.equal(data.listId, listId2)
+  })
+
+  test('checklist can be updated', async t => {
+    const newName = 'New List Name'
+    const { status } = await httpClient.put(`/checklist/${listId1}`, {
+      name: newName
+    })
+    t.equal(status, 200)
+    const { data } = await httpClient.get(`/checklist/${listId1}`)
+    t.equal(data.name, newName)
+  })
+
+  test('checklist can be deleted', async t => {
+    const { status } = await httpClient.delete(`/checklist/${listId1}`)
+    t.equal(status, 200)
+    const { data } = await httpClient.get('/checklist')
+    t.match(data, testLists.slice(1))
+  })
+
+  const entries = [...new Array(9)].map((val, idx) => ({
+    title: `Entry ${idx + 1}`
+  }))
+
+  test('entries can be added', async t => {
+    const results = await Promise.map(entries, entry =>
+      httpClient.post(`/checklist/${listId2}/entries`, entry)
+    )
+    results.forEach(({ status, data: { entId } }) => {
+      t.equal(status, 201)
+      t.ok(entId)
+    })
+  })
+
+  let sortedEntries
+  test('entries can be read back', async t => {
+    const { status, data } = await httpClient.get(
+      `/checklist/${listId2}/entries`
+    )
+    t.equal(status, 200)
+    t.equal(Object.keys(data).length, entries.length)
+    sortedEntries = Object.entries(data)
+      .map(([prop, value]) => ({ entId: prop, ...value }))
+      .sort((a, b) => a.title > b.title)
+    t.match(sortedEntries, entries)
+  })
+
+  test('entry can be removed', async t => {
+    const { status } = await httpClient.delete(
+      `/checklist/${listId2}/entries/${sortedEntries[0].entId}`
+    )
+    t.equal(status, 200)
+
+    const { data } = await httpClient.get(`/checklist/${listId2}/entries`)
+    t.match(
+      Object.values(data).sort((a, b) => a.title > b.title),
+      entries.splice(1)
+    )
+  })
+
+  test('entry can be updated', async t => {
+    const { status } = await httpClient.put(
+      `/checklist/${listId2}/entries/${sortedEntries[0].entId}`,
+      { value: 'YES' }
+    )
+    t.equal(status, 200)
+
+    const { data } = await httpClient.get(`/checklist/${listId2}/entries`)
+    t.match(Object.values(data).sort((a, b) => a.title > b.title), [
+      { ...entries[0], value: 'YES' },
+      ...entries.splice(2)
+    ])
   })
 
   test('tear down', async t => {

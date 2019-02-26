@@ -5,11 +5,6 @@ const { toneAxiosError } = require('./axios-util')
 const { loadBackendConfig } = require('./backend-config')
 const { getUser } = require('./user-util')
 
-async function interceptRequest(config) {
-  console.log('interceptRequest', config)
-  return Promise.resolve(config)
-}
-
 async function getHttpClient() {
   const { apiEndpoint } = await loadBackendConfig()
   const { idToken } = await getUser()
@@ -21,9 +16,12 @@ async function getHttpClient() {
     headers
   })
 
-  axiosClient.interceptors.request.use(interceptRequest, error => {
-    return Promise.reject(toneAxiosError(error))
-  })
+  axiosClient.interceptors.request.use(
+    config => config,
+    error => {
+      return Promise.reject(toneAxiosError(error))
+    }
+  )
 
   axiosClient.interceptors.response.use(
     config => config,
