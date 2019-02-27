@@ -23,7 +23,7 @@ import {
   Typography
 } from '@material-ui/core'
 import { Delete } from '@material-ui/icons'
-import { CircularProgress } from '@material-ui/core'
+import { CircularProgress, Checkbox } from '@material-ui/core'
 import { withStyles } from '@material-ui/core/styles'
 import ErrorMessage from './ErrorMessage'
 import Loading from './Loading'
@@ -80,6 +80,10 @@ class Checklist extends Component {
     if (this.props.list) {
       dispatch(loadEntries({ listId: list.listId }))
     }
+  }
+
+  handleChange = name => event => {
+    this.setState({ [name]: event.target.checked })
   }
 
   handleRemoveRequest = () => {
@@ -176,6 +180,7 @@ class Checklist extends Component {
                   {entries.map((entry, index) => (
                     <ListItem key={index}>
                       <ListItemText>{entry.title}</ListItemText>
+                      <Checkbox onChange={this.handleChange} />
                     </ListItem>
                   ))}
                   {newItemEntry}
