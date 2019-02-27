@@ -21,13 +21,7 @@ async function getUser() {
         userId
       }
     } else {
-      const user = await createUser()
-      // TODO - Retrieve an actual cognito user
-      return {
-        ...user,
-        email: `${stage}@example.com`,
-        userId: `${stage}User`
-      }
+      user = await createUser()
     }
   }
   return user

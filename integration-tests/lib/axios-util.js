@@ -30,7 +30,6 @@ function toneAxiosError(error) {
     }
 
     if (error.response) {
-      // TODO Add relevant response details
       summarized.response = pick(error.response, [
         'headers',
         'status',
