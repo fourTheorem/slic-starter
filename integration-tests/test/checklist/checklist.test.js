@@ -81,9 +81,7 @@ test('checklist tests', async t => {
     )
     t.equal(status, 200)
     t.equal(Object.keys(data).length, entries.length)
-    sortedEntries = Object.entries(data)
-      .map(([prop, value]) => ({ entId: prop, ...value }))
-      .sort((a, b) => a.title > b.title)
+    sortedEntries = entriesToArray(data).sort((a, b) => a.title > b.title)
     t.match(sortedEntries, entries)
   })
 
@@ -101,16 +99,17 @@ test('checklist tests', async t => {
   })
 
   test('entry can be updated', async t => {
+    const newTitle = 'A changed title'
     const { status } = await httpClient.put(
-      `/checklist/${listId2}/entries/${sortedEntries[0].entId}`,
-      { value: 'YES' }
+      `/checklist/${listId2}/entries/${sortedEntries[1].entId}`,
+      { title: newTitle, value: 'YES' }
     )
     t.equal(status, 200)
 
     const { data } = await httpClient.get(`/checklist/${listId2}/entries`)
-    t.match(Object.values(data).sort((a, b) => a.title > b.title), [
-      { ...entries[0], value: 'YES' },
-      ...entries.splice(2)
+    t.match(entriesToArray(data).sort((a, b) => a.title > b.title), [
+      { ...sortedEntries[1], value: 'YES', title: newTitle },
+      ...sortedEntries.splice(2)
     ])
   })
 
@@ -121,3 +120,10 @@ test('checklist tests', async t => {
     )
   })
 })
+
+function entriesToArray(entriesObj) {
+  return Object.entries(entriesObj).map(([prop, value]) => ({
+    entId: prop,
+    ...value
+  }))
+}

@@ -6,7 +6,7 @@ const { createResponse } = require('../../lib/response')
 
 test('create response returns an error code when a promise reject', async t => {
   const failedPromise = new Promise((resolve, reject) => {
-    reject('Promise Rejected')
+    reject(new Error('Promise Rejected'))
   })
 
   const result = await createResponse(failedPromise)

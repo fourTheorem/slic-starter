@@ -2,7 +2,7 @@
 const proxyquire = require('proxyquire')
 const { test } = require('tap')
 
-const { userRequestContext } = require('../../../fixtures')
+const { userId, userRequestContext } = require('../../../fixtures')
 
 const received = {}
 
@@ -23,15 +23,23 @@ test('update entry handler allows updating of checklist entries', async t => {
     requestContext: userRequestContext,
     pathParameters: {
       id: '1234',
-      entId: '1a42',
+      entId: '1a42'
+    },
+    body: JSON.stringify({
+      title: 'new value',
       value: 'complete'
-    }
+    })
   }
 
   const result = await updateEntryHandler.main(event)
 
-  t.equal(received.updateEntryParams.entId, event.pathParameters.entId)
-  t.equal(received.updateEntryParams.value, event.pathParameters.value)
+  t.same(received.updateEntryParams, {
+    listId: '1234',
+    entId: '1a42',
+    title: 'new value',
+    value: 'complete',
+    userId
+  })
   t.equal(result.statusCode, 200)
 
   t.end()

@@ -49,18 +49,36 @@ async function addEntry({ userId, listId, title, value }) {
   }
 }
 
-async function updateEntry({ entId, value }) {
+async function updateEntry({ userId, listId, entId, title, value }) {
   const params = {
     TableName: tableName,
-    Key: { entId },
-    UpdateExpression: 'SET value = :value',
+    Key: {
+      userId,
+      listId
+    },
+    UpdateExpression:
+      'SET #ent.#entId.#title = :title, #ent.#entId.#value = :value',
+    ExpressionAttributeNames: {
+      '#ent': 'entries',
+      '#entId': entId,
+      '#title': 'title',
+      '#value': 'value'
+    },
     ExpressionAttributeValues: {
-      value: value
+      ':title': title,
+      ':value': value
     }
   }
+
   await dynamoDocClient()
     .update(params)
     .promise()
+
+  return {
+    entId,
+    title,
+    value
+  }
 }
 
 async function listEntries({ listId, userId }) {
