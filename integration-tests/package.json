@@ -19,6 +19,7 @@
     "aws-sdk": "^2.409.0",
     "awscred": "^1.4.2",
     "axios": "^0.18.0",
+    "bluebird": "^3.5.3",
     "chance": "^1.0.18",
     "eslint": "^5.13.0",
     "eslint-config-prettier": "^4.0.0",
