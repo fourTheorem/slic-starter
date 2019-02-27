@@ -1,17 +1,14 @@
 'use strict'
 
 const { createResponse } = require('../../lib/response')
-const log = require('../../lib/log')
 const checklist = require('./checklist')
+const { processEvent } = require('../../lib/event-util')
 
 async function main(event) {
-  const { body, pathParameters, requestContext } = event
-  log.info({ body, pathParameters, requestContext }, 'Update request received')
-  const { name } = JSON.parse(body)
-  const userId = requestContext.identity.cognitoIdentityId
+  const { body, pathParameters, userId } = processEvent(event)
+  const { name } = body
   const { id: listId } = pathParameters
-
-  return await createResponse(checklist.update({ listId, userId, name }))
+  return createResponse(checklist.update({ listId, userId, name }))
 }
 
 module.exports = { main }

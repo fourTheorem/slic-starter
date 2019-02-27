@@ -36,7 +36,10 @@ async function update({ listId, userId, name = null }) {
     .update({
       TableName: tableName,
       Key: { userId, listId },
-      UpdateExpression: 'SET name = :name, updatedAt = :updatedAt',
+      UpdateExpression: 'SET #nm = :name, updatedAt = :updatedAt',
+      ExpressionAttributeNames: {
+        '#nm': 'name'
+      },
       ExpressionAttributeValues: {
         ':name': name,
         ':updatedAt': updatedAt
@@ -58,7 +61,11 @@ async function get({ listId, userId }) {
   return (await dynamoDocClient()
     .get({
       TableName: tableName,
-      Key: { userId, listId }
+      Key: { userId, listId },
+      ProjectionExpression: 'listId, #nm, createdAt',
+      ExpressionAttributeNames: {
+        '#nm': 'name'
+      }
     })
     .promise()).Item
 }
@@ -67,7 +74,11 @@ async function list({ userId }) {
   return (await dynamoDocClient()
     .query({
       TableName: tableName,
+      ProjectionExpression: 'listId, #nm, createdAt',
       KeyConditionExpression: 'userId = :userId',
+      ExpressionAttributeNames: {
+        '#nm': 'name'
+      },
       ExpressionAttributeValues: {
         ':userId': userId
       }

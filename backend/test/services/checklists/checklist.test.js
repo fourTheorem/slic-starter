@@ -2,10 +2,15 @@
 
 const path = require('path')
 const awsMock = require('aws-sdk-mock')
-awsMock.setSDK(path.resolve('./node_modules/aws-sdk'))
 const { test } = require('tap')
 
 const userId = 'my-test-user'
+awsMock.setSDK(path.resolve('./node_modules/aws-sdk'))
+
+const testLists = [
+  { listId: 'list1', name: 'List One', entries: {} },
+  { listId: 'list2', name: 'List Two', entries: {} }
+]
 
 const received = {
   dynamoDb: {}
@@ -23,7 +28,7 @@ awsMock.mock('DynamoDB.DocumentClient', 'update', function(params, callback) {
 
 awsMock.mock('DynamoDB.DocumentClient', 'get', function(params, callback) {
   received.dynamoDb.get = params
-  callback(null, { ...params })
+  callback(null, { Item: { ...testLists[0] } })
 })
 
 awsMock.mock('DynamoDB.DocumentClient', 'delete', function(params, callback) {
@@ -33,7 +38,7 @@ awsMock.mock('DynamoDB.DocumentClient', 'delete', function(params, callback) {
 
 awsMock.mock('DynamoDB.DocumentClient', 'query', function(params, callback) {
   received.dynamoDb.query = params
-  callback(null, { ...params })
+  callback(null, { Items: testLists })
 })
 
 test('create puts a dynamodb item', async t => {
@@ -65,8 +70,7 @@ test('update function updates current checklists', async t => {
 
   const checklist = require('../../../services/checklists/checklist')
 
-  const updateResponse = await checklist.update(record)
-
+  await checklist.update(record)
   t.ok(received.dynamoDb.update.ExpressionAttributeValues[':name'])
   t.ok(received.dynamoDb.update.ExpressionAttributeValues[':updatedAt'])
   t.equal(received.dynamoDb.update.Key.userId, record.userId)
@@ -82,7 +86,7 @@ test('update function updates current checklists when name not specified', async
 
   const checklist = require('../../../services/checklists/checklist')
 
-  const updateResponse = await checklist.update(record)
+  await checklist.update(record)
 
   t.equal(received.dynamoDb.update.ExpressionAttributeValues[':name'], null)
   t.ok(received.dynamoDb.update.ExpressionAttributeValues[':updatedAt'])
@@ -100,7 +104,7 @@ test('Get a checklist based on a listId and userId', async t => {
   const checklist = require('../../../services/checklists/checklist')
 
   const response = await checklist.get(record)
-
+  t.same(response, testLists[0])
   t.equal(received.dynamoDb.get.Key.listId, record.listId)
   t.equal(received.dynamoDb.get.Key.userId, record.userId)
 
@@ -115,11 +119,10 @@ test('remove a checklist', async t => {
     userId
   }
 
-  const response = await checklist.remove(record)
+  await checklist.remove(record)
 
   t.equal(received.dynamoDb.delete.Key.userId, record.userId)
   t.equal(received.dynamoDb.delete.Key.listId, record.listId)
-
   t.end()
 })
 
@@ -132,6 +135,7 @@ test('list all checklists', async t => {
 
   const response = await checklist.list(record)
 
+  t.same(response, testLists)
   t.equal(
     received.dynamoDb.query.ExpressionAttributeValues[':userId'],
     record.userId

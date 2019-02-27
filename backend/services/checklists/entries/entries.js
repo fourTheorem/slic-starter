@@ -6,13 +6,13 @@ const { dynamoDocClient } = require('../../../lib/aws')
 const tableName = 'checklists'
 
 module.exports = {
-  addItem,
-  updateItem,
-  listItems,
-  deleteItem
+  addEntry,
+  updateEntry,
+  listEntries,
+  deleteEntry
 }
 
-async function addItem({ userId, listId, title, value }) {
+async function addEntry({ userId, listId, title, value }) {
   const entId = Uuid.v4()
   const params = {
     TableName: tableName,
@@ -41,37 +41,57 @@ async function addItem({ userId, listId, title, value }) {
   await dynamoDocClient()
     .update(params)
     .promise()
+
+  return {
+    entId,
+    title,
+    value
+  }
 }
 
-async function updateItem({ entId, value }) {
+async function updateEntry({ userId, listId, entId, title, value }) {
   const params = {
     TableName: tableName,
-    Key: { entId },
-    UpdateExpression: 'SET value = :value',
+    Key: {
+      userId,
+      listId
+    },
+    UpdateExpression:
+      'SET #ent.#entId.#title = :title, #ent.#entId.#value = :value',
+    ExpressionAttributeNames: {
+      '#ent': 'entries',
+      '#entId': entId,
+      '#title': 'title',
+      '#value': 'value'
+    },
     ExpressionAttributeValues: {
-      value: value
+      ':title': title,
+      ':value': value
     }
   }
+
   await dynamoDocClient()
     .update(params)
     .promise()
-}
 
-async function listItems({ listId }) {
-  const params = {
-    TableName: tableName,
-    KeyConditionExpression: 'listId = :listId',
-    ExpressionAttributeValues: {
-      ':listId': listId
-    }
+  return {
+    entId,
+    title,
+    value
   }
-
-  await dynamoDocClient()
-    .query(params)
-    .promise()
 }
 
-async function deleteItem({ userId, listId, entId }) {
+async function listEntries({ listId, userId }) {
+  return (await dynamoDocClient()
+    .get({
+      TableName: tableName,
+      Key: { userId, listId },
+      ProjectionExpression: 'entries'
+    })
+    .promise()).Item.entries
+}
+
+async function deleteEntry({ userId, listId, entId }) {
   const params = {
     TableName: tableName,
     Key: {

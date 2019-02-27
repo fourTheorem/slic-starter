@@ -6,33 +6,6 @@
 NODE_ENV=dev AWS_PROFILE=<profile_name> AWS_REGION=eu-west-1 npm run build
 ```
 
-## Configuration
-
-Create a file called `.env.local` with these values. You can also define these sipmly as environment variables. Note that `.env.local` is in `.gitignore` so it will not be committed to the repository.
-
-|--- |--- |
-|`REACT_APP_AWS_REGION`| |
-|`REACT_APP_AWS_COGNITO_USER_POOL_ID`| |
-|`REACT_APP_AWS_COGNITO_WEB_CLIENT_ID`| |
-|`REACT_APP_AWS_COGNITO_IDENTITY_POOL_ID`| |
-
-## Create a Test User with Cognito
-
-```
-aws cognito-idp sign-up \
-  --region ${REACT_APP_AWS_REGION} \
-  --client-id ${REACT_APP_AWS_COGNITO_WEB_CLIENT_ID} \
-  --username slic@example.com \
-  --password "ThisIsSL1("
-```
-
-```
-aws cognito-idp admin-confirm-sign-up \
-  --region ${REACT_APP_AWS_REGION} \
-  --user-pool-id ${REACT_APP_AWS_COGNITO_USER_POOL_ID} \
-  --username slic@example.com
-```
-
 ---
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).

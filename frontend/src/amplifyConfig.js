@@ -1,4 +1,6 @@
+import get from 'lodash/get'
 import { simulatedAuth } from './mode'
+import { Auth } from './auth-provider'
 
 const envVars = {
   region: 'REACT_APP_AWS_REGION',
@@ -29,7 +31,13 @@ const amplifyConfig = {
       {
         name: 'checklists',
         endpoint: apiEndpoint,
-        region: config.region
+        region: config.region,
+        custom_header: async () => {
+          const session = await Auth.currentSession()
+          return {
+            Authorization: get(session, 'idToken.jwtToken')
+          }
+        }
       }
     ]
   }

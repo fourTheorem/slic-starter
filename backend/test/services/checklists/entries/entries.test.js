@@ -1,24 +1,30 @@
 'use strict'
 
 const path = require('path')
+const { test } = require('tap')
 const awsMock = require('aws-sdk-mock')
 awsMock.setSDK(path.resolve('./node_modules/aws-sdk'))
-const { test } = require('tap')
-const items = require('../../../services/checklists/items/items')
+
+const entries = require('../../../../services/checklists/entries/entries')
+
 const userId = 'my-test-user'
 const entId = '4'
 const listId = 'a432'
+const testEntries = [
+  { entId: 'ent1', title: 'Entry One' },
+  { entId: 'ent2', title: 'Entry Two' }
+]
+const testEntriesObj = {}
+testEntries.forEach(({ entId, ...rest }) => {
+  testEntriesObj[entId] = rest
+})
+
 const received = {
   dynamoDb: {}
 }
 
 awsMock.mock('DynamoDB.DocumentClient', 'put', function(params, callback) {
   received.dynamoDb.put = params
-  callback(null, { ...params })
-})
-
-awsMock.mock('DynamoDB.DocumentClient', 'get', function(params, callback) {
-  received.dynamoDb.get = params
   callback(null, { ...params })
 })
 
@@ -29,18 +35,31 @@ awsMock.mock('DynamoDB.DocumentClient', 'update', function(params, callback) {
 
 awsMock.mock('DynamoDB.DocumentClient', 'query', function(params, callback) {
   received.dynamoDb.query = params
-  callback(null, { ...params })
+  callback(null, { Items: testEntries })
 })
 
-test('add new list item', async t => {
+awsMock.mock('DynamoDB.DocumentClient', 'get', function(params, callback) {
+  received.dynamoDb.get = params
+  callback(null, {
+    Item: {
+      userId,
+      listId,
+      name: 'Test List',
+      createdAt: Date.now(),
+      entries: testEntriesObj
+    }
+  })
+})
+
+test('add new list entry', async t => {
   const record = {
     userId,
     listId,
-    title: 'new item',
+    title: 'new entry',
     value: 'not done'
   }
 
-  const response = await items.addItem(record)
+  await entries.addEntry(record)
 
   t.ok(received.dynamoDb.update.Key.userId)
   t.ok(received.dynamoDb.update.Key.listId)
@@ -57,40 +76,42 @@ test('add new list item', async t => {
   t.end()
 })
 
-test('list all items', async t => {
+test('List all entries', async t => {
   const record = {
+    userId,
     listId
   }
-  const response = await items.listItems(record)
-  t.equal(
-    received.dynamoDb.query.ExpressionAttributeValues[':listId'],
-    record.listId
-  )
+
+  const response = await entries.listEntries(record)
+  t.same(received.dynamoDb.get.Key, record)
+  t.same(response, testEntriesObj)
   t.end()
 })
 
-test('Update item', async t => {
+test('Update entry', async t => {
   const record = {
+    listId,
+    userId,
     entId,
+    title: 'New Title',
     value: 'Complete'
   }
-  const response = await items.updateItem(record)
+  await entries.updateEntry(record)
   t.equal(
-    received.dynamoDb.update.ExpressionAttributeValues.value,
+    received.dynamoDb.update.ExpressionAttributeValues[':value'],
     record.value
   )
-  //Test condition for name=null
-  t.equal(received.dynamoDb.update.Key.entId, record.entId)
+  t.same(received.dynamoDb.update.Key, { userId, listId })
   t.end()
 })
 
-test('Delete Item', async t => {
+test('Delete Entry', async t => {
   const record = {
     userId,
     entId,
     listId
   }
-  const response = await items.deleteItem(record)
+  await entries.deleteEntry(record)
   t.equal(
     received.dynamoDb.update.ExpressionAttributeNames['#entId'],
     record.entId

@@ -1,16 +1,13 @@
 'use strict'
 
 const { createResponse } = require('../../lib/response')
-const log = require('../../lib/log')
 const checklist = require('./checklist')
+const { processEvent } = require('../../lib/event-util')
 
 async function main(event) {
-  const { pathParameters, requestContext } = event
-  log.info({ requestContext }, 'Delete request received')
-  const userId = requestContext.identity.cognitoIdentityId
+  const { pathParameters, userId } = processEvent(event)
   const { id: listId } = pathParameters
-
-  return await createResponse(checklist.remove({ listId, userId }))
+  return createResponse(checklist.remove({ listId, userId }))
 }
 
 module.exports = { main }
