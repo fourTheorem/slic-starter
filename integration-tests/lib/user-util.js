@@ -2,31 +2,44 @@
 
 const jwt = require('jsonwebtoken')
 const { rword } = require('rword')
-const { createUser } = require('./cognito-util')
+const { createUser, deleteUser } = require('./cognito-util')
 
 const stage = process.env.SLIC_STAGE || 'local'
 
-let user
+let userPromise
 
-async function getUser() {
-  if (!user) {
-    if (stage === 'local') {
-      const userId = rword.generate(3).join('-')
-      const email = `${userId}@example.com`
-      // SLIC backend with serverless-offline will derive the
-      // user context by JWT-decoding the Authorization header
-      user = {
-        idToken: jwt.sign({ 'cognito:username': userId, email }, 'dummy-key'),
-        email,
-        userId
-      }
-    } else {
-      user = await createUser()
+async function createActualUser() {
+  if (stage === 'local') {
+    const userId = rword.generate(3).join('-')
+    const email = `${userId}@example.com`
+    // SLIC backend with serverless-offline will derive the
+    // user context by JWT-decoding the Authorization header
+    return {
+      idToken: jwt.sign({ 'cognito:username': userId, email }, 'dummy-key'),
+      email,
+      userId
     }
+  } else {
+    return createUser()
   }
-  return user
+}
+
+function getUser() {
+  if (!userPromise) {
+    userPromise = createActualUser()
+  }
+  return userPromise
+}
+
+async function removeUser() {
+  const user = await getUser()
+  if (stage !== 'local') {
+    await deleteUser(user)
+    userPromise = null
+  }
 }
 
 module.exports = {
-  getUser
+  getUser,
+  removeUser
 }

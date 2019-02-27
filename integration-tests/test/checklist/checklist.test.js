@@ -2,7 +2,7 @@
 
 const Promise = require('bluebird')
 const { test } = require('tap')
-const { getUser } = require('../../lib/user-util')
+const { getUser, removeUser } = require('../../lib/user-util')
 
 const httpClient = require('../../lib/http-client')
 
@@ -113,11 +113,15 @@ test('checklist tests', async t => {
     ])
   })
 
-  test('tear down', async t => {
+  test('tear down - delete checklist', async t => {
     const lists = (await httpClient.get('/checklist')).data
     await Promise.each(lists, list =>
       httpClient.delete(`/checklist/${list.listId}`)
     )
+  })
+
+  test('tear down - delete user', async () => {
+    await removeUser()
   })
 })
 

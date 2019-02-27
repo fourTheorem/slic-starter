@@ -6,7 +6,7 @@
   "scripts": {
     "lint": "eslint .",
     "format": "prettier --write \"**/*.js\"",
-    "test": "tap --reporter=list \"test/**/*.test.js\""
+    "test": "tap \"test/**/*.test.js\""
   },
   "author": "Eoin Shanaghy <eoin.shanaghy@fourtheorem.com>",
   "license": "MIT",

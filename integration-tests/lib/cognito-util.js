@@ -1,6 +1,8 @@
 'use strict'
 
 const AWS = require('aws-sdk')
+const jwt = require('jsonwebtoken')
+
 const chance = require('chance').Chance()
 const { rword } = require('rword')
 
@@ -11,8 +13,7 @@ const cognitoServiceProvider = new AWS.CognitoIdentityServiceProvider()
 const generatePassword = () => `${chance.string({ length: 10 })}!Aa0`
 
 async function createUser() {
-  const userId = rword.generate(3).join('-')
-  const email = `${userId}@example.com`
+  const email = `${rword.generate(3).join('-')}@example.com`
   const password = generatePassword()
 
   const backendConfig = await loadBackendConfig()
@@ -56,19 +57,30 @@ async function createUser() {
     .adminRespondToAuthChallenge(challengeRequest)
     .promise()
 
-  return {
-    username: email,
+  const { 'cognito:username': userId } = jwt.decode(
+    challengeResponse.AuthenticationResult.IdToken
+  )
+
+  const user = {
+    userId,
     email,
+    username: email,
     accessToken: challengeResponse.AuthenticationResult.AccessToken,
     idToken: challengeResponse.AuthenticationResult.IdToken
   }
+  return user
 }
 
-async function removeUser(user) {
-  throw new Error('TODO Implement removeUser')
+async function deleteUser(user) {
+  const backendConfig = await loadBackendConfig()
+  const deleteRequest = {
+    UserPoolId: backendConfig.userPoolId,
+    Username: user.email
+  }
+  await cognitoServiceProvider.adminDeleteUser(deleteRequest).promise()
 }
 
 module.exports = {
   createUser,
-  removeUser
+  deleteUser
 }
