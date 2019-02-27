@@ -33,7 +33,7 @@ test('checklist tests', async t => {
     listId2 = data2.listId
 
     const { data: lists } = await httpClient.get('/checklist')
-    t.match(lists.sort((a, b) => a.name > b.name), testLists)
+    t.match(lists.sort((a, b) => (a.name > b.name ? 1 : -1)), testLists)
   })
 
   test('checklists can be read by ID', async t => {
@@ -81,7 +81,9 @@ test('checklist tests', async t => {
     )
     t.equal(status, 200)
     t.equal(Object.keys(data).length, entries.length)
-    sortedEntries = entriesToArray(data).sort((a, b) => a.title > b.title)
+    sortedEntries = entriesToArray(data).sort(
+      (a, b) => (a.title > b.title ? 1 : -1)
+    )
     t.match(sortedEntries, entries)
   })
 
@@ -93,7 +95,7 @@ test('checklist tests', async t => {
 
     const { data } = await httpClient.get(`/checklist/${listId2}/entries`)
     t.match(
-      Object.values(data).sort((a, b) => a.title > b.title),
+      Object.values(data).sort((a, b) => (a.title > b.title ? 1 : -1)),
       entries.splice(1)
     )
   })
@@ -107,7 +109,7 @@ test('checklist tests', async t => {
     t.equal(status, 200)
 
     const { data } = await httpClient.get(`/checklist/${listId2}/entries`)
-    t.match(entriesToArray(data).sort((a, b) => a.title > b.title), [
+    t.match(entriesToArray(data).sort((a, b) => (a.title > b.title ? 1 : -1)), [
       { ...sortedEntries[1], value: 'YES', title: newTitle },
       ...sortedEntries.splice(2)
     ])
