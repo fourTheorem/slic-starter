@@ -35,14 +35,15 @@ artifactsBucketPolicy:
 
 codePipelineRole: ${includeFile('./codepipeline-role.yml.js')}
 
-codeBuildRole: ${includeFile('./codebuild-role.yml')}
+codeBuildRole:
+${includeFile('./codebuild-role.yml')}
 
 pipeline: ${includeFile('./codepipeline.yml.js')}
 
 codebuildCheckChangesProject:
   Type: AWS::CodeBuild::Project
   Properties:
-    Name: slic-codebuild-check-changes
+    Name: slic-check-changes
     ServiceRole:
       Fn::GetAtt: [codeBuildRole, Arn]
     Source:
@@ -52,7 +53,8 @@ codebuildCheckChangesProject:
         phases:
           build:
             commands:
-              - ./build-scripts/check-changes.sh | tee changed-modules.env
+              - ./build-scripts/check-changes.sh > changed-modules.env
+              - cat changed-modules.env
         artifacts:
             files:
                 - '**/*'
