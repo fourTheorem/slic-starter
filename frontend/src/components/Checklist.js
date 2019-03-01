@@ -28,7 +28,7 @@ import { withStyles } from '@material-ui/core/styles'
 import ErrorMessage from './ErrorMessage'
 import Loading from './Loading'
 import { removeList } from '../actions/checklists'
-import { addEntry, loadEntries } from '../actions/entries'
+import { addEntry, loadEntries, setEntryValue } from '../actions/entries'
 
 const styles = theme => ({
   root: {
@@ -82,8 +82,14 @@ class Checklist extends Component {
     }
   }
 
-  handleChange = name => event => {
-    this.setState({ [name]: event.target.checked })
+  handleChange = ({ target: { id, value } }) => {
+    const {
+      dispatch,
+      list: { id: listId },
+      entries
+    } = this.props
+    const entry = entries.find(ent => ent.entId === id)
+    dispatch(setEntryValue({ listId, entry }))
   }
 
   handleRemoveRequest = () => {
@@ -107,7 +113,8 @@ class Checklist extends Component {
       classes,
       entries,
       list,
-      fetchedListEntries
+      fetchedListEntries,
+      entryValueUpdated
     } = this.props
 
     if (!list) {
@@ -162,10 +169,6 @@ class Checklist extends Component {
         </ListItem>
       ) : null
 
-    //Check if no list id is found
-
-    //Check if list entries returned successfully
-
     return list ? (
       <form id="new-item-form" onSubmit={this.handleSubmit}>
         {confirmDeleteDialog}
@@ -180,7 +183,11 @@ class Checklist extends Component {
                   {entries.map((entry, index) => (
                     <ListItem key={index}>
                       <ListItemText>{entry.title}</ListItemText>
-                      <Checkbox onChange={this.handleChange} />
+                      <Checkbox
+                        onChange={this.handleChange}
+                        id={entry.entId}
+                        checked={entry.value}
+                      />
                     </ListItem>
                   ))}
                   {newItemEntry}

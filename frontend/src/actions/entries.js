@@ -40,3 +40,20 @@ export function loadEntries({ listId }) {
       })
   }
 }
+
+export const SET_ENTRY_VALUE_REQUEST = 'SET_ENTRY_VALUE_REQUEST'
+export const SET_ENTRY_VALUE_SUCCESS = 'SET_ENTRY_VALUE_SUCCESS'
+export const SET_ENTRY_VALUE_FAILURE = 'SET_ENTRY_VALUE_FAILURE'
+
+export function setEntryValue({ listId, entry }) {
+  return function(dispatch) {
+    dispatch({ type: SET_ENTRY_VALUE_REQUEST })
+    AmplifyApi.put('checklists', `/checklist/${listId}/entries/${entry.entId}`)
+      .then(result => {
+        dispatch({ type: SET_ENTRY_VALUE_SUCCESS })
+      })
+      .catch(err => {
+        dispatch({ type: SET_ENTRY_VALUE_FAILURE, error: translateError(err) })
+      })
+  }
+}

@@ -17,7 +17,10 @@ import {
   ADD_ENTRY_FAILURE,
   LOAD_ENTRIES_REQUEST,
   LOAD_ENTRIES_SUCCESS,
-  LOAD_ENTRIES_FAILURE
+  LOAD_ENTRIES_FAILURE,
+  SET_ENTRY_VALUE_REQUEST,
+  SET_ENTRY_VALUE_SUCCESS,
+  SET_ENTRY_VALUE_FAILURE
 } from '../actions/entries'
 
 const defaultState = {
@@ -177,6 +180,24 @@ export default (state = defaultState, { type, meta, payload, error }) => {
         listEntriesError: error,
         gettingListEntries: false,
         fetchedListEntries: false
+      }
+    case SET_ENTRY_VALUE_REQUEST:
+      return {
+        updatingEntryValue: true,
+        entryValueUpdated: false,
+        entryValueUpdateError: null
+      }
+    case SET_ENTRY_VALUE_SUCCESS:
+      return {
+        updatingEntryValue: false,
+        entryValueUpdated: true,
+        entryValueUpdateError: null
+      }
+    case SET_ENTRY_VALUE_FAILURE:
+      return {
+        updatingEntryValue: false,
+        entryValueUpdated: false,
+        entryValueUpdateError: error
       }
 
     default:
