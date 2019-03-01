@@ -160,6 +160,7 @@ module.exports = () => `
                     - codebuild:BatchGetBuilds
                     - codebuild:StopBuild
                   Resource:
+                    - Fn::GetAtt: [ codebuildCheckChangesProject, Arn ]
 ${moduleNames
   .map(
     moduleName =>
