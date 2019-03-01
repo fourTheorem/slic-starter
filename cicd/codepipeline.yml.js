@@ -40,11 +40,11 @@ module.exports = () => `
                 Configuration:
                   ProjectName: slic-check-changes
                 RunOrder: 1
+          - Name: BuildModules
+            Actions:
       ${moduleNames
         .map(
           moduleName => `
-          - Name: build_${moduleName}
-            Actions:
               - Name: build_${moduleName}
                 InputArtifacts:
                   - Name: $\{self:custom.stage}-slic-source-checked
@@ -61,11 +61,11 @@ module.exports = () => `
 `
         )
         .join('')}
+          - Name: StagingDeploy
+            Actions:
       ${moduleNames
         .map(
-          moduleName => `
-          - Name: staging_deploy_${moduleName}
-            Actions:
+          (moduleName, index) => `
               - Name: staging_deploy_${moduleName}
                 InputArtifacts:
                   - Name: $\{self:custom.stage}-slic-built-${moduleName}
@@ -76,7 +76,7 @@ module.exports = () => `
                   Provider: CodeBuild
                 Configuration:
                   ProjectName: slic-deploy-staging-${moduleName}
-                RunOrder: 1
+                RunOrder: ${index + 1}
 `
         )
         .join('')}
