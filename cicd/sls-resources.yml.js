@@ -53,8 +53,7 @@ codebuildCheckChangesProject:
         phases:
           build:
             commands:
-              - ./build-scripts/check-changes.sh > changed-modules.env
-              - cat changed-modules.env
+              - bash ./build-scripts/check-changes.sh
         artifacts:
             files:
                 - '**/*'
