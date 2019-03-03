@@ -53,7 +53,7 @@ codebuildCheckChangesProject:
         phases:
           build:
             commands:
-              - bash ./build-scripts/check-changes.sh
+              - bash ./build-scripts/check-changes.sh https://github.com/$\{self:custom.sourceRepoOwner}/$\{self:custom.sourceRepoName}.git $CODEBUILD_RESOLVED_SOURCE_VERSION
         artifacts:
             files:
                 - '**/*'
@@ -62,6 +62,8 @@ codebuildCheckChangesProject:
       Packaging: NONE
     Environment:
 ${includeFile('./codebuild-environment.yml')}
+      EnvironmentVariables:
+        - GITHUB_TOKEN={{resolve:secretsmanager:CICD:SecretString:GitHubPersonalAccessToken}}
 
 ${moduleNames
     .map(
