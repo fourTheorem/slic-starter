@@ -6,3 +6,9 @@ jspm_packages
 .serverless
 
 changed-modules.env
+
+# Temporary Git repo for checking changes
+_GIT_REPO/
+
+# Temporary output for check changes
+changed-folders.env
