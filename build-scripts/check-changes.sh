@@ -17,10 +17,9 @@ $0 repository_url target_version \n\
   target_version             The SHA, branch or tag to compare to\n\n"
   exit 1
 fi
-
-if [ "$GITHUB_TOKEN" != "" ]; then
-  export REPO_URL=$(echo $REPO_URL | sed -e 's/https:\/\/github.com/https:\/\/'"$GITHUB_TOKEN@"'github.com/')
-fi
+TOKEN_SECRET=$(aws secretsmanager get-secret-value --secret-id CICD --query SecretString)
+GITHUB_TOKEN=$(echo $TOKEN_SECRET | node -e 'console.log(JSON.parse(JSON.parse(fs.readFileSync("/dev/stdin", "utf-8"))).GitHubPersonalAccessToken)')
+export REPO_URL=$(echo $REPO_URL | sed -e 's/https:\/\/github.com/https:\/\/'"$GITHUB_TOKEN@"'github.com/')
 
 >&2 echo $REPO_URL
 
@@ -34,7 +33,8 @@ git init .																						  # Create an empty repository
 git remote add origin $REPO_URL													# Specify the remote repository
 
 # Find the latest release using the format NUM.NUM.NUM. Anything else, like "1.2.3-pre" is assumed to not be a relase tag and is excluded
-LATEST_RELEASE=`git ls-remote --tags | awk -F '/' '{print $3}' | grep -e grep -e '^[0-9]\+\.[0-9]\+.[0-9]\+$' | sort --version-sort | tail -1`
+# Redirect STDERR to /dev/null as it will print out the Git remote URL including the access token
+LATEST_RELEASE=`git ls-remote --tags 2>/dev/null | awk -F '/' '{print $3}' | grep -e '^[0-9]\+\.[0-9]\+.[0-9]\+$' | sort --version-sort | tail -1`
 
 if [ "$LATEST_RELEASE" = "" ]; then
   >&2 echo "No previous tagged release found. Changed folder assumed to be everything (.)"
