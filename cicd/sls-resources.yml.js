@@ -62,8 +62,6 @@ codebuildCheckChangesProject:
       Packaging: NONE
     Environment:
 ${includeFile('./codebuild-environment.yml')}
-      EnvironmentVariables:
-        - GITHUB_TOKEN={{resolve:secretsmanager:CICD:SecretString:GitHubPersonalAccessToken}}
 
 ${moduleNames
     .map(

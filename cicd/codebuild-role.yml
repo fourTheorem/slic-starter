@@ -19,6 +19,10 @@
               Resource:
                 - arn:aws:iam::${self:custom.accountIds.dev}:role/slic-cicd-deployment-role
             - Effect: Allow
+              Action: [secretsmanager:GetSecretValue]
+              Resource:
+                - arn:aws:secretsmanager:#{AWS::Region}:#{AWS::AccountId}:secret:CICD*
+            - Effect: Allow
               Action:
                 - s3:DeleteObject
                 - s3:GetObject
