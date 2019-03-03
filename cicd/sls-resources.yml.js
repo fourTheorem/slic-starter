@@ -76,19 +76,16 @@ ${moduleName}BuildModuleProject:
       Type: CODEPIPELINE
       BuildSpec: |
         version: 0.2
+        env:
+          variables:
+            MODULE_NAME: ${moduleName}
         phases:
           install:
             commands:
               - ./build-scripts/install-phase.sh
-          pre_build:
-            commands:
-              - ./build-scripts/pre_build-phase.sh
           build:
             commands:
               - ./build-scripts/build-phase.sh
-          post_build:
-            commands:
-              - ./build-scripts/post_build-phase.sh
         artifacts:
             files:
                 - 'changed-modules.env'
@@ -115,6 +112,9 @@ ${moduleName}DeployStagingProject:
       Type: CODEPIPELINE
       BuildSpec: |
         version: 0.2
+        env:
+          variables:
+            MODULE_NAME: ${moduleName}
         phases:
           build:
             commands:

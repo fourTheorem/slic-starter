@@ -23,7 +23,7 @@ export REPO_URL=$(echo $REPO_URL | sed -e 's/https:\/\/github.com/https:\/\/'"$G
 
 >&2 echo $REPO_URL
 
-OUTPUT=$PWD/changed-folders.env
+OUTPUT=$PWD/module-config.env
 
 rm -rf _GIT_REPO
 mkdir -p _GIT_REPO

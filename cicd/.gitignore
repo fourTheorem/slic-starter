@@ -10,5 +10,5 @@ changed-modules.env
 # Temporary Git repo for checking changes
 _GIT_REPO/
 
-# Temporary output for check changes
-changed-folders.env
+# Temporary output generate during build
+module-config.env
