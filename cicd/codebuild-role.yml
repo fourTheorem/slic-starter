@@ -40,7 +40,7 @@
               Action:
                 - cloudformation:Describe*
               Resource:
-                - arn:aws:cloudformation:eu-west-1:*:stack/${self:custom.serviceName}-${self:custom.stage}/*
+                - arn:aws:cloudformation:eu-west-1:*:stack/${self:custom.serviceName}-*/*
             - Effect: Allow
               Action:
                 - lambda:Get*
