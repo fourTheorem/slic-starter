@@ -60,10 +60,12 @@ class Checklist extends Component {
         })
       )
     }
+    this.setState({ newEntryTitle: '' })
   }
 
-  handleEntryTitleChange = ({ target: { value } }) =>
+  handleEntryTitleChange = ({ target: { value } }) => {
     this.setState({ newEntryTitle: value })
+  }
 
   componentDidUpdate(prevProps) {
     if (prevProps.list && !this.props.list) {
@@ -82,10 +84,15 @@ class Checklist extends Component {
     }
   }
 
-  handleChange = ({ target: { id, value } }) => {
+  handleChange = ({ target: { id, checked } }) => {
     const { dispatch, list, entries } = this.props
     const entry = entries.find(ent => ent.entId === id)
-    dispatch(setEntryValue({ listId: list.listId, entry }))
+    dispatch(
+      setEntryValue({
+        listId: list.listId,
+        entry: { ...entry, value: checked }
+      })
+    )
   }
 
   handleRemoveRequest = () => {
@@ -109,8 +116,8 @@ class Checklist extends Component {
       classes,
       entries,
       list,
-      fetchedListEntries,
-      entryValueUpdated
+      gettingListEntries,
+      listEntriesError
     } = this.props
 
     if (!list) {
@@ -164,6 +171,8 @@ class Checklist extends Component {
           <ErrorMessage messageId={addEntryError.id} />
         </ListItem>
       ) : null
+
+    const entriesLoading = gettingListEntries ? <Loading /> : null
 
     return list ? (
       <form id="new-item-form" onSubmit={this.handleSubmit}>

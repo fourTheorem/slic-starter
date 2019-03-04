@@ -48,9 +48,13 @@ export const SET_ENTRY_VALUE_FAILURE = 'SET_ENTRY_VALUE_FAILURE'
 export function setEntryValue({ listId, entry }) {
   return function(dispatch) {
     dispatch({ type: SET_ENTRY_VALUE_REQUEST })
-    AmplifyApi.put('checklists', `/checklist/${listId}/entries/${entry.entId}`)
+    AmplifyApi.put(
+      'checklists',
+      `/checklist/${listId}/entries/${entry.entId}`,
+      { body: entry }
+    )
       .then(result => {
-        dispatch({ type: SET_ENTRY_VALUE_SUCCESS })
+        dispatch({ type: SET_ENTRY_VALUE_SUCCESS, meta: { entry, listId } })
       })
       .catch(err => {
         dispatch({ type: SET_ENTRY_VALUE_FAILURE, error: translateError(err) })
