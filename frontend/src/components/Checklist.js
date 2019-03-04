@@ -83,13 +83,9 @@ class Checklist extends Component {
   }
 
   handleChange = ({ target: { id, value } }) => {
-    const {
-      dispatch,
-      list: { id: listId },
-      entries
-    } = this.props
+    const { dispatch, list, entries } = this.props
     const entry = entries.find(ent => ent.entId === id)
-    dispatch(setEntryValue({ listId, entry }))
+    dispatch(setEntryValue({ listId: list.listId, entry }))
   }
 
   handleRemoveRequest = () => {
