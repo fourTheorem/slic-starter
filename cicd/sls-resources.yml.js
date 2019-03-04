@@ -91,12 +91,12 @@ ${moduleName}BuildModuleProject:
               - bash ./build-scripts/build-phase.sh
         artifacts:
             files:
-                - 'build-scripts'
+                - 'build-scripts/**/*'
                 - '${moduleName}/serverless.yml'
-                - '${moduleName}/node_modules'
+                - '${moduleName}/node_modules/**/*'
                 - '${moduleName}/package.json'
                 - '${moduleName}/package-lock.json'
-                - '${moduleName}/build-artifacts'
+                - '${moduleName}/build-artifacts/**/*'
                 - 'module-config.env'
     Artifacts:
       Type: CODEPIPELINE
