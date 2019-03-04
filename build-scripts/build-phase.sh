@@ -7,7 +7,6 @@ source module-config.env
 run_build () {
   source build-scripts/assume-cross-account-role.env
 	cd ${MODULE_NAME}
-  npm install -g serverless
   # TODO - Change stage to stg and prod as appropriate
   # (or each configured/injected stage)
   export SLIC_STAGE=dev
