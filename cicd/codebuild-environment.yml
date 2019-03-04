@@ -1,4 +1,5 @@
       Type: LINUX_CONTAINER
-      Image: aws/codebuild/nodejs:8.11.0
+      Image: docker.io/eoinsha/codebuild-nodejs-serverless:8.11.0
+      #  (Was Image: aws/codebuild/nodejs:8.11.0)
       ComputeType: BUILD_GENERAL1_SMALL
       PrivilegedMode: false
