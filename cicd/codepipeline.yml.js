@@ -75,7 +75,7 @@ module.exports = () => `
                   Version: 1
                   Provider: CodeBuild
                 Configuration:
-                  ProjectName: slic-deploy-staging-${moduleName}
+                  ProjectName: slic-deploy-stg-${moduleName}
                 RunOrder: ${index + 1}
 `
         )

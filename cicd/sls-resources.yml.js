@@ -69,7 +69,7 @@ ${moduleNames
 ${moduleName}BuildModuleProject:
   Type: AWS::CodeBuild::Project
   Properties:
-    Name: slic-build-module-${moduleName}
+    Name: slic-build-${moduleName}
     ServiceRole:
       Fn::GetAtt: [codeBuildRole, Arn]
     Source:
@@ -80,16 +80,23 @@ ${moduleName}BuildModuleProject:
           variables:
             MODULE_NAME: ${moduleName}
         phases:
+          pre_build:
+            commands:
+              - bash ./build-scripts/pre_build-phase.sh
           install:
             commands:
-              - ./build-scripts/install-phase.sh
+              - bash ./build-scripts/install-phase.sh
           build:
             commands:
-              - ./build-scripts/build-phase.sh
+              - bash ./build-scripts/build-phase.sh
         artifacts:
             files:
-                - 'changed-modules.env'
-                - '${module}/build-artifacts'
+                - '${moduleName}/serverless.yml'
+                - '${moduleName}/node_moduleNames'
+                - '${moduleName}/package.json'
+                - '${moduleName}/package-lock.json'
+                - '${moduleName}/build-artifacts'
+                - 'module-config.env'
     Artifacts:
       Type: CODEPIPELINE
       Packaging: NONE
@@ -105,7 +112,7 @@ ${moduleNames
 ${moduleName}DeployStagingProject:
   Type: AWS::CodeBuild::Project
   Properties:
-    Name: slic-deploy-staging-${moduleName}
+    Name: slic-deploy-stg-${moduleName}
     ServiceRole:
       Fn::GetAtt: [codeBuildRole, Arn]
     Source:
@@ -118,7 +125,7 @@ ${moduleName}DeployStagingProject:
         phases:
           build:
             commands:
-              - ./build-scripts/deploy-module.sh
+              - bash ./build-scripts/deploy-module.sh
     Artifacts:
       Type: CODEPIPELINE
       Packaging: NONE
