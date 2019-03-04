@@ -6,7 +6,7 @@ provider:
   stage: ${self:custom.stage}
   region: us-east-1
 
-custom: ${file(../custom.yml)}
+custom: ${file(../backend/custom.yml)}
 
 resources:
   Outputs:
