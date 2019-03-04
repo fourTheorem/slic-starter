@@ -115,6 +115,7 @@ NewList.propTypes = {
   creating: PropTypes.bool.isRequired,
   createdListId: PropTypes.string,
   creationError: PropTypes.object,
+  dispatch: PropTypes.func.isRequired,
   classes: PropTypes.object.isRequired
 }
 
