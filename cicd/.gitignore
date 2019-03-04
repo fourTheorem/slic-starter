@@ -7,8 +7,3 @@ jspm_packages
 
 changed-modules.env
 
-# Temporary Git repo for checking changes
-_GIT_REPO/
-
-# Temporary output generate during build
-module-config.env

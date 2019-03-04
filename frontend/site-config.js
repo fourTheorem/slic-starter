@@ -1,5 +1,9 @@
 module.exports = serverless => {
-  const stage = serverless.service.provider.stage
+  const stage =
+    process.env.SLIC_STAGE ||
+    (() => {
+      throw new Error('SLIC_STAGE is not set')
+    })()
 
   const region = 'us-east-1'
   const stackName = `slic-starter-certs-${stage}`

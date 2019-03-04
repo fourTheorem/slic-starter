@@ -91,8 +91,9 @@ ${moduleName}BuildModuleProject:
               - bash ./build-scripts/build-phase.sh
         artifacts:
             files:
+                - 'build-scripts'
                 - '${moduleName}/serverless.yml'
-                - '${moduleName}/node_moduleNames'
+                - '${moduleName}/node_modules'
                 - '${moduleName}/package.json'
                 - '${moduleName}/package-lock.json'
                 - '${moduleName}/build-artifacts'
