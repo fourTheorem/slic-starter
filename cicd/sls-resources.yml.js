@@ -91,6 +91,8 @@ ${moduleName}BuildModuleProject:
               - bash ./build-scripts/build-phase.sh
         artifacts:
             files:
+                - '*.yml',
+                - '*.js',
                 - 'build-scripts/**/*'
                 - '${moduleName}/*.yml'
                 - '${moduleName}/*.js'
