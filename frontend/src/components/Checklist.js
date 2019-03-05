@@ -48,25 +48,6 @@ class Checklist extends Component {
     confirmDeleteOpen: false
   }
 
-  validate = () => this.state.newEntryTitle.trim().length > 0
-
-  handleSubmit = event => {
-    event.preventDefault()
-    if (this.validate()) {
-      this.props.dispatch(
-        addEntry({
-          listId: this.props.list.listId,
-          title: this.state.newEntryTitle
-        })
-      )
-    }
-    this.setState({ newEntryTitle: '' })
-  }
-
-  handleEntryTitleChange = ({ target: { value } }) => {
-    this.setState({ newEntryTitle: value })
-  }
-
   componentDidUpdate(prevProps) {
     if (prevProps.list && !this.props.list) {
       // The list was deleted - go back home
@@ -78,10 +59,30 @@ class Checklist extends Component {
   }
 
   componentDidMount() {
+    this.setState({ newEntryTitle: '' })
     const { list, dispatch } = this.props
     if (this.props.list) {
       dispatch(loadEntries({ listId: list.listId }))
     }
+  }
+
+  validate = () => this.state.newEntryTitle.trim().length > 0
+
+  handleSubmit = event => {
+    event.preventDefault()
+    if (this.validate()) {
+      this.props.dispatch(
+        addEntry({
+          listId: this.props.list.listId,
+          title: this.state.newEntryTitle
+        })
+      )
+      this.setState({ newEntryTitle: '' })
+    }
+  }
+
+  handleEntryTitleChange = ({ target: { value } }) => {
+    this.setState({ newEntryTitle: value })
   }
 
   handleChange = ({ target: { id, checked } }) => {
@@ -117,7 +118,9 @@ class Checklist extends Component {
       entries,
       list,
       gettingListEntries,
-      listEntriesError
+      listEntriesError,
+      entryValueUpdated,
+      entryValueUpdateError
     } = this.props
 
     if (!list) {
@@ -172,10 +175,17 @@ class Checklist extends Component {
         </ListItem>
       ) : null
 
+    const entryError =
+      !entryValueUpdated && entryValueUpdateError ? (
+        <ListItem>
+          <ErrorMessage messageId={entryValueUpdateError.id} />
+        </ListItem>
+      ) : null
+
     const entriesLoading = gettingListEntries ? <Loading /> : null
 
     return list ? (
-      <form id="new-item-form" onSubmit={this.handleSubmit}>
+      <form id="new-item-form" onSubmit={this.handleSubmit} autoComplete="off">
         {confirmDeleteDialog}
         <Grid container layout="row" className={classes.root} justify="center">
           <Grid item xs={10} sm={8} md={4} lg={3}>
@@ -191,12 +201,13 @@ class Checklist extends Component {
                       <Checkbox
                         onChange={this.handleChange}
                         id={entry.entId}
-                        checked={entry.value}
+                        checked={!!entry.value}
                       />
                     </ListItem>
                   ))}
                   {newItemEntry}
                   {errorItem}
+                  {entryError}
                 </List>
               </CardContent>
               <CardActions>

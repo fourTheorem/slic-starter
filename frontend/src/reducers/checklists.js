@@ -187,7 +187,6 @@ export default (state = defaultState, { type, meta, payload, error }) => {
       return {
         ...state,
         updatingEntryValue: true,
-        entryValueUpdated: false,
         entryValueUpdateError: null
       }
     case SET_ENTRY_VALUE_SUCCESS:
@@ -201,7 +200,6 @@ export default (state = defaultState, { type, meta, payload, error }) => {
       return {
         ...state,
         updatingEntryValue: false,
-        entryValueUpdated: true,
         entryValueUpdateError: null,
         entriesByListId: {
           ...state.entriesByListId,
@@ -212,7 +210,6 @@ export default (state = defaultState, { type, meta, payload, error }) => {
       return {
         ...state,
         updatingEntryValue: false,
-        entryValueUpdated: false,
         entryValueUpdateError: error
       }
 
