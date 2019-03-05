@@ -1,0 +1,10 @@
+stage: ${opt:stage, 'dev'}
+runtime: nodejs8.10
+nsDomain: sliclists.com
+domainPrefixes:
+  local: ''
+  dev: dev.
+  stg: stg.
+  prod: ''
+apiDomainName: api.${self:custom.domainPrefixes.${self:provider.stage}}${self:custom.nsDomain}
+siteDomainName: ${self:custom.domainPrefixes.${self:provider.stage}}${self:custom.nsDomain}

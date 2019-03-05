@@ -9,7 +9,7 @@ run_deploy () {
 	cd ${MODULE_NAME}
   export SLIC_STAGE=dev # TODO - Change this to pipeline-dependent build
   # TODO Dynamic stage (stg/prod)
-  serverless deploy --stage ${SLIC_STAGE} --package build-artifacts/${SLIC_STAGE}
+  serverless deploy --stage ${SLIC_STAGE} --package build-artifacts/${SLIC_STAGE} --force
 }
 
 if [ $SKIP_MODULE -eq 0 ]; then
