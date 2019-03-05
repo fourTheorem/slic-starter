@@ -119,8 +119,8 @@ class Checklist extends Component {
       list,
       gettingListEntries,
       listEntriesError,
-      entryValueUpdated,
-      entryValueUpdateError
+      entryValueUpdateError,
+      updatingEntryValue
     } = this.props
 
     if (!list) {
@@ -176,7 +176,7 @@ class Checklist extends Component {
       ) : null
 
     const entryError =
-      !entryValueUpdated && entryValueUpdateError ? (
+      !updatingEntryValue && entryValueUpdateError ? (
         <ListItem>
           <ErrorMessage messageId={entryValueUpdateError.id} />
         </ListItem>
