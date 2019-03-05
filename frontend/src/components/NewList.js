@@ -58,7 +58,11 @@ class NewList extends Component {
     ) : null
 
     return (
-      <form onSubmit={this.handleSubmit} className={classes.form}>
+      <form
+        onSubmit={this.handleSubmit}
+        className={classes.form}
+        autoComplete="off"
+      >
         <Grid
           container
           direction="row"

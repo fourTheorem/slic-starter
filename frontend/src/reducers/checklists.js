@@ -14,8 +14,16 @@ import {
 import {
   ADD_ENTRY_REQUEST,
   ADD_ENTRY_SUCCESS,
-  ADD_ENTRY_FAILURE
+  ADD_ENTRY_FAILURE,
+  LOAD_ENTRIES_REQUEST,
+  LOAD_ENTRIES_SUCCESS,
+  LOAD_ENTRIES_FAILURE,
+  SET_ENTRY_VALUE_REQUEST,
+  SET_ENTRY_VALUE_SUCCESS,
+  SET_ENTRY_VALUE_FAILURE
 } from '../actions/entries'
+
+import findIndex from 'lodash/findIndex'
 
 const defaultState = {
   creating: false,
@@ -145,6 +153,66 @@ export default (state = defaultState, { type, meta, payload, error }) => {
         addEntryError: error,
         addingEntry: false
       }
+
+    case LOAD_ENTRIES_REQUEST:
+      return {
+        ...state,
+        listEntriesError: null,
+        gettingListEntries: true,
+        fetchedListEntries: false
+      }
+
+    case LOAD_ENTRIES_SUCCESS:
+      return {
+        ...state,
+        listEntriesError: null,
+        gettingListEntries: false,
+        fetchedListEntries: true,
+        entriesByListId: {
+          ...state.entriesByListId,
+          [meta.listId]: Object.entries(payload).map(pair => ({
+            entId: pair[0],
+            ...pair[1]
+          }))
+        }
+      }
+    case LOAD_ENTRIES_FAILURE:
+      return {
+        ...state,
+        listEntriesError: error,
+        gettingListEntries: false,
+        fetchedListEntries: false
+      }
+    case SET_ENTRY_VALUE_REQUEST:
+      return {
+        ...state,
+        updatingEntryValue: true,
+        entryValueUpdateError: null
+      }
+    case SET_ENTRY_VALUE_SUCCESS:
+      const oldEntries = state.entriesByListId[meta.listId]
+      const index = findIndex(oldEntries, { entId: meta.entry.entId })
+      const updatedEntries = [...oldEntries]
+      if (index > -1) {
+        updatedEntries[index] = meta.entry
+      }
+
+      return {
+        ...state,
+        updatingEntryValue: false,
+        entryValueUpdateError: null,
+        entriesByListId: {
+          ...state.entriesByListId,
+          [meta.listId]: updatedEntries
+        }
+      }
+    case SET_ENTRY_VALUE_FAILURE:
+      return {
+        ...state,
+        updatingEntryValue: false,
+        entryValueUpdateError: error
+      }
+
     default:
       return state
   }

@@ -23,13 +23,12 @@ import {
   Typography
 } from '@material-ui/core'
 import { Delete } from '@material-ui/icons'
-import { CircularProgress } from '@material-ui/core'
+import { CircularProgress, Checkbox } from '@material-ui/core'
 import { withStyles } from '@material-ui/core/styles'
-
 import ErrorMessage from './ErrorMessage'
 import Loading from './Loading'
 import { removeList } from '../actions/checklists'
-import { addEntry } from '../actions/entries'
+import { addEntry, loadEntries, setEntryValue } from '../actions/entries'
 
 const styles = theme => ({
   root: {
@@ -49,6 +48,24 @@ class Checklist extends Component {
     confirmDeleteOpen: false
   }
 
+  componentDidUpdate(prevProps) {
+    if (prevProps.list && !this.props.list) {
+      // The list was deleted - go back home
+      this.props.dispatch(push('/'))
+    } else if (!prevProps.list && this.props.list) {
+      const { list, dispatch } = this.props
+      dispatch(loadEntries({ listId: list.listId }))
+    }
+  }
+
+  componentDidMount() {
+    this.setState({ newEntryTitle: '' })
+    const { list, dispatch } = this.props
+    if (this.props.list) {
+      dispatch(loadEntries({ listId: list.listId }))
+    }
+  }
+
   validate = () => this.state.newEntryTitle.trim().length > 0
 
   handleSubmit = event => {
@@ -60,17 +77,23 @@ class Checklist extends Component {
           title: this.state.newEntryTitle
         })
       )
+      this.setState({ newEntryTitle: '' })
     }
   }
 
-  handleEntryTitleChange = ({ target: { value } }) =>
+  handleEntryTitleChange = ({ target: { value } }) => {
     this.setState({ newEntryTitle: value })
+  }
 
-  componentDidUpdate(prevProps) {
-    if (prevProps.list && !this.props.list) {
-      // The list was deleted - go back home
-      this.props.dispatch(push('/'))
-    }
+  handleChange = ({ target: { id, checked } }) => {
+    const { dispatch, list, entries } = this.props
+    const entry = entries.find(ent => ent.entId === id)
+    dispatch(
+      setEntryValue({
+        listId: list.listId,
+        entry: { ...entry, value: checked }
+      })
+    )
   }
 
   handleRemoveRequest = () => {
@@ -93,7 +116,11 @@ class Checklist extends Component {
       removing,
       classes,
       entries,
-      list
+      list,
+      gettingListEntries,
+      listEntriesError,
+      entryValueUpdateError,
+      updatingEntryValue
     } = this.props
 
     if (!list) {
@@ -148,8 +175,17 @@ class Checklist extends Component {
         </ListItem>
       ) : null
 
+    const entryError =
+      !updatingEntryValue && entryValueUpdateError ? (
+        <ListItem>
+          <ErrorMessage messageId={entryValueUpdateError.id} />
+        </ListItem>
+      ) : null
+
+    const entriesLoading = gettingListEntries ? <Loading /> : null
+
     return list ? (
-      <form id="new-item-form" onSubmit={this.handleSubmit}>
+      <form id="new-item-form" onSubmit={this.handleSubmit} autoComplete="off">
         {confirmDeleteDialog}
         <Grid container layout="row" className={classes.root} justify="center">
           <Grid item xs={10} sm={8} md={4} lg={3}>
@@ -162,10 +198,16 @@ class Checklist extends Component {
                   {entries.map((entry, index) => (
                     <ListItem key={index}>
                       <ListItemText>{entry.title}</ListItemText>
+                      <Checkbox
+                        onChange={this.handleChange}
+                        id={entry.entId}
+                        checked={!!entry.value}
+                      />
                     </ListItem>
                   ))}
                   {newItemEntry}
                   {errorItem}
+                  {entryError}
                 </List>
               </CardContent>
               <CardActions>
