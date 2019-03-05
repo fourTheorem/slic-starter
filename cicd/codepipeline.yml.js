@@ -1,5 +1,5 @@
 'use strict'
-const { moduleNames } = require('./modules')
+const { moduleNames, deployOrder } = require('./modules')
 
 module.exports = () => `
       Type: AWS::CodePipeline::Pipeline
@@ -65,7 +65,7 @@ module.exports = () => `
             Actions:
       ${moduleNames
         .map(
-          (moduleName, index) => `
+          moduleName => `
               - Name: staging_deploy_${moduleName}
                 InputArtifacts:
                   - Name: $\{self:custom.stage}-slic-built-${moduleName}
@@ -76,7 +76,7 @@ module.exports = () => `
                   Provider: CodeBuild
                 Configuration:
                   ProjectName: slic-deploy-stg-${moduleName}
-                RunOrder: ${index + 1}
+                RunOrder: ${deployOrder[moduleName]}
 `
         )
         .join('')}
