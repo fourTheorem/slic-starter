@@ -56,6 +56,7 @@
     "not op_mini all"
   ],
   "devDependencies": {
+    "awscred": "^1.4.2",
     "eslint-config-prettier": "^4.1.0",
     "eslint-plugin-prettier": "^3.0.1",
     "eslint-plugin-react-app": "^4.0.1",
