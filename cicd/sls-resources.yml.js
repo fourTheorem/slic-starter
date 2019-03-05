@@ -92,11 +92,13 @@ ${moduleName}BuildModuleProject:
         artifacts:
             files:
                 - 'build-scripts/**/*'
-                - '${moduleName}/serverless.yml'
+                - '${moduleName}/*.yml'
+                - '${moduleName}/*.js'
                 - '${moduleName}/node_modules/**/*'
                 - '${moduleName}/package.json'
                 - '${moduleName}/package-lock.json'
                 - '${moduleName}/build-artifacts/**/*'
+                - '${moduleName}/build/**/*'
                 - 'module-config.env'
     Artifacts:
       Type: CODEPIPELINE
