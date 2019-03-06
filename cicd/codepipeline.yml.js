@@ -80,6 +80,19 @@ module.exports = () => `
 `
         )
         .join('')}
+          - Name: IntegrationTest
+            Actions:
+              - Name: IntegrationTest
+                InputArtifacts:
+                  - Name: $\{self:custom.stage}-slic-source
+                ActionTypeId:
+                  Category: Build
+                  Owner: AWS
+                  Version: 1
+                  Provider: CodeBuild
+                Configuration:
+                  ProjectName: slic-integration-test
+                RunOrder: 1
         ArtifactStore:
           Type: S3
           Location: $\{self:custom.buildBucket}

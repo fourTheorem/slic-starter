@@ -55,8 +55,8 @@ codebuildCheckChangesProject:
             commands:
               - bash ./build-scripts/check-changes.sh https://github.com/$\{self:custom.sourceRepoOwner}/$\{self:custom.sourceRepoName}.git $CODEBUILD_RESOLVED_SOURCE_VERSION
         artifacts:
-            files:
-                - '**/*'
+          files:
+            - '**/*'
     Artifacts:
       Type: CODEPIPELINE
       Packaging: NONE
@@ -64,8 +64,8 @@ codebuildCheckChangesProject:
 ${includeFile('./codebuild-environment.yml')}
 
 ${moduleNames
-    .map(
-      moduleName => `
+  .map(
+    moduleName => `
 ${moduleName}BuildModuleProject:
   Type: AWS::CodeBuild::Project
   Properties:
@@ -80,40 +80,40 @@ ${moduleName}BuildModuleProject:
           variables:
             MODULE_NAME: ${moduleName}
         phases:
-          pre_build:
-            commands:
-              - bash ./build-scripts/pre_build-phase.sh
           install:
             commands:
               - bash ./build-scripts/install-phase.sh
+          pre_build:
+            commands:
+              - bash ./build-scripts/pre_build-phase.sh
           build:
             commands:
               - bash ./build-scripts/build-phase.sh
         artifacts:
-            files:
-                - '*.yml',
-                - '*.js',
-                - 'build-scripts/**/*'
-                - '${moduleName}/*.yml'
-                - '${moduleName}/*.js'
-                - '${moduleName}/node_modules/**/*'
-                - '${moduleName}/package.json'
-                - '${moduleName}/package-lock.json'
-                - '${moduleName}/build-artifacts/**/*'
-                - '${moduleName}/build/**/*'
-                - 'module-config.env'
+          files:
+            - '*.yml'
+            - '*.js'
+            - 'build-scripts/**/*'
+            - '${moduleName}/*.yml'
+            - '${moduleName}/*.js'
+            - '${moduleName}/node_modules/**/*'
+            - '${moduleName}/package.json'
+            - '${moduleName}/package-lock.json'
+            - '${moduleName}/build-artifacts/**/*'
+            - '${moduleName}/build/**/*'
+            - 'module-config.env'
     Artifacts:
       Type: CODEPIPELINE
       Packaging: NONE
     Environment:
 ${includeFile('./codebuild-environment.yml')}
 `
-    )
-    .join('')}
+  )
+  .join('')}
 
 ${moduleNames
-    .map(
-      moduleName => `
+  .map(
+    moduleName => `
 ${moduleName}DeployStagingProject:
   Type: AWS::CodeBuild::Project
   Properties:
@@ -137,6 +137,31 @@ ${moduleName}DeployStagingProject:
     Environment:
 ${includeFile('./codebuild-environment.yml')}
 `
-    )
-    .join('')}
+  )
+  .join('')}
+
+integrationTestProject:
+  Type: AWS::CodeBuild::Project
+  Properties:
+    Name: slic-integration-test
+    ServiceRole:
+      Fn::GetAtt: [codeBuildRole, Arn]
+    Source:
+      Type: CODEPIPELINE
+      BuildSpec: |
+        version: 0.2
+        phases:
+          install:
+            commands:
+              - cd integration-tests
+              - npm install
+          build:
+            commands:
+              - source build-scripts/assume-cross-account-role.env
+              - npm test
+    Artifacts:
+      Type: CODEPIPELINE
+      Packaging: NONE
+    Environment:
+${includeFile('./codebuild-environment.yml')}
 `)
