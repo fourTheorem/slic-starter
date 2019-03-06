@@ -219,7 +219,7 @@ export default (state = defaultState, { type, meta, payload, error }) => {
       return {
         ...state,
         removingEntry: false,
-        entryRemovalError: null
+        removeEntryError: null
       }
 
     case REMOVE_ENTRY_SUCCESS: {
@@ -230,7 +230,7 @@ export default (state = defaultState, { type, meta, payload, error }) => {
       return {
         ...state,
         removingEntry: false,
-        entryRemovalError: null,
+        removeEntryError: null,
         entriesByListId: {
           ...state.entriesByListId,
           [meta.listId]: updatedEntries
@@ -241,7 +241,7 @@ export default (state = defaultState, { type, meta, payload, error }) => {
       return {
         ...state,
         removingEntry: false,
-        entryRemovalError: error
+        removeEntryError: error
       }
 
     default:

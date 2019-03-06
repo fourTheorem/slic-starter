@@ -134,7 +134,9 @@ class Checklist extends Component {
       entries,
       list,
       entryValueUpdateError,
-      updatingEntryValue
+      updatingEntryValue,
+      removingEntry,
+      removeEntryError
     } = this.props
 
     if (!list) {
@@ -182,9 +184,14 @@ class Checklist extends Component {
     const errorItem =
       !gettingListEntries &&
       !addingEntry &&
-      (listEntriesError || addEntryError) ? (
+      !removingEntry &&
+      (listEntriesError || addEntryError || removeEntryError) ? (
         <ListItem>
-          <ErrorMessage messageId={(listEntriesError || addEntryError).id} />
+          <ErrorMessage
+            messageId={
+              (listEntriesError || addEntryError || removeEntryError).id
+            }
+          />
         </ListItem>
       ) : null
 
@@ -255,6 +262,8 @@ Checklist.propTypes = {
   updatingEntryValue: PropTypes.bool.isRequired,
   listEntriesError: PropTypes.isRequired,
   entryValueUpdateError: PropTypes.object,
+  removeEntryError: PropTypes.object,
+  removingEntry: PropTypes.object,
   removing: PropTypes.bool.isRequired,
   classes: PropTypes.object.isRequired,
   entries: PropTypes.array.isRequired,
