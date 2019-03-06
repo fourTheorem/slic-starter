@@ -126,17 +126,14 @@ class Checklist extends Component {
   render() {
     const {
       addingEntry,
-      addEntryError,
       removing,
       classes,
       gettingListEntries,
-      listEntriesError,
       entries,
       list,
-      entryValueUpdateError,
       updatingEntryValue,
       removingEntry,
-      removeEntryError
+      error
     } = this.props
 
     if (!list) {
@@ -147,7 +144,7 @@ class Checklist extends Component {
     // ConfirmationDialog
     const confirmDeleteDialog = (
       <ConfirmationDialog
-        tile="Delete List?"
+        title="Delete List?"
         open={this.state.confirmDeleteListOpen}
         message={`Are you sure you want to remove the list '${list &&
           list.name}' permanently?`}
@@ -158,7 +155,7 @@ class Checklist extends Component {
 
     const deleteEntryDialog = (
       <ConfirmationDialog
-        tile="Delete Entry?"
+        title="Delete Entry?"
         open={this.state.confirmDeleteEntryOpen}
         message="Are you sure you want to remove this entry permanently?"
         onConfirm={this.handleRemoveListEntry}
@@ -185,20 +182,10 @@ class Checklist extends Component {
       !gettingListEntries &&
       !addingEntry &&
       !removingEntry &&
-      (listEntriesError || addEntryError || removeEntryError) ? (
+      !updatingEntryValue &&
+      error ? (
         <ListItem>
-          <ErrorMessage
-            messageId={
-              (listEntriesError || addEntryError || removeEntryError).id
-            }
-          />
-        </ListItem>
-      ) : null
-
-    const entryError =
-      !updatingEntryValue && entryValueUpdateError ? (
-        <ListItem>
-          <ErrorMessage messageId={entryValueUpdateError.id} />
+          <ErrorMessage messageId={error.id} />
         </ListItem>
       ) : null
 
@@ -232,7 +219,6 @@ class Checklist extends Component {
                   ))}
                   {newItemEntry}
                   {errorItem}
-                  {entryError}
                 </List>
               </CardContent>
               <CardActions>
@@ -255,19 +241,16 @@ class Checklist extends Component {
 }
 
 Checklist.propTypes = {
-  addEntryError: PropTypes.object,
   addingEntry: PropTypes.bool.isRequired,
   dispatch: PropTypes.func.isRequired,
   gettingListEntries: PropTypes.bool.isRequired,
   updatingEntryValue: PropTypes.bool.isRequired,
-  listEntriesError: PropTypes.bool.isRequired,
-  entryValueUpdateError: PropTypes.bool,
-  removeEntryError: PropTypes.bool,
   removingEntry: PropTypes.bool,
   removing: PropTypes.bool.isRequired,
   classes: PropTypes.object.isRequired,
   entries: PropTypes.array.isRequired,
-  list: PropTypes.object
+  list: PropTypes.object,
+  error: PropTypes.object
 }
 
 const makeMapStateToProps = (initialState, ownProps) => {
@@ -280,30 +263,34 @@ const makeMapStateToProps = (initialState, ownProps) => {
   return ({
     checklists: {
       addingEntry,
-      addEntryError,
-      entryValueUpdateError,
       gettingListEntries,
-      listEntriesError,
       listsById,
       entriesByListId,
       removing,
-      updatingEntryValue
+      updatingEntryValue,
+      addEntryError,
+      listEntriesError,
+      entryValueUpdateError,
+      removalError,
+      removeEntryError
     }
   }) => {
     const list = listId ? listsById[listId] : {}
     const entries = entriesByListId[listId] || []
     return {
-      addingEntry,
-      addEntryError,
       entries,
       entriesByListId,
-      entryValueUpdateError,
       gettingListEntries,
       list,
       listsById,
-      listEntriesError,
       removing,
-      updatingEntryValue
+      updatingEntryValue,
+      error:
+        addEntryError ||
+        listEntriesError ||
+        entryValueUpdateError ||
+        removeEntryError ||
+        removalError
     }
   }
 }

@@ -38,7 +38,7 @@ const defaultState = {
   updatingEntryValue: false,
   addingEntry: false,
   gettingListEntries: false,
-  listEntriesError: false
+  listEntriesError: {}
 }
 
 export default (state = defaultState, { type, meta, payload, error }) => {

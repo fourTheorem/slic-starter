@@ -39,14 +39,6 @@ export default class ConfirmationDialog extends Component {
   }
 }
 
-ConfirmationDialog.defaultProps = {
-  title: '',
-  message: '',
-  onClose: {},
-  onConfirm: {},
-  open: {}
-}
-
 ConfirmationDialog.propTypes = {
   title: PropTypes.string.isRequired,
   message: PropTypes.string.isRequired,
