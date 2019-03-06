@@ -130,6 +130,8 @@ class Checklist extends Component {
       addEntryError,
       removing,
       classes,
+      gettingListEntries,
+      listEntriesError,
       entries,
       list,
       entryValueUpdateError,
@@ -179,9 +181,11 @@ class Checklist extends Component {
     )
 
     const errorItem =
-      !addingEntry && addEntryError ? (
+      !gettingListEntries &&
+      !addingEntry &&
+      (listEntriesError || addEntryError) ? (
         <ListItem>
-          <ErrorMessage messageId={addEntryError.id} />
+          <ErrorMessage messageId={(listEntriesError || addEntryError).id} />
         </ListItem>
       ) : null
 
@@ -192,7 +196,7 @@ class Checklist extends Component {
         </ListItem>
       ) : null
 
-    return list ? (
+    return list && !gettingListEntries ? (
       <form id="new-item-form" onSubmit={this.handleSubmit} autoComplete="off">
         {confirmDeleteDialog}
         {deleteEntryDialog}
@@ -246,6 +250,12 @@ class Checklist extends Component {
 
 Checklist.propTypes = {
   addEntryError: PropTypes.object,
+  addingEntry: PropTypes.func.isRequired,
+  dispatch: PropTypes.func.isRequired,
+  gettingListEntries: PropTypes.bool.isRequired,
+  updatingEntryValue: PropTypes.bool.isRequired,
+  listEntriesError: PropTypes.isRequired,
+  entryValueUpdateError: PropTypes.object,
   removing: PropTypes.bool.isRequired,
   classes: PropTypes.object.isRequired,
   entries: PropTypes.array.isRequired,
@@ -263,9 +273,13 @@ const makeMapStateToProps = (initialState, ownProps) => {
     checklists: {
       addingEntry,
       addEntryError,
+      entryValueUpdateError,
+      gettingListEntries,
+      listEntriesError,
       listsById,
       entriesByListId,
-      removing
+      removing,
+      updatingEntryValue
     }
   }) => {
     const list = listId ? listsById[listId] : {}
@@ -273,9 +287,15 @@ const makeMapStateToProps = (initialState, ownProps) => {
     return {
       addingEntry,
       addEntryError,
-      removing,
       entries,
-      list
+      entriesByListId,
+      entryValueUpdateError,
+      gettingListEntries,
+      list,
+      listsById,
+      listEntriesError,
+      removing,
+      updatingEntryValue
     }
   }
 }

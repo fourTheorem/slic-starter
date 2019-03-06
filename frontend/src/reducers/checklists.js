@@ -1,3 +1,5 @@
+import findIndex from 'lodash/findIndex'
+
 import {
   LOAD_LISTS_REQUEST,
   LOAD_LISTS_SUCCESS,
@@ -25,8 +27,6 @@ import {
   REMOVE_ENTRY_SUCCESS,
   REMOVE_ENTRY_FAILURE
 } from '../actions/entries'
-
-import findIndex from 'lodash/findIndex'
 
 const defaultState = {
   creating: false,
