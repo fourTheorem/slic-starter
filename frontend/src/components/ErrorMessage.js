@@ -21,7 +21,7 @@ class ErrorMessage extends React.Component {
   }
 }
 
-Error.propTypes = {
+ErrorMessage.propTypes = {
   messageId: PropTypes.symbol.isRequired,
   classes: PropTypes.object.isRequired
 }

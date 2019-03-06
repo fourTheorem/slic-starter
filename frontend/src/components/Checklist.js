@@ -4,31 +4,31 @@ import { connect } from 'react-redux'
 import { Redirect } from 'react-router-dom'
 import { push } from 'connected-react-router'
 import {
-  Button,
   Card,
   CardActions,
   CardContent,
-  Dialog,
-  DialogActions,
-  DialogTitle,
-  DialogContent,
-  DialogContentText,
   List,
   ListItem,
   ListItemText,
   Grid,
-  Slide,
   TextField,
   IconButton,
   Typography
 } from '@material-ui/core'
-import { Delete } from '@material-ui/icons'
+import { Delete, Clear } from '@material-ui/icons'
 import { CircularProgress, Checkbox } from '@material-ui/core'
 import { withStyles } from '@material-ui/core/styles'
 import ErrorMessage from './ErrorMessage'
 import Loading from './Loading'
 import { removeList } from '../actions/checklists'
-import { addEntry, loadEntries, setEntryValue } from '../actions/entries'
+import {
+  addEntry,
+  loadEntries,
+  setEntryValue,
+  removeEntry
+} from '../actions/entries'
+
+import ConfirmationDialog from './ConfirmationDialog'
 
 const styles = theme => ({
   root: {
@@ -39,13 +39,11 @@ const styles = theme => ({
   }
 })
 
-function Transition(props) {
-  return <Slide direction="up" {...props} />
-}
-
 class Checklist extends Component {
   state = {
-    confirmDeleteOpen: false
+    confirmDeleteListOpen: false,
+    confirmDeleteEntryOpen: false,
+    entId: ''
   }
 
   componentDidUpdate(prevProps) {
@@ -96,31 +94,46 @@ class Checklist extends Component {
     )
   }
 
-  handleRemoveRequest = () => {
-    this.setState({ confirmDeleteOpen: true })
+  handleEntryRemoval = e => {
+    this.setState({ entId: '' })
+    this.setState({ confirmDeleteEntryOpen: true })
+    this.setState({ entId: e.currentTarget.id })
   }
 
-  handleCloseConfirmation = () => {
-    this.setState({ confirmDeleteOpen: false })
+  handleEntryRemovalClose = () => {
+    this.setState({ confirmDeleteEntryOpen: false })
   }
 
-  handleRemove = () => {
+  handleRemoveListRequest = () => {
+    this.setState({ confirmDeleteListOpen: true })
+  }
+
+  handleListRemovalClose = () => {
+    this.setState({ confirmDeleteListOpen: false })
+  }
+
+  handleRemoveList = () => {
     const { dispatch, list } = this.props
     dispatch(removeList({ listId: list.listId }))
+  }
+
+  handleRemoveListEntry = () => {
+    const { dispatch, list } = this.props
+    dispatch(removeEntry({ listId: list.listId, entId: this.state.entId }))
+    this.setState({ confirmDeleteEntryOpen: false })
   }
 
   render() {
     const {
       addingEntry,
-      addEntryError,
       removing,
       classes,
+      gettingListEntries,
       entries,
       list,
-      gettingListEntries,
-      listEntriesError,
-      entryValueUpdateError,
-      updatingEntryValue
+      updatingEntryValue,
+      removingEntry,
+      error
     } = this.props
 
     if (!list) {
@@ -128,29 +141,26 @@ class Checklist extends Component {
       return <Redirect to="/" />
     }
 
+    // ConfirmationDialog
     const confirmDeleteDialog = (
-      <Dialog
-        open={this.state.confirmDeleteOpen}
-        TransitionComponent={Transition}
-        keepMounted
-        onClose={this.handleCloseConfirmation}
-        aria-labelledby="alert-dialog-slide-title"
-        aria-describedby="alert-dialog-slide-description"
-      >
-        <DialogTitle id="alert-dialog-slide-title">Delete list?</DialogTitle>
-        <DialogContent>
-          <DialogContentText id="alert-dialog-slide-description">
-            {`Are you sure you want to remove the list '${list &&
-              list.name}' permanently?`}
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={this.handleRemove} color="primary">
-            Confirm
-          </Button>
-          <Button onClick={this.handleCloseConfirmation}>Cancel</Button>
-        </DialogActions>
-      </Dialog>
+      <ConfirmationDialog
+        title="Delete List?"
+        open={this.state.confirmDeleteListOpen}
+        message={`Are you sure you want to remove the list '${list &&
+          list.name}' permanently?`}
+        onConfirm={this.handleRemoveList}
+        onClose={this.handleListRemovalClose}
+      />
+    )
+
+    const deleteEntryDialog = (
+      <ConfirmationDialog
+        title="Delete Entry?"
+        open={this.state.confirmDeleteEntryOpen}
+        message="Are you sure you want to remove this entry permanently?"
+        onConfirm={this.handleRemoveListEntry}
+        onClose={this.handleEntryRemovalClose}
+      />
     )
 
     const newItemEntry = addingEntry ? (
@@ -169,24 +179,20 @@ class Checklist extends Component {
     )
 
     const errorItem =
-      !addingEntry && addEntryError ? (
+      !gettingListEntries &&
+      !addingEntry &&
+      !removingEntry &&
+      !updatingEntryValue &&
+      error ? (
         <ListItem>
-          <ErrorMessage messageId={addEntryError.id} />
+          <ErrorMessage messageId={error.id} />
         </ListItem>
       ) : null
 
-    const entryError =
-      !updatingEntryValue && entryValueUpdateError ? (
-        <ListItem>
-          <ErrorMessage messageId={entryValueUpdateError.id} />
-        </ListItem>
-      ) : null
-
-    const entriesLoading = gettingListEntries ? <Loading /> : null
-
-    return list ? (
+    return list && !gettingListEntries ? (
       <form id="new-item-form" onSubmit={this.handleSubmit} autoComplete="off">
         {confirmDeleteDialog}
+        {deleteEntryDialog}
         <Grid container layout="row" className={classes.root} justify="center">
           <Grid item xs={10} sm={8} md={4} lg={3}>
             <Card>
@@ -203,18 +209,23 @@ class Checklist extends Component {
                         id={entry.entId}
                         checked={!!entry.value}
                       />
+                      <IconButton
+                        onClick={this.handleEntryRemoval}
+                        id={entry.entId}
+                      >
+                        <Clear />
+                      </IconButton>
                     </ListItem>
                   ))}
                   {newItemEntry}
                   {errorItem}
-                  {entryError}
                 </List>
               </CardContent>
               <CardActions>
                 {removing ? (
                   <CircularProgress />
                 ) : (
-                  <IconButton onClick={this.handleRemoveRequest}>
+                  <IconButton onClick={this.handleRemoveListRequest}>
                     <Delete />
                   </IconButton>
                 )}
@@ -230,11 +241,16 @@ class Checklist extends Component {
 }
 
 Checklist.propTypes = {
-  addEntryError: PropTypes.object,
+  addingEntry: PropTypes.bool.isRequired,
+  dispatch: PropTypes.func.isRequired,
+  gettingListEntries: PropTypes.bool.isRequired,
+  updatingEntryValue: PropTypes.bool.isRequired,
+  removingEntry: PropTypes.bool,
   removing: PropTypes.bool.isRequired,
   classes: PropTypes.object.isRequired,
   entries: PropTypes.array.isRequired,
-  list: PropTypes.object
+  list: PropTypes.object,
+  error: PropTypes.object
 }
 
 const makeMapStateToProps = (initialState, ownProps) => {
@@ -247,20 +263,34 @@ const makeMapStateToProps = (initialState, ownProps) => {
   return ({
     checklists: {
       addingEntry,
-      addEntryError,
+      gettingListEntries,
       listsById,
       entriesByListId,
-      removing
+      removing,
+      updatingEntryValue,
+      addEntryError,
+      listEntriesError,
+      entryValueUpdateError,
+      removalError,
+      removeEntryError
     }
   }) => {
     const list = listId ? listsById[listId] : {}
     const entries = entriesByListId[listId] || []
     return {
-      addingEntry,
-      addEntryError,
-      removing,
       entries,
-      list
+      entriesByListId,
+      gettingListEntries,
+      list,
+      listsById,
+      removing,
+      updatingEntryValue,
+      error:
+        addEntryError ||
+        listEntriesError ||
+        entryValueUpdateError ||
+        removeEntryError ||
+        removalError
     }
   }
 }

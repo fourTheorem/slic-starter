@@ -62,6 +62,7 @@ class NavigationBar extends Component {
 
 NavigationBar.propTypes = {
   classes: PropTypes.object.isRequired,
+  dispatch: PropTypes.func.isRequired,
   titles: PropTypes.array.isRequired
 }
 
