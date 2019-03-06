@@ -1,4 +1,4 @@
 #!/bin/bash
-
-source `dirname $0`/scripts/assume-cross-account-role.env
+set -e
+source `dirname $0`/assume-cross-account-role.env
 npm test
