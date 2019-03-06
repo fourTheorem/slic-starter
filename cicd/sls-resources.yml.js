@@ -157,7 +157,7 @@ integrationTestProject:
               - npm install
           build:
             commands:
-              - bash build-scripts/run-integration-tests.sh
+              - SLIC_STAGE=dev bash ../build-scripts/run-integration-tests.sh
     Artifacts:
       Type: CODEPIPELINE
       Packaging: NONE
