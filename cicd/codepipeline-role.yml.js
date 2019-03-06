@@ -161,6 +161,7 @@ module.exports = () => `
                 - codebuild:StopBuild
               Resource:
                 - Fn::GetAtt: [ codebuildCheckChangesProject, Arn ]
+                - Fn::GetAtt: [ integrationTestProject, Arn ]
 ${moduleNames
   .map(
     moduleName =>

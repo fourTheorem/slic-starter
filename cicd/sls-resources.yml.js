@@ -157,8 +157,7 @@ integrationTestProject:
               - npm install
           build:
             commands:
-              - source build-scripts/assume-cross-account-role.env
-              - npm test
+              - bash build-scripts/run-integration-tests.sh
     Artifacts:
       Type: CODEPIPELINE
       Packaging: NONE
