@@ -7,8 +7,7 @@ import {
   DialogActions,
   DialogTitle,
   DialogContent,
-  DialogContentText,
-  Typography
+  DialogContentText
 } from '@material-ui/core'
 
 export default class ConfirmationDialog extends Component {

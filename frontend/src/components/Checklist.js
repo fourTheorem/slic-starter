@@ -4,7 +4,6 @@ import { connect } from 'react-redux'
 import { Redirect } from 'react-router-dom'
 import { push } from 'connected-react-router'
 import {
-  Button,
   Card,
   CardActions,
   CardContent,
@@ -119,7 +118,7 @@ class Checklist extends Component {
   }
 
   handleRemoveListEntry = () => {
-    const { dispatch, entries, list } = this.props
+    const { dispatch, list } = this.props
     dispatch(removeEntry({ listId: list.listId, entId: this.state.entId }))
     this.setState({ confirmDeleteEntryOpen: false })
   }
