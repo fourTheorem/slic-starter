@@ -34,7 +34,11 @@ const defaultState = {
   removing: false,
   entriesByListId: {},
   listIds: [],
-  listsById: {}
+  listsById: {},
+  updatingEntryValue: false,
+  addingEntry: false,
+  gettingListEntries: false,
+  listEntriesError: false
 }
 
 export default (state = defaultState, { type, meta, payload, error }) => {
