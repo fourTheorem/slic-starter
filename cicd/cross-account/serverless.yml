@@ -157,6 +157,12 @@ resources:
                 - 'arn:aws:events:*:*:rule/*'
             - Effect: Allow
               Action:
+                # Start permissions required for integration tests
+                - cognito-idp:AdminCreateUser
+                - cognito-idp:AdminDeleteUser
+                - cognito-idp:AdminInitiateAuth
+                - cognito-idp:AdminRespondToAuthChallenge
+                # End permissions required for integration tests
                 - cognito-idp:CreateUserPool*
                 - cognito-idp:DeleteUserPool*
                 - cognito-idp:ListUserPool*
