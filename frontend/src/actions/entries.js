@@ -61,3 +61,20 @@ export function setEntryValue({ listId, entry }) {
       })
   }
 }
+
+export const REMOVE_ENTRY_REQUEST = 'REMOVE_ENTRY_REQUEST'
+export const REMOVE_ENTRY_SUCCESS = 'REMOVE_ENTRY_SUCCESS'
+export const REMOVE_ENTRY_FAILURE = 'REMOVE_ENTRY_FAILURE'
+
+export function removeEntry({ listId, entId }) {
+  return function(dispatch) {
+    dispatch({ type: REMOVE_ENTRY_REQUEST })
+    AmplifyApi.del('checklists', `/checklist/${listId}/entries/${entId}`)
+      .then(result => {
+        dispatch({ type: REMOVE_ENTRY_SUCCESS, meta: { listId, entId } })
+      })
+      .catch(err => {
+        dispatch({ type: REMOVE_ENTRY_FAILURE, error: translateError(err) })
+      })
+  }
+}

@@ -20,7 +20,10 @@ import {
   LOAD_ENTRIES_FAILURE,
   SET_ENTRY_VALUE_REQUEST,
   SET_ENTRY_VALUE_SUCCESS,
-  SET_ENTRY_VALUE_FAILURE
+  SET_ENTRY_VALUE_FAILURE,
+  REMOVE_ENTRY_REQUEST,
+  REMOVE_ENTRY_SUCCESS,
+  REMOVE_ENTRY_FAILURE
 } from '../actions/entries'
 
 import findIndex from 'lodash/findIndex'
@@ -211,6 +214,34 @@ export default (state = defaultState, { type, meta, payload, error }) => {
         ...state,
         updatingEntryValue: false,
         entryValueUpdateError: error
+      }
+    case REMOVE_ENTRY_REQUEST:
+      return {
+        ...state,
+        removingEntry: false,
+        entryRemovalError: null
+      }
+
+    case REMOVE_ENTRY_SUCCESS: {
+      const oldEntries = state.entriesByListId[meta.listId]
+      const updatedEntries = oldEntries.filter(
+        entry => entry.entId !== meta.entId
+      )
+      return {
+        ...state,
+        removingEntry: false,
+        entryRemovalError: null,
+        entriesByListId: {
+          ...state.entriesByListId,
+          [meta.listId]: updatedEntries
+        }
+      }
+    }
+    case REMOVE_ENTRY_FAILURE:
+      return {
+        ...state,
+        removingEntry: false,
+        entryRemovalError: error
       }
 
     default:
