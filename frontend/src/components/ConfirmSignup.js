@@ -133,6 +133,7 @@ class ConfirmSignup extends Component {
               >
                 <Grid item>
                   <Button
+                    id="resend-code-btn"
                     className={classes.button}
                     onClick={this.resendConfirmation}
                     disabled={!this.state.email}
@@ -145,6 +146,7 @@ class ConfirmSignup extends Component {
                     vavriant="contained"
                     color="secondary"
                     type="submit"
+                    id="confirm-signup-btn"
                     className={classes.button}
                     disabled={
                       confirmingSignup || !this.validate() || !this.state.email

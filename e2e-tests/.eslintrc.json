@@ -1,0 +1,29 @@
+{
+  "extends": [
+    "react-app",
+    "prettier",
+    "prettier/react",
+    "plugin:testcafe/recommended"
+  ],
+  "plugins": ["prettier", "react-app", "testcafe"],
+  "parserOptions": {
+    "ecmaVersion": 2018,
+    "sourceType": "module",
+    "ecmaFeatures": {
+      "jsx": true
+    }
+  },
+  "rules": {
+    "prettier/prettier": "error",
+    "react/jsx-filename-extension": [
+      1,
+      {
+        "extensions": [".js", ".jsx"]
+      }
+    ],
+    "react/prop-types": 1,
+    "no-underscore-dangle": 0,
+    "import/imports-first": ["error", "absolute-first"],
+    "import/newline-after-import": "error"
+  }
+}

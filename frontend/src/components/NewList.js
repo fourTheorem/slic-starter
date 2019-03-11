@@ -96,6 +96,7 @@ class NewList extends Component {
               <Grid item>
                 <Button
                   variant="contained"
+                  id="new-list-button"
                   color="secondary"
                   type="submit"
                   disabled={creating || !this.validate()}

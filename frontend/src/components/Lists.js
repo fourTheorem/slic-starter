@@ -52,6 +52,7 @@ class Lists extends Component {
           color="primary"
           component={Link}
           to="/new-list"
+          id="new-list-button"
         >
           <Add />
         </Fab>

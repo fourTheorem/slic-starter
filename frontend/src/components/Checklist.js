@@ -144,6 +144,7 @@ class Checklist extends Component {
     // ConfirmationDialog
     const confirmDeleteDialog = (
       <ConfirmationDialog
+        id="list-confirmation"
         title="Delete List?"
         open={this.state.confirmDeleteListOpen}
         message={`Are you sure you want to remove the list '${list &&
@@ -155,6 +156,7 @@ class Checklist extends Component {
 
     const deleteEntryDialog = (
       <ConfirmationDialog
+        id="entry-confirmation"
         title="Delete Entry?"
         open={this.state.confirmDeleteEntryOpen}
         message="Are you sure you want to remove this entry permanently?"
