@@ -213,6 +213,7 @@ class Checklist extends Component {
                       />
                       <IconButton
                         onClick={this.handleEntryRemoval}
+                        name="delete-entry-btn"
                         id={entry.entId}
                       >
                         <Clear />
@@ -227,7 +228,10 @@ class Checklist extends Component {
                 {removing ? (
                   <CircularProgress />
                 ) : (
-                  <IconButton onClick={this.handleRemoveListRequest}>
+                  <IconButton
+                    id="delete-list-btn"
+                    onClick={this.handleRemoveListRequest}
+                  >
                     <Delete />
                   </IconButton>
                 )}

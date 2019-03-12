@@ -11,7 +11,8 @@ fixture(`Checklist test`)
 test('Add List Test', async t => {
   await t.typeText(page.emailInput, 'email')
   await t.typeText(page.passInput, 'password')
-  await t.click(page.loginBtn)
+  await t.click(page.loginBtn, { timeout: 3000 })
+
   await t.click(Selector('#new-list-button'))
   const listNameInput = Selector('#name')
   await t.typeText(listNameInput, 'First List')
@@ -22,47 +23,80 @@ test('Add List Test', async t => {
   await t.expect(getLocation()).contains('/list/')
 })
 
-test('Add item to list', async t => {
+test('Add entry to list', async t => {
   await t.typeText(page.emailInput, 'email')
   await t.typeText(page.passInput, 'password')
   await t.click(page.loginBtn)
-  const getLocation = ClientFunction(() => document.location.href)
-  await t.wait(3000)
-  await t.expect(getLocation()).contains('localhost:3000')
-  await t.click(Selector('a').nth(0))
+
+  await t.click(Selector('a').withAttribute('tabindex', '0'))
   await t.expect(Selector('h2').withText('First List')).exists
   await t.typeText('#newEntryTitle', 'New Item 1', { replace: true })
   await t.pressKey('enter')
   await t.expect(Selector('span').withText('New Item 1')).exists
+
   await t.typeText('#newEntryTitle', 'New Item 2', { replace: true })
+  await t.pressKey('enter')
   await t.expect(Selector('span').withText('New Item 2')).exists
-  await t.pressKey('enter')
+
   await t.typeText('#newEntryTitle', 'Another Entry', { replace: true })
+  await t.pressKey('enter')
   await t.expect(Selector('span').withText('Another Entry')).exists
-  await t.pressKey('enter')
+
   await t.typeText('#newEntryTitle', 'Last Entry', { replace: true })
-  await t.expect(Selector('span').withText('Last Entry')).exists
   await t.pressKey('enter')
+  await t.expect(Selector('span').withText('Last Entry')).exists
+})
+
+test('Change Entry Value', async t => {
+  await t.typeText(page.emailInput, 'email')
+  await t.typeText(page.passInput, 'password')
+  await t.click(page.loginBtn)
+  await t.click(Selector('a').withAttribute('tabindex', '0'))
+  await t.expect(Selector('h2').withText('First List')).exists
+
+  const checkbox = Selector('input').nth(0)
+  await t.click(checkbox)
+  await t.expect(checkbox.checked).ok()
 })
 
 test('Delete entry from a list', async t => {
   await t.typeText(page.emailInput, 'email')
   await t.typeText(page.passInput, 'password')
   await t.click(page.loginBtn)
-  const getLocation = ClientFunction(() => document.location.href)
-  await t.wait(3000)
 
-  await t.expect(getLocation()).contains('localhost:3000')
-  await t.click(Selector('a').nth(0))
+  await t.click(Selector('a').withAttribute('tabindex', '0', { timeout: 3000 }))
   await t.expect(Selector('h2').withText('First List')).exists
-  await t.click(Selector('button').nth(1))
-  await t.expect(Selector('h6').withText('Delete Entry?')).exists
+  await t.click(Selector('button').nth(2))
+  await await t.expect(Selector('h6').withText('Delete Entry?')).exists
 
   const confirmBtn = Selector('#entry-confirmation-confirm-btn')
-  const confirmListDeleteBtn = Selector('#list-confirmation-confirm-btn')
-  await t.expect(confirmBtn.visible).ok()
   await t.click(confirmBtn)
-  await t.click(Selector('button').nth(3))
-  await t.click(confirmListDeleteBtn)
-  await t.expect()
+  await t.expect(Selector('span').withText('Another Entry')).notOk
+})
+
+test('Delete a list', async t => {
+  await t.typeText(page.emailInput, 'email')
+  await t.typeText(page.passInput, 'password')
+  await t.click(page.loginBtn)
+
+  await t.click(Selector('a').withAttribute('tabindex', '0', { timeout: 3000 }))
+  await t.click(Selector('#delete-list-btn'))
+  const deleteListConfirmBtn = Selector('#list-confirmation-confirm-btn')
+
+  await t.click(deleteListConfirmBtn, { timeout: 3000 })
+  await t.expect(
+    Selector('h6').withText(
+      "You don't have any lists. Click the button to create one"
+    )
+  ).exists
+})
+
+test('Logout from current session', async t => {
+  await t.typeText(page.emailInput, 'email')
+  await t.typeText(page.passInput, 'password')
+  await t.click(page.loginBtn)
+
+  const url = ClientFunction(() => document.location.href)
+  await t.click(Selector('#logout-btn', { timeout: 3000 }))
+  await t.expect(url()).contains('/login')
 })

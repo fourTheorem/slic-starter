@@ -51,7 +51,7 @@ class NavigationBar extends Component {
           <Typography variant="h6" color="inherit" className={classes.grow}>
             {titles.join(' > ')}
           </Typography>
-          <Button color="inherit" onClick={this.handleLogout}>
+          <Button color="inherit" onClick={this.handleLogout} id="logout-btn">
             Log Out
           </Button>
         </Toolbar>
