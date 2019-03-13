@@ -8,7 +8,7 @@ fixture(`Checklist test`)
   .page('localhost:3000/login')
   .beforeEach(() => waitForReact())
 
-test('Add List Test', async t => {
+test('User can create a new List', async t => {
   await t.typeText(page.emailInput, 'email')
   await t.typeText(page.passInput, 'password')
   await t.click(page.loginBtn, { timeout: 3000 })
@@ -23,7 +23,7 @@ test('Add List Test', async t => {
   await t.expect(getLocation()).contains('/list/')
 })
 
-test('Add entry to list', async t => {
+test('Can add entries to newly created list', async t => {
   await t.typeText(page.emailInput, 'email')
   await t.typeText(page.passInput, 'password')
   await t.click(page.loginBtn)
@@ -47,34 +47,34 @@ test('Add entry to list', async t => {
   await t.expect(Selector('span').withText('Last Entry')).exists
 })
 
-test('Change Entry Value', async t => {
+test('Can mark Entries as Completed', async t => {
   await t.typeText(page.emailInput, 'email')
   await t.typeText(page.passInput, 'password')
   await t.click(page.loginBtn)
   await t.click(Selector('a').withAttribute('tabindex', '0'))
   await t.expect(Selector('h2').withText('First List')).exists
 
-  const checkbox = Selector('input').nth(0)
+  const checkbox = Selector('input').withAttribute('name', 'checkbox-entry-0')
   await t.click(checkbox)
   await t.expect(checkbox.checked).ok()
 })
 
-test('Delete entry from a list', async t => {
+test('Can delete an entry from an existing list', async t => {
   await t.typeText(page.emailInput, 'email')
   await t.typeText(page.passInput, 'password')
   await t.click(page.loginBtn)
 
   await t.click(Selector('a').withAttribute('tabindex', '0', { timeout: 3000 }))
   await t.expect(Selector('h2').withText('First List')).exists
-  await t.click(Selector('button').nth(2))
+  await t.click(Selector('#entry-0-delete'))
   await await t.expect(Selector('h6').withText('Delete Entry?')).exists
 
   const confirmBtn = Selector('#entry-confirmation-confirm-btn')
   await t.click(confirmBtn)
-  await t.expect(Selector('span').withText('Another Entry')).notOk
+  await t.expect(Selector('span').withText('New Item 1')).notOk
 })
 
-test('Delete a list', async t => {
+test('Can remove a full list, including entries', async t => {
   await t.typeText(page.emailInput, 'email')
   await t.typeText(page.passInput, 'password')
   await t.click(page.loginBtn)
@@ -91,7 +91,7 @@ test('Delete a list', async t => {
   ).exists
 })
 
-test('Logout from current session', async t => {
+test('Can Logout from the current session', async t => {
   await t.typeText(page.emailInput, 'email')
   await t.typeText(page.passInput, 'password')
   await t.click(page.loginBtn)

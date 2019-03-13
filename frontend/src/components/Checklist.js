@@ -209,12 +209,13 @@ class Checklist extends Component {
                       <Checkbox
                         onChange={this.handleChange}
                         id={entry.entId}
+                        name={'checkbox-entry-'.concat(index)}
                         checked={!!entry.value}
                       />
                       <IconButton
                         onClick={this.handleEntryRemoval}
-                        name="delete-entry-btn"
-                        id={entry.entId}
+                        name={'delete-entry-btn-'.concat(index)}
+                        id={'entry-'.concat(index).concat('delete')}
                       >
                         <Clear />
                       </IconButton>

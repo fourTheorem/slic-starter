@@ -7,7 +7,7 @@ fixture(`Login test`)
   .page('localhost:3000/login')
   .beforeEach(() => waitForReact())
 
-test('Login Test', async t => {
+test('User can Log in after signing up', async t => {
   await t.typeText(page.emailInput, 'email')
   await t.typeText(page.passInput, 'password')
   await t.click(page.loginBtn)
