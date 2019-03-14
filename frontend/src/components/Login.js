@@ -109,6 +109,7 @@ class Login extends Component {
                   variant="contained"
                   color="secondary"
                   type="submit"
+                  id="login-btn"
                   className={classes.button}
                   disabled={loggingIn || !this.validate()}
                 >

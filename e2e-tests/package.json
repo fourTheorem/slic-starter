@@ -1,0 +1,21 @@
+{
+  "name": "e2e-tests",
+  "version": "1.0.0",
+  "description": "",
+  "main": "*.test.js",
+  "scripts": {
+    "test": "testcafe chrome *.test.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^7.0.0",
+    "eslint-plugin-testcafe": "^0.2.1",
+    "testcafe": "^1.1.0",
+    "testcafe-react-selectors": "^3.1.0"
+  },
+  "devDependencies": {
+    "mailosaur": "^5.0.3",
+    "serverless-dotenv-plugin": "^2.0.1"
+  }
+}

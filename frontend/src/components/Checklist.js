@@ -144,6 +144,7 @@ class Checklist extends Component {
     // ConfirmationDialog
     const confirmDeleteDialog = (
       <ConfirmationDialog
+        id="list-confirmation"
         title="Delete List?"
         open={this.state.confirmDeleteListOpen}
         message={`Are you sure you want to remove the list '${list &&
@@ -155,6 +156,7 @@ class Checklist extends Component {
 
     const deleteEntryDialog = (
       <ConfirmationDialog
+        id="entry-confirmation"
         title="Delete Entry?"
         open={this.state.confirmDeleteEntryOpen}
         message="Are you sure you want to remove this entry permanently?"
@@ -207,11 +209,13 @@ class Checklist extends Component {
                       <Checkbox
                         onChange={this.handleChange}
                         id={entry.entId}
+                        name={'checkbox-entry-'.concat(index)}
                         checked={!!entry.value}
                       />
                       <IconButton
                         onClick={this.handleEntryRemoval}
-                        id={entry.entId}
+                        name={'delete-entry-btn-'.concat(index)}
+                        id={'entry-'.concat(index).concat('delete')}
                       >
                         <Clear />
                       </IconButton>
@@ -225,7 +229,10 @@ class Checklist extends Component {
                 {removing ? (
                   <CircularProgress />
                 ) : (
-                  <IconButton onClick={this.handleRemoveListRequest}>
+                  <IconButton
+                    id="delete-list-btn"
+                    onClick={this.handleRemoveListRequest}
+                  >
                     <Delete />
                   </IconButton>
                 )}

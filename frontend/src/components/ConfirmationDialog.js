@@ -12,10 +12,11 @@ import {
 
 export default class ConfirmationDialog extends Component {
   render() {
-    const { title, message, open, onConfirm, onClose } = this.props
+    const { id, title, message, open, onConfirm, onClose } = this.props
 
     return (
       <Dialog
+        id={id}
         open={open}
         keepMounted
         onClose={onClose}
@@ -29,10 +30,12 @@ export default class ConfirmationDialog extends Component {
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={onConfirm} color="primary">
+          <Button onClick={onConfirm} color="primary" id={`${id}-confirm-btn`}>
             Confirm
           </Button>
-          <Button onClick={onClose}>Cancel</Button>
+          <Button onClick={onClose} id={`${id}-cancel-btn`}>
+            Cancel
+          </Button>
         </DialogActions>
       </Dialog>
     )
@@ -40,6 +43,7 @@ export default class ConfirmationDialog extends Component {
 }
 
 ConfirmationDialog.propTypes = {
+  id: PropTypes.string.isRequired,
   title: PropTypes.string.isRequired,
   message: PropTypes.string.isRequired,
   onClose: PropTypes.func.isRequired,

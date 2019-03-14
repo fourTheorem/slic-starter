@@ -100,6 +100,7 @@ class Signup extends Component {
               {errorItem}
               <Grid item>
                 <Button
+                  id="signup-btn"
                   variant="contained"
                   color="secondary"
                   type="submit"

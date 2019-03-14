@@ -2,7 +2,6 @@ service: slic-starter-frontend
 
 plugins:
   - serverless-s3-sync
-
 provider:
   name: aws
   runtime: ${self:custom.runtime}
