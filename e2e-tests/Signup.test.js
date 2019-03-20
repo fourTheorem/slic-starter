@@ -2,49 +2,42 @@ import { ClientFunction, Selector } from 'testcafe'
 import { waitForReact } from 'testcafe-react-selectors'
 import Page from './PageModels/PageModel.js'
 
-require('dotenv').config()
+const stageConfig = require('./stage-config')
 
-const Mailosaur = require('mailosaur')
-
-const client = new Mailosaur(process.env.MAILOSAUR_API_KEY)
 const page = new Page()
-const sendToEmail = client.servers.generateEmailAddress(
-  process.env.MAILOSAUR_SERVER_ID
-)
-let email = sendToEmail
+
+const url = stageConfig.getURLFromStage()
+const email = stageConfig.getEmail()
 
 fixture(`Signup test`)
-  .page('dev.sliclists.com/signup')
+  .page(url.concat('/signup')) //use env variables
   .beforeEach(() => waitForReact())
 
-test.only('User can sign up for a new account', async t => {
+test('User can sign up for a new account', async t => {
+  console.log(email)
+  await t.debug()
   await t.typeText(page.emailInput, email)
   await t.typeText(page.passInput, 'Slic123@')
   await t.click(Selector('button').withAttribute('tabindex', '0'))
+
+  const confirmationCode = await stageConfig.getCode(email)
+
   const getLocation = ClientFunction(() => document.location.href)
-  await t.expect(getLocation()).contains('/confirm-signup')
+  await t.expect(getLocation()).contains('/confirm-signup', { timeout: 5000 })
   const confirmationInput = Selector('#confirmationCode')
-  let body
-  let code
-  await client.messages
-    .waitFor(process.env.MAILOSAUR_SERVER_ID, {
-      sentTo: email
-    })
-    .then(email => {
-      body = email.html.body
-      const bodySplit = body.split(' ')
-      code = bodySplit[bodySplit.length - 1]
-    })
-  await t.typeText(confirmationInput, code)
-  await t.expect(confirmationInput.value).eql(code)
-  await t.click('#confirm-signup-btn')
+
+  await t.typeText(confirmationInput, confirmationCode)
+  console.log(confirmationCode)
+  await t.expect(confirmationInput.value).eql(confirmationCode)
+  await t.click(Selector('#confirm-signup-btn'))
   await t.expect(getLocation()).contains('/login')
 })
 
-test('User can have a valid confirmation code resent', async t => {
-  await t.typeText(page.emailInput, 'email')
-  await t.typeText(page.passInput, 'password')
-  await t.click('#signup-button')
+test.only('User can have a valid confirmation code resent', async t => {
+  const emailAdd = stageConfig.getEmail()
+  await t.typeText(page.emailInput, emailAdd)
+  await t.typeText(page.passInput, 'Slic123@')
+  await t.click('#signup-btn')
   const getLocation = ClientFunction(() => document.location.href)
   await t.expect(getLocation()).contains('/confirm-signup')
   await t.click(Selector('#resend-code-btn'))
