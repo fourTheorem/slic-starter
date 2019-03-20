@@ -33,11 +33,12 @@ test('User can sign up for a new account', async t => {
   await t.expect(getLocation()).contains('/login')
 })
 
-test.only('User can have a valid confirmation code resent', async t => {
+test('User can have a valid confirmation code resent', async t => {
   const emailAdd = stageConfig.getEmail()
   await t.typeText(page.emailInput, emailAdd)
   await t.typeText(page.passInput, 'Slic123@')
   await t.click('#signup-btn')
+  const confirmationCode = await stageConfig.getCode(emailAdd)
   const getLocation = ClientFunction(() => document.location.href)
   await t.expect(getLocation()).contains('/confirm-signup')
   await t.click(Selector('#resend-code-btn'))

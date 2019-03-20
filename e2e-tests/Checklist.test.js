@@ -20,13 +20,11 @@ test('User can create a new List', async t => {
   await t.typeText(page.emailInput, emailAdd[0])
   await t.typeText(page.passInput, 'Slic123@')
 
-  await t.click(Selector('#signup-btn', { timeout: 3000 }))
-  debugger
+  await t.click(Selector('#signup-btn', { timeout: 1000 }))
 
   const code = await stageConfig.getCode(emailAdd[0])
 
   await t.typeText(Selector('#confirmationCode'), code)
-  debugger
   await t.click(Selector('#confirm-signup-btn'))
 
   await t.typeText(page.emailInput, emailAdd[0])
@@ -86,12 +84,17 @@ test('Can delete an entry from an existing list', async t => {
 
   await t.click(Selector('a').withAttribute('tabindex', '0', { timeout: 1000 }))
   await t.expect(Selector('h2').withText('First List')).exists
-  await t.click(Selector('#entry-0delete'))
+  const deleteEntryBtn = Selector('button').withAttribute(
+    'name',
+    'delete-entry-btn-0'
+  )
+  await t.click(deleteEntryBtn)
+  await t.expect(deleteEntryBtn.exists).notOk
   await await t.expect(Selector('h6').withText('Delete Entry?')).exists
 
   const confirmBtn = Selector('#entry-confirmation-confirm-btn')
   await t.click(confirmBtn)
-  await t.expect(Selector('span').withText('New Item 1')).notOk
+  await t.expect(Selector('span').withText('New Item 1').exists).notOk
 })
 
 test('Can remove a full list, including entries', async t => {
