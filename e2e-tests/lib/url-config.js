@@ -21,18 +21,14 @@ export function getEmail() {
   let retriever
   let email
 
-  switch (stage) {
-    case 'local':
-      retriever = localConfig
-      break
-
-    default:
-      retriever = prodConfig
-      break
+  if (stage === 'local') {
+    retriever = localConfig
+  } else {
+    retriever = prodConfig
   }
 
   email = retriever.generateEmailAddress()
-  emailStore(email)
+  storeEmail(email)
   return email
 }
 
@@ -48,7 +44,7 @@ export function getCode(email) {
   }
 }
 
-function emailStore(email) {
+function storeEmail(email) {
   emailArr.push(email)
 }
 

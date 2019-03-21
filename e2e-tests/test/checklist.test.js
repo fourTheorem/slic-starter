@@ -29,7 +29,7 @@ test('User can create a new List', async t => {
 
   await t.typeText(page.emailInput, emailAdd[0])
   await t.typeText(page.passInput, 'Slic123@')
-  await t.click(page.loginBtn, { timeout: 1000 })
+  await t.click(page.loginBtn)
   await t.click(Selector('#new-list-button'))
 
   const listNameInput = Selector('#name')
@@ -44,7 +44,7 @@ test('User can create a new List', async t => {
 test('Can add entries to newly created list', async t => {
   await t.typeText(page.emailInput, emailAdd[0])
   await t.typeText(page.passInput, 'Slic123@')
-  await t.click(page.loginBtn)
+  await t.click(page.loginBtn, { timeout: 500 })
 
   await t.click(Selector('a').withAttribute('tabindex', '0'))
   await t.expect(Selector('h2').withText('First List')).exists
@@ -68,7 +68,7 @@ test('Can add entries to newly created list', async t => {
 test('Can mark Entries as Completed', async t => {
   await t.typeText(page.emailInput, emailAdd[0])
   await t.typeText(page.passInput, 'Slic123@')
-  await t.click(page.loginBtn)
+  await t.click(page.loginBtn, { timeout: 500 })
   await t.click(Selector('a').withAttribute('tabindex', '0'))
   await t.expect(Selector('h2').withText('First List')).exists
 
@@ -80,7 +80,7 @@ test('Can mark Entries as Completed', async t => {
 test('Can delete an entry from an existing list', async t => {
   await t.typeText(page.emailInput, emailAdd[0])
   await t.typeText(page.passInput, 'Slic123@')
-  await t.click(page.loginBtn)
+  await t.click(page.loginBtn, { timeout: 500 })
 
   await t.click(Selector('a').withAttribute('tabindex', '0', { timeout: 1000 }))
   await t.expect(Selector('h2').withText('First List')).exists
@@ -100,7 +100,7 @@ test('Can delete an entry from an existing list', async t => {
 test('Can remove a full list, including entries', async t => {
   await t.typeText(page.emailInput, emailAdd[0])
   await t.typeText(page.passInput, 'Slic123@')
-  await t.click(page.loginBtn)
+  await t.click(page.loginBtn, { timeout: 500 })
 
   await t.click(Selector('a').withAttribute('tabindex', '0', { timeout: 1000 }))
   await t.click(Selector('#delete-list-btn'))
