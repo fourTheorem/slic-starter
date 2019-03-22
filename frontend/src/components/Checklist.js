@@ -80,7 +80,9 @@ class Checklist extends Component {
   }
 
   handleEntryTitleChange = ({ target: { value } }) => {
-    this.setState({ newEntryTitle: value })
+    if (value.length > 0) {
+      this.setState({ newEntryTitle: value })
+    }
   }
 
   handleChange = ({ target: { id, checked } }) => {
@@ -176,6 +178,7 @@ class Checklist extends Component {
           form="new-item-form"
           className={classes.textField}
           onChange={this.handleEntryTitleChange}
+          value={this.state.newEntryTitle}
         />
       </ListItem>
     )
@@ -215,7 +218,7 @@ class Checklist extends Component {
                       <IconButton
                         onClick={this.handleEntryRemoval}
                         name={'delete-entry-btn-'.concat(index)}
-                        id={'entry-'.concat(index).concat('delete')}
+                        id={entry.entId}
                       >
                         <Clear />
                       </IconButton>

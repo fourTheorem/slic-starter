@@ -1,39 +1,38 @@
 import { ClientFunction, Selector } from 'testcafe'
 import { waitForReact } from 'testcafe-react-selectors'
-import Page from './PageModels/PageModel.js'
+import Page from './PageModels/page-model'
 
-const stageConfig = require('./stage-config')
+const config = require('../lib/config.js')
 
 const page = new Page()
-const url = stageConfig.getURLFromStage()
-const emailAdd = stageConfig.getEmailStore()
+const baseUrl = config.getBaseURL()
 
-stageConfig.getEmail() //Only call this function for first test to create new test user
-
+const email = config.getEmail()
 fixture(`Checklist test`)
-  .page(url.concat('/login'))
+  .page(baseUrl + '/login')
   .beforeEach(() => waitForReact())
 
-test('User can create a new List', async t => {
+test('Checklist Tests', async t => {
   await t.click(Selector('a'))
 
-  await t.typeText(page.emailInput, emailAdd[0])
+  await t.typeText(page.emailInput, email)
   await t.typeText(page.passInput, 'Slic123@')
 
   await t.click(Selector('#signup-btn', { timeout: 1000 }))
 
-  const code = await stageConfig.getCode(emailAdd[0])
-
+  const code = await config.getCode(email)
   await t.typeText(Selector('#confirmationCode'), code)
   await t.click(Selector('#confirm-signup-btn'))
-
-  await t.typeText(page.emailInput, emailAdd[0])
+})
+test('User can create a new List', async t => {
+  await t.typeText(page.emailInput, email)
   await t.typeText(page.passInput, 'Slic123@')
-  await t.click(page.loginBtn, { timeout: 1000 })
+  await t.click(page.loginBtn)
+
   await t.click(Selector('#new-list-button'))
 
   const listNameInput = Selector('#name')
-  await t.typeText(listNameInput, 'First List')
+  await t.typeText(listNameInput, 'First List', { timeout: 1000 })
   await t.expect(listNameInput.value).eql('First List')
   await t.click('#new-list-button')
   await t.expect(Selector('h2').withText('First List').exists).ok()
@@ -42,11 +41,11 @@ test('User can create a new List', async t => {
 })
 
 test('Can add entries to newly created list', async t => {
-  await t.typeText(page.emailInput, emailAdd[0])
+  await t.typeText(page.emailInput, email)
   await t.typeText(page.passInput, 'Slic123@')
-  await t.click(page.loginBtn)
+  await t.click(page.loginBtn, { timeout: 500 })
 
-  await t.click(Selector('a').withAttribute('tabindex', '0'))
+  await t.click(Selector('a').withText('First List'))
   await t.expect(Selector('h2').withText('First List')).exists
   await t.typeText('#newEntryTitle', 'New Item 1', { replace: true })
   await t.pressKey('enter')
@@ -66,10 +65,10 @@ test('Can add entries to newly created list', async t => {
 })
 
 test('Can mark Entries as Completed', async t => {
-  await t.typeText(page.emailInput, emailAdd[0])
+  await t.typeText(page.emailInput, email)
   await t.typeText(page.passInput, 'Slic123@')
-  await t.click(page.loginBtn)
-  await t.click(Selector('a').withAttribute('tabindex', '0'))
+  await t.click(page.loginBtn, { timeout: 500 })
+  await t.click(Selector('a').withText('First List'))
   await t.expect(Selector('h2').withText('First List')).exists
 
   const checkbox = Selector('input').withAttribute('name', 'checkbox-entry-0')
@@ -78,11 +77,11 @@ test('Can mark Entries as Completed', async t => {
 })
 
 test('Can delete an entry from an existing list', async t => {
-  await t.typeText(page.emailInput, emailAdd[0])
+  await t.typeText(page.emailInput, email)
   await t.typeText(page.passInput, 'Slic123@')
-  await t.click(page.loginBtn)
+  await t.click(page.loginBtn, { timeout: 500 })
 
-  await t.click(Selector('a').withAttribute('tabindex', '0', { timeout: 1000 }))
+  await t.click(Selector('a').withText('First List'))
   await t.expect(Selector('h2').withText('First List')).exists
   const deleteEntryBtn = Selector('button').withAttribute(
     'name',
@@ -98,11 +97,11 @@ test('Can delete an entry from an existing list', async t => {
 })
 
 test('Can remove a full list, including entries', async t => {
-  await t.typeText(page.emailInput, emailAdd[0])
+  await t.typeText(page.emailInput, email)
   await t.typeText(page.passInput, 'Slic123@')
-  await t.click(page.loginBtn)
+  await t.click(page.loginBtn, { timeout: 500 })
 
-  await t.click(Selector('a').withAttribute('tabindex', '0', { timeout: 1000 }))
+  await t.click(Selector('a').withText('First List'))
   await t.click(Selector('#delete-list-btn'))
   const deleteListConfirmBtn = Selector('#list-confirmation-confirm-btn')
 
@@ -115,11 +114,11 @@ test('Can remove a full list, including entries', async t => {
 })
 
 test('Can Logout from the current session', async t => {
-  await t.typeText(page.emailInput, emailAdd[0])
+  await t.typeText(page.emailInput, email)
   await t.typeText(page.passInput, 'Slic123@')
   await t.click(page.loginBtn)
 
-  const url = ClientFunction(() => document.location.href)
+  const baseUrl = ClientFunction(() => document.location.href)
   await t.click(Selector('#logout-btn', { timeout: 1000 }))
-  await t.expect(url()).contains('/login')
+  await t.expect(baseUrl()).contains('/login')
 })
