@@ -7,18 +7,18 @@ const config = require('../lib/config')
 const page = new Page()
 
 const baseUrl = config.getBaseURL()
-const emailAdd = config.getEmail()
+const email = config.getEmail()
 
 fixture(`Signup test`)
   .page(baseUrl + '/signup') //use env variables
   .beforeEach(() => waitForReact())
 
 test('User can sign up for a new account', async t => {
-  await t.typeText(page.emailInput, emailAdd)
+  await t.typeText(page.emailInput, email)
   await t.typeText(page.passInput, 'Slic123@')
   await t.click(Selector('#signup-btn'))
 
-  const confirmationCode = await config.getCode(emailAdd)
+  const confirmationCode = await config.getCode(email)
 
   const getLocation = ClientFunction(() => document.location.href)
   await t.expect(getLocation()).contains('/confirm-signup', { timeout: 5000 })
@@ -31,11 +31,11 @@ test('User can sign up for a new account', async t => {
 })
 
 test('User can have a valid confirmation code resent', async t => {
-  const emailAdd = config.getEmail()
-  await t.typeText(page.emailInput, emailAdd)
+  const email = config.getEmail()
+  await t.typeText(page.emailInput, email)
   await t.typeText(page.passInput, 'Slic123@')
   await t.click('#signup-btn')
-  await config.getCode(emailAdd)
+  await config.getCode(email)
   const getLocation = ClientFunction(() => document.location.href)
   await t.expect(getLocation()).contains('/confirm-signup')
   await t.click(Selector('#resend-code-btn'))

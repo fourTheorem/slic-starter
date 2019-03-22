@@ -6,29 +6,28 @@ const config = require('../lib/config.js')
 
 const page = new Page()
 const baseUrl = config.getBaseURL()
-const emailAdd = config.getEmail()
+const email = config.getEmail()
 
 fixture(`Login test`)
   .page(baseUrl + '/login')
   .beforeEach(() => waitForReact())
 test('Login tests', async t => {
   await t.click(Selector('a'))
-  await t.typeText(page.emailInput, emailAdd)
+  await t.typeText(page.emailInput, email)
   await t.typeText(page.passInput, 'Slic123@')
 
   await t.click(Selector('#signup-btn', { timeout: 1000 }))
 
-  const code = await config.getCode(emailAdd)
-  console.log(code)
+  const code = await config.getCode(email)
   await t.typeText(Selector('#confirmationCode'), code)
   await t.click(Selector('#confirm-signup-btn'))
 })
 
 test('User can Log in after signing up', async t => {
-  await t.typeText(page.emailInput, emailAdd)
+  await t.typeText(page.emailInput, email)
   await t.typeText(page.passInput, 'Slic123@')
 
-  await t.expect(page.emailInput.value).contains(emailAdd)
+  await t.expect(page.emailInput.value).contains(email)
   await t.expect(page.passInput.value).contains('Slic123@')
   await t.click(page.loginBtn)
 
