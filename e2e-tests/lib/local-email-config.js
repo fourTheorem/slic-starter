@@ -1,9 +1,11 @@
+const chance = require('chance').Chance()
+
 export function generateEmailAddress() {
-  return 'email'
-    .concat(Math.floor(Math.random() * 10000) + 1)
-    .concat('@example.com')
+  return chance.email()
 }
 
 export function retrieveCode(email) {
-  return '123456'
+  const code = chance.integer({ min: 111111, max: 999999 })
+
+  return code.toString()
 }

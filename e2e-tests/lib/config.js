@@ -1,9 +1,7 @@
 const localConfig = require('./local-email-config.js')
-const prodConfig = require('./prod-email-config.js')
+const realConfig = require('./real-email-config.js')
 
 const stage = process.env.SLIC_STAGE
-
-const emailArr = []
 export function getBaseURL() {
   let url
   const domainSuffix = stage === 'prod' ? '' : `${stage}.`
@@ -18,17 +16,15 @@ export function getBaseURL() {
 }
 
 export function getEmail() {
-  let retriever
+  let config
   let email
-
   if (stage === 'local') {
-    retriever = localConfig
+    config = localConfig
   } else {
-    retriever = prodConfig
+    config = realConfig
   }
 
-  email = retriever.generateEmailAddress()
-  storeEmail(email)
+  email = config.generateEmailAddress()
   return email
 }
 
@@ -38,16 +34,8 @@ export function getCode(email) {
       return localConfig.retrieveCode(email)
 
     default:
-      return prodConfig.retrieveCode(email).then(result => {
+      return realConfig.retrieveCode(email).then(result => {
         return result
       })
   }
-}
-
-function storeEmail(email) {
-  emailArr.push(email)
-}
-
-export function getEmailStore() {
-  return emailArr
 }

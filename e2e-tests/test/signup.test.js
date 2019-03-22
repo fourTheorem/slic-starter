@@ -2,23 +2,23 @@ import { ClientFunction, Selector } from 'testcafe'
 import { waitForReact } from 'testcafe-react-selectors'
 import Page from './PageModels/page-model'
 
-const config = require('../lib/url-config')
+const config = require('../lib/config')
 
 const page = new Page()
 
 const baseUrl = config.getBaseURL()
-const email = config.getEmail()
+const emailAdd = config.getEmail()
 
 fixture(`Signup test`)
   .page(baseUrl + '/signup') //use env variables
   .beforeEach(() => waitForReact())
 
 test('User can sign up for a new account', async t => {
-  await t.typeText(page.emailInput, email)
+  await t.typeText(page.emailInput, emailAdd)
   await t.typeText(page.passInput, 'Slic123@')
-  await t.click(Selector('button').withAttribute('tabindex', '0'))
+  await t.click(Selector('#signup-btn'))
 
-  const confirmationCode = await config.getCode(email)
+  const confirmationCode = await config.getCode(emailAdd)
 
   const getLocation = ClientFunction(() => document.location.href)
   await t.expect(getLocation()).contains('/confirm-signup', { timeout: 5000 })
