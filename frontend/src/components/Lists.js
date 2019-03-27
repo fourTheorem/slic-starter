@@ -31,7 +31,7 @@ class Lists extends Component {
       ) : (
         listIds.map(listId => (
           <Grid item key={listId} xl={3} lg={4} md={6} xs={12}>
-            <ListSummary listId={listId} description={listId.description} />
+            <ListSummary listId={listId} />
           </Grid>
         ))
       )
