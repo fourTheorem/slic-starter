@@ -84,7 +84,7 @@ export default (state = defaultState, { type, meta, payload, error }) => {
         createdListId: null
       }
     case CREATE_LIST_SUCCESS:
-      const { listId, name, createdAt } = payload
+      const { listId, name, description, createdAt } = payload
       return {
         ...state,
         listIds: [...state.listIds, listId],
@@ -93,6 +93,7 @@ export default (state = defaultState, { type, meta, payload, error }) => {
           [listId]: {
             listId,
             name,
+            description,
             createdAt
           }
         },

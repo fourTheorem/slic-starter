@@ -26,7 +26,8 @@ const styles = theme => ({
 
 class NewList extends Component {
   state = {
-    name: ''
+    name: '',
+    description: ''
   }
 
   componentDidMount() {
@@ -40,7 +41,9 @@ class NewList extends Component {
 
   validate = () => this.state.name.trim().length > 0
 
-  handleChange = ({ target: { id, value } }) => this.setState({ [id]: value })
+  handleChange = ({ target: { id, value } }) => {
+    this.setState({ [id]: value })
+  }
 
   render() {
     const { creating, createdListId, creationError, classes } = this.props
@@ -84,19 +87,36 @@ class NewList extends Component {
             <Grid item>
               <TextField
                 id="name"
+                variant="outlined"
                 label="List Name"
                 className={classes.textField}
                 autoFocus
                 onChange={this.handleChange}
               />
             </Grid>
+
+            <Grid item>
+              <TextField
+                inputProps={{ maxLength: 1250 }}
+                id="description"
+                multiline
+                required
+                variant="outlined"
+                rows="3"
+                label="List Description (1250 Characters)"
+                className={classes.textField}
+                onChange={this.handleChange}
+                margin="normal"
+              />
+            </Grid>
+
             {errorItem}
 
             <Grid item container layout="row" justify="flex-end">
               <Grid item>
                 <Button
                   variant="contained"
-                  id="new-list-button"
+                  id="create-list-button"
                   color="secondary"
                   type="submit"
                   disabled={creating || !this.validate()}

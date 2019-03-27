@@ -29,12 +29,13 @@ export const CREATE_LIST_REQUEST = 'CREATE_LIST_REQUEST'
 export const CREATE_LIST_SUCCESS = 'CREATE_LIST_SUCCESS'
 export const CREATE_LIST_FAILURE = 'CREATE_LIST_FAILURE'
 
-export function createList({ name }) {
+export function createList({ name, description }) {
   return function(dispatch) {
     dispatch({ type: CREATE_LIST_REQUEST })
     AmplifyApi.post('checklists', '/checklist', {
       body: {
-        name
+        name,
+        description
       }
     })
       .then(result => {
