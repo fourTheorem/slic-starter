@@ -77,8 +77,7 @@ class Checklist extends Component {
   state = {
     confirmDeleteListOpen: false,
     confirmDeleteEntryOpen: false,
-    entId: '',
-    descriptionExpanded: false
+    entId: ''
   }
 
   componentDidUpdate(prevProps) {
