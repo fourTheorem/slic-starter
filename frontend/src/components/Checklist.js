@@ -207,10 +207,13 @@ class Checklist extends Component {
     const expansionPanel = (
       <ExpansionPanel elevation={0}>
         <ExpansionPanelSummary
+          id="expansion-summary"
           expandIcon={<ExpandMore />}
           className={classes.collapsedSummary}
         >
-          <Typography variant="h4">{list.name}</Typography>
+          <Typography id="list-name" variant="h4">
+            {list.name}
+          </Typography>
         </ExpansionPanelSummary>
         <ExpansionPanelDetails>
           <Grid item container>
@@ -218,7 +221,7 @@ class Checklist extends Component {
               <Typography gutterBottom variant="subtitle1">
                 {createdAtDate}
               </Typography>
-              <Typography className={classes.typography}>
+              <Typography id="list-description" className={classes.typography}>
                 {list.description}
               </Typography>
             </Grid>

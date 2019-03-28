@@ -4,7 +4,6 @@ import { Redirect } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { Button, Grid, TextField, Typography } from '@material-ui/core'
 import { withStyles } from '@material-ui/core/styles'
-
 import { createList, prepareNewList } from '../actions/checklists'
 import { messages } from '../errors'
 
