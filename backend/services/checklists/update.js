@@ -6,9 +6,9 @@ const { processEvent } = require('../../lib/event-util')
 
 async function main(event) {
   const { body, pathParameters, userId } = processEvent(event)
-  const { name } = body
+  const { name, description } = body
   const { id: listId } = pathParameters
-  return createResponse(checklist.update({ listId, userId, name }))
+  return createResponse(checklist.update({ listId, userId, name, description }))
 }
 
 module.exports = { main }

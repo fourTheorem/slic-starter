@@ -13,10 +13,11 @@ module.exports = {
   list
 }
 
-async function create({ userId, name }) {
+async function create({ userId, name, description }) {
   const item = {
     userId,
     name,
+    description,
     entries: {},
     listId: Uuid.v4(),
     createdAt: Date.now()
@@ -30,19 +31,22 @@ async function create({ userId, name }) {
   return item
 }
 
-async function update({ listId, userId, name = null }) {
+async function update({ listId, userId, name = null, description = null }) {
   const updatedAt = Date.now()
   await dynamoDocClient()
     .update({
       TableName: tableName,
       Key: { userId, listId },
-      UpdateExpression: 'SET #nm = :name, updatedAt = :updatedAt',
+      UpdateExpression:
+        'SET #nm = :name, updatedAt = :updatedAt, #description = :description',
       ExpressionAttributeNames: {
-        '#nm': 'name'
+        '#nm': 'name',
+        '#description': 'description'
       },
       ExpressionAttributeValues: {
         ':name': name,
-        ':updatedAt': updatedAt
+        ':updatedAt': updatedAt,
+        ':description': description
       }
     })
     .promise()
@@ -62,9 +66,10 @@ async function get({ listId, userId }) {
     .get({
       TableName: tableName,
       Key: { userId, listId },
-      ProjectionExpression: 'listId, #nm, createdAt',
+      ProjectionExpression: 'listId, #nm, #description, createdAt',
       ExpressionAttributeNames: {
-        '#nm': 'name'
+        '#nm': 'name',
+        '#description': 'description'
       }
     })
     .promise()).Item
@@ -74,10 +79,11 @@ async function list({ userId }) {
   return (await dynamoDocClient()
     .query({
       TableName: tableName,
-      ProjectionExpression: 'listId, #nm, createdAt',
+      ProjectionExpression: 'listId, #nm, #description, createdAt',
       KeyConditionExpression: 'userId = :userId',
       ExpressionAttributeNames: {
-        '#nm': 'name'
+        '#nm': 'name',
+        '#description': 'description'
       },
       ExpressionAttributeValues: {
         ':userId': userId

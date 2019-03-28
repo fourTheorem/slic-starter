@@ -15,8 +15,14 @@ import {
   IconButton,
   Typography
 } from '@material-ui/core'
-import { Delete, Clear } from '@material-ui/icons'
-import { CircularProgress, Checkbox } from '@material-ui/core'
+import { Delete, Clear, ExpandMore } from '@material-ui/icons'
+import {
+  CircularProgress,
+  Checkbox,
+  ExpansionPanel,
+  ExpansionPanelSummary,
+  ExpansionPanelDetails
+} from '@material-ui/core'
 import { withStyles } from '@material-ui/core/styles'
 import ErrorMessage from './ErrorMessage'
 import Loading from './Loading'
@@ -30,12 +36,40 @@ import {
 
 import ConfirmationDialog from './ConfirmationDialog'
 
+const dateFns = require('date-fns')
+
 const styles = theme => ({
   root: {
     padding: theme.spacing.unit * 2
   },
   textField: {
     width: '100%'
+  },
+  typography: {
+    whiteSpace: 'pre-line'
+  },
+  card: {
+    minHeight: 300,
+    width: 600
+  },
+  divider: {
+    marginTop: 20
+  },
+
+  title: {
+    fontSize: 20
+  },
+
+  collapsedSummary: {
+    height: 100,
+    overflow: 'hidden'
+  },
+
+  description: {
+    minHeight: '1.2em',
+    maxHeight: '1.2em',
+    maxWidth: '100%',
+    overflow: 'auto'
   }
 })
 
@@ -80,9 +114,7 @@ class Checklist extends Component {
   }
 
   handleEntryTitleChange = ({ target: { value } }) => {
-    if (value.length > 0) {
-      this.setState({ newEntryTitle: value })
-    }
+    this.setState({ newEntryTitle: value })
   }
 
   handleChange = ({ target: { id, checked } }) => {
@@ -143,6 +175,11 @@ class Checklist extends Component {
       return <Redirect to="/" />
     }
 
+    const createdAtDate = `Created ${dateFns.distanceInWords(
+      Date.now(),
+      list.createdAt
+    )} ago`
+
     // ConfirmationDialog
     const confirmDeleteDialog = (
       <ConfirmationDialog
@@ -165,6 +202,32 @@ class Checklist extends Component {
         onConfirm={this.handleRemoveListEntry}
         onClose={this.handleEntryRemovalClose}
       />
+    )
+
+    const expansionPanel = (
+      <ExpansionPanel elevation={0}>
+        <ExpansionPanelSummary
+          id="expansion-summary"
+          expandIcon={<ExpandMore />}
+          className={classes.collapsedSummary}
+        >
+          <Typography id="list-name" variant="h4">
+            {list.name}
+          </Typography>
+        </ExpansionPanelSummary>
+        <ExpansionPanelDetails>
+          <Grid item container>
+            <Grid item>
+              <Typography gutterBottom variant="subtitle1">
+                {createdAtDate}
+              </Typography>
+              <Typography id="list-description" className={classes.typography}>
+                {list.description}
+              </Typography>
+            </Grid>
+          </Grid>
+        </ExpansionPanelDetails>
+      </ExpansionPanel>
     )
 
     const newItemEntry = addingEntry ? (
@@ -198,13 +261,11 @@ class Checklist extends Component {
       <form id="new-item-form" onSubmit={this.handleSubmit} autoComplete="off">
         {confirmDeleteDialog}
         {deleteEntryDialog}
-        <Grid container layout="row" className={classes.root} justify="center">
+        <Grid container layout="row" justify="center" className={classes.root}>
           <Grid item xs={10} sm={8} md={4} lg={3}>
-            <Card>
+            <Card className={classes.card}>
               <CardContent>
-                <Typography variant="h5" component="h2">
-                  {list.name}
-                </Typography>
+                {expansionPanel}
                 <List>
                   {entries.map((entry, index) => (
                     <ListItem key={index}>

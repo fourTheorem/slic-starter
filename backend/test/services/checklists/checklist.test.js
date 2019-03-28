@@ -8,8 +8,18 @@ const userId = 'my-test-user'
 awsMock.setSDK(path.resolve('./node_modules/aws-sdk'))
 
 const testLists = [
-  { listId: 'list1', name: 'List One', entries: {} },
-  { listId: 'list2', name: 'List Two', entries: {} }
+  {
+    listId: 'list1',
+    name: 'List One',
+    description: 'List One Description',
+    entries: {}
+  },
+  {
+    listId: 'list2',
+    name: 'List Two',
+    description: 'List Two Description',
+    entries: {}
+  }
 ]
 
 const received = {
@@ -44,7 +54,8 @@ awsMock.mock('DynamoDB.DocumentClient', 'query', function(params, callback) {
 test('create puts a dynamodb item', async t => {
   const record = {
     userId,
-    name: 'Test List'
+    name: 'Test List',
+    description: 'Test Description'
   }
 
   const checklist = require('../../../services/checklists/checklist')
@@ -55,7 +66,7 @@ test('create puts a dynamodb item', async t => {
   t.ok(received.dynamoDb.put.Item.createdAt)
   t.ok(received.dynamoDb.put.Item.listId)
   t.same(received.dynamoDb.put.Item.entries, {})
-
+  t.equal(received.dynamoDb.put.Item.description, record.description)
   t.match(response, record)
 
   t.end()
@@ -65,13 +76,15 @@ test('update function updates current checklists', async t => {
   const record = {
     listId: '1234',
     userId,
-    name: 'New title'
+    name: 'New title',
+    description: 'New Description'
   }
 
   const checklist = require('../../../services/checklists/checklist')
 
   await checklist.update(record)
   t.ok(received.dynamoDb.update.ExpressionAttributeValues[':name'])
+  t.ok(received.dynamoDb.update.ExpressionAttributeValues[':description'])
   t.ok(received.dynamoDb.update.ExpressionAttributeValues[':updatedAt'])
   t.equal(received.dynamoDb.update.Key.userId, record.userId)
   t.equal(received.dynamoDb.update.Key.listId, record.listId)
@@ -89,6 +102,10 @@ test('update function updates current checklists when name not specified', async
   await checklist.update(record)
 
   t.equal(received.dynamoDb.update.ExpressionAttributeValues[':name'], null)
+  t.equal(
+    received.dynamoDb.update.ExpressionAttributeValues[':description'],
+    null
+  )
   t.ok(received.dynamoDb.update.ExpressionAttributeValues[':updatedAt'])
   t.equal(received.dynamoDb.update.Key.userId, record.userId)
   t.equal(received.dynamoDb.update.Key.listId, record.listId)

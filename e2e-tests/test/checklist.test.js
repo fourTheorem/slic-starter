@@ -28,14 +28,20 @@ test('User can create a new List', async t => {
   await t.typeText(page.emailInput, email)
   await t.typeText(page.passInput, 'Slic123@')
   await t.click(page.loginBtn)
-
   await t.click(Selector('#new-list-button'))
 
   const listNameInput = Selector('#name')
   await t.typeText(listNameInput, 'First List', { timeout: 1000 })
   await t.expect(listNameInput.value).eql('First List')
-  await t.click('#new-list-button')
-  await t.expect(Selector('h2').withText('First List').exists).ok()
+
+  await t.typeText(Selector('#description'), 'List Description')
+  await t.expect(Selector('#description').value).eql('List Description')
+  await t.click('#create-list-button', { timeout: 2000 })
+
+  await t.click(Selector('#expansion-summary'))
+  await t.expect(Selector('#list-name').withText('First List')).exists
+  await t.expect(Selector('#list-description').withText('List Description'))
+    .exists
   const getLocation = ClientFunction(() => document.location.href)
   await t.expect(getLocation()).contains('/list/')
 })
