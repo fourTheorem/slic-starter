@@ -66,9 +66,10 @@ async function get({ listId, userId }) {
     .get({
       TableName: tableName,
       Key: { userId, listId },
-      ProjectionExpression: 'listId, #nm, createdAt',
+      ProjectionExpression: 'listId, #nm, #description, createdAt',
       ExpressionAttributeNames: {
-        '#nm': 'name'
+        '#nm': 'name',
+        '#description': 'description'
       }
     })
     .promise()).Item
