@@ -7,6 +7,9 @@ import {
   CREATE_LIST_REQUEST,
   CREATE_LIST_SUCCESS,
   CREATE_LIST_FAILURE,
+  UPDATE_LIST_REQUEST,
+  UPDATE_LIST_SUCCESS,
+  UPDATE_LIST_FAILURE,
   REMOVE_LIST_REQUEST,
   REMOVE_LIST_SUCCESS,
   REMOVE_LIST_FAILURE,
@@ -107,6 +110,42 @@ export default (state = defaultState, { type, meta, payload, error }) => {
         creating: false,
         creationError: error
       }
+    case UPDATE_LIST_REQUEST:
+      return {
+        ...state,
+        updatingList: true,
+        listUpdated: false,
+        listUpdateError: null
+      }
+
+    case UPDATE_LIST_SUCCESS:
+      const { updatedListId } = meta
+      const { updatedAt } = payload.Attributes
+      return {
+        ...state,
+        listsById: {
+          ...state.listsById,
+          [updatedListId]: {
+            listId: updatedListId,
+            name: payload.Attributes.name,
+            description: payload.Attributes.description,
+            updatedAt: updatedAt,
+            createdAt: payload.Attributes.createdAt
+          }
+        },
+        updatingList: false,
+        listUpdated: true,
+        listUpdateError: null
+      }
+
+    case UPDATE_LIST_FAILURE:
+      return {
+        ...state,
+        updatingList: false,
+        listUpdated: false,
+        updateError: error
+      }
+
     case REMOVE_LIST_REQUEST:
       return {
         ...state,

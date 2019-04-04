@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { Redirect } from 'react-router-dom'
 import { push } from 'connected-react-router'
+import { ExpandMore, Edit, Delete, Clear } from '@material-ui/icons'
 import {
   Card,
   CardActions,
@@ -15,8 +16,8 @@ import {
   IconButton,
   Typography
 } from '@material-ui/core'
-import { Delete, Clear, ExpandMore } from '@material-ui/icons'
 import {
+  Button,
   CircularProgress,
   Checkbox,
   ExpansionPanel,
@@ -26,14 +27,13 @@ import {
 import { withStyles } from '@material-ui/core/styles'
 import ErrorMessage from './ErrorMessage'
 import Loading from './Loading'
-import { removeList } from '../actions/checklists'
+import { removeList, updateList } from '../actions/checklists'
 import {
   addEntry,
   loadEntries,
   setEntryValue,
   removeEntry
 } from '../actions/entries'
-
 import ConfirmationDialog from './ConfirmationDialog'
 
 const dateFns = require('date-fns')
@@ -77,7 +77,10 @@ class Checklist extends Component {
   state = {
     confirmDeleteListOpen: false,
     confirmDeleteEntryOpen: false,
-    entId: ''
+    entId: '',
+    isEditingList: false,
+    name: '',
+    description: ''
   }
 
   componentDidUpdate(prevProps) {
@@ -111,6 +114,26 @@ class Checklist extends Component {
       )
       this.setState({ newEntryTitle: '' })
     }
+  }
+
+  handleUpdateSubmission = event => {
+    const { dispatch, list } = this.props
+    dispatch(
+      updateList({
+        listId: list.listId,
+        name: this.state.name || list.name,
+        description: this.state.description || list.description
+      }),
+      this.setState({ isEditingList: false })
+    )
+  }
+
+  handleTitleUpdate = event => {
+    this.setState({ name: event.target.value })
+  }
+
+  handleDescriptionUpdate = event => {
+    this.setState({ description: event.target.value })
   }
 
   handleEntryTitleChange = ({ target: { value } }) => {
@@ -157,6 +180,10 @@ class Checklist extends Component {
     this.setState({ confirmDeleteEntryOpen: false })
   }
 
+  handleEditRequest = () => {
+    this.setState({ isEditingList: !this.state.isEditingList })
+  }
+
   render() {
     const {
       addingEntry,
@@ -167,18 +194,14 @@ class Checklist extends Component {
       list,
       updatingEntryValue,
       removingEntry,
-      error
+      error,
+      updatingList
     } = this.props
 
     if (!list) {
       // List was deleted, go home
       return <Redirect to="/" />
     }
-
-    const createdAtDate = `Created ${dateFns.distanceInWords(
-      Date.now(),
-      list.createdAt
-    )} ago`
 
     // ConfirmationDialog
     const confirmDeleteDialog = (
@@ -204,6 +227,49 @@ class Checklist extends Component {
       />
     )
 
+    const displayTitle = this.state.isEditingList ? (
+      <TextField
+        id="name"
+        name="name"
+        defaultValue={list.name}
+        variant="outlined"
+        label="List Name"
+        className={classes.textField}
+        autoFocus
+        onChange={this.handleTitleUpdate}
+      />
+    ) : (
+      <Typography variant="h4" classsName={classes.title}>
+        {list.name}
+      </Typography>
+    )
+
+    const displayDescription = this.state.isEditingList ? (
+      <TextField
+        inputProps={{ maxLength: 1250 }}
+        id="description"
+        name="description"
+        multiline
+        defaultValue={list.description}
+        required
+        variant="outlined"
+        rows="3"
+        label="List Description (1250 Characters)"
+        className={classes.textField}
+        margin="normal"
+        onChange={this.handleDescriptionUpdate}
+      />
+    ) : (
+      <Typography id="list-description" className={classes.typography}>
+        {list.description}
+      </Typography>
+    )
+
+    const date = `Created ${dateFns.distanceInWords(
+      Date.now(),
+      list.createdAt
+    )} ago`
+
     const expansionPanel = (
       <ExpansionPanel elevation={0}>
         <ExpansionPanelSummary
@@ -211,19 +277,13 @@ class Checklist extends Component {
           expandIcon={<ExpandMore />}
           className={classes.collapsedSummary}
         >
-          <Typography id="list-name" variant="h4">
-            {list.name}
-          </Typography>
+          {displayTitle}
         </ExpansionPanelSummary>
         <ExpansionPanelDetails>
           <Grid item container>
             <Grid item>
-              <Typography gutterBottom variant="subtitle1">
-                {createdAtDate}
-              </Typography>
-              <Typography id="list-description" className={classes.typography}>
-                {list.description}
-              </Typography>
+              {date}
+              {displayDescription}
             </Grid>
           </Grid>
         </ExpansionPanelDetails>
@@ -246,9 +306,24 @@ class Checklist extends Component {
       </ListItem>
     )
 
+    const editButtons = this.state.isEditingList ? (
+      <Button
+        color="primary"
+        variant="contained"
+        className={classes.button}
+        onClick={this.handleUpdateSubmission}
+      >
+        Update
+      </Button>
+    ) : (
+      <IconButton onClick={this.handleEditRequest}>
+        <Edit />
+      </IconButton>
+    )
     const errorItem =
       !gettingListEntries &&
       !addingEntry &&
+      !updatingList &&
       !removingEntry &&
       !updatingEntryValue &&
       error ? (
@@ -293,12 +368,17 @@ class Checklist extends Component {
                 {removing ? (
                   <CircularProgress />
                 ) : (
-                  <IconButton
-                    id="delete-list-btn"
-                    onClick={this.handleRemoveListRequest}
-                  >
-                    <Delete />
-                  </IconButton>
+                  <Grid item container>
+                    <Grid item>
+                      <IconButton
+                        id="delete-list-btn"
+                        onClick={this.handleRemoveListRequest}
+                      >
+                        <Delete />
+                      </IconButton>
+                      {editButtons}
+                    </Grid>
+                  </Grid>
                 )}
               </CardActions>
             </Card>
@@ -321,7 +401,10 @@ Checklist.propTypes = {
   classes: PropTypes.object.isRequired,
   entries: PropTypes.array.isRequired,
   list: PropTypes.object,
-  error: PropTypes.object
+  error: PropTypes.object,
+  updatingList: PropTypes.bool,
+  listUpdated: PropTypes.bool,
+  updatedAt: PropTypes.any
 }
 
 const makeMapStateToProps = (initialState, ownProps) => {

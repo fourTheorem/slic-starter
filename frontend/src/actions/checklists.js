@@ -64,3 +64,27 @@ export function removeList({ listId }) {
       })
   }
 }
+
+export const UPDATE_LIST_REQUEST = 'UPDATE_LIST_REQUEST'
+export const UPDATE_LIST_SUCCESS = 'UPDATE_LIST_SUCCESS'
+export const UPDATE_LIST_FAILURE = 'UPDATE_LIST_FAILURE'
+
+export function updateList({ listId, name, description }) {
+  return function(dispatch) {
+    const updatedListId = listId
+    const meta = { updatedListId }
+    dispatch({ type: UPDATE_LIST_REQUEST })
+    AmplifyApi.put('checklists', `/checklist/${listId}`, {
+      body: {
+        name,
+        description
+      }
+    })
+      .then(result => {
+        dispatch({ type: UPDATE_LIST_SUCCESS, meta, payload: result })
+      })
+      .catch(err => {
+        dispatch({ type: UPDATE_LIST_FAILURE, error: translateError(err) })
+      })
+  }
+}

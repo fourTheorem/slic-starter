@@ -33,21 +33,23 @@ async function create({ userId, name, description }) {
 
 async function update({ listId, userId, name = null, description = null }) {
   const updatedAt = Date.now()
-  await dynamoDocClient()
+  return await dynamoDocClient()
     .update({
       TableName: tableName,
       Key: { userId, listId },
       UpdateExpression:
-        'SET #nm = :name, updatedAt = :updatedAt, #description = :description',
+        'SET #name = :name, updatedAt = :updatedAt, #description = :description',
       ExpressionAttributeNames: {
-        '#nm': 'name',
+        '#name': 'name',
         '#description': 'description'
       },
       ExpressionAttributeValues: {
         ':name': name,
         ':updatedAt': updatedAt,
         ':description': description
-      }
+      },
+
+      ReturnValues: 'ALL_NEW'
     })
     .promise()
 }
