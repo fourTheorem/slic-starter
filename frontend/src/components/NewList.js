@@ -85,9 +85,11 @@ class NewList extends Component {
           >
             <Grid item>
               <TextField
+                inputProps={{ maxLength: 400 }}
                 id="name"
+                required
                 variant="outlined"
-                label="List Name"
+                label="List Name (400 Characters)"
                 className={classes.textField}
                 autoFocus
                 onChange={this.handleChange}

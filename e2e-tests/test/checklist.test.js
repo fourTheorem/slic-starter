@@ -46,6 +46,32 @@ test('User can create a new List', async t => {
   await t.expect(getLocation()).contains('/list/')
 })
 
+test('User can update an already existing list', async t => {
+  const titleTextfield = Selector('#name')
+  const descriptionTextField = Selector('#description')
+
+  await t.typeText(page.emailInput, email)
+  await t.typeText(page.passInput, 'Slic123@')
+  await t.click(page.loginBtn)
+
+  await t.click(Selector('a').withText('First List'))
+  await t.expect(Selector('h2').withText('First List')).exists
+  await t.click(Selector('#editListBtn'))
+  await t.expect(titleTextfield).exists
+  await t.pressKey('ctrl+a delete')
+  await t.expect(descriptionTextField).exists
+  await t.typeText(titleTextfield, 'Updated List Title')
+  await t.expect(titleTextfield.value).eql('Updated List Title')
+  await t.click(descriptionTextField)
+  await t.pressKey('ctrl+a delete')
+  await t.typeText(descriptionTextField, 'Updated List Description')
+  await t.expect(descriptionTextField.value).eql('Updated List Description')
+  await t.click(Selector('#saveUpdateBtn'))
+  await t.expect(Selector('h2').withText('Updated List Title')).exists
+  await t.expect(Selector('#description').withText('Updated List Description'))
+    .exists
+})
+
 test('Can add entries to newly created list', async t => {
   await t.typeText(page.emailInput, email)
   await t.typeText(page.passInput, 'Slic123@')

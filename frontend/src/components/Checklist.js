@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { Redirect } from 'react-router-dom'
 import { push } from 'connected-react-router'
-import { ExpandMore, Edit, Delete, Clear } from '@material-ui/icons'
+import { ExpandMore, Clear } from '@material-ui/icons'
 import {
   Card,
   CardActions,
@@ -40,36 +40,57 @@ const dateFns = require('date-fns')
 
 const styles = theme => ({
   root: {
-    padding: theme.spacing.unit * 2
+    padding: theme.spacing.unit * 2,
+    height: '100%'
   },
   textField: {
-    width: '100%'
+    width: '100%',
+    paddingRight: '2.5%'
   },
   typography: {
     whiteSpace: 'pre-line'
   },
   card: {
-    minHeight: 300,
-    width: 600
-  },
-  divider: {
-    marginTop: 20
-  },
-
-  title: {
-    fontSize: 20
-  },
-
-  collapsedSummary: {
-    height: 100,
-    overflow: 'hidden'
+    height: '300',
+    width: '120%',
+    maxHeight: '600'
   },
 
   description: {
-    minHeight: '1.2em',
-    maxHeight: '1.2em',
-    maxWidth: '100%',
-    overflow: 'auto'
+    fontSize: 18,
+    whiteSpace: 'pre-line'
+  },
+
+  title: {
+    fontSize: 18,
+    height: 200,
+    maxHeight: 300,
+    overflow: 'hidden'
+  },
+
+  deleteBtn: {
+    marginLeft: 50
+  },
+
+  editButton: {
+    marginLeft: '20%',
+    marginRight: 10
+  },
+
+  deleteEntryBtn: {},
+
+  entryCheckbox: {
+    marginRight: '12.5%'
+  },
+
+  collapsedSummary: {
+    minHeight: 150,
+    maxHeight: 650
+  },
+
+  createdAt: {
+    fontSize: 13,
+    marginBottom: '5%'
   }
 })
 
@@ -80,7 +101,8 @@ class Checklist extends Component {
     entId: '',
     isEditingList: false,
     name: '',
-    description: ''
+    description: '',
+    isPanelExpanded: false
   }
 
   componentDidUpdate(prevProps) {
@@ -182,6 +204,11 @@ class Checklist extends Component {
 
   handleEditRequest = () => {
     this.setState({ isEditingList: !this.state.isEditingList })
+    this.setState({ isPanelExpanded: true })
+  }
+
+  handlePanelExpansion = () => {
+    this.setState({ isPanelExpanded: !this.state.isPanelExpanded })
   }
 
   render() {
@@ -229,17 +256,18 @@ class Checklist extends Component {
 
     const displayTitle = this.state.isEditingList ? (
       <TextField
+        inputProps={{ maxLength: 400 }}
         id="name"
         name="name"
         defaultValue={list.name}
         variant="outlined"
-        label="List Name"
+        label="List Name (400 Characters)"
         className={classes.textField}
         autoFocus
         onChange={this.handleTitleUpdate}
       />
     ) : (
-      <Typography variant="h4" classsName={classes.title}>
+      <Typography variant="h4" classsName={classes.typography}>
         {list.name}
       </Typography>
     )
@@ -247,22 +275,48 @@ class Checklist extends Component {
     const displayDescription = this.state.isEditingList ? (
       <TextField
         inputProps={{ maxLength: 1250 }}
+        style={{ width: '215%' }}
         id="description"
         name="description"
         multiline
         defaultValue={list.description}
-        required
         variant="outlined"
-        rows="3"
+        rows="6"
         label="List Description (1250 Characters)"
-        className={classes.textField}
         margin="normal"
         onChange={this.handleDescriptionUpdate}
       />
     ) : (
-      <Typography id="list-description" className={classes.typography}>
+      <Typography
+        id="list-description"
+        variant="p"
+        className={classes.description}
+      >
         {list.description}
       </Typography>
+    )
+
+    const editButtons = this.state.isEditingList ? (
+      <Button
+        id="saveUpdateBtn"
+        color="primary"
+        variant="contained"
+        className={classes.button}
+        onClick={this.handleUpdateSubmission}
+        style={{ marginRight: 20 }}
+      >
+        Save
+      </Button>
+    ) : (
+      <Button
+        color="primary"
+        className={classes.editButton}
+        onClick={this.handleEditRequest}
+        id="editListBtn"
+        disabled={removing}
+      >
+        Edit
+      </Button>
     )
 
     const date = `Created ${dateFns.distanceInWords(
@@ -271,18 +325,25 @@ class Checklist extends Component {
     )} ago`
 
     const expansionPanel = (
-      <ExpansionPanel elevation={0}>
+      <ExpansionPanel
+        elevation={0}
+        expanded={this.state.isPanelExpanded}
+        onChange={this.handlePanelExpansion}
+      >
         <ExpansionPanelSummary
           id="expansion-summary"
           expandIcon={<ExpandMore />}
           className={classes.collapsedSummary}
         >
           {displayTitle}
+          {editButtons}
         </ExpansionPanelSummary>
         <ExpansionPanelDetails>
           <Grid item container>
             <Grid item>
-              {date}
+              <Typography variant="caption" className={classes.createdAt}>
+                {date}
+              </Typography>
               {displayDescription}
             </Grid>
           </Grid>
@@ -306,20 +367,6 @@ class Checklist extends Component {
       </ListItem>
     )
 
-    const editButtons = this.state.isEditingList ? (
-      <Button
-        color="primary"
-        variant="contained"
-        className={classes.button}
-        onClick={this.handleUpdateSubmission}
-      >
-        Update
-      </Button>
-    ) : (
-      <IconButton onClick={this.handleEditRequest}>
-        <Edit />
-      </IconButton>
-    )
     const errorItem =
       !gettingListEntries &&
       !addingEntry &&
@@ -343,21 +390,24 @@ class Checklist extends Component {
                 {expansionPanel}
                 <List>
                   {entries.map((entry, index) => (
-                    <ListItem key={index}>
-                      <ListItemText>{entry.title}</ListItemText>
-                      <Checkbox
-                        onChange={this.handleChange}
-                        id={entry.entId}
-                        name={'checkbox-entry-'.concat(index)}
-                        checked={!!entry.value}
-                      />
+                    <ListItem alignItem="flex" key={index}>
                       <IconButton
+                        className={classes.deleteEntryBtn}
                         onClick={this.handleEntryRemoval}
                         name={'delete-entry-btn-'.concat(index)}
                         id={entry.entId}
                       >
                         <Clear />
                       </IconButton>
+
+                      <ListItemText>{entry.title}</ListItemText>
+                      <Checkbox
+                        className={classes.entryCheckbox}
+                        onChange={this.handleChange}
+                        id={entry.entId}
+                        name={'checkbox-entry-'.concat(index)}
+                        checked={!!entry.value}
+                      />
                     </ListItem>
                   ))}
                   {newItemEntry}
@@ -370,13 +420,15 @@ class Checklist extends Component {
                 ) : (
                   <Grid item container>
                     <Grid item>
-                      <IconButton
+                      <Button
+                        color="secondary"
                         id="delete-list-btn"
+                        className={classes.deleteBtn}
                         onClick={this.handleRemoveListRequest}
+                        disabled={this.state.isEditingList}
                       >
-                        <Delete />
-                      </IconButton>
-                      {editButtons}
+                        Remove
+                      </Button>
                     </Grid>
                   </Grid>
                 )}
