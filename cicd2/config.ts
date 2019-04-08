@@ -1,5 +1,4 @@
 export default {
-  buildBucket: 'slic-starter-artifacts',
   stage: process.env.SLIC_STAGE || 'dev',
   region: 'eu-west-1',
   runtime: 'nodejs:8.10',

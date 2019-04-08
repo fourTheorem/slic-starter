@@ -4,8 +4,8 @@ import { Construct } from '@aws-cdk/cdk'
 import config from '../config'
 
 export default class CodeBuildRole extends iam.Role {
-  constructor(scope: Construct, resources: any, id: string, props?: RoleProps) {
-    super(scope, id, {
+  constructor(scope: Construct, props?: RoleProps) {
+    super(scope, 'SLICCodeBuildRole', {
       ...props,
       assumedBy: new iam.ServicePrincipal('codebuild.amazonaws.com')
     })
@@ -28,21 +28,6 @@ export default class CodeBuildRole extends iam.Role {
             config.accountIds.cicd
           }:secret:CICD*`
         )
-    )
-    this.addToPolicy(
-      new iam.PolicyStatement()
-        .allow()
-        .addAction('s3:DeleteObject')
-        .addAction('s3:GetObject')
-        .addAction('s3:GetObjectVersion')
-        .addAction('s3:ListBucket')
-        .addAction('s3:PutObject')
-        .addAction('s3:GetBucketPolicy')
-        .addAction('s3:GetEncryptionConfiguration')
-        .addAction('s3:PutEncryptionConfiguration')
-        .addResources(`arn:aws:s3:::codepipeline-${config.region}-*`)
-        .addResources(resources.buildBucket.bucketArn)
-        .addResources(resources.buildBucket.arnForObjects('*'))
     )
     this.addToPolicy(
       new iam.PolicyStatement()
