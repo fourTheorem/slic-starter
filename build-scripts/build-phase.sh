@@ -10,11 +10,10 @@ run_build () {
     # Execute module-specific build
     bash scripts/build.sh
   fi
-  for SLIC_STAGE in stg prod; do
-    echo "Packaging for SLIC_STAGE ${SLIC_STAGE}"
-    mkdir -p build-artifacts/${SLIC_STAGE}
-    serverless package --package build-artifacts/${SLIC_STAGE} --stage ${SLIC_STAGE} -v
-  done
+  source build-scripts/assume-cross-account-role.env
+  echo "Packaging for SLIC_STAGE ${SLIC_STAGE}"
+  mkdir -p build-artifacts/${SLIC_STAGE}
+  SLIC_STAGE=${SLIC_STAGE} serverless package --package build-artifacts/${SLIC_STAGE} --stage ${SLIC_STAGE} -v
 }
 
 if [ $SKIP_MODULE -eq 0 ]; then
