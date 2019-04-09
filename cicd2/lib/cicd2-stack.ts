@@ -9,6 +9,7 @@ export class Cicd2Stack extends cdk.Stack {
 
     const resources: any = {}
     resources.codeBuildRole = new CodeBuildRole(this)
+    debugger
     resources.pipeline = new SlicPipeline(this, resources)
   }
 }
