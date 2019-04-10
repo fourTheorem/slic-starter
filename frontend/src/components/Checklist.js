@@ -1,9 +1,9 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
-import { Redirect } from 'react-router-dom'
+import { Redirect, Link } from 'react-router-dom'
 import { push } from 'connected-react-router'
-import { ExpandMore, Clear } from '@material-ui/icons'
+import { ExpandMore, Clear, Edit } from '@material-ui/icons'
 import {
   Card,
   CardActions,
@@ -12,14 +12,14 @@ import {
   ListItem,
   ListItemText,
   Grid,
+  Fab,
   TextField,
+  Switch,
   IconButton,
   Typography
 } from '@material-ui/core'
 import {
-  Button,
   CircularProgress,
-  Checkbox,
   ExpansionPanel,
   ExpansionPanelSummary,
   ExpansionPanelDetails
@@ -27,7 +27,6 @@ import {
 import { withStyles } from '@material-ui/core/styles'
 import ErrorMessage from './ErrorMessage'
 import Loading from './Loading'
-import { removeList, updateList } from '../actions/checklists'
 import {
   addEntry,
   loadEntries,
@@ -58,7 +57,10 @@ const styles = theme => ({
 
   description: {
     fontSize: 18,
-    whiteSpace: 'pre-line'
+    marginTop: '7%',
+    marginLeft: '-29%',
+    whiteSpace: 'pre-line',
+    width: '85%'
   },
 
   title: {
@@ -86,6 +88,11 @@ const styles = theme => ({
   collapsedSummary: {
     minHeight: 150,
     maxHeight: 650
+  },
+
+  fab: {
+    marginLeft: '75%',
+    marginTop: '-5%'
   },
 
   createdAt: {
@@ -138,26 +145,6 @@ class Checklist extends Component {
     }
   }
 
-  handleUpdateSubmission = event => {
-    const { dispatch, list } = this.props
-    dispatch(
-      updateList({
-        listId: list.listId,
-        name: this.state.name || list.name,
-        description: this.state.description || list.description
-      }),
-      this.setState({ isEditingList: false })
-    )
-  }
-
-  handleTitleUpdate = event => {
-    this.setState({ name: event.target.value })
-  }
-
-  handleDescriptionUpdate = event => {
-    this.setState({ description: event.target.value })
-  }
-
   handleEntryTitleChange = ({ target: { value } }) => {
     this.setState({ newEntryTitle: value })
   }
@@ -179,32 +166,10 @@ class Checklist extends Component {
     this.setState({ entId: e.currentTarget.id })
   }
 
-  handleEntryRemovalClose = () => {
-    this.setState({ confirmDeleteEntryOpen: false })
-  }
-
-  handleRemoveListRequest = () => {
-    this.setState({ confirmDeleteListOpen: true })
-  }
-
-  handleListRemovalClose = () => {
-    this.setState({ confirmDeleteListOpen: false })
-  }
-
-  handleRemoveList = () => {
-    const { dispatch, list } = this.props
-    dispatch(removeList({ listId: list.listId }))
-  }
-
   handleRemoveListEntry = () => {
     const { dispatch, list } = this.props
     dispatch(removeEntry({ listId: list.listId, entId: this.state.entId }))
     this.setState({ confirmDeleteEntryOpen: false })
-  }
-
-  handleEditRequest = () => {
-    this.setState({ isEditingList: !this.state.isEditingList })
-    this.setState({ isPanelExpanded: true })
   }
 
   handlePanelExpansion = () => {
@@ -230,19 +195,6 @@ class Checklist extends Component {
       return <Redirect to="/" />
     }
 
-    // ConfirmationDialog
-    const confirmDeleteDialog = (
-      <ConfirmationDialog
-        id="list-confirmation"
-        title="Delete List?"
-        open={this.state.confirmDeleteListOpen}
-        message={`Are you sure you want to remove the list '${list &&
-          list.name}' permanently?`}
-        onConfirm={this.handleRemoveList}
-        onClose={this.handleListRemovalClose}
-      />
-    )
-
     const deleteEntryDialog = (
       <ConfirmationDialog
         id="entry-confirmation"
@@ -252,71 +204,6 @@ class Checklist extends Component {
         onConfirm={this.handleRemoveListEntry}
         onClose={this.handleEntryRemovalClose}
       />
-    )
-
-    const displayTitle = this.state.isEditingList ? (
-      <TextField
-        inputProps={{ maxLength: 400 }}
-        id="name"
-        name="name"
-        defaultValue={list.name}
-        variant="outlined"
-        label="List Name (400 Characters)"
-        className={classes.textField}
-        autoFocus
-        onChange={this.handleTitleUpdate}
-      />
-    ) : (
-      <Typography variant="h4" classsName={classes.typography}>
-        {list.name}
-      </Typography>
-    )
-
-    const displayDescription = this.state.isEditingList ? (
-      <TextField
-        inputProps={{ maxLength: 1250 }}
-        style={{ width: '215%' }}
-        id="description"
-        name="description"
-        multiline
-        defaultValue={list.description}
-        variant="outlined"
-        rows="6"
-        label="List Description (1250 Characters)"
-        margin="normal"
-        onChange={this.handleDescriptionUpdate}
-      />
-    ) : (
-      <Typography
-        id="list-description"
-        variant="p"
-        className={classes.description}
-      >
-        {list.description}
-      </Typography>
-    )
-
-    const editButtons = this.state.isEditingList ? (
-      <Button
-        id="saveUpdateBtn"
-        color="primary"
-        variant="contained"
-        className={classes.button}
-        onClick={this.handleUpdateSubmission}
-        style={{ marginRight: 20 }}
-      >
-        Save
-      </Button>
-    ) : (
-      <Button
-        color="primary"
-        className={classes.editButton}
-        onClick={this.handleEditRequest}
-        id="editListBtn"
-        disabled={removing}
-      >
-        Edit
-      </Button>
     )
 
     const date = `Created ${dateFns.distanceInWords(
@@ -335,18 +222,15 @@ class Checklist extends Component {
           expandIcon={<ExpandMore />}
           className={classes.collapsedSummary}
         >
-          {displayTitle}
-          {editButtons}
+          <Typography variant="h4">{list.name}</Typography>
         </ExpansionPanelSummary>
         <ExpansionPanelDetails>
-          <Grid item container>
-            <Grid item>
-              <Typography variant="caption" className={classes.createdAt}>
-                {date}
-              </Typography>
-              {displayDescription}
-            </Grid>
-          </Grid>
+          <Typography variant="caption" className={classes.createdAt}>
+            {date}
+          </Typography>
+          <Typography variant="subheading" className={classes.description}>
+            {list.description}
+          </Typography>
         </ExpansionPanelDetails>
       </ExpansionPanel>
     )
@@ -381,7 +265,6 @@ class Checklist extends Component {
 
     return list && !gettingListEntries ? (
       <form id="new-item-form" onSubmit={this.handleSubmit} autoComplete="off">
-        {confirmDeleteDialog}
         {deleteEntryDialog}
         <Grid container layout="row" justify="center" className={classes.root}>
           <Grid item xs={10} sm={8} md={4} lg={3}>
@@ -390,7 +273,7 @@ class Checklist extends Component {
                 {expansionPanel}
                 <List>
                   {entries.map((entry, index) => (
-                    <ListItem alignItem="flex" key={index}>
+                    <ListItem button alignItem="flex" key={index}>
                       <IconButton
                         className={classes.deleteEntryBtn}
                         onClick={this.handleEntryRemoval}
@@ -401,7 +284,7 @@ class Checklist extends Component {
                       </IconButton>
 
                       <ListItemText>{entry.title}</ListItemText>
-                      <Checkbox
+                      <Switch
                         className={classes.entryCheckbox}
                         onChange={this.handleChange}
                         id={entry.entId}
@@ -419,16 +302,15 @@ class Checklist extends Component {
                   <CircularProgress />
                 ) : (
                   <Grid item container>
-                    <Grid item>
-                      <Button
+                    <Grid item className={classes.fab} style={{ width: '10%' }}>
+                      <Fab
                         color="secondary"
-                        id="delete-list-btn"
-                        className={classes.deleteBtn}
-                        onClick={this.handleRemoveListRequest}
-                        disabled={this.state.isEditingList}
+                        aria-label="Edit"
+                        component={Link}
+                        to={`/list/${list.listId}/edit`}
                       >
-                        Remove
-                      </Button>
+                        <Edit />
+                      </Fab>
                     </Grid>
                   </Grid>
                 )}
