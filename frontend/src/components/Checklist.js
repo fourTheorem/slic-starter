@@ -10,9 +10,9 @@ import {
   CardContent,
   List,
   ListItem,
+  ListItemSecondaryAction,
   ListItemText,
   Grid,
-  Fab,
   TextField,
   Switch,
   IconButton,
@@ -37,6 +37,18 @@ import ConfirmationDialog from './ConfirmationDialog'
 
 const dateFns = require('date-fns')
 
+const ExtListItem = withStyles({
+  container: {
+    width: '100%'
+  }
+})(ListItem)
+
+const ExtExpansionPanelSummary = withStyles({
+  content: {
+    width: '100%'
+  }
+})(ExpansionPanelSummary)
+
 const styles = theme => ({
   root: {
     padding: theme.spacing.unit * 2,
@@ -49,56 +61,27 @@ const styles = theme => ({
   typography: {
     whiteSpace: 'pre-line'
   },
-  card: {
-    height: '300',
-    width: '120%',
-    maxHeight: '600'
+  list: {
+    width: '100%'
   },
-
+  listItem: {
+    width: '100%'
+  },
   description: {
-    fontSize: 18,
-    marginTop: '7%',
-    marginLeft: '-29%',
-    whiteSpace: 'pre-line',
-    width: '85%'
+    whiteSpace: 'pre-line'
   },
-
   title: {
-    fontSize: 18,
-    height: 200,
-    maxHeight: 300,
-    overflow: 'hidden'
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap'
   },
-
-  deleteBtn: {
-    marginLeft: 50
-  },
-
-  editButton: {
-    marginLeft: '20%',
-    marginRight: 10
-  },
-
   deleteEntryBtn: {},
-
-  entryCheckbox: {
-    marginRight: '12.5%'
+  expansionPanel: {
+    '&:before': {
+      display: 'none'
+    }
   },
-
-  collapsedSummary: {
-    minHeight: 150,
-    maxHeight: 650
-  },
-
-  fab: {
-    marginLeft: '75%',
-    marginTop: '-5%'
-  },
-
-  createdAt: {
-    fontSize: 13,
-    marginBottom: '5%'
-  }
+  createdAt: {}
 })
 
 class Checklist extends Component {
@@ -214,23 +197,29 @@ class Checklist extends Component {
     const expansionPanel = (
       <ExpansionPanel
         elevation={0}
+        className={classes.expansionPanel}
         expanded={this.state.isPanelExpanded}
         onChange={this.handlePanelExpansion}
       >
-        <ExpansionPanelSummary
+        <ExtExpansionPanelSummary
           id="expansion-summary"
           expandIcon={<ExpandMore />}
-          className={classes.collapsedSummary}
         >
-          <Typography variant="h4">{list.name}</Typography>
-        </ExpansionPanelSummary>
+          <Typography variant="h4" className={classes.title}>
+            {list.name}
+          </Typography>
+        </ExtExpansionPanelSummary>
         <ExpansionPanelDetails>
-          <Typography variant="caption" className={classes.createdAt}>
-            {date}
-          </Typography>
-          <Typography variant="subheading" className={classes.description}>
-            {list.description}
-          </Typography>
+          <Grid container direction="column">
+            <Grid item>
+              <Typography variant="caption">{date}</Typography>
+            </Grid>
+            <Grid item>
+              <Typography variant="subheading" className={classes.description}>
+                {list.description}
+              </Typography>
+            </Grid>
+          </Grid>
         </ExpansionPanelDetails>
       </ExpansionPanel>
     )
@@ -238,7 +227,7 @@ class Checklist extends Component {
     const newItemEntry = addingEntry ? (
       <Loading />
     ) : (
-      <ListItem>
+      <ExtListItem>
         <TextField
           id="newEntryTitle"
           placeholder="Add an Item..."
@@ -248,7 +237,7 @@ class Checklist extends Component {
           onChange={this.handleEntryTitleChange}
           value={this.state.newEntryTitle}
         />
-      </ListItem>
+      </ExtListItem>
     )
 
     const errorItem =
@@ -258,22 +247,33 @@ class Checklist extends Component {
       !removingEntry &&
       !updatingEntryValue &&
       error ? (
-        <ListItem>
+        <ExtListItem>
           <ErrorMessage messageId={error.id} />
-        </ListItem>
+        </ExtListItem>
       ) : null
 
     return list && !gettingListEntries ? (
       <form id="new-item-form" onSubmit={this.handleSubmit} autoComplete="off">
         {deleteEntryDialog}
         <Grid container layout="row" justify="center" className={classes.root}>
-          <Grid item xs={10} sm={8} md={4} lg={3}>
-            <Card className={classes.card}>
+          <Grid item xs={12} sm={10} md={8} lg={6}>
+            <Card>
               <CardContent>
+                <Grid container direction="row" justify="flex-end">
+                  <Grid item>
+                    <IconButton
+                      aria-label="Edit"
+                      component={Link}
+                      to={`/list/${list.listId}/edit`}
+                    >
+                      <Edit />
+                    </IconButton>
+                  </Grid>
+                </Grid>
                 {expansionPanel}
-                <List>
+                <List className={classes.list}>
                   {entries.map((entry, index) => (
-                    <ListItem button alignItem="flex" key={index}>
+                    <ExtListItem key={index}>
                       <IconButton
                         className={classes.deleteEntryBtn}
                         onClick={this.handleEntryRemoval}
@@ -282,38 +282,23 @@ class Checklist extends Component {
                       >
                         <Clear />
                       </IconButton>
-
                       <ListItemText>{entry.title}</ListItemText>
-                      <Switch
-                        className={classes.entryCheckbox}
-                        onChange={this.handleChange}
-                        id={entry.entId}
-                        name={'checkbox-entry-'.concat(index)}
-                        checked={!!entry.value}
-                      />
-                    </ListItem>
+                      <ListItemSecondaryAction>
+                        <Switch
+                          onChange={this.handleChange}
+                          id={entry.entId}
+                          name={'checkbox-entry-'.concat(index)}
+                          checked={!!entry.value}
+                        />
+                      </ListItemSecondaryAction>
+                    </ExtListItem>
                   ))}
                   {newItemEntry}
                   {errorItem}
                 </List>
               </CardContent>
               <CardActions>
-                {removing ? (
-                  <CircularProgress />
-                ) : (
-                  <Grid item container>
-                    <Grid item className={classes.fab} style={{ width: '10%' }}>
-                      <Fab
-                        color="secondary"
-                        aria-label="Edit"
-                        component={Link}
-                        to={`/list/${list.listId}/edit`}
-                      >
-                        <Edit />
-                      </Fab>
-                    </Grid>
-                  </Grid>
-                )}
+                {removing ? <CircularProgress /> : null}
               </CardActions>
             </Card>
           </Grid>
