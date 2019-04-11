@@ -2,14 +2,15 @@ import React, { Component } from 'react'
 import {
   withStyles,
   Card,
+  IconButton,
   TextField,
   Button,
   CardContent,
-  Grid,
-  Divider
+  Grid
 } from '@material-ui/core'
+import { Clear } from '@material-ui/icons'
 
-import { Redirect } from 'react-router-dom'
+import { Link, Redirect } from 'react-router-dom'
 import { connect } from 'react-redux'
 
 import PropTypes from 'prop-types'
@@ -17,18 +18,25 @@ import ConfirmationDialog from './ConfirmationDialog'
 
 import { removeList, updateList } from '../actions/checklists'
 
-const style = {
+const styles = theme => ({
+  main: {
+    padding: theme.spacing.unit * 4
+  },
   deleteBtn: {
-    marginTop: '5%'
+    color: theme.palette.error.main,
+    borderColor: theme.palette.error.main,
+    width: '100%'
+  },
+  textField: {
+    width: '100%'
   }
-}
+})
 
 class EditChecklist extends Component {
   state = {
     name: '',
     description: '',
-    confirmDeleteListOpen: false,
-    updateCancelled: false
+    confirmDeleteListOpen: false
   }
 
   handleRemoveListRequest = () => {
@@ -63,16 +71,8 @@ class EditChecklist extends Component {
     this.setState({ description: event.target.value })
   }
 
-  handleCancelUpdate = () => {
-    this.setState({ updateCancelled: true })
-  }
-
   render() {
-    const { list, classes, listUpdated } = this.props
-
-    const updateCancel = this.state.updateCancelled ? (
-      <Redirect to={`/list/${list.listId}`} />
-    ) : null
+    const { list, classes } = this.props
 
     if (!list) {
       return <Redirect to="/" />
@@ -93,62 +93,82 @@ class EditChecklist extends Component {
 
     return (
       <Grid container layout="row" justify="center">
-        <Grid item xs={10} sm={8} md={4} lg={3}>
+        <Grid item xs={12} sm={10} md={8} lg={6}>
           {confirmDeleteDialog}
           <Card>
             <CardContent>
-              <Divider className={classes.divider} />
-              <form>
-                <TextField
-                  id="name"
-                  name="name"
-                  required
-                  style={{ width: '100%' }}
-                  variant="outlined"
-                  defaultValue={list.name}
-                  label="List Name (400 Characters)"
-                  autoFocus
-                  onChange={this.handleTitleUpdate}
-                />
-                <TextField
-                  id="description"
-                  name="description"
-                  multiline
-                  required
-                  style={{ width: '100%' }}
-                  variant="outlined"
-                  defaultValue={list.description}
-                  rows="6"
-                  label="List Description (1250 Characters)"
-                  margin="normal"
-                  onChange={this.handleDescriptionUpdate}
-                />
-
-                <Grid item style={({ marginBottom: 25 }, { float: 'right' })}>
-                  <Button color="secondary" onClick={this.handleCancelUpdate}>
-                    Cancel
-                  </Button>
-                  {updateCancel}
-                  <Button
-                    variant="outlined"
-                    color="primary"
-                    onClick={this.handleUpdateSubmission}
+              <Grid container direction="row" justify="flex-end">
+                <Grid item>
+                  <IconButton
+                    aria-label="Cancel"
+                    component={Link}
+                    to={`/list/${list.listId}`}
                   >
-                    Save
-                  </Button>
+                    <Clear />
+                  </IconButton>
+                </Grid>
+              </Grid>
+              <Grid
+                container
+                direction="column"
+                spacing={16}
+                className={classes.main}
+              >
+                <Grid item>
+                  <TextField
+                    id="name"
+                    name="name"
+                    required
+                    className={classes.textField}
+                    defaultValue={list.name}
+                    label="List Name (400 Characters)"
+                    autoFocus
+                    onChange={this.handleTitleUpdate}
+                  />
                 </Grid>
                 <Grid item>
-                  <Button
-                    color="primary"
-                    className={classes.deleteBtn}
-                    variant="outlined"
-                    style={{ width: '100%' }}
-                    onClick={this.handleRemoveListRequest}
-                  >
-                    Delete List
-                  </Button>
+                  <TextField
+                    id="description"
+                    name="description"
+                    multiline
+                    className={classes.textField}
+                    defaultValue={list.description}
+                    rows="6"
+                    rowsMax="20"
+                    label="List Description (1250 Characters)"
+                    margin="normal"
+                    onChange={this.handleDescriptionUpdate}
+                  />
                 </Grid>
-              </form>
+                <Grid
+                  container
+                  item
+                  direction="row"
+                  justify="flex-end"
+                  spacing={16}
+                >
+                  <Grid item>
+                    <Button
+                      color="primary"
+                      onClick={this.handleUpdateSubmission}
+                      variant="contained"
+                    >
+                      Save
+                    </Button>
+                  </Grid>
+                </Grid>
+                <Grid item container direction="row" justify="center">
+                  <Grid xs={12} sm={12} md={6} lg={4} item>
+                    <Button
+                      className={classes.deleteBtn}
+                      variant="outlined"
+                      onClick={this.handleRemoveListRequest}
+                    >
+                      Delete List
+                    </Button>
+                  </Grid>
+                </Grid>
+              </Grid>
             </CardContent>
           </Card>
         </Grid>
@@ -179,4 +199,4 @@ const makeMapStateToProps = (initialState, ownProps) => {
   }
 }
 
-export default connect(makeMapStateToProps)(withStyles(style)(EditChecklist))
+export default connect(makeMapStateToProps)(withStyles(styles)(EditChecklist))

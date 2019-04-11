@@ -50,10 +50,6 @@ const ExtExpansionPanelSummary = withStyles({
 })(ExpansionPanelSummary)
 
 const styles = theme => ({
-  root: {
-    padding: theme.spacing.unit * 2,
-    height: '100%'
-  },
   textField: {
     width: '100%',
     paddingRight: '2.5%'
@@ -74,6 +70,9 @@ const styles = theme => ({
     overflow: 'hidden',
     textOverflow: 'ellipsis',
     whiteSpace: 'nowrap'
+  },
+  hiddenButton: {
+    visibility: 'hidden'
   },
   deleteEntryBtn: {},
   expansionPanel: {
@@ -228,15 +227,21 @@ class Checklist extends Component {
       <Loading />
     ) : (
       <ExtListItem>
-        <TextField
-          id="newEntryTitle"
-          placeholder="Add an Item..."
-          autoFocus
-          form="new-item-form"
-          className={classes.textField}
-          onChange={this.handleEntryTitleChange}
-          value={this.state.newEntryTitle}
-        />
+        <IconButton className={classes.hiddenButton}>
+          <Clear />
+        </IconButton>
+        <ListItemText>
+          <TextField
+            id="newEntryTitle"
+            placeholder="Add an Item..."
+            autoFocus
+            form="new-item-form"
+            className={classes.textField}
+            onChange={this.handleEntryTitleChange}
+            value={this.state.newEntryTitle}
+          />
+        </ListItemText>
+        <ListItemSecondaryAction />
       </ExtListItem>
     )
 
@@ -255,7 +260,7 @@ class Checklist extends Component {
     return list && !gettingListEntries ? (
       <form id="new-item-form" onSubmit={this.handleSubmit} autoComplete="off">
         {deleteEntryDialog}
-        <Grid container layout="row" justify="center" className={classes.root}>
+        <Grid container layout="row" justify="center">
           <Grid item xs={12} sm={10} md={8} lg={6}>
             <Card>
               <CardContent>
