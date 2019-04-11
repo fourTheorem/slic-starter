@@ -1,4 +1,5 @@
 import findIndex from 'lodash/findIndex'
+import { LOCATION_CHANGE } from 'connected-react-router'
 
 import {
   LOAD_LISTS_REQUEST,
@@ -12,8 +13,7 @@ import {
   UPDATE_LIST_FAILURE,
   REMOVE_LIST_REQUEST,
   REMOVE_LIST_SUCCESS,
-  REMOVE_LIST_FAILURE,
-  PREPARE_NEW_LIST
+  REMOVE_LIST_FAILURE
 } from '../actions/checklists'
 
 import {
@@ -46,12 +46,23 @@ const defaultState = {
 
 export default (state = defaultState, { type, meta, payload, error }) => {
   switch (type) {
-    case PREPARE_NEW_LIST:
-      return {
-        ...state,
-        createdListId: null,
-        creating: false
+    case LOCATION_CHANGE:
+      const { path } = payload.location
+      if (state.createdListId && path !== '/new-list') {
+        return {
+          ...state,
+          createdListId: null,
+          creating: false
+        }
       }
+      if (state.updatedListId && !/\/list\/.*\/edit/.test(path)) {
+        return {
+          ...state,
+          updatedListId: null,
+          updating: false
+        }
+      }
+      return state
     case LOAD_LISTS_REQUEST:
       return {
         ...state,
@@ -113,36 +124,35 @@ export default (state = defaultState, { type, meta, payload, error }) => {
     case UPDATE_LIST_REQUEST:
       return {
         ...state,
-        updatingList: true,
-        listUpdated: false,
-        listUpdateError: null
+        updating: true,
+        updatedListId: null,
+        updateError: null
       }
-
-    case UPDATE_LIST_SUCCESS:
-      const { updatedListId } = meta
+    case UPDATE_LIST_SUCCESS: {
+      const { listId } = meta
       const { updatedAt } = payload.Attributes
       return {
         ...state,
         listsById: {
           ...state.listsById,
-          [updatedListId]: {
-            listId: updatedListId,
+          [listId]: {
+            listId,
             name: payload.Attributes.name,
             description: payload.Attributes.description,
             updatedAt: updatedAt,
             createdAt: payload.Attributes.createdAt
           }
         },
-        updatingList: false,
-        listUpdated: true,
-        listUpdateError: null
+        updating: false,
+        updatedListId: listId,
+        updateError: null
       }
-
+    }
     case UPDATE_LIST_FAILURE:
       return {
         ...state,
-        updatingList: false,
-        listUpdated: false,
+        updating: false,
+        updatedListId: null,
         updateError: error
       }
 

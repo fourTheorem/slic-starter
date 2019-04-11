@@ -14,6 +14,7 @@ import { Link, Redirect } from 'react-router-dom'
 import { connect } from 'react-redux'
 
 import PropTypes from 'prop-types'
+import ErrorMessage from './ErrorMessage'
 import ConfirmationDialog from './ConfirmationDialog'
 
 import { removeList, updateList } from '../actions/checklists'
@@ -72,11 +73,21 @@ class EditChecklist extends Component {
   }
 
   render() {
-    const { list, classes } = this.props
+    const { updating, updatedListId, updateError, list, classes } = this.props
 
     if (!list) {
       return <Redirect to="/" />
     }
+
+    if (updatedListId && !updating) {
+      return <Redirect to={`/list/${updatedListId}`} />
+    }
+
+    const errorItem = updateError ? (
+      <Grid item>
+        <ErrorMessage messageId={updateError.id} />
+      </Grid>
+    ) : null
 
     // ConfirmationDialog
     const confirmDeleteDialog = (
@@ -157,6 +168,7 @@ class EditChecklist extends Component {
                     </Button>
                   </Grid>
                 </Grid>
+                {errorItem}
                 <Grid item container direction="row" justify="center">
                   <Grid xs={12} sm={12} md={6} lg={4} item>
                     <Button
@@ -181,7 +193,9 @@ EditChecklist.propTypes = {
   list: PropTypes.object.isRequired,
   dispatch: PropTypes.func.isRequired,
   classes: PropTypes.object.isRequired,
-  listUpdated: PropTypes.bool.isRequired
+  updating: PropTypes.bool.isRequired,
+  updatedListId: PropTypes.string,
+  updateError: PropTypes.object
 }
 
 const makeMapStateToProps = (initialState, ownProps) => {
@@ -191,10 +205,15 @@ const makeMapStateToProps = (initialState, ownProps) => {
     }
   } = ownProps
 
-  return ({ checklists: { listsById } }) => {
+  return ({
+    checklists: { listsById, updatedListId, updating, updateError }
+  }) => {
     const list = listId ? listsById[listId] : {}
     return {
-      list
+      list,
+      updatedListId,
+      updating,
+      updateError
     }
   }
 }

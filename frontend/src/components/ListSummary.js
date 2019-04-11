@@ -63,7 +63,11 @@ class ListSummary extends Component {
           component={Link}
           to={`/list/${list.listId}`}
         >
-          <CardMedia className={classes.media} style={newStyle} />
+          <CardMedia
+            className={classes.media}
+            style={newStyle}
+            src="url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8/1+yHgAHtAKYD9BncgAAAABJRU5ErkJggg==)"
+          />
           <CardContent>
             <Typography className={classes.title} gutterBottom>
               {list.name}
