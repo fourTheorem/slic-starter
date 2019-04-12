@@ -74,13 +74,11 @@ const styles = theme => ({
   hiddenButton: {
     visibility: 'hidden'
   },
-  eleteEntryBtn: {},
   expansionPanel: {
     '&:before': {
       display: 'none'
     }
-  },
-  createdAt: {}
+  }
 })
 
 class Checklist extends Component {

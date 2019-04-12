@@ -31,7 +31,6 @@ test('update handler updates current checklist', async t => {
   const result = await updateHandler.main(event)
 
   t.equal(received.updateParams.userId, userId)
-  t.equal(result.statusCode, 201)
   t.equal(received.updateParams.name, payload.name)
   t.equal(received.updateParams.description, payload.description)
   t.notEqual(received.updateParams.name, null)
