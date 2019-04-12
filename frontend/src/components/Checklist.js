@@ -74,7 +74,7 @@ const styles = theme => ({
   hiddenButton: {
     visibility: 'hidden'
   },
-  deleteEntryBtn: {},
+  eleteEntryBtn: {},
   expansionPanel: {
     '&:before': {
       display: 'none'
@@ -148,6 +148,10 @@ class Checklist extends Component {
     this.setState({ entId: e.currentTarget.id })
   }
 
+  handleEntryRemovalClose = () => {
+    this.setState({ confirmDeleteEntryOpen: false })
+  }
+
   handleRemoveListEntry = () => {
     const { dispatch, list } = this.props
     dispatch(removeEntry({ listId: list.listId, entId: this.state.entId }))
@@ -214,7 +218,7 @@ class Checklist extends Component {
               <Typography variant="caption">{date}</Typography>
             </Grid>
             <Grid item>
-              <Typography variant="subheading" className={classes.description}>
+              <Typography variant="h6" className={classes.description}>
                 {list.description}
               </Typography>
             </Grid>
@@ -356,6 +360,7 @@ const makeMapStateToProps = (initialState, ownProps) => {
     const list = listId ? listsById[listId] : {}
     const entries = entriesByListId[listId] || []
     return {
+      addingEntry,
       entries,
       entriesByListId,
       gettingListEntries,

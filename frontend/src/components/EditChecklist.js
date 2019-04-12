@@ -211,8 +211,8 @@ const makeMapStateToProps = (initialState, ownProps) => {
     const list = listId ? listsById[listId] : {}
     return {
       list,
-      updatedListId,
       updating,
+      updatedListId,
       updateError
     }
   }

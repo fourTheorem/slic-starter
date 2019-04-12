@@ -33,7 +33,7 @@ async function create({ userId, name, description }) {
 
 async function update({ listId, userId, name = null, description = null }) {
   const updatedAt = Date.now()
-  return await dynamoDocClient()
+  const result = await dynamoDocClient()
     .update({
       TableName: tableName,
       Key: { userId, listId },
@@ -52,6 +52,8 @@ async function update({ listId, userId, name = null, description = null }) {
       ReturnValues: 'ALL_NEW'
     })
     .promise()
+
+  return result.Attributes
 }
 
 async function remove({ listId, userId }) {

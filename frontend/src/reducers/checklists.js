@@ -130,17 +130,13 @@ export default (state = defaultState, { type, meta, payload, error }) => {
       }
     case UPDATE_LIST_SUCCESS: {
       const { listId } = meta
-      const { updatedAt } = payload.Attributes
       return {
         ...state,
         listsById: {
           ...state.listsById,
           [listId]: {
             listId,
-            name: payload.Attributes.name,
-            description: payload.Attributes.description,
-            updatedAt: updatedAt,
-            createdAt: payload.Attributes.createdAt
+            ...payload
           }
         },
         updating: false,
