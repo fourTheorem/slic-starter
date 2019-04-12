@@ -1,6 +1,6 @@
 'use strict'
 const yaml = require('yamljs')
-const { moduleNames } = require('./modules')
+const { moduleNames } = require('./modules').default
 const { includeFile } = require('./serverless-util')
 
 module.exports = () =>

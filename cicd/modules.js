@@ -1,6 +1,6 @@
 'use strict'
 
-const tsort = require('tsort')
+import tsort from 'tsort'
 
 const modules = {
   moduleNames: ['frontend', 'backend', 'baseline'],
@@ -40,7 +40,7 @@ stages.forEach((stage, index) => {
   })
 })
 
-module.exports = {
+export default {
   ...modules,
   deployOrder,
   stages

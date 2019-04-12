@@ -5,6 +5,7 @@ import codePipelineActions = require('@aws-cdk/aws-codepipeline-actions')
 import { defaultEnvironment } from '../code-build-environments'
 import { CodeBuildBuildAction } from '@aws-cdk/aws-codepipeline-actions'
 import { Pipeline } from '@aws-cdk/aws-codepipeline'
+import config from '../../config'
 import modules from '../../modules'
 const { moduleNames } = modules
 
@@ -34,7 +35,14 @@ export default class BuildModulesStage extends Construct {
                 commands: ['bash ./build-scripts/pre_build-phase.sh']
               },
               build: {
-                commands: ['bash ./build-scripts/build-phase.sh']
+                commands: [
+                  `SLIC_STAGE=stg CROSS_ACCOUNT_ID=${
+                    config.accountIds.stg
+                  } bash ./build-scripts/build-phase.sh`,
+                  `SLIC_STAGE=prod CROSS_ACCOUNT_ID=${
+                    config.accountIds.prod
+                  } bash ./build-scripts/build-phase.sh`
+                ]
               }
             },
             artifacts: {
