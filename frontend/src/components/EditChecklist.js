@@ -10,14 +10,14 @@ import {
 } from '@material-ui/core'
 import { Clear } from '@material-ui/icons'
 
-import { Link, Redirect } from 'react-router-dom'
+import { Redirect } from 'react-router-dom'
 import { connect } from 'react-redux'
 
 import PropTypes from 'prop-types'
 import ErrorMessage from './ErrorMessage'
 import ConfirmationDialog from './ConfirmationDialog'
 
-import { removeList, updateList } from '../actions/checklists'
+import { createList, removeList, updateList } from '../actions/checklists'
 
 const styles = theme => ({
   main: {
@@ -40,6 +40,14 @@ class EditChecklist extends Component {
     confirmDeleteListOpen: false
   }
 
+  handleCancel = () => {
+    window.history.back()
+  }
+
+  handleChange = ({ target: { id, value } }) => {
+    this.setState({ [id]: value })
+  }
+
   handleRemoveListRequest = () => {
     this.setState({ confirmDeleteListOpen: true })
   }
@@ -53,40 +61,61 @@ class EditChecklist extends Component {
     dispatch(removeList({ listId: list.listId }))
   }
 
-  handleUpdateSubmission = event => {
+  handleSubmission = event => {
     const { dispatch, list } = this.props
-    dispatch(
-      updateList({
-        listId: list.listId,
-        name: this.state.name || list.name,
-        description: this.state.description || list.description
-      })
-    )
-  }
 
-  handleTitleUpdate = event => {
-    this.setState({ name: event.target.value })
-  }
-
-  handleDescriptionUpdate = event => {
-    this.setState({ description: event.target.value })
+    if (!list.listId) {
+      dispatch(createList(this.state))
+    } else {
+      dispatch(
+        updateList({
+          listId: list.listId,
+          name: this.state.name || list.name,
+          description: this.state.description || list.description
+        })
+      )
+    }
   }
 
   render() {
-    const { updating, updatedListId, updateError, list, classes } = this.props
+    const {
+      creating,
+      createdListId,
+      creationError,
+      updating,
+      updatedListId,
+      updateError,
+      list,
+      classes
+    } = this.props
 
     if (!list) {
       return <Redirect to="/" />
+    }
+
+    if (createdListId && !creating) {
+      return <Redirect to={`/list/{${createdListId}}`} />
     }
 
     if (updatedListId && !updating) {
       return <Redirect to={`/list/${updatedListId}`} />
     }
 
-    const errorItem = updateError ? (
-      <Grid item>
-        <ErrorMessage messageId={updateError.id} />
-      </Grid>
+    const errorItem =
+      updateError || creationError ? (
+        <Grid item>
+          <ErrorMessage messageId={updateError.id} />
+        </Grid>
+      ) : null
+
+    const deleteListButton = list.listId ? (
+      <Button
+        className={classes.deleteBtn}
+        variant="outlined"
+        onClick={this.handleRemoveListRequest}
+      >
+        Delete List
+      </Button>
     ) : null
 
     // ConfirmationDialog
@@ -110,11 +139,7 @@ class EditChecklist extends Component {
             <CardContent>
               <Grid container direction="row" justify="flex-end">
                 <Grid item>
-                  <IconButton
-                    aria-label="Cancel"
-                    component={Link}
-                    to={`/list/${list.listId}`}
-                  >
+                  <IconButton onClick={this.handleCancel} aria-label="Cancel">
                     <Clear />
                   </IconButton>
                 </Grid>
@@ -134,7 +159,7 @@ class EditChecklist extends Component {
                     defaultValue={list.name}
                     label="List Name (400 Characters)"
                     autoFocus
-                    onChange={this.handleTitleUpdate}
+                    onChange={this.handleChange}
                   />
                 </Grid>
                 <Grid item>
@@ -148,7 +173,7 @@ class EditChecklist extends Component {
                     rowsMax="20"
                     label="List Description (1250 Characters)"
                     margin="normal"
-                    onChange={this.handleDescriptionUpdate}
+                    onChange={this.handleChange}
                   />
                 </Grid>
                 <Grid
@@ -161,7 +186,7 @@ class EditChecklist extends Component {
                   <Grid item>
                     <Button
                       color="primary"
-                      onClick={this.handleUpdateSubmission}
+                      onClick={this.handleSubmission}
                       variant="contained"
                     >
                       Save
@@ -171,13 +196,7 @@ class EditChecklist extends Component {
                 {errorItem}
                 <Grid item container direction="row" justify="center">
                   <Grid xs={12} sm={12} md={6} lg={4} item>
-                    <Button
-                      className={classes.deleteBtn}
-                      variant="outlined"
-                      onClick={this.handleRemoveListRequest}
-                    >
-                      Delete List
-                    </Button>
+                    {deleteListButton}
                   </Grid>
                 </Grid>
               </Grid>
@@ -193,6 +212,9 @@ EditChecklist.propTypes = {
   list: PropTypes.object.isRequired,
   dispatch: PropTypes.func.isRequired,
   classes: PropTypes.object.isRequired,
+  creating: PropTypes.bool.isRequired,
+  createdListId: PropTypes.string,
+  creationError: PropTypes.object,
   updating: PropTypes.bool.isRequired,
   updatedListId: PropTypes.string,
   updateError: PropTypes.object
@@ -206,11 +228,22 @@ const makeMapStateToProps = (initialState, ownProps) => {
   } = ownProps
 
   return ({
-    checklists: { listsById, updatedListId, updating, updateError }
+    checklists: {
+      listsById,
+      creationError,
+      createdListId,
+      creating,
+      updatedListId,
+      updating,
+      updateError
+    }
   }) => {
     const list = listId ? listsById[listId] : {}
     return {
       list,
+      createdListId,
+      creating,
+      creationError,
       updating,
       updatedListId,
       updateError
