@@ -113,6 +113,7 @@ class EditChecklist extends Component {
         className={classes.deleteBtn}
         variant="outlined"
         onClick={this.handleRemoveListRequest}
+        id="delete-list-btn"
       >
         Delete List
       </Button>
@@ -188,6 +189,7 @@ class EditChecklist extends Component {
                       color="primary"
                       onClick={this.handleSubmission}
                       variant="contained"
+                      id="save-btn"
                     >
                       Save
                     </Button>

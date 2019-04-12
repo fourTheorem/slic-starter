@@ -36,8 +36,9 @@ test('User can create a new List', async t => {
 
   await t.typeText(Selector('#description'), 'List Description')
   await t.expect(Selector('#description').value).eql('List Description')
-  await t.click('#create-list-button', { timeout: 2000 })
+  await t.click('#save-btn', { timeout: 2000 })
 
+  await t.click(Selector('a').withText('First List'))
   await t.click(Selector('#expansion-summary'))
   await t.expect(Selector('#list-name').withText('First List')).exists
   await t.expect(Selector('#list-description').withText('List Description'))
@@ -56,7 +57,7 @@ test('User can update an already existing list', async t => {
 
   await t.click(Selector('a').withText('First List'))
   await t.expect(Selector('h2').withText('First List')).exists
-  await t.click(Selector('#editListBtn'))
+  await t.click(Selector('#edit-list-btn'))
   await t.expect(titleTextfield).exists
   await t.pressKey('ctrl+a delete')
   await t.expect(descriptionTextField).exists
@@ -66,7 +67,7 @@ test('User can update an already existing list', async t => {
   await t.pressKey('ctrl+a delete')
   await t.typeText(descriptionTextField, 'Updated List Description')
   await t.expect(descriptionTextField.value).eql('Updated List Description')
-  await t.click(Selector('#saveUpdateBtn'))
+  await t.click(Selector('#save-btn'))
   await t.expect(Selector('h2').withText('Updated List Title')).exists
   await t.expect(Selector('#description').withText('Updated List Description'))
     .exists
@@ -134,6 +135,7 @@ test('Can remove a full list, including entries', async t => {
   await t.click(page.loginBtn, { timeout: 500 })
 
   await t.click(Selector('a').withText('First List'))
+  await t.click(Selector('#edit-list-btn'))
   await t.click(Selector('#delete-list-btn'))
   const deleteListConfirmBtn = Selector('#list-confirmation-confirm-btn')
 

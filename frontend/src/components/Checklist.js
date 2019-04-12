@@ -271,6 +271,7 @@ class Checklist extends Component {
                 <Grid container direction="row" justify="flex-end">
                   <Grid item>
                     <IconButton
+                      id="edit-list-btn"
                       aria-label="Edit"
                       component={Link}
                       to={`/list/${list.listId}/edit`}
