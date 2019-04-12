@@ -9,6 +9,8 @@
     "url": "https://github.com/fourTheorem/slic-starter"
   },
   "devDependencies": {
+    "@aws-cdk/aws-codepipeline": "^0.28.0",
+    "@aws-cdk/cdk": "^0.28.0",
     "eslint": "^5.13.0",
     "eslint-config-prettier": "^4.0.0",
     "eslint-config-standard": "^12.0.0",
