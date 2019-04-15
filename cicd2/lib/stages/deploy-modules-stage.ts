@@ -8,15 +8,21 @@ import { Pipeline } from '@aws-cdk/aws-codepipeline'
 import modules from '../../modules'
 import StageName from '../stage-name'
 import config from '../../config'
-const { moduleNames, deployOrder } = modules
+const { deployOrder } = modules
 
 export default class DeployModulesStage extends Construct {
-  constructor(scope: Construct, resources: any, stageName: StageName) {
-    super(scope, `${stageName}DeployMod`)
+  constructor(
+    scope: Construct,
+    stageNo: number,
+    stageModules: Array<string>,
+    resources: any,
+    stageName: StageName
+  ) {
+    super(scope, `${stageName}DeployMod${stageNo}`)
     const deployModuleProjects: { [name: string]: PipelineProject } = {}
 
     const pipeline: Pipeline = resources.pipeline
-    moduleNames.forEach(moduleName => {
+    stageModules.forEach(moduleName => {
       deployModuleProjects[moduleName] = new codeBuild.PipelineProject(
         this,
         `${stageName}_deploy_${moduleName}`,
@@ -45,8 +51,8 @@ export default class DeployModulesStage extends Construct {
     resources.deployModuleProjects = deployModuleProjects
     const deployActions: { [moduleName: string]: CodeBuildBuildAction } = {}
     pipeline.addStage({
-      name: `${stageName}_deploy`,
-      actions: moduleNames.map(moduleName => {
+      name: `${stageName}_deploy_${stageNo}`,
+      actions: stageModules.map(moduleName => {
         deployActions[
           moduleName
         ] = new codePipelineActions.CodeBuildBuildAction({

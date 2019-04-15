@@ -22,6 +22,6 @@ export default class SourceStage extends Construct {
       outputArtifactName: 'slic-source'
     })
     resources.sourceAction = sourceAction
-    pipeline.addStage({ name: 'Source', actions: [sourceAction] })
+    pipeline.addStage({ name: 'source', actions: [sourceAction] })
   }
 }

@@ -32,12 +32,6 @@ resources:
           Statement:
             - Effect: Allow
               Action:
-                - codebuild:StartBuild
-                - codebuild:BatchGetBuilds
-                - codebuild:StopBuild
-              Resource: '*'
-            - Effect: Allow
-              Action:
                 - cloudformation:List*
                 - cloudformation:Get*
                 - cloudformation:PreviewStackUpdate
@@ -146,6 +140,29 @@ resources:
                 - logs:DescribeLogStreams
                 - logs:DescribeLogGroups
                 - logs:FilterLogEvents
+              Resource:
+                - '*'
+            - Effect: Allow
+              Action:
+                - events:Put*
+                - events:Remove*
+                - events:Delete*
+              Resource:
+                - 'arn:aws:events:*:*:rule/*'
+            - Effect: Allow
+              Action:
+                - 'acm:RequestCertificate'
+                - 'acm:DeleteCertificate'
+                - 'acm:DescribeCertificate'
+                - 'acm:AddTagsToCertificate'
+                - 'route53:GetChange'
+                - 'route53:CreateHostedZone'
+                - 'route53:DeleteHostedZone'
+                - 'route53:ChangeResourceRecordSets'
+                - 'route53:ChangeTagsForResource'
+                - 'route53:ListResourceRecordSets'
+                - 'route53:ListHostedZones'
+                - 'route53:ListQueryLoggingConfigs'
               Resource:
                 - '*'
             - Effect: Allow
