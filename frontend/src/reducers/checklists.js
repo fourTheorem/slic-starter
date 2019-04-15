@@ -1,4 +1,5 @@
 import findIndex from 'lodash/findIndex'
+import { LOCATION_CHANGE } from 'connected-react-router'
 
 import {
   LOAD_LISTS_REQUEST,
@@ -7,10 +8,12 @@ import {
   CREATE_LIST_REQUEST,
   CREATE_LIST_SUCCESS,
   CREATE_LIST_FAILURE,
+  UPDATE_LIST_REQUEST,
+  UPDATE_LIST_SUCCESS,
+  UPDATE_LIST_FAILURE,
   REMOVE_LIST_REQUEST,
   REMOVE_LIST_SUCCESS,
-  REMOVE_LIST_FAILURE,
-  PREPARE_NEW_LIST
+  REMOVE_LIST_FAILURE
 } from '../actions/checklists'
 
 import {
@@ -43,12 +46,23 @@ const defaultState = {
 
 export default (state = defaultState, { type, meta, payload, error }) => {
   switch (type) {
-    case PREPARE_NEW_LIST:
-      return {
-        ...state,
-        createdListId: null,
-        creating: false
+    case LOCATION_CHANGE:
+      const { path } = payload.location
+      if (state.createdListId && path !== '/new-list') {
+        return {
+          ...state,
+          createdListId: null,
+          creating: false
+        }
       }
+      if (state.updatedListId && !/\/list\/.*\/edit/.test(path)) {
+        return {
+          ...state,
+          updatedListId: null,
+          updating: false
+        }
+      }
+      return state
     case LOAD_LISTS_REQUEST:
       return {
         ...state,
@@ -107,6 +121,37 @@ export default (state = defaultState, { type, meta, payload, error }) => {
         creating: false,
         creationError: error
       }
+    case UPDATE_LIST_REQUEST:
+      return {
+        ...state,
+        updating: true,
+        updatedListId: null,
+        updateError: null
+      }
+    case UPDATE_LIST_SUCCESS: {
+      const { listId } = meta
+      return {
+        ...state,
+        listsById: {
+          ...state.listsById,
+          [listId]: {
+            listId,
+            ...payload
+          }
+        },
+        updating: false,
+        updatedListId: listId,
+        updateError: null
+      }
+    }
+    case UPDATE_LIST_FAILURE:
+      return {
+        ...state,
+        updating: false,
+        updatedListId: null,
+        updateError: error
+      }
+
     case REMOVE_LIST_REQUEST:
       return {
         ...state,

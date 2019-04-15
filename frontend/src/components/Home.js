@@ -5,10 +5,10 @@ import { Route, Switch } from 'react-router'
 import { Redirect } from 'react-router-dom'
 
 import Checklist from './Checklist'
-import NewList from './NewList'
 import NavigationBar from './NavigationBar'
 import Lists from './Lists'
 import Loading from './Loading'
+import EditChecklist from './EditChecklist'
 
 import { loadLists } from '../actions/checklists'
 
@@ -29,8 +29,9 @@ class Home extends Component {
       <Loading />
     ) : (
       <Switch>
-        <Route exact path="/new-list" component={NewList} />
+        <Route exact path="/new-list" component={EditChecklist} />
         <Route exact path="/list/:id" component={Checklist} />
+        <Route path="/list/:id/edit" component={EditChecklist} />
         <Route path="/" component={Lists} />
       </Switch>
     )

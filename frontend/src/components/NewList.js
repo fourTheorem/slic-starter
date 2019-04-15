@@ -2,10 +2,10 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { Redirect } from 'react-router-dom'
 import { connect } from 'react-redux'
-import { Button, Grid, TextField, Typography } from '@material-ui/core'
+import { Button, Grid, TextField } from '@material-ui/core'
 import { withStyles } from '@material-ui/core/styles'
-import { createList, prepareNewList } from '../actions/checklists'
-import { messages } from '../errors'
+import { createList } from '../actions/checklists'
+import ErrorMessage from './ErrorMessage'
 
 const styles = theme => ({
   root: {
@@ -29,10 +29,6 @@ class NewList extends Component {
     description: ''
   }
 
-  componentDidMount() {
-    this.props.dispatch(prepareNewList())
-  }
-
   handleSubmit = event => {
     event.preventDefault()
     this.props.dispatch(createList(this.state))
@@ -53,9 +49,7 @@ class NewList extends Component {
 
     const errorItem = creationError ? (
       <Grid item>
-        <Typography className={classes.error}>
-          {messages[creationError.id]}
-        </Typography>
+        <ErrorMessage messageId={creationError.id} />
       </Grid>
     ) : null
 
@@ -85,9 +79,11 @@ class NewList extends Component {
           >
             <Grid item>
               <TextField
+                inputProps={{ maxLength: 400 }}
                 id="name"
+                required
                 variant="outlined"
-                label="List Name"
+                label="List Name (400 Characters)"
                 className={classes.textField}
                 autoFocus
                 onChange={this.handleChange}

@@ -1,24 +1,25 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
-import { Redirect } from 'react-router-dom'
+import { Redirect, Link } from 'react-router-dom'
 import { push } from 'connected-react-router'
+import { ExpandMore, Clear, Edit } from '@material-ui/icons'
 import {
   Card,
   CardActions,
   CardContent,
   List,
   ListItem,
+  ListItemSecondaryAction,
   ListItemText,
   Grid,
   TextField,
+  Switch,
   IconButton,
   Typography
 } from '@material-ui/core'
-import { Delete, Clear, ExpandMore } from '@material-ui/icons'
 import {
   CircularProgress,
-  Checkbox,
   ExpansionPanel,
   ExpansionPanelSummary,
   ExpansionPanelDetails
@@ -26,50 +27,57 @@ import {
 import { withStyles } from '@material-ui/core/styles'
 import ErrorMessage from './ErrorMessage'
 import Loading from './Loading'
-import { removeList } from '../actions/checklists'
 import {
   addEntry,
   loadEntries,
   setEntryValue,
   removeEntry
 } from '../actions/entries'
-
 import ConfirmationDialog from './ConfirmationDialog'
 
 const dateFns = require('date-fns')
 
-const styles = theme => ({
-  root: {
-    padding: theme.spacing.unit * 2
-  },
-  textField: {
+const ExtListItem = withStyles({
+  container: {
     width: '100%'
+  }
+})(ListItem)
+
+const ExtExpansionPanelSummary = withStyles({
+  content: {
+    width: '100%'
+  }
+})(ExpansionPanelSummary)
+
+const styles = theme => ({
+  textField: {
+    width: '100%',
+    paddingRight: '2.5%'
   },
   typography: {
     whiteSpace: 'pre-line'
   },
-  card: {
-    minHeight: 300,
-    width: 600
+  list: {
+    width: '100%'
   },
-  divider: {
-    marginTop: 20
+  listItem: {
+    width: '100%'
   },
-
-  title: {
-    fontSize: 20
-  },
-
-  collapsedSummary: {
-    height: 100,
-    overflow: 'hidden'
-  },
-
   description: {
-    minHeight: '1.2em',
-    maxHeight: '1.2em',
-    maxWidth: '100%',
-    overflow: 'auto'
+    whiteSpace: 'pre-line'
+  },
+  title: {
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap'
+  },
+  hiddenButton: {
+    visibility: 'hidden'
+  },
+  expansionPanel: {
+    '&:before': {
+      display: 'none'
+    }
   }
 })
 
@@ -77,7 +85,11 @@ class Checklist extends Component {
   state = {
     confirmDeleteListOpen: false,
     confirmDeleteEntryOpen: false,
-    entId: ''
+    entId: '',
+    isEditingList: false,
+    name: '',
+    description: '',
+    isPanelExpanded: false
   }
 
   componentDidUpdate(prevProps) {
@@ -138,23 +150,14 @@ class Checklist extends Component {
     this.setState({ confirmDeleteEntryOpen: false })
   }
 
-  handleRemoveListRequest = () => {
-    this.setState({ confirmDeleteListOpen: true })
-  }
-
-  handleListRemovalClose = () => {
-    this.setState({ confirmDeleteListOpen: false })
-  }
-
-  handleRemoveList = () => {
-    const { dispatch, list } = this.props
-    dispatch(removeList({ listId: list.listId }))
-  }
-
   handleRemoveListEntry = () => {
     const { dispatch, list } = this.props
     dispatch(removeEntry({ listId: list.listId, entId: this.state.entId }))
     this.setState({ confirmDeleteEntryOpen: false })
+  }
+
+  handlePanelExpansion = () => {
+    this.setState({ isPanelExpanded: !this.state.isPanelExpanded })
   }
 
   render() {
@@ -167,31 +170,14 @@ class Checklist extends Component {
       list,
       updatingEntryValue,
       removingEntry,
-      error
+      error,
+      updatingList
     } = this.props
 
     if (!list) {
       // List was deleted, go home
       return <Redirect to="/" />
     }
-
-    const createdAtDate = `Created ${dateFns.distanceInWords(
-      Date.now(),
-      list.createdAt
-    )} ago`
-
-    // ConfirmationDialog
-    const confirmDeleteDialog = (
-      <ConfirmationDialog
-        id="list-confirmation"
-        title="Delete List?"
-        open={this.state.confirmDeleteListOpen}
-        message={`Are you sure you want to remove the list '${list &&
-          list.name}' permanently?`}
-        onConfirm={this.handleRemoveList}
-        onClose={this.handleListRemovalClose}
-      />
-    )
 
     const deleteEntryDialog = (
       <ConfirmationDialog
@@ -204,24 +190,33 @@ class Checklist extends Component {
       />
     )
 
+    const date = `Created ${dateFns.distanceInWords(
+      Date.now(),
+      list.createdAt
+    )} ago`
+
     const expansionPanel = (
-      <ExpansionPanel elevation={0}>
-        <ExpansionPanelSummary
+      <ExpansionPanel
+        elevation={0}
+        className={classes.expansionPanel}
+        expanded={this.state.isPanelExpanded}
+        onChange={this.handlePanelExpansion}
+      >
+        <ExtExpansionPanelSummary
           id="expansion-summary"
           expandIcon={<ExpandMore />}
-          className={classes.collapsedSummary}
         >
-          <Typography id="list-name" variant="h4">
+          <Typography variant="h4" className={classes.title}>
             {list.name}
           </Typography>
-        </ExpansionPanelSummary>
+        </ExtExpansionPanelSummary>
         <ExpansionPanelDetails>
-          <Grid item container>
+          <Grid container direction="column">
             <Grid item>
-              <Typography gutterBottom variant="subtitle1">
-                {createdAtDate}
-              </Typography>
-              <Typography id="list-description" className={classes.typography}>
+              <Typography variant="caption">{date}</Typography>
+            </Grid>
+            <Grid item>
+              <Typography variant="h6" className={classes.description}>
                 {list.description}
               </Typography>
             </Grid>
@@ -233,73 +228,85 @@ class Checklist extends Component {
     const newItemEntry = addingEntry ? (
       <Loading />
     ) : (
-      <ListItem>
-        <TextField
-          id="newEntryTitle"
-          placeholder="Add an Item..."
-          autoFocus
-          form="new-item-form"
-          className={classes.textField}
-          onChange={this.handleEntryTitleChange}
-          value={this.state.newEntryTitle}
-        />
-      </ListItem>
+      <ExtListItem>
+        <IconButton className={classes.hiddenButton}>
+          <Clear />
+        </IconButton>
+        <ListItemText>
+          <TextField
+            id="newEntryTitle"
+            placeholder="Add an Item..."
+            autoFocus
+            form="new-item-form"
+            className={classes.textField}
+            onChange={this.handleEntryTitleChange}
+            value={this.state.newEntryTitle}
+          />
+        </ListItemText>
+        <ListItemSecondaryAction />
+      </ExtListItem>
     )
 
     const errorItem =
       !gettingListEntries &&
       !addingEntry &&
+      !updatingList &&
       !removingEntry &&
       !updatingEntryValue &&
       error ? (
-        <ListItem>
+        <ExtListItem>
           <ErrorMessage messageId={error.id} />
-        </ListItem>
+        </ExtListItem>
       ) : null
 
     return list && !gettingListEntries ? (
       <form id="new-item-form" onSubmit={this.handleSubmit} autoComplete="off">
-        {confirmDeleteDialog}
         {deleteEntryDialog}
-        <Grid container layout="row" justify="center" className={classes.root}>
-          <Grid item xs={10} sm={8} md={4} lg={3}>
-            <Card className={classes.card}>
+        <Grid container layout="row" justify="center">
+          <Grid item xs={12} sm={10} md={8} lg={6}>
+            <Card>
               <CardContent>
+                <Grid container direction="row" justify="flex-end">
+                  <Grid item>
+                    <IconButton
+                      id="edit-list-btn"
+                      aria-label="Edit"
+                      component={Link}
+                      to={`/list/${list.listId}/edit`}
+                    >
+                      <Edit />
+                    </IconButton>
+                  </Grid>
+                </Grid>
                 {expansionPanel}
-                <List>
+                <List className={classes.list}>
                   {entries.map((entry, index) => (
-                    <ListItem key={index}>
-                      <ListItemText>{entry.title}</ListItemText>
-                      <Checkbox
-                        onChange={this.handleChange}
-                        id={entry.entId}
-                        name={'checkbox-entry-'.concat(index)}
-                        checked={!!entry.value}
-                      />
+                    <ExtListItem key={index}>
                       <IconButton
+                        className={classes.deleteEntryBtn}
                         onClick={this.handleEntryRemoval}
                         name={'delete-entry-btn-'.concat(index)}
                         id={entry.entId}
                       >
                         <Clear />
                       </IconButton>
-                    </ListItem>
+                      <ListItemText>{entry.title}</ListItemText>
+                      <ListItemSecondaryAction>
+                        <Switch
+                          onChange={this.handleChange}
+                          id={entry.entId}
+                          name={'checkbox-entry-'.concat(index)}
+                          checked={!!entry.value}
+                        />
+                      </ListItemSecondaryAction>
+                    </ExtListItem>
                   ))}
                   {newItemEntry}
                   {errorItem}
                 </List>
               </CardContent>
               <CardActions>
-                {removing ? (
-                  <CircularProgress />
-                ) : (
-                  <IconButton
-                    id="delete-list-btn"
-                    onClick={this.handleRemoveListRequest}
-                  >
-                    <Delete />
-                  </IconButton>
-                )}
+                {removing ? <CircularProgress /> : null}
               </CardActions>
             </Card>
           </Grid>
@@ -321,7 +328,10 @@ Checklist.propTypes = {
   classes: PropTypes.object.isRequired,
   entries: PropTypes.array.isRequired,
   list: PropTypes.object,
-  error: PropTypes.object
+  error: PropTypes.object,
+  updatingList: PropTypes.bool,
+  listUpdated: PropTypes.bool,
+  updatedAt: PropTypes.any
 }
 
 const makeMapStateToProps = (initialState, ownProps) => {
@@ -349,6 +359,7 @@ const makeMapStateToProps = (initialState, ownProps) => {
     const list = listId ? listsById[listId] : {}
     const entries = entriesByListId[listId] || []
     return {
+      addingEntry,
       entries,
       entriesByListId,
       gettingListEntries,

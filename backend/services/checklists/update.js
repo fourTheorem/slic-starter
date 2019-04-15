@@ -1,4 +1,4 @@
-'use strict'
+'se strict'
 
 const { createResponse } = require('../../lib/response')
 const checklist = require('./checklist')

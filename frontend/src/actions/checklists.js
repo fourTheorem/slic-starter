@@ -1,13 +1,6 @@
 import { API as AmplifyApi } from 'aws-amplify'
 import { translateError } from '../errors'
 
-export const PREPARE_NEW_LIST = 'PREPARE_NEW_LIST'
-export function prepareNewList() {
-  return function(dispatch) {
-    dispatch({ type: PREPARE_NEW_LIST })
-  }
-}
-
 export const LOAD_LISTS_REQUEST = 'LOAD_LISTS_REQUEST'
 export const LOAD_LISTS_SUCCESS = 'LOAD_LISTS_SUCCESS'
 export const LOAD_LISTS_FAILURE = 'LOAD_LISTS_FAILURE'
@@ -61,6 +54,29 @@ export function removeList({ listId }) {
       })
       .catch(err => {
         dispatch({ type: REMOVE_LIST_FAILURE, error: translateError(err) })
+      })
+  }
+}
+
+export const UPDATE_LIST_REQUEST = 'UPDATE_LIST_REQUEST'
+export const UPDATE_LIST_SUCCESS = 'UPDATE_LIST_SUCCESS'
+export const UPDATE_LIST_FAILURE = 'UPDATE_LIST_FAILURE'
+
+export function updateList({ listId, name, description }) {
+  return function(dispatch) {
+    const meta = { listId }
+    dispatch({ type: UPDATE_LIST_REQUEST })
+    AmplifyApi.put('checklists', `/checklist/${listId}`, {
+      body: {
+        name,
+        description
+      }
+    })
+      .then(result => {
+        dispatch({ type: UPDATE_LIST_SUCCESS, meta, payload: result })
+      })
+      .catch(err => {
+        dispatch({ type: UPDATE_LIST_FAILURE, error: translateError(err) })
       })
   }
 }

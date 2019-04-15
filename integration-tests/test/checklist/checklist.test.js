@@ -54,7 +54,7 @@ test('checklist tests', async t => {
       name: newName,
       description: newDescription
     })
-    t.equal(status, 200)
+    t.equal(status, 201)
     const { data } = await httpClient.get(`/checklist/${listId1}`)
     t.equal(data.name, newName)
     t.equal(data.description, newDescription)
