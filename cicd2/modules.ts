@@ -2,7 +2,7 @@
 import tsort = require('tsort')
 
 export interface Modules {
-  stages: string[]
+  stages: Array<string[]>
   deployOrder: {
     [moduleName: string]: number
   }
@@ -30,7 +30,7 @@ Object.entries(modules.dependencies).forEach(([key, deps]) => {
 })
 const order = graph.sort()
 
-const stages = []
+modules.stages = []
 let stage = []
 
 while (order.length) {
@@ -38,15 +38,15 @@ while (order.length) {
   stage.push(mod)
   const deps = (order.length && modules.dependencies[order[0]]) || []
   if (deps.indexOf(mod) > -1) {
-    stages.push(stage)
+    modules.stages.push(stage)
     stage = []
   }
 }
 if (stage.length) {
-  stages.push(stage)
+  modules.stages.push(stage)
 }
 
-stages.forEach((stage, index) => {
+modules.stages.forEach((stage, index) => {
   stage.forEach(mod => {
     modules.deployOrder[mod] = index + 1
   })

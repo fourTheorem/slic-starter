@@ -6,16 +6,19 @@ import { defaultEnvironment } from '../code-build-environments'
 import { CodeBuildBuildAction } from '@aws-cdk/aws-codepipeline-actions'
 import { Pipeline } from '@aws-cdk/aws-codepipeline'
 import config from '../../config'
-import modules from '../../modules'
-const { moduleNames } = modules
 
 export default class BuildModulesStage extends Construct {
-  constructor(scope: Construct, resources: any) {
-    super(scope, 'buildModulesStage')
+  constructor(
+    scope: Construct,
+    stageNo: number,
+    stageModules: Array<string>,
+    resources: any
+  ) {
+    super(scope, `buildModulesStage${stageNo}`)
     const buildModuleProjects: { [name: string]: PipelineProject } = {}
 
     const pipeline: Pipeline = resources.pipeline
-    moduleNames.forEach(moduleName => {
+    stageModules.forEach(moduleName => {
       buildModuleProjects[moduleName] = new codeBuild.PipelineProject(
         this,
         `${moduleName}BuildModuleProject`,
@@ -72,8 +75,8 @@ export default class BuildModulesStage extends Construct {
       [moduleName: string]: CodeBuildBuildAction
     } = {}
     pipeline.addStage({
-      name: 'BuildModules',
-      actions: moduleNames.map(moduleName => {
+      name: `build_modules_${stageNo}`,
+      actions: stageModules.map(moduleName => {
         buildModuleActions[
           moduleName
         ] = new codePipelineActions.CodeBuildBuildAction({
@@ -84,6 +87,9 @@ export default class BuildModulesStage extends Construct {
         return buildModuleActions[moduleName]
       })
     })
-    resources.buildModuleActions = buildModuleActions
+    resources.buildModuleActions = {
+      ...(resources.buildModuleActions || {}),
+      ...buildModuleActions
+    }
   }
 }

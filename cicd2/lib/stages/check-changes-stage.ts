@@ -44,7 +44,7 @@ export class CheckChangesStage extends Construct {
 
     resources.checkChangesAction = checkChangesAction
     resources.pipeline.addStage({
-      name: 'CheckChanges',
+      name: 'check_changes',
       actions: [checkChangesAction]
     })
   }

@@ -11,14 +11,16 @@ export default class CodeBuildRole extends iam.Role {
     })
 
     // Allow CodeBuild to assume the deployment role in the target account
-    this.addToPolicy(
-      new iam.PolicyStatement()
-        .allow()
-        .addActions('sts:AssumeRole')
-        .addResource(
-          `arn:aws:iam::${config.accountIds.dev}:role/slic-cicd-deployment-role`
-        )
+    const assumeRolePolicy = new iam.PolicyStatement()
+      .allow()
+      .addActions('sts:AssumeRole')
+    Object.values(config.accountIds).forEach(accountId =>
+      assumeRolePolicy.addResource(
+        `arn:aws:iam::${accountId}:role/slic-cicd-deployment-role`
+      )
     )
+    this.addToPolicy(assumeRolePolicy)
+
     this.addToPolicy(
       new iam.PolicyStatement()
         .allow()
@@ -29,14 +31,17 @@ export default class CodeBuildRole extends iam.Role {
           }:secret:CICD*`
         )
     )
-    this.addToPolicy(
-      new iam.PolicyStatement()
-        .allow()
-        .addAction('cloudformation:Describe*')
-        .addResource(
-          `arn:aws:cloudformation:eu-west-1:${config.accountIds.dev}:stack/*/*`
-        )
+
+    const cfPolicy = new iam.PolicyStatement()
+      .allow()
+      .addAction('cloudformation:Describe*')
+    Object.values(config.accountIds).forEach(accountId =>
+      cfPolicy.addResource(
+        `arn:aws:cloudformation:eu-west-1:${accountId}:stack/*/*`
+      )
     )
+    this.addToPolicy(cfPolicy)
+
     this.addToPolicy(
       new iam.PolicyStatement()
         .allow()
@@ -56,6 +61,19 @@ export default class CodeBuildRole extends iam.Role {
         .addAction('lambda:RemovePermission')
         .addAction('lambda:Update*')
         .addResource(`arn:aws:lambda:${config.region}:*:function:*`)
+    )
+    this.addToPolicy(
+      new iam.PolicyStatement()
+        .allow()
+        .addAction('route53:CreateHostedZone')
+        .addAction('route53:ChangeResourceRecordSets')
+        .addAllResources()
+    )
+    this.addToPolicy(
+      new iam.PolicyStatement()
+        .allow()
+        .addAction('acm:RequestCertificate')
+        .addAllResources()
     )
     this.addToPolicy(
       new iam.PolicyStatement()
