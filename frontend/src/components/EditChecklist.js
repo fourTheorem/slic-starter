@@ -189,15 +189,22 @@ class EditChecklist extends Component {
                 </Grid>
                 <Grid item>
                   <FormControl className={classes.textField}>
-                    <InputLabel htmlFor="category">Category</InputLabel>
+                    <InputLabel id="category-label" htmlFor="category">
+                      Category
+                    </InputLabel>
                     <Select
+                      id="category-select"
                       label="category"
                       value={this.state.category}
                       onChange={this.handleCategoryChange}
                       inputProps={{ id: 'category' }}
                     >
-                      <MenuItem value="TODO">TODO</MenuItem>
-                      <MenuItem value="In Progress">In Progress</MenuItem>
+                      <MenuItem id="cat1" value="TODO">
+                        TODO
+                      </MenuItem>
+                      <MenuItem id="cat2" value="In Progress">
+                        In Progress
+                      </MenuItem>
                     </Select>
                   </FormControl>
                 </Grid>
