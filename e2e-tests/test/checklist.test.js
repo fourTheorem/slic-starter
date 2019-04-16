@@ -35,6 +35,13 @@ test('User can create a new List', async t => {
   await t.typeText(Selector('#description'), 'List Description')
   await t.expect(Selector('#description').value).eql('List Description')
 
+<<<<<<< 313a7e8b363e1a1eb0938454061537bb66a5c9cf
+=======
+  await t.click(Selector('#category-label'))
+  await t.click(Selector('#cat1'))
+  await t.expect(Selector('#category').value).eql('TODO')
+
+>>>>>>> Update E2E, Integration and Unit Tests for Category Functionality
   await t.click('#save-btn', { timeout: 2000 })
   await t.click(Selector('a').withText('First List'))
   await t.click(Selector('#expansion-summary'))
@@ -66,6 +73,13 @@ test('User can update an already existing list', async t => {
   await t.typeText(descriptionTextField, 'Updated List Description')
   await t.expect(descriptionTextField.value).eql('Updated List Description')
 
+<<<<<<< 313a7e8b363e1a1eb0938454061537bb66a5c9cf
+=======
+  await t.click(Selector('#category-label'))
+  await t.click(Selector('#cat2'))
+  await t.expect(Selector('#category').value).eql('In Progress')
+
+>>>>>>> Update E2E, Integration and Unit Tests for Category Functionality
   await t.click(Selector('#save-btn'))
   await t.expect(Selector('h2').withText('Updated List Title')).exists
   await t.expect(Selector('#description').withText('Updated List Description'))
