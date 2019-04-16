@@ -36,8 +36,12 @@ test('User can create a new List', async t => {
 
   await t.typeText(Selector('#description'), 'List Description')
   await t.expect(Selector('#description').value).eql('List Description')
-  await t.click('#save-btn', { timeout: 2000 })
 
+  await t.click(Selector('#category-label'))
+  await t.click(Selector('#cat1'))
+  await t.expect(Selector('#category').value).eql('TODO')
+
+  await t.click('#save-btn', { timeout: 2000 })
   await t.click(Selector('a').withText('First List'))
   await t.click(Selector('#expansion-summary'))
   await t.expect(Selector('#list-name').withText('First List')).exists
@@ -67,6 +71,11 @@ test('User can update an already existing list', async t => {
   await t.pressKey('ctrl+a delete')
   await t.typeText(descriptionTextField, 'Updated List Description')
   await t.expect(descriptionTextField.value).eql('Updated List Description')
+
+  await t.click(Selector('#category-label'))
+  await t.click(Selector('#cat2'))
+  await t.expect(Selector('#category').value).eql('In Progress')
+
   await t.click(Selector('#save-btn'))
   await t.expect(Selector('h2').withText('Updated List Title')).exists
   await t.expect(Selector('#description').withText('Updated List Description'))
