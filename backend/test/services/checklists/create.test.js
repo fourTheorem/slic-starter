@@ -29,7 +29,6 @@ test('create handler creates new checklists', async t => {
   t.equal(received.createParams.userId, userId)
   t.equal(received.createParams.name, payload.name)
   t.equal(received.createParams.description, payload.description)
-  t.equal(received.createParams.category, payload.category)
   t.equal(result.statusCode, 201)
 
   t.end()

@@ -8,7 +8,10 @@ const httpClient = require('../../lib/http-client')
 
 const testLists = [
   { name: 'List One', description: 'First Description' },
-  { name: 'Second List', description: 'Second Description' }
+  {
+    name: 'Second List',
+    description: 'Second Description'
+  }
 ]
 
 test('checklist tests', async t => {
