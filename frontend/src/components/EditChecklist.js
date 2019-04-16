@@ -6,6 +6,10 @@ import {
   TextField,
   Button,
   CardContent,
+  Select,
+  MenuItem,
+  InputLabel,
+  FormControl,
   Grid
 } from '@material-ui/core'
 import { Clear } from '@material-ui/icons'
@@ -37,6 +41,7 @@ class EditChecklist extends Component {
   state = {
     name: '',
     description: '',
+    category: '',
     confirmDeleteListOpen: false
   }
 
@@ -46,6 +51,10 @@ class EditChecklist extends Component {
 
   handleChange = ({ target: { id, value } }) => {
     this.setState({ [id]: value })
+  }
+
+  handleCategoryChange = event => {
+    this.setState({ category: event.target.value })
   }
 
   handleRemoveListRequest = () => {
@@ -71,7 +80,8 @@ class EditChecklist extends Component {
         updateList({
           listId: list.listId,
           name: this.state.name || list.name,
-          description: this.state.description || list.description
+          description: this.state.description || list.description,
+          category: this.state.category || list.category
         })
       )
     }
@@ -176,6 +186,20 @@ class EditChecklist extends Component {
                     margin="normal"
                     onChange={this.handleChange}
                   />
+                </Grid>
+                <Grid item>
+                  <FormControl className={classes.textField}>
+                    <InputLabel htmlFor="category">Category</InputLabel>
+                    <Select
+                      label="category"
+                      value={this.state.category}
+                      onChange={this.handleCategoryChange}
+                      inputProps={{ id: 'category' }}
+                    >
+                      <MenuItem value="TODO">TODO</MenuItem>
+                      <MenuItem value="In Progress">In Progress</MenuItem>
+                    </Select>
+                  </FormControl>
                 </Grid>
                 <Grid
                   container

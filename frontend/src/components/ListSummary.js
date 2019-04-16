@@ -73,6 +73,7 @@ class ListSummary extends Component {
               {list.name}
             </Typography>
             <TextTruncate line={7} text={list.description} />
+            <Typography>Category: {list.category}</Typography>
             <Typography>{createdAtDate}</Typography>
           </CardContent>
         </CardActionArea>

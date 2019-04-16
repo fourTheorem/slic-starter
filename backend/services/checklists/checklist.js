@@ -13,11 +13,12 @@ module.exports = {
   list
 }
 
-async function create({ userId, name, description }) {
+async function create({ userId, name, description, category }) {
   const item = {
     userId,
     name,
     description,
+    category,
     entries: {},
     listId: Uuid.v4(),
     createdAt: Date.now()
@@ -31,22 +32,30 @@ async function create({ userId, name, description }) {
   return item
 }
 
-async function update({ listId, userId, name = null, description = null }) {
+async function update({
+  listId,
+  userId,
+  name = null,
+  description = null,
+  category = null
+}) {
   const updatedAt = Date.now()
   const result = await dynamoDocClient()
     .update({
       TableName: tableName,
       Key: { userId, listId },
       UpdateExpression:
-        'SET #name = :name, updatedAt = :updatedAt, #description = :description',
+        'SET #name = :name, updatedAt = :updatedAt, #description = :description, #category = :category',
       ExpressionAttributeNames: {
         '#name': 'name',
-        '#description': 'description'
+        '#description': 'description',
+        '#category': 'category'
       },
       ExpressionAttributeValues: {
         ':name': name,
         ':updatedAt': updatedAt,
-        ':description': description
+        ':description': description,
+        ':category': category
       },
 
       ReturnValues: 'ALL_NEW'
@@ -70,10 +79,11 @@ async function get({ listId, userId }) {
     .get({
       TableName: tableName,
       Key: { userId, listId },
-      ProjectionExpression: 'listId, #nm, #description, createdAt',
+      ProjectionExpression: 'listId, #nm, #description, #category, createdAt',
       ExpressionAttributeNames: {
         '#nm': 'name',
-        '#description': 'description'
+        '#description': 'description',
+        '#category': 'category'
       }
     })
     .promise()).Item
@@ -83,11 +93,12 @@ async function list({ userId }) {
   return (await dynamoDocClient()
     .query({
       TableName: tableName,
-      ProjectionExpression: 'listId, #nm, #description, createdAt',
+      ProjectionExpression: 'listId, #nm, #description, #category, createdAt',
       KeyConditionExpression: 'userId = :userId',
       ExpressionAttributeNames: {
         '#nm': 'name',
-        '#description': 'description'
+        '#description': 'description',
+        '#category': 'category'
       },
       ExpressionAttributeValues: {
         ':userId': userId
