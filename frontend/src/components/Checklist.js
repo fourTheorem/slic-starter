@@ -3,16 +3,20 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { Redirect, Link } from 'react-router-dom'
 import { push } from 'connected-react-router'
-import { ExpandMore, Clear, Edit } from '@material-ui/icons'
+import { ExpandMore, MoreVert, Clear, Edit } from '@material-ui/icons'
 import {
   Card,
+  Button,
   CardActions,
   CardContent,
+  ClickAwayListener,
   List,
   ListItem,
   ListItemSecondaryAction,
   ListItemText,
   Grid,
+  Menu,
+  MenuItem,
   TextField,
   Switch,
   IconButton,
@@ -89,7 +93,13 @@ class Checklist extends Component {
     isEditingList: false,
     name: '',
     description: '',
-    isPanelExpanded: false
+    isPanelExpanded: false,
+    isUpdatingEntry: false,
+    isDropdownOpen: false,
+    anchorEl: null,
+    editingId: null,
+    updatedTitle: '',
+    deletingEntry: false
   }
 
   componentDidUpdate(prevProps) {
@@ -112,13 +122,14 @@ class Checklist extends Component {
 
   validate = () => this.state.newEntryTitle.trim().length > 0
 
-  handleSubmit = event => {
+  handleEntrySubmit = event => {
     event.preventDefault()
     if (this.validate()) {
       this.props.dispatch(
         addEntry({
           listId: this.props.list.listId,
-          title: this.state.newEntryTitle
+          title: this.state.newEntryTitle,
+          value: false
         })
       )
       this.setState({ newEntryTitle: '' })
@@ -129,7 +140,7 @@ class Checklist extends Component {
     this.setState({ newEntryTitle: value })
   }
 
-  handleChange = ({ target: { id, checked } }) => {
+  handleEntryValueChange = ({ target: { id, checked } }) => {
     const { dispatch, list, entries } = this.props
     const entry = entries.find(ent => ent.entId === id)
     dispatch(
@@ -140,10 +151,39 @@ class Checklist extends Component {
     )
   }
 
-  handleEntryRemoval = e => {
-    this.setState({ entId: '' })
-    this.setState({ confirmDeleteEntryOpen: true })
-    this.setState({ entId: e.currentTarget.id })
+  handleEntryRemoval = event => {
+    this.setState({
+      entId: event.target.id,
+      isDropdownOpen: false,
+      confirmDeleteEntryOpen: true,
+      editingId: this.state.menuEntryId,
+      deletingEntry: true
+    })
+  }
+
+  handleEntryUpdateRequest = event => {
+    this.setState({
+      isDropdownOpen: false,
+      isUpdatingEntry: true,
+      editingId: this.state.menuEntryId
+    })
+  }
+
+  handleEntryUpdateSubmit = event => {
+    const { dispatch, list, entries } = this.props
+
+    const entry = entries.find(ent => ent.entId === this.state.editingId)
+    dispatch(
+      setEntryValue({
+        listId: list.listId,
+        entry: { ...entry, title: this.state.updatedTitle }
+      })
+    )
+    this.setState({ editingId: null, menuEntryId: null })
+  }
+
+  onUpdateTitleChange = ({ target: { value } }) => {
+    this.setState({ updatedTitle: value })
   }
 
   handleEntryRemovalClose = () => {
@@ -152,12 +192,24 @@ class Checklist extends Component {
 
   handleRemoveListEntry = () => {
     const { dispatch, list } = this.props
-    dispatch(removeEntry({ listId: list.listId, entId: this.state.entId }))
-    this.setState({ confirmDeleteEntryOpen: false })
+    dispatch(removeEntry({ listId: list.listId, entId: this.state.editingId }))
+    this.setState({ confirmDeleteEntryOpen: false, menuEntryId: null })
   }
 
   handlePanelExpansion = () => {
     this.setState({ isPanelExpanded: !this.state.isPanelExpanded })
+  }
+
+  handleDropdownOpen = event => {
+    this.setState({
+      isDropdownOpen: !this.state.isDropdownOpen,
+      anchorEl: event.currentTarget,
+      menuEntryId: event.currentTarget.id
+    })
+  }
+
+  handleClickAway = () => {
+    this.setState({ isDropdownOpen: false })
   }
 
   render() {
@@ -211,7 +263,7 @@ class Checklist extends Component {
           </Typography>
         </ExtExpansionPanelSummary>
         <ExpansionPanelDetails>
-          <Grid container direction="column">
+          <Grid container direction="column" spacing={16}>
             <Grid item>
               <Typography variant="caption">{date}</Typography>
             </Grid>
@@ -223,6 +275,13 @@ class Checklist extends Component {
           </Grid>
         </ExpansionPanelDetails>
       </ExpansionPanel>
+    )
+
+    const entryDropdownMenu = (
+      <Menu open={this.state.isDropdownOpen} anchorEl={this.state.anchorEl}>
+        <MenuItem onClick={this.handleEntryUpdateRequest}>Edit</MenuItem>
+        <MenuItem onClick={this.handleEntryRemoval}>Delete</MenuItem>
+      </Menu>
     )
 
     const newItemEntry = addingEntry ? (
@@ -260,7 +319,11 @@ class Checklist extends Component {
       ) : null
 
     return list && !gettingListEntries ? (
-      <form id="new-item-form" onSubmit={this.handleSubmit} autoComplete="off">
+      <form
+        id="new-item-form"
+        onSubmit={this.handleEntrySubmit}
+        autoComplete="off"
+      >
         {deleteEntryDialog}
         <Grid container layout="row" justify="center">
           <Grid item xs={12} sm={10} md={8} lg={6}>
@@ -282,18 +345,31 @@ class Checklist extends Component {
                 <List className={classes.list}>
                   {entries.map((entry, index) => (
                     <ExtListItem key={index}>
-                      <IconButton
-                        className={classes.deleteEntryBtn}
-                        onClick={this.handleEntryRemoval}
-                        name={'delete-entry-btn-'.concat(index)}
-                        id={entry.entId}
-                      >
-                        <Clear />
-                      </IconButton>
-                      <ListItemText>{entry.title}</ListItemText>
+                      <ClickAwayListener onClickAway={this.handleClickAway}>
+                        <Button
+                          className={classes.deleteEntryBtn}
+                          onClick={this.handleDropdownOpen}
+                          name="options"
+                          id={entry.entId}
+                        >
+                          <MoreVert />
+                        </Button>
+                      </ClickAwayListener>
+                      {entryDropdownMenu}
+                      {this.state.editingId === entry.entId &&
+                      !this.State.deletingEntry ? (
+                        <form onSubmit={this.handleEntryUpdateSubmit}>
+                          <TextField
+                            onChange={this.onUpdateTitleChange}
+                            value={this.state.updatedTitle}
+                          />
+                        </form>
+                      ) : (
+                        <ListItemText>{entry.title}</ListItemText>
+                      )}
                       <ListItemSecondaryAction>
                         <Switch
-                          onChange={this.handleChange}
+                          onChange={this.handleEntryValueChange}
                           id={entry.entId}
                           name={'checkbox-entry-'.concat(index)}
                           checked={!!entry.value}

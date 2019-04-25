@@ -5,13 +5,14 @@ export const ADD_ENTRY_REQUEST = 'ADD_ENTRY_REQUEST'
 export const ADD_ENTRY_SUCCESS = 'ADD_ENTRY_SUCCESS'
 export const ADD_ENTRY_FAILURE = 'ADD_ENTRY_FAILURE'
 
-export function addEntry({ listId, title }) {
-  const meta = { listId, title }
+export function addEntry({ listId, title, value }) {
+  const meta = { listId, title, value }
   return function(dispatch) {
     dispatch({ type: ADD_ENTRY_REQUEST })
     AmplifyApi.post('checklists', `/checklist/${listId}/entries`, {
       body: {
-        title
+        title,
+        value
       }
     })
       .then(result => {

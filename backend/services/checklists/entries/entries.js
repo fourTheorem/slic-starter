@@ -67,7 +67,9 @@ async function updateEntry({ userId, listId, entId, title, value }) {
     ExpressionAttributeValues: {
       ':title': title,
       ':value': value
-    }
+    },
+
+    ReturnValues: 'ALL_NEW'
   }
 
   await dynamoDocClient()
