@@ -10,6 +10,7 @@ import {
 } from '@aws-cdk/aws-codebuild'
 import { SourceProject } from './projects/source-project'
 import CodeBuildRole from './code-build-role'
+import { Bucket } from '@aws-cdk/aws-s3'
 
 export class Cicd2Stack extends cdk.Stack {
   constructor(scope: cdk.Construct, id: string, props?: cdk.StackProps) {
@@ -46,8 +47,13 @@ export class Cicd2Stack extends cdk.Stack {
       value: stateMachine.stateMachineArn
     }
 
+    const artifactsBucket = new Bucket(this, 'artifactsBucket', {
+      bucketName: `slic-build-artifacts-${this.env.account}-${this.env.region}`
+    })
+
     new SourceProject(this, 'sourceProject', {
       role: codeBuildRole,
+      bucket: artifactsBucket,
       environmentVariables: {
         PIPELINE_STEP_FUNCTION_ARN: stateMachineArnEnv
       }
