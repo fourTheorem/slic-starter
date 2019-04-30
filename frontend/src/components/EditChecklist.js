@@ -6,10 +6,6 @@ import {
   TextField,
   Button,
   CardContent,
-  Select,
-  MenuItem,
-  InputLabel,
-  FormControl,
   Grid
 } from '@material-ui/core'
 import { Clear } from '@material-ui/icons'
@@ -40,8 +36,6 @@ const styles = theme => ({
 class EditChecklist extends Component {
   state = {
     name: '',
-    description: null,
-    category: !!null,
     confirmDeleteListOpen: false
   }
 
@@ -51,10 +45,6 @@ class EditChecklist extends Component {
 
   handleChange = ({ target: { id, value } }) => {
     this.setState({ [id]: value })
-  }
-
-  handleCategoryChange = event => {
-    this.setState({ category: event.target.value })
   }
 
   handleRemoveListRequest = () => {
@@ -77,8 +67,7 @@ class EditChecklist extends Component {
       dispatch(
         createList({
           name: this.state.name,
-          description: this.state.description,
-          category: this.state.category
+          description: this.state.description
         })
       )
     } else {
@@ -86,8 +75,7 @@ class EditChecklist extends Component {
         updateList({
           listId: list.listId,
           name: this.state.name || list.name,
-          description: this.state.description || list.description,
-          category: this.state.category || list.category
+          description: this.state.description || list.description
         })
       )
     }
@@ -197,27 +185,6 @@ class EditChecklist extends Component {
                     margin="normal"
                     onChange={this.handleChange}
                   />
-                </Grid>
-                <Grid item>
-                  <FormControl className={classes.textField}>
-                    <InputLabel id="category-label" htmlFor="category">
-                      Category
-                    </InputLabel>
-                    <Select
-                      id="category-select"
-                      label="category"
-                      value={this.state.category}
-                      onChange={this.handleCategoryChange}
-                      inputProps={{ id: 'category' }}
-                    >
-                      <MenuItem id="cat1" value="TODO">
-                        TODO
-                      </MenuItem>
-                      <MenuItem id="cat2" value="In Progress">
-                        In Progress
-                      </MenuItem>
-                    </Select>
-                  </FormControl>
                 </Grid>
                 <Grid
                   container
