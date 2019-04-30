@@ -40,8 +40,8 @@ const styles = theme => ({
 class EditChecklist extends Component {
   state = {
     name: '',
-    description: '',
-    category: '',
+    description: null,
+    category: !!null,
     confirmDeleteListOpen: false
   }
 
@@ -74,7 +74,13 @@ class EditChecklist extends Component {
     const { dispatch, list } = this.props
 
     if (!list.listId) {
-      dispatch(createList(this.state))
+      dispatch(
+        createList({
+          name: this.state.name,
+          description: this.state.description,
+          category: this.state.category
+        })
+      )
     } else {
       dispatch(
         updateList({
@@ -111,12 +117,17 @@ class EditChecklist extends Component {
       return <Redirect to={`/list/${updatedListId}`} />
     }
 
-    const errorItem =
-      updateError || creationError ? (
-        <Grid item>
-          <ErrorMessage messageId={updateError.id} />
-        </Grid>
-      ) : null
+    const errorItem = updateError ? (
+      <Grid item>
+        <ErrorMessage messageId={updateError.id} />
+      </Grid>
+    ) : null
+
+    const createListError = creationError ? (
+      <Grid item>
+        <ErrorMessage messageId={creationError.id} />
+      </Grid>
+    ) : null
 
     const deleteListButton = list.listId ? (
       <Button
@@ -227,6 +238,7 @@ class EditChecklist extends Component {
                   </Grid>
                 </Grid>
                 {errorItem}
+                {createListError}
                 <Grid item container direction="row" justify="center">
                   <Grid xs={12} sm={12} md={6} lg={4} item>
                     {deleteListButton}

@@ -56,6 +56,11 @@ class ListSummary extends Component {
       Date.now(),
       list.createdAt
     )} ago`
+
+    const displayCategory = list.category ? (
+      <Typography>Category: {list.category}</Typography>
+    ) : null
+
     return (
       <Card className={classes.card}>
         <CardActionArea
@@ -73,7 +78,7 @@ class ListSummary extends Component {
               {list.name}
             </Typography>
             <TextTruncate line={7} text={list.description} />
-            <Typography>Category: {list.category}</Typography>
+            {displayCategory}
             <Typography>{createdAtDate}</Typography>
           </CardContent>
         </CardActionArea>

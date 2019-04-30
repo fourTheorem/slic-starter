@@ -13,7 +13,7 @@ module.exports = {
   list
 }
 
-async function create({ userId, name, description, category }) {
+async function create({ userId, name, description = null, category = null }) {
   const item = {
     userId,
     name,
