@@ -36,8 +36,9 @@ LATEST_RELEASE=`git ls-remote --tags 2>/dev/null | awk -F '/' '{print $3}' | gre
 
 if [ "$LATEST_RELEASE" = "" ]; then
   >&2 echo "No previous tagged release found. Changed folder assumed to be everything (.)"
-  export CHANGED_FOLDERS="."
+  CHANGES="\"all_modules\":true"
 else
+  >&2 git checkout -b base                                     # Create a branch for our base state
   >&2 git fetch origin --depth 1 $LATEST_RELEASE               # Fetch the single commit for the base of our comparison
   >&2 git reset --hard FETCH_HEAD                              # Point the local master to the commit we just fetched
 
@@ -46,9 +47,21 @@ else
   >&2 git fetch origin --depth 1 $TARGET_VERSION               # Fetch the single commit for the target of our comparison
   >&2 git reset --hard FETCH_HEAD                              # Point the local target to the commit we just fetched
 
-  export CHANGED_FOLDERS=$(git diff --name-only base target | grep / | awk 'BEGIN {FS="/"} {print $1}' | uniq)      # Print a list of all files changed between the two commits
+  CHANGES=""
+  # Determine modules with files changed between the two commits
+  git diff --name-only base target | grep / | awk 'BEGIN {FS="/"} {print $1}' | uniq | while read -r module
+    do
+      if [ "${CHANGES}" -ne "" ]; then
+        CHANGES="${CHANGES},\n"
+      fi
+      CHANGES="\t\"${module}\":true"
+    done
 fi
 
-echo done with $CHANGED_FOLDERS
-echo CHANGED_FOLDERS=\($CHANGED_FOLDERS\) > $OUTPUT
+OUTPUT_JSON="{\"changes\":{\n ${CHANGES}\n },\n\"buildId\":\"${CODEBUILD_BUILD_ID}\",\"resolvedVersion\":\"${CODEBUILD_RESOLVED_SOURCE_VERSION}\",\"sourceVersion\":\"${CODEBUILD_SOURCE_VERSION}\"}"
+
+echo done with output $OUTPUT_JSON
+
+echo Invoking Step Function "${PIPELINE_STEP_FUNCTION_ARN}"
+aws stepfunctions start-execution --state-machine-arn "${PIPELINE_STEP_FUNCTION_ARN}" --input "${OUTPUT_JSON}" 
 
