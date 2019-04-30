@@ -5,6 +5,7 @@ import codePipelineActions = require('@aws-cdk/aws-codepipeline-actions')
 import { defaultEnvironment } from '../code-build-environments'
 import { CodeBuildBuildAction } from '@aws-cdk/aws-codepipeline-actions'
 import { Pipeline } from '@aws-cdk/aws-codepipeline'
+import StageName from '../stage-name'
 import config from '../../config'
 
 export default class BuildModulesStage extends Construct {
@@ -12,16 +13,17 @@ export default class BuildModulesStage extends Construct {
     scope: Construct,
     stageNo: number,
     stageModules: Array<string>,
-    resources: any
+    resources: any,
+    stageName: StageName
   ) {
-    super(scope, `buildModulesStage${stageNo}`)
+    super(scope, `${stageName}BuildStage${stageNo}`)
     const buildModuleProjects: { [name: string]: PipelineProject } = {}
 
     const pipeline: Pipeline = resources.pipeline
     stageModules.forEach(moduleName => {
       buildModuleProjects[moduleName] = new codeBuild.PipelineProject(
         this,
-        `${moduleName}BuildModuleProject`,
+        `${stageName}_${moduleName}_build_project`,
         {
           buildSpec: {
             version: '0.2',
@@ -39,11 +41,8 @@ export default class BuildModulesStage extends Construct {
               },
               build: {
                 commands: [
-                  `SLIC_STAGE=stg CROSS_ACCOUNT_ID=${
-                    config.accountIds.stg
-                  } bash ./build-scripts/build-phase.sh`,
-                  `SLIC_STAGE=prod CROSS_ACCOUNT_ID=${
-                    config.accountIds.prod
+                  `SLIC_STAGE=${stageName} CROSS_ACCOUNT_ID=${
+                    config.accountIds[stageName]
                   } bash ./build-scripts/build-phase.sh`
                 ]
               }
@@ -75,12 +74,12 @@ export default class BuildModulesStage extends Construct {
       [moduleName: string]: CodeBuildBuildAction
     } = {}
     pipeline.addStage({
-      name: `build_modules_${stageNo}`,
+      name: `build_${stageName}_${stageNo}`,
       actions: stageModules.map(moduleName => {
         buildModuleActions[
           moduleName
         ] = new codePipelineActions.CodeBuildBuildAction({
-          actionName: `build_${moduleName}`,
+          actionName: `build_${stageName}_${moduleName}`,
           inputArtifact: resources.checkChangesAction.outputArtifact,
           project: buildModuleProjects[moduleName]
         })
