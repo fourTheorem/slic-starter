@@ -20,11 +20,12 @@ export default class SlicPipeline extends codePipeline.Pipeline {
     resources.checkChangesStage = new CheckChangesStage(this, resources)
     stages.forEach((stageModules, index) => {
       const stageNo = index + 1
-      resources[`buildModulesStage${stageNo}`] = new BuildModulesStage(
+      resources[`stgbuildStage${stageNo}`] = new BuildModulesStage(
         this,
         stageNo,
         stageModules,
-        resources
+        resources,
+        StageName.stg
       )
       resources.stgDeployModulesStage = new DeployModulesStage(
         this,
@@ -41,6 +42,13 @@ export default class SlicPipeline extends codePipeline.Pipeline {
     )
     stages.forEach((stageModules, index) => {
       const stageNo = index + 1
+      resources[`prodBuildStage${stageNo}`] = new BuildModulesStage(
+        this,
+        stageNo,
+        stageModules,
+        resources,
+        StageName.prod
+      )
       resources[`prodDeployModulesStage${stageNo}`] = new DeployModulesStage(
         this,
         stageNo,
