@@ -15,6 +15,8 @@ export interface SourceProjectProps extends ProjectProps {
 
 export class SourceProject extends Project {
   constructor(scope: Construct, id: string, props: SourceProjectProps) {
+    const { bucket, ...rest } = props
+
     const buildSource = new GitHubSource({
       cloneDepth: 1,
       owner: config.sourceRepoOwner,
@@ -48,7 +50,7 @@ export class SourceProject extends Project {
       source: buildSource,
       environment: defaultEnvironment,
       artifacts,
-      role: props.role
+      ...rest
     })
   }
 }
