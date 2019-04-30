@@ -1,5 +1,5 @@
 import { Construct, SecretValue } from '@aws-cdk/cdk'
-import { Pipeline } from '@aws-cdk/aws-codepipeline'
+import { Artifact, Pipeline } from '@aws-cdk/aws-codepipeline'
 import codePipelineActions = require('@aws-cdk/aws-codepipeline-actions')
 
 import config from '../../config'
@@ -19,8 +19,9 @@ export default class SourceStage extends Construct {
       repo: config.sourceRepoName,
       branch: config.sourceBranch,
       oauthToken: tokenSecret,
-      outputArtifactName: 'slic-source'
+      output: new Artifact()
     })
+
     resources.sourceAction = sourceAction
     pipeline.addStage({ name: 'source', actions: [sourceAction] })
   }

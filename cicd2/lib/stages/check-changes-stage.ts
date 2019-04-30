@@ -3,7 +3,8 @@ import { PipelineProject } from '@aws-cdk/aws-codebuild'
 
 import config from '../../config'
 import { defaultEnvironment } from '../code-build-environments'
-import { CodeBuildBuildAction } from '@aws-cdk/aws-codepipeline-actions'
+import { CodeBuildAction } from '@aws-cdk/aws-codepipeline-actions'
+import { Artifact } from '@aws-cdk/aws-codepipeline'
 
 export class CheckChangesStage extends Construct {
   constructor(scope: Construct, resources: any) {
@@ -35,10 +36,10 @@ export class CheckChangesStage extends Construct {
       }
     )
 
-    const checkChangesAction = new CodeBuildBuildAction({
+    const checkChangesAction = new CodeBuildAction({
       actionName: 'check-changes',
-      inputArtifact: resources.sourceAction.outputArtifact,
-      outputArtifactName: 'slic-source-checked',
+      input: resources.sourceAction.output,
+      output: new Artifact(),
       project: resources.checkChangesProject
     })
 

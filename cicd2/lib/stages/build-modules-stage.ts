@@ -3,7 +3,7 @@ import codeBuild = require('@aws-cdk/aws-codebuild')
 import { PipelineProject } from '@aws-cdk/aws-codebuild'
 import codePipelineActions = require('@aws-cdk/aws-codepipeline-actions')
 import { defaultEnvironment } from '../code-build-environments'
-import { CodeBuildBuildAction } from '@aws-cdk/aws-codepipeline-actions'
+import { CodeBuildAction } from '@aws-cdk/aws-codepipeline-actions'
 import { Pipeline } from '@aws-cdk/aws-codepipeline'
 import StageName from '../stage-name'
 import config from '../../config'
@@ -71,16 +71,17 @@ export default class BuildModulesStage extends Construct {
 
     resources.buildModuleProjects = buildModuleProjects
     const buildModuleActions: {
-      [moduleName: string]: CodeBuildBuildAction
+      [moduleName: string]: CodeBuildAction
     } = {}
+
     pipeline.addStage({
       name: `build_${stageName}_${stageNo}`,
       actions: stageModules.map(moduleName => {
         buildModuleActions[
           moduleName
-        ] = new codePipelineActions.CodeBuildBuildAction({
+        ] = new codePipelineActions.CodeBuildAction({
           actionName: `build_${stageName}_${moduleName}`,
-          inputArtifact: resources.checkChangesAction.outputArtifact,
+          input: resources.checkChangesAction.output,
           project: buildModuleProjects[moduleName]
         })
         return buildModuleActions[moduleName]

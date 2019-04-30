@@ -11,20 +11,22 @@
     "deploy": "npm run build && npm run cdk -- deploy"
   },
   "devDependencies": {
-    "@aws-cdk/aws-codebuild": "^0.28.0",
-    "@aws-cdk/aws-codepipeline": "^0.28.0",
-    "@aws-cdk/aws-codepipeline-actions": "^0.28.0",
-    "@aws-cdk/aws-iam": "^0.28.0",
-    "@aws-cdk/aws-s3": "^0.28.0",
-    "@aws-cdk/aws-secretsmanager": "^0.28.0",
     "@types/node": "8.10.40",
-    "aws-cdk": "^0.28.0",
     "aws-sdk": "^2.437.0",
     "tsort": "0.0.1",
     "typescript": "^3.3.3333"
   },
   "dependencies": {
-    "@aws-cdk/cdk": "^0.28.0",
+    "@aws-cdk/aws-codebuild": "^0.29.0",
+    "@aws-cdk/aws-codepipeline": "^0.29.0",
+    "@aws-cdk/aws-codepipeline-actions": "^0.29.0",
+    "@aws-cdk/aws-iam": "^0.29.0",
+    "@aws-cdk/aws-lambda": "^0.29.0",
+    "@aws-cdk/aws-s3": "^0.29.0",
+    "@aws-cdk/aws-secretsmanager": "^0.29.0",
+    "@aws-cdk/aws-stepfunctions": "^0.29.0",
+    "@aws-cdk/cdk": "^0.29.0",
+    "asl-types": "^1.0.0",
     "source-map-support": "^0.5.9"
   }
 }
