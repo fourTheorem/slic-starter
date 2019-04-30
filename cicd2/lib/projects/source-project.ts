@@ -1,16 +1,32 @@
 import { Construct } from '@aws-cdk/cdk'
-import { Project, ProjectProps, GitHubSource } from '@aws-cdk/aws-codebuild'
-
+import {
+  Project,
+  GitHubSource,
+  S3BucketBuildArtifacts,
+  ProjectProps
+} from '@aws-cdk/aws-codebuild'
 import config from '../../config'
 import { defaultEnvironment } from '../code-build-environments'
+import { IBucket } from '@aws-cdk/aws-s3'
+
+export interface SourceProjectProps extends ProjectProps {
+  readonly bucket: IBucket
+}
 
 export class SourceProject extends Project {
-  constructor(scope: Construct, id: string, props: ProjectProps) {
+  constructor(scope: Construct, id: string, props: SourceProjectProps) {
     const buildSource = new GitHubSource({
       cloneDepth: 1,
       owner: config.sourceRepoOwner,
       repo: config.sourceRepoName,
       webhook: true
+    })
+
+    const artifacts = new S3BucketBuildArtifacts({
+      bucket: props.bucket,
+      name: 'SLICPipelineArtifacts',
+      includeBuildId: true,
+      packageZip: true
     })
 
     super(scope, id, {
@@ -31,7 +47,8 @@ export class SourceProject extends Project {
       },
       source: buildSource,
       environment: defaultEnvironment,
-      ...props
+      artifacts,
+      role: props.role
     })
   }
 }

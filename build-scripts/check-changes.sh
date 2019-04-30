@@ -23,12 +23,12 @@ export REPO_URL=$(echo $REPO_URL | sed -e 's/https:\/\/github.com/https:\/\/'"$G
 
 OUTPUT=$PWD/module-config.env
 
-rm -rf _GIT_REPO
-mkdir -p _GIT_REPO
-cd _GIT_REPO
+# rm -rf _GIT_REPO
+# mkdir -p _GIT_REPO
+# cd _GIT_REPO
 
-git init .																						  # Create an empty repository
-git remote add origin $REPO_URL													# Specify the remote repository
+# git init .																						  # Create an empty repository
+# git remote add origin $REPO_URL													# Specify the remote repository
 
 # Find the latest release using the format NUM.NUM.NUM. Anything else, like "1.2.3-pre" is assumed to not be a relase tag and is excluded
 # Redirect STDERR to /dev/null as it will print out the Git remote URL including the access token
@@ -38,8 +38,6 @@ if [ "$LATEST_RELEASE" = "" ]; then
   >&2 echo "No previous tagged release found. Changed folder assumed to be everything (.)"
   export CHANGED_FOLDERS="."
 else
-  >&2 git checkout -b base                                     # Create a branch for our base state
-
   >&2 git fetch origin --depth 1 $LATEST_RELEASE               # Fetch the single commit for the base of our comparison
   >&2 git reset --hard FETCH_HEAD                              # Point the local master to the commit we just fetched
 
