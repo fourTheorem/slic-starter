@@ -33,8 +33,18 @@ import {
 const styles = {
   hiddenButton: {
     visibility: 'hidden'
+  },
+  textField: {
+    width: '100%',
+    paddingRight: '2.5%'
   }
 }
+
+const ExtListItem = withStyles({
+  container: {
+    width: '100%'
+  }
+})(ListItem)
 
 class Entries extends Component {
   state = {
@@ -45,7 +55,7 @@ class Entries extends Component {
     description: '',
     anchorPosition: null,
     editingId: null,
-    updatedTitle: '',
+    updatedTitle: null,
     newEntryTitle: ''
   }
 
@@ -109,7 +119,9 @@ class Entries extends Component {
   handleEntryUpdateRequest = () => {
     this.setState({
       isUpdatingEntry: true,
-      editingId: this.state.menuEntryId
+      editingId: this.state.menuEntryId,
+      menuEntryId: null,
+      anchorPosition: null
     })
   }
 
@@ -125,7 +137,7 @@ class Entries extends Component {
     this.setState({
       editingId: null,
       menuEntryId: null,
-      updatedTitle: entry.title
+      updatedTitle: null
     })
   }
 
@@ -185,12 +197,6 @@ class Entries extends Component {
       />
     )
 
-    const ExtListItem = withStyles({
-      container: {
-        width: '100%'
-      }
-    })(ListItem)
-
     const errorItem =
       !gettingListEntries &&
       !addingEntry &&
@@ -212,13 +218,13 @@ class Entries extends Component {
         </IconButton>
         <ListItemText>
           <TextField
+            name="new-entry"
             id="newEntryTitle"
             placeholder="Add an Item..."
-            autoFocus
-            form="new-item-form"
             className={classes.textField}
             onChange={this.handleEntryTitleChange}
             value={this.state.newEntryTitle}
+            key="new-entry"
           />
         </ListItemText>
         <ListItemSecondaryAction />
@@ -241,15 +247,15 @@ class Entries extends Component {
                 </Button>
                 {this.state.editingId === entry.entId &&
                 !this.state.deletingEntry ? (
-                  <form
-                    id="update-entry"
-                    onSubmit={this.handleEntryUpdateSubmit}
-                  >
+                  <form onSubmit={this.handleEntryUpdateSubmit}>
                     <TextField
+                      name="edit-entry"
+                      id="edit-entry"
                       onChange={this.onUpdateTitleChange}
                       value={this.state.updatedTitle}
-                      form="update-entry"
+                      placeholder="Edit Entry"
                     />
+                    <Button type="submit">Save</Button>
                   </form>
                 ) : (
                   <ListItemText>{entry.title}</ListItemText>

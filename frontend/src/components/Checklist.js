@@ -30,10 +30,6 @@ const ExtExpansionPanelSummary = withStyles({
 })(ExpansionPanelSummary)
 
 const styles = theme => ({
-  textField: {
-    width: '100%',
-    paddingRight: '2.5%'
-  },
   typography: {
     whiteSpace: 'pre-line'
   },
