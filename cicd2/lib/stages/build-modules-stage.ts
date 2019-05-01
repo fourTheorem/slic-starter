@@ -4,7 +4,13 @@ import { defaultEnvironment } from '../code-build-environments'
 import StageName from '../stage-name'
 import config from '../../config'
 import CodeBuildRole from '../code-build-role'
-import { Parallel, Task } from '@aws-cdk/aws-stepfunctions'
+import {
+  Parallel,
+  Task,
+  Choice,
+  Condition,
+  Succeed
+} from '@aws-cdk/aws-stepfunctions'
 import { Function } from '@aws-cdk/aws-lambda'
 
 export interface BuildModulesStateProps {
@@ -73,14 +79,25 @@ export default class BuildModulesStage extends Construct {
           role: props.codeBuildRole
         }
       )
-      this.stageState.branch(
-        new Task(this, `${moduleName}_${stageName}_build`, {
-          resource: props.runCodeBuildFunction,
-          parameters: {
-            codeBuildProjectArn: this.buildModuleProjects[moduleName].projectArn
-          }
-        })
-      )
+
+      const ifChangedChoice = new Choice(this, `${moduleName} changed?`)
+      ifChangedChoice
+        .when(
+          Condition.or(
+            Condition.booleanEquals(`$.changes.${moduleName}`, true),
+            Condition.booleanEquals('$.changes.all_modules', true)
+          ),
+          new Task(this, `${moduleName}_${stageName}_build`, {
+            resource: props.runCodeBuildFunction,
+            parameters: {
+              codeBuildProjectArn: this.buildModuleProjects[moduleName]
+                .projectArn
+            }
+          })
+        )
+        .otherwise(new Succeed(this, `Skip ${moduleName}`))
+
+      this.stageState.branch(ifChangedChoice)
     })
   }
 }
