@@ -220,19 +220,17 @@ class Entries extends Component {
             onChange={this.handleEntryTitleChange}
             value={this.state.newEntryTitle}
           />
-          {deleteEntryDialog}
         </ListItemText>
         <ListItemSecondaryAction />
       </ExtListItem>
     )
 
-    console.log('Render Entries')
     return (
-      <React.Fragment>
-        <List className={classes.list}>
-          {entries.map((entry, index) => (
-            <ExtListItem key={index}>
-              <ClickAwayListener onClickAway={this.handleClickAway}>
+      <ClickAwayListener onClickAway={this.handleClickAway}>
+        <div>
+          <List className={classes.list}>
+            {entries.map((entry, index) => (
+              <ExtListItem key={index}>
                 <Button
                   className={classes.deleteEntryBtn}
                   onClick={this.handleDropdownOpen}
@@ -241,48 +239,52 @@ class Entries extends Component {
                 >
                   <MoreVert />
                 </Button>
-              </ClickAwayListener>
-              {this.state.editingId === entry.entId &&
-              !this.state.deletingEntry ? (
-                <form id="update-entry" onSubmit={this.handleEntryUpdateSubmit}>
-                  <TextField
-                    onChange={this.onUpdateTitleChange}
-                    value={this.state.updatedTitle}
-                    form="update-entry"
+                {this.state.editingId === entry.entId &&
+                !this.state.deletingEntry ? (
+                  <form
+                    id="update-entry"
+                    onSubmit={this.handleEntryUpdateSubmit}
+                  >
+                    <TextField
+                      onChange={this.onUpdateTitleChange}
+                      value={this.state.updatedTitle}
+                      form="update-entry"
+                    />
+                  </form>
+                ) : (
+                  <ListItemText>{entry.title}</ListItemText>
+                )}
+                <ListItemSecondaryAction>
+                  <Switch
+                    onChange={this.handleEntryValueChange}
+                    id={entry.entId}
+                    name={'checkbox-entry-'.concat(index)}
+                    checked={!!entry.value}
                   />
-                </form>
-              ) : (
-                <ListItemText>{entry.title}</ListItemText>
-              )}
-              <ListItemSecondaryAction>
-                <Switch
-                  onChange={this.handleEntryValueChange}
-                  id={entry.entId}
-                  name={'checkbox-entry-'.concat(index)}
-                  checked={!!entry.value}
-                />
-              </ListItemSecondaryAction>
-            </ExtListItem>
-          ))}
+                </ListItemSecondaryAction>
+              </ExtListItem>
+            ))}
 
-          <form
-            id="new-item-form"
-            onSubmit={this.handleEntrySubmit}
-            autoComplete="off"
+            <form
+              id="new-item-form"
+              onSubmit={this.handleEntrySubmit}
+              autoComplete="off"
+            >
+              {newItemEntry}
+            </form>
+            {errorItem}
+          </List>
+          <Menu
+            open={!!this.state.anchorPosition}
+            anchorReference="anchorPosition"
+            anchorPosition={this.state.anchorPosition}
           >
-            {newItemEntry}
-          </form>
-          {errorItem}
-        </List>
-        <Menu
-          open={!!this.state.anchorPosition}
-          anchorReference="anchorPosition"
-          anchorPosition={this.state.anchorPosition}
-        >
-          <MenuItem onClick={this.handleEntryUpdateRequest}>Edit</MenuItem>
-          <MenuItem onClick={this.handleEntryRemoval}>Delete</MenuItem>
-        </Menu>
-      </React.Fragment>
+            <MenuItem onClick={this.handleEntryUpdateRequest}>Edit</MenuItem>
+            <MenuItem onClick={this.handleEntryRemoval}>Delete</MenuItem>
+          </Menu>
+          {deleteEntryDialog}
+        </div>
+      </ClickAwayListener>
     )
   }
 }
