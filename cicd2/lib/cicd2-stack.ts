@@ -34,27 +34,31 @@ export class Cicd2Stack extends cdk.Stack {
 
     const codeBuildRole = new CodeBuildRole(this, 'stageBuildRole')
 
+    const buildModuleStages: BuildModulesStage[] = []
+
     stages.forEach((stageModules, index) => {
       const stageNo = index + 1
-      const buildModuleStage = new BuildModulesStage(this, {
-        stageNo,
-        stageModules,
-        stageName: StageName.stg,
-        codeBuildRole,
-        runCodeBuildFunction
-      })
-
+      buildModuleStages.push(
+        new BuildModulesStage(this, {
+          stageNo,
+          stageModules,
+          stageName: StageName.stg,
+          codeBuildRole,
+          runCodeBuildFunction
+        })
+      )
+      /*
       resources.stgDeployModulesStage = new DeployModulesStage(
         this,
         stageNo,
         stageModules,
-        resources,
         StageName.stg
       )
+      */
     })
 
     const stateMachine = new sf.StateMachine(this, 'pipelineStateMachine', {
-      definition: task,
+      definition: buildModuleStages[0].stageState,
       stateMachineName: 'SLICPipeline'
     })
 

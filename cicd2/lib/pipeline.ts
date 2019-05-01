@@ -2,7 +2,6 @@ import { Construct } from '@aws-cdk/cdk'
 import codePipeline = require('@aws-cdk/aws-codepipeline')
 import { CheckChangesStage } from './stages/check-changes-stage'
 import SourceStage from './stages/source-stage'
-import BuildModulesStage from './stages/build-modules-stage'
 import DeployModulesStage from './stages/deploy-modules-stage'
 import StageName from './stage-name'
 import ManualApprovalStage from './stages/manual-approval-stage'
@@ -20,6 +19,7 @@ export default class SlicPipeline extends codePipeline.Pipeline {
     resources.checkChangesStage = new CheckChangesStage(this, resources)
     stages.forEach((stageModules, index) => {
       const stageNo = index + 1
+      /*
       resources[`stgbuildStage${stageNo}`] = new BuildModulesStage(
         this,
         stageNo,
@@ -27,6 +27,7 @@ export default class SlicPipeline extends codePipeline.Pipeline {
         resources,
         StageName.stg
       )
+      */
       resources.stgDeployModulesStage = new DeployModulesStage(
         this,
         stageNo,
@@ -42,6 +43,7 @@ export default class SlicPipeline extends codePipeline.Pipeline {
     )
     stages.forEach((stageModules, index) => {
       const stageNo = index + 1
+      /*
       resources[`prodBuildStage${stageNo}`] = new BuildModulesStage(
         this,
         stageNo,
@@ -49,6 +51,7 @@ export default class SlicPipeline extends codePipeline.Pipeline {
         resources,
         StageName.prod
       )
+      */
       resources[`prodDeployModulesStage${stageNo}`] = new DeployModulesStage(
         this,
         stageNo,
