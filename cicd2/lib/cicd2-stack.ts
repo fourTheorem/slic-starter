@@ -57,6 +57,14 @@ export class Cicd2Stack extends cdk.Stack {
       */
     })
 
+    buildModuleStages.forEach((buildModuleStage, index) => {
+      if (index < buildModuleStages.length - 1) {
+        buildModuleStage.stageState.next(
+          buildModuleStages[index + 1].stageState
+        )
+      }
+    })
+
     const stateMachine = new sf.StateMachine(this, 'pipelineStateMachine', {
       definition: buildModuleStages[0].stageState,
       stateMachineName: 'SLICPipeline'
