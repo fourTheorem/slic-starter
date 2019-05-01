@@ -11,29 +11,46 @@ import {
 import { SourceProject } from './projects/source-project'
 import CodeBuildRole from './code-build-role'
 import { Bucket } from '@aws-cdk/aws-s3'
+import BuildModulesStage from './stages/build-modules-stage'
+
+import modules from '../modules'
+import StageName from './stage-name'
+const { stages } = modules
 
 export class Cicd2Stack extends cdk.Stack {
   constructor(scope: cdk.Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props)
 
-    const checkForChangesLambda = new lambda.Function(
-      this,
-      'checkForChangesFn',
-      {
-        runtime: lambda.Runtime.NodeJS810,
-        handler: 'index.handler',
-        code: lambda.Code.inline(
-          fs.readFileSync(
-            path.join(__dirname, 'tasks', 'run-codebuild.js'),
-            'utf-8'
-          )
+    const runCodeBuildFunction = new lambda.Function(this, 'runCodeBuild', {
+      runtime: lambda.Runtime.NodeJS810,
+      handler: 'index.handler',
+      code: lambda.Code.inline(
+        fs.readFileSync(
+          path.join(__dirname, 'tasks', 'run-codebuild.js'),
+          'utf-8'
         )
-      }
-    )
+      )
+    })
 
-    const task = new sf.Task(this, 'checkForChanges', {
-      timeoutSeconds: 600,
-      resource: checkForChangesLambda
+    const codeBuildRole = new CodeBuildRole(this, 'stageBuildRole')
+
+    stages.forEach((stageModules, index) => {
+      const stageNo = index + 1
+      const buildModuleStage = new BuildModulesStage(this, {
+        stageNo,
+        stageModules,
+        stageName: StageName.stg,
+        codeBuildRole,
+        runCodeBuildFunction
+      })
+
+      resources.stgDeployModulesStage = new DeployModulesStage(
+        this,
+        stageNo,
+        stageModules,
+        resources,
+        StageName.stg
+      )
     })
 
     const stateMachine = new sf.StateMachine(this, 'pipelineStateMachine', {
@@ -41,7 +58,7 @@ export class Cicd2Stack extends cdk.Stack {
       stateMachineName: 'SLICPipeline'
     })
 
-    const codeBuildRole = new CodeBuildRole(this, {
+    const sourceCodeBuildRole = new CodeBuildRole(this, 'sourceCodeBuildRole', {
       pipelineStateMachine: stateMachine
     })
 
@@ -56,7 +73,7 @@ export class Cicd2Stack extends cdk.Stack {
 
     new SourceProject(this, 'sourceProject', {
       projectName: 'SLICPipelineSource',
-      role: codeBuildRole,
+      role: sourceCodeBuildRole,
       bucket: artifactsBucket,
       environmentVariables: {
         PIPELINE_STEP_FUNCTION_ARN: stateMachineArnEnv

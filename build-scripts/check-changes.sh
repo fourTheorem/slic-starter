@@ -34,8 +34,6 @@ OUTPUT=$PWD/module-config.env
 # Redirect STDERR to /dev/null as it will print out the Git remote URL including the access token
 LATEST_RELEASE=`git ls-remote --tags 2>/dev/null | awk -F '/' '{print $3}' | grep -e '^[0-9]\+\.[0-9]\+.[0-9]\+$' | sort --version-sort | tail -1`
 
-git log -1 || true
-
 COMMIT_LOG=`git log -1`
 
 if [ "$LATEST_RELEASE" = "" ]; then

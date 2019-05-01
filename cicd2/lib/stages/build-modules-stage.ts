@@ -1,27 +1,29 @@
 import { Construct } from '@aws-cdk/cdk'
 import codeBuild = require('@aws-cdk/aws-codebuild')
-import { PipelineProject } from '@aws-cdk/aws-codebuild'
-import codePipelineActions = require('@aws-cdk/aws-codepipeline-actions')
 import { defaultEnvironment } from '../code-build-environments'
-import { CodeBuildAction } from '@aws-cdk/aws-codepipeline-actions'
-import { Pipeline } from '@aws-cdk/aws-codepipeline'
 import StageName from '../stage-name'
 import config from '../../config'
+import CodeBuildRole from '../code-build-role'
+import { State } from '@aws-cdk/aws-stepfunctions'
+
+export interface BuildModulesStateProps {
+  stageNo: number
+  stageModules: string[]
+  stageName: StageName
+  codeBuildRole: CodeBuildRole
+}
 
 export default class BuildModulesStage extends Construct {
-  constructor(
-    scope: Construct,
-    stageNo: number,
-    stageModules: Array<string>,
-    resources: any,
-    stageName: StageName
-  ) {
-    super(scope, `${stageName}BuildStage${stageNo}`)
-    const buildModuleProjects: { [name: string]: PipelineProject } = {}
+  readonly buildModuleProjects: { [name: string]: codeBuild.Project } = {}
+  readonly stageState: State
 
-    const pipeline: Pipeline = resources.pipeline
+  constructor(scope: Construct, props: BuildModulesStateProps) {
+    super(scope, `${props.stageName}BuildStage${props.stageNo}`)
+
+    const { stageName, stageModules } = props
+
     stageModules.forEach(moduleName => {
-      buildModuleProjects[moduleName] = new codeBuild.PipelineProject(
+      this.buildModuleProjects[moduleName] = new codeBuild.Project(
         this,
         `${stageName}_${moduleName}_build_project`,
         {
@@ -64,12 +66,12 @@ export default class BuildModulesStage extends Construct {
             }
           },
           environment: defaultEnvironment,
-          role: resources.codeBuildRole
+          role: props.codeBuildRole
         }
       )
     })
 
-    resources.buildModuleProjects = buildModuleProjects
+    /*
     const buildModuleActions: {
       [moduleName: string]: CodeBuildAction
     } = {}
@@ -91,5 +93,6 @@ export default class BuildModulesStage extends Construct {
       ...(resources.buildModuleActions || {}),
       ...buildModuleActions
     }
+    */
   }
 }
