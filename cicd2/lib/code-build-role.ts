@@ -1,12 +1,17 @@
 import iam = require('@aws-cdk/aws-iam')
-import { RoleProps } from '@aws-cdk/aws-iam'
 import { Construct } from '@aws-cdk/cdk'
 import config from '../config'
+import { StateMachine } from '@aws-cdk/aws-stepfunctions'
+
+export interface CodeBuildRoleProps {
+  readonly pipelineStateMachine: StateMachine
+}
 
 export default class CodeBuildRole extends iam.Role {
-  constructor(scope: Construct, props?: RoleProps) {
+  constructor(scope: Construct, props: CodeBuildRoleProps) {
+    const { pipelineStateMachine, ...rest } = props
     super(scope, 'SLICCodeBuildRole', {
-      ...props,
+      ...rest,
       assumedBy: new iam.ServicePrincipal('codebuild.amazonaws.com')
     })
 
@@ -30,6 +35,14 @@ export default class CodeBuildRole extends iam.Role {
             config.accountIds.cicd
           }:secret:CICD*`
         )
+    )
+
+    this.addToPolicy(
+      new iam.PolicyStatement()
+        .allow()
+        .addAction('states:DescribeExecution')
+        .addAction('states:StartExecution')
+        .addResource(pipelineStateMachine.stateMachineArn)
     )
 
     const cfPolicy = new iam.PolicyStatement()

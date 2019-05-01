@@ -33,6 +33,7 @@ OUTPUT=$PWD/module-config.env
 # Find the latest release using the format NUM.NUM.NUM. Anything else, like "1.2.3-pre" is assumed to not be a relase tag and is excluded
 # Redirect STDERR to /dev/null as it will print out the Git remote URL including the access token
 LATEST_RELEASE=`git ls-remote --tags 2>/dev/null | awk -F '/' '{print $3}' | grep -e '^[0-9]\+\.[0-9]\+.[0-9]\+$' | sort --version-sort | tail -1`
+COMMIT_LOG=`git show -1`
 
 if [ "$LATEST_RELEASE" = "" ]; then
   >&2 echo "No previous tagged release found. Changed folder assumed to be everything (.)"
@@ -58,10 +59,10 @@ else
     done
 fi
 
-OUTPUT_JSON="{\"changes\":{\n ${CHANGES}\n },\n\"buildId\":\"${CODEBUILD_BUILD_ID}\",\"resolvedVersion\":\"${CODEBUILD_RESOLVED_SOURCE_VERSION}\",\"sourceVersion\":\"${CODEBUILD_SOURCE_VERSION}\"}"
+printf -v ESC_MSG "%q\n" "$COMMIT_MSG" # Escape the commit log
+OUTPUT_JSON="{\"changes\":{\n ${CHANGES}\n },\n\"buildId\":\"${CODEBUILD_BUILD_ID}\",\"resolvedVersion\":\"${CODEBUILD_RESOLVED_SOURCE_VERSION}\",\"sourceVersion\":\"${CODEBUILD_SOURCE_VERSION}\",\"commitLog\":\"${ESC_MSG}\"}"
 
 echo done with output $OUTPUT_JSON
 
 echo Invoking Step Function "${PIPELINE_STEP_FUNCTION_ARN}"
-aws stepfunctions start-execution --state-machine-arn "${PIPELINE_STEP_FUNCTION_ARN}" --input "${OUTPUT_JSON}" 
-
+aws stepfunctions start-execution --state-machine-arn "${PIPELINE_STEP_FUNCTION_ARN}" --input "${OUTPUT_JSON}"

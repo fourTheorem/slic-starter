@@ -41,7 +41,10 @@ export class Cicd2Stack extends cdk.Stack {
       stateMachineName: 'SLICPipeline'
     })
 
-    const codeBuildRole = new CodeBuildRole(this)
+    const codeBuildRole = new CodeBuildRole(this, {
+      pipelineStateMachine: stateMachine
+    })
+
     const stateMachineArnEnv: BuildEnvironmentVariable = {
       type: BuildEnvironmentVariableType.PlainText,
       value: stateMachine.stateMachineArn
@@ -52,6 +55,7 @@ export class Cicd2Stack extends cdk.Stack {
     })
 
     new SourceProject(this, 'sourceProject', {
+      projectName: 'SLICPipelineSource',
       role: codeBuildRole,
       bucket: artifactsBucket,
       environmentVariables: {
