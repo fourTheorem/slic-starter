@@ -4,23 +4,27 @@ import { defaultEnvironment } from '../code-build-environments'
 import StageName from '../stage-name'
 import config from '../../config'
 import CodeBuildRole from '../code-build-role'
-import { State } from '@aws-cdk/aws-stepfunctions'
+import { Parallel, Task } from '@aws-cdk/aws-stepfunctions'
+import { Function } from '@aws-cdk/aws-lambda'
 
 export interface BuildModulesStateProps {
   stageNo: number
   stageModules: string[]
   stageName: StageName
   codeBuildRole: CodeBuildRole
+  runCodeBuildFunction: Function
 }
 
 export default class BuildModulesStage extends Construct {
   readonly buildModuleProjects: { [name: string]: codeBuild.Project } = {}
-  readonly stageState: State
+  readonly stageState: Parallel
 
   constructor(scope: Construct, props: BuildModulesStateProps) {
     super(scope, `${props.stageName}BuildStage${props.stageNo}`)
 
-    const { stageName, stageModules } = props
+    const { stageName, stageModules, stageNo } = props
+
+    this.stageState = new Parallel(this, `${stageName}Build${stageNo}`)
 
     stageModules.forEach(moduleName => {
       this.buildModuleProjects[moduleName] = new codeBuild.Project(
@@ -69,30 +73,14 @@ export default class BuildModulesStage extends Construct {
           role: props.codeBuildRole
         }
       )
-    })
-
-    /*
-    const buildModuleActions: {
-      [moduleName: string]: CodeBuildAction
-    } = {}
-
-    pipeline.addStage({
-      name: `build_${stageName}_${stageNo}`,
-      actions: stageModules.map(moduleName => {
-        buildModuleActions[
-          moduleName
-        ] = new codePipelineActions.CodeBuildAction({
-          actionName: `build_${stageName}_${moduleName}`,
-          input: resources.checkChangesAction.output,
-          project: buildModuleProjects[moduleName]
+      this.stageState.branch(
+        new Task(this, `${moduleName}_${stageName}_build`, {
+          resource: props.runCodeBuildFunction,
+          parameters: {
+            codeBuildProjectArn: this.buildModuleProjects[moduleName].projectArn
+          }
         })
-        return buildModuleActions[moduleName]
-      })
+      )
     })
-    resources.buildModuleActions = {
-      ...(resources.buildModuleActions || {}),
-      ...buildModuleActions
-    }
-    */
   }
 }
