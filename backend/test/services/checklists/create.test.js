@@ -5,7 +5,10 @@ const { test } = require('tap')
 const { userId, userRequestContext } = require('../../fixtures')
 
 const received = {}
-const payload = { name: 'hello', description: 'New Description' }
+const payload = {
+  name: 'hello',
+  description: 'New Description'
+}
 const createHandler = proxyquire('../../../services/checklists/create', {
   './checklist': {
     create: params => {

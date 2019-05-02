@@ -33,6 +33,7 @@ import {
 
 const defaultState = {
   creating: false,
+  updating: false,
   loading: false,
   removing: false,
   entriesByListId: {},
@@ -40,8 +41,7 @@ const defaultState = {
   listsById: {},
   updatingEntryValue: false,
   addingEntry: false,
-  gettingListEntries: false,
-  listEntriesError: {}
+  gettingListEntries: false
 }
 
 export default (state = defaultState, { type, meta, payload, error }) => {

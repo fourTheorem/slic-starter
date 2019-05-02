@@ -56,6 +56,7 @@ class ListSummary extends Component {
       Date.now(),
       list.createdAt
     )} ago`
+
     return (
       <Card className={classes.card}>
         <CardActionArea
