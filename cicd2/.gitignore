@@ -1,3 +1,5 @@
 *.js
+!lib/tasks/**/*.js
 *.d.ts
 node_modules
+
