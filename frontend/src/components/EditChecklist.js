@@ -169,6 +169,7 @@ class EditChecklist extends Component {
                     defaultValue={list.name}
                     label="List Name (400 Characters)"
                     autoFocus
+                    autoComplete="off"
                     onChange={this.handleChange}
                   />
                 </Grid>

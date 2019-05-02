@@ -108,7 +108,7 @@ class Entries extends Component {
     )
   }
 
-  handleEntryRemoval = event => {
+  handleEntryRemovalRequest = event => {
     this.setState({
       confirmDeleteEntryOpen: true,
       editingId: this.state.menuEntryId,
@@ -117,11 +117,15 @@ class Entries extends Component {
   }
 
   handleEntryUpdateRequest = () => {
+    const { entries } = this.props
+    const entry = entries.find(ent => ent.entId === this.state.menuEntryId)
+
     this.setState({
       isUpdatingEntry: true,
       editingId: this.state.menuEntryId,
       menuEntryId: null,
-      anchorPosition: null
+      anchorPosition: null,
+      updatedTitle: entry.title
     })
   }
 
@@ -145,7 +149,7 @@ class Entries extends Component {
     this.setState({ updatedTitle: value })
   }
 
-  handleEntryRemovalClose = () => {
+  handleEntryRemovalRequestClose = () => {
     this.setState({ confirmDeleteEntryOpen: false })
   }
 
@@ -193,7 +197,7 @@ class Entries extends Component {
         open={this.state.confirmDeleteEntryOpen}
         message="Are you sure you want to remove this entry permanently?"
         onConfirm={this.handleRemoveListEntry}
-        onClose={this.handleEntryRemovalClose}
+        onClose={this.handleEntryRemovalRequestClose}
       />
     )
 
@@ -218,13 +222,12 @@ class Entries extends Component {
         </IconButton>
         <ListItemText>
           <TextField
-            name="new-entry"
             id="newEntryTitle"
             placeholder="Add an Item..."
             className={classes.textField}
             onChange={this.handleEntryTitleChange}
             value={this.state.newEntryTitle}
-            key="new-entry"
+            autoFocus
           />
         </ListItemText>
         <ListItemSecondaryAction />
@@ -247,15 +250,19 @@ class Entries extends Component {
                 </Button>
                 {this.state.editingId === entry.entId &&
                 !this.state.deletingEntry ? (
-                  <form onSubmit={this.handleEntryUpdateSubmit}>
+                  <form
+                    autoComplete="off"
+                    onSubmit={this.handleEntryUpdateSubmit}
+                  >
                     <TextField
                       name="edit-entry"
                       id="edit-entry"
                       onChange={this.onUpdateTitleChange}
                       value={this.state.updatedTitle}
-                      placeholder="Edit Entry"
                     />
-                    <Button type="submit">Save</Button>
+                    <Button color="primary" type="submit">
+                      Save
+                    </Button>
                   </form>
                 ) : (
                   <ListItemText>{entry.title}</ListItemText>
@@ -286,7 +293,7 @@ class Entries extends Component {
             anchorPosition={this.state.anchorPosition}
           >
             <MenuItem onClick={this.handleEntryUpdateRequest}>Edit</MenuItem>
-            <MenuItem onClick={this.handleEntryRemoval}>Delete</MenuItem>
+            <MenuItem onClick={this.handleEntryRemovalRequest}>Delete</MenuItem>
           </Menu>
           {deleteEntryDialog}
         </div>
