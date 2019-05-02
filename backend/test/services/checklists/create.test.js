@@ -7,8 +7,7 @@ const { userId, userRequestContext } = require('../../fixtures')
 const received = {}
 const payload = {
   name: 'hello',
-  description: 'New Description',
-  category: 'TODO'
+  description: 'New Description'
 }
 const createHandler = proxyquire('../../../services/checklists/create', {
   './checklist': {
@@ -29,7 +28,6 @@ test('create handler creates new checklists', async t => {
   t.equal(received.createParams.userId, userId)
   t.equal(received.createParams.name, payload.name)
   t.equal(received.createParams.description, payload.description)
-  t.equal(received.createParams.category, payload.category)
   t.equal(result.statusCode, 201)
 
   t.end()

@@ -35,8 +35,7 @@ const styles = {
     visibility: 'hidden'
   },
   textField: {
-    width: '100%',
-    paddingRight: '2.5%'
+    width: '100%'
   }
 }
 
@@ -164,7 +163,6 @@ class Entries extends Component {
   }
 
   handleDropdownOpen = event => {
-    console.log('handleDropdownOpen', event.target)
     const { x: left, y: top } = event.currentTarget.getBoundingClientRect()
     const anchorPosition = { left, top }
     this.setState({

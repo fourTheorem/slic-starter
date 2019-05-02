@@ -9,14 +9,12 @@ const testLists = [
   {
     listId: 1,
     name: 'List One',
-    description: 'List One Description',
-    category: 'In Progress'
+    description: 'List One Description'
   },
   {
     listId: 2,
     name: 'List Two',
-    description: 'List Two Description',
-    category: 'TODO'
+    description: 'List Two Description'
   }
 ]
 

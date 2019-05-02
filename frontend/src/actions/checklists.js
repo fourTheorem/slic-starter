@@ -22,14 +22,13 @@ export const CREATE_LIST_REQUEST = 'CREATE_LIST_REQUEST'
 export const CREATE_LIST_SUCCESS = 'CREATE_LIST_SUCCESS'
 export const CREATE_LIST_FAILURE = 'CREATE_LIST_FAILURE'
 
-export function createList({ name, description, category }) {
+export function createList({ name, description }) {
   return function(dispatch) {
     dispatch({ type: CREATE_LIST_REQUEST })
     AmplifyApi.post('checklists', '/checklist', {
       body: {
         name,
-        description,
-        category
+        description
       }
     })
       .then(result => {
@@ -63,15 +62,14 @@ export const UPDATE_LIST_REQUEST = 'UPDATE_LIST_REQUEST'
 export const UPDATE_LIST_SUCCESS = 'UPDATE_LIST_SUCCESS'
 export const UPDATE_LIST_FAILURE = 'UPDATE_LIST_FAILURE'
 
-export function updateList({ listId, name, description, category }) {
+export function updateList({ listId, name, description }) {
   return function(dispatch) {
     const meta = { listId }
     dispatch({ type: UPDATE_LIST_REQUEST })
     AmplifyApi.put('checklists', `/checklist/${listId}`, {
       body: {
         name,
-        description,
-        category
+        description
       }
     })
       .then(result => {

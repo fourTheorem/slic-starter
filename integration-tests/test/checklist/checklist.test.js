@@ -7,11 +7,10 @@ const { getUser, removeUser } = require('../../lib/user-util')
 const httpClient = require('../../lib/http-client')
 
 const testLists = [
-  { name: 'List One', description: 'First Description', category: 'TODO' },
+  { name: 'List One', description: 'First Description' },
   {
     name: 'Second List',
-    description: 'Second Description',
-    category: 'In Progress'
+    description: 'Second Description'
   }
 ]
 
@@ -54,17 +53,14 @@ test('checklist tests', async t => {
   test('checklist can be updated', async t => {
     const newName = 'New List Name'
     const newDescription = 'New Description'
-    const newCategory = 'A new Checklist'
 
     const { status } = await httpClient.put(`/checklist/${listId1}`, {
       name: newName,
-      description: newDescription,
-      category: newCategory
+      description: newDescription
     })
     const { data } = await httpClient.get(`/checklist/${listId1}`)
     t.equal(data.name, newName)
     t.equal(data.description, newDescription)
-    t.equal(data.category, newCategory)
   })
 
   test('checklist can be deleted', async t => {
