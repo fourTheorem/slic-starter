@@ -3,26 +3,18 @@
 const AWS = require('aws-sdk')
 const codeBuild = new AWS.CodeBuild()
 
-const handler = (event, context, callback) => {
+const handler = async (event, context) => {
   console.log('run-codebuild handler', event, context)
 
   const { codeBuildProjectArn } = event
 
   const projectName = codeBuildProjectArn.split('/').pop()
 
-  codeBuild.startBuild(
-    {
+  return await codeBuild
+    .startBuild({
       projectName
-    },
-    (err, data) => {
-      if (err) {
-        console.error(err, 'Error')
-      } else {
-        console.log('Build started successfully', data)
-      }
-      callback(null, data)
-    }
-  )
+    })
+    .promise()
 }
 
 module.exports = {
