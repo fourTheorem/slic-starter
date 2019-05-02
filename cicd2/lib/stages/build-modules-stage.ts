@@ -30,7 +30,10 @@ export default class BuildModulesStage extends Construct {
 
     const { stageName, stageModules, stageNo } = props
 
-    this.stageState = new Parallel(this, `${stageName}Build${stageNo}`)
+    this.stageState = new Parallel(this, `${stageName}Build${stageNo}`, {
+      inputPath: '$',
+      outputPath: '$.[0]' // Pass changes
+    })
 
     stageModules.forEach(moduleName => {
       this.buildModuleProjects[moduleName] = new codeBuild.Project(
@@ -92,7 +95,10 @@ export default class BuildModulesStage extends Construct {
             parameters: {
               codeBuildProjectArn: this.buildModuleProjects[moduleName]
                 .projectArn
-            }
+            },
+            inputPath: '$',
+            resultPath: `$.taskResults.${stageName}${moduleName}`,
+            outputPath: '$' // Pass all input to the output
           })
         )
         .otherwise(new Succeed(this, `Skip ${moduleName}`))
