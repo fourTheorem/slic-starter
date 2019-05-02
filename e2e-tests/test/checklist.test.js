@@ -17,10 +17,8 @@ test('Checklist Tests', async t => {
 
   await t.typeText(page.emailInput, email)
   await t.typeText(page.passInput, 'Slic123@')
-
-  await t.click(Selector('#signup-btn', { timeout: 1000 }))
-
   const code = await config.getCode(email)
+  await t.click(Selector('#signup-btn'))
   await t.typeText(Selector('#confirmationCode'), code)
   await t.click(Selector('#confirm-signup-btn'))
 })
@@ -36,10 +34,6 @@ test('User can create a new List', async t => {
 
   await t.typeText(Selector('#description'), 'List Description')
   await t.expect(Selector('#description').value).eql('List Description')
-
-  await t.click(Selector('#category-label'))
-  await t.click(Selector('#cat1'))
-  await t.expect(Selector('#category').value).eql('TODO')
 
   await t.click('#save-btn', { timeout: 2000 })
   await t.click(Selector('a').withText('First List'))
@@ -71,10 +65,6 @@ test('User can update an already existing list', async t => {
   await t.pressKey('ctrl+a delete')
   await t.typeText(descriptionTextField, 'Updated List Description')
   await t.expect(descriptionTextField.value).eql('Updated List Description')
-
-  await t.click(Selector('#category-label'))
-  await t.click(Selector('#cat2'))
-  await t.expect(Selector('#category').value).eql('In Progress')
 
   await t.click(Selector('#save-btn'))
   await t.expect(Selector('h2').withText('Updated List Title')).exists
@@ -118,6 +108,24 @@ test('Can mark Entries as Completed', async t => {
   await t.expect(checkbox.checked).ok()
 })
 
+test('Can update existing entries', async t => {
+  await t.typeText(page.emailInput, email)
+  await t.typeText(page.passInput, 'Slic123@')
+  await t.click(page.loginBtn, { timeout: 500 })
+
+  await t.click(Selector('a').withText('First List'))
+  await t.expect(Selector('h2').withText('First List')).exists
+
+  await t.click(Selector('Button').withAttribute('name', 'New Item 1'))
+  await t.expect(Selector('Button').withText('Edit')).exists
+  await t.click(Selector('#edit-entry'))
+
+  await t.typeText('#edit-entry', 'Updated Value', { replace: true })
+  await t.click(Selector('#save-btn'))
+
+  await t.expect(Selector('span').withText('Updated Value')).exists
+})
+
 test('Can delete an entry from an existing list', async t => {
   await t.typeText(page.emailInput, email)
   await t.typeText(page.passInput, 'Slic123@')
@@ -125,13 +133,11 @@ test('Can delete an entry from an existing list', async t => {
 
   await t.click(Selector('a').withText('First List'))
   await t.expect(Selector('h2').withText('First List')).exists
-  const deleteEntryBtn = Selector('button').withAttribute(
-    'name',
-    'delete-entry-btn-0'
-  )
-  await t.click(deleteEntryBtn)
-  await t.expect(deleteEntryBtn.exists).notOk
-  await await t.expect(Selector('h6').withText('Delete Entry?')).exists
+
+  await t.click(Selector('Button').withAttribute('name', 'New Item 1'))
+  await t.expect(Selector('Button').withText('Delete')).exists
+  await t.click(Selector('#delete-entry'))
+  await t.expect(Selector('h6').withText('Delete Entry?')).exists
 
   const confirmBtn = Selector('#entry-confirmation-confirm-btn')
   await t.click(confirmBtn)

@@ -243,7 +243,7 @@ class Entries extends Component {
                 <Button
                   className={classes.deleteEntryBtn}
                   onClick={this.handleDropdownOpen}
-                  name="options"
+                  name={entry.title}
                   id={entry.entId}
                 >
                   <MoreVert />
@@ -260,7 +260,7 @@ class Entries extends Component {
                       onChange={this.onUpdateTitleChange}
                       value={this.state.updatedTitle}
                     />
-                    <Button color="primary" type="submit">
+                    <Button color="primary" id="save-btn" type="submit">
                       Save
                     </Button>
                   </form>
@@ -292,8 +292,15 @@ class Entries extends Component {
             anchorReference="anchorPosition"
             anchorPosition={this.state.anchorPosition}
           >
-            <MenuItem onClick={this.handleEntryUpdateRequest}>Edit</MenuItem>
-            <MenuItem onClick={this.handleEntryRemovalRequest}>Delete</MenuItem>
+            <MenuItem onClick={this.handleEntryUpdateRequest} id="edit-entry">
+              Edit
+            </MenuItem>
+            <MenuItem
+              id="delete-entry"
+              onClick={this.handleEntryRemovalRequest}
+            >
+              Delete
+            </MenuItem>
           </Menu>
           {deleteEntryDialog}
         </div>
