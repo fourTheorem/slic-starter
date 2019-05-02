@@ -17,6 +17,7 @@ $0 repository_url target_version \n\
   target_version             The SHA, branch or tag to compare to\n\n"
   exit 1
 fi
+
 TOKEN_SECRET=$(aws secretsmanager get-secret-value --secret-id CICD --query SecretString)
 GITHUB_TOKEN=$(echo $TOKEN_SECRET | node -e 'console.log(JSON.parse(JSON.parse(fs.readFileSync("/dev/stdin", "utf-8"))).GitHubPersonalAccessToken)')
 export REPO_URL=$(echo $REPO_URL | sed -e 's/https:\/\/github.com/https:\/\/'"$GITHUB_TOKEN@"'github.com/')
@@ -36,9 +37,19 @@ LATEST_RELEASE=`git ls-remote --tags 2>/dev/null | awk -F '/' '{print $3}' | gre
 
 COMMIT_LOG=`git log -1`
 
+declare -A changedModules
+
+find . -maxdepth 1 -type d -not -path "./.*" | awk -F '/' '{print $2}' | grep -ve "^$" > /tmp/changed-paths
+while read -r module
+do
+  changedModules[${module}]=false
+done < /tmp/changed-paths
+
 if [ "$LATEST_RELEASE" = "" ]; then
   >&2 echo "No previous tagged release found. Changed folder assumed to be everything (.)"
-  CHANGES="\"all_modules\":true"
+  for key in "${!changedModules[@]}"; do
+    changedModules[${key}]=true
+  done
 else
   >&2 git checkout -b base                                     # Create a branch for our base state
   >&2 git fetch origin --depth 1 $LATEST_RELEASE               # Fetch the single commit for the base of our comparison
@@ -49,16 +60,20 @@ else
   >&2 git fetch origin --depth 1 $TARGET_VERSION               # Fetch the single commit for the target of our comparison
   >&2 git reset --hard FETCH_HEAD                              # Point the local target to the commit we just fetched
 
-  CHANGES=""
   # Determine modules with files changed between the two commits
   git diff --name-only base target | grep / | awk 'BEGIN {FS="/"} {print $1}' | uniq | while read -r module
     do
-      if [ "${CHANGES}" -ne "" ]; then
-        CHANGES="${CHANGES},"
-      fi
-      CHANGES="\"${module}\":true"
+      changedModules[${module}]=true
     done
 fi
+
+CHANGES=""
+for key in "${!changedModules[@]}"; do
+  if [ "${CHANGES}" != "" ]; then
+    CHANGES="${CHANGES},"
+  fi
+  CHANGES="${CHANGES}\"${key}\":${changedModules[${key}]}"
+done
 
 printf -v ESC_LOG "%q" "$COMMIT_LOG" # Escape the commit log
 OUTPUT_JSON="{\"changes\":{${CHANGES}},\"buildId\":\"${CODEBUILD_BUILD_ID}\",\"resolvedVersion\":\"${CODEBUILD_RESOLVED_SOURCE_VERSION}\",\"sourceVersion\":\"${CODEBUILD_SOURCE_VERSION}\",\"commitLog\":\"${ESC_LOG}\"}"
