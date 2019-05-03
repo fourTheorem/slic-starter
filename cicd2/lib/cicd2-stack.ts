@@ -4,10 +4,7 @@ import path = require('path')
 import cdk = require('@aws-cdk/cdk')
 import lambda = require('@aws-cdk/aws-lambda')
 import sf = require('@aws-cdk/aws-stepfunctions')
-import {
-  BuildEnvironmentVariable,
-  BuildEnvironmentVariableType
-} from '@aws-cdk/aws-codebuild'
+import { BuildEnvironmentVariableType } from '@aws-cdk/aws-codebuild'
 import { SourceProject } from './projects/source-project'
 import CodeBuildRole from './code-build-role'
 import { Bucket } from '@aws-cdk/aws-s3'
@@ -108,17 +105,23 @@ export class Cicd2Stack extends cdk.Stack {
       pipelineStateMachine: stateMachine
     })
 
-    const stateMachineArnEnv: BuildEnvironmentVariable = {
-      type: BuildEnvironmentVariableType.PlainText,
-      value: stateMachine.stateMachineArn
-    }
-
     new SourceProject(this, 'sourceProject', {
       projectName: 'SLICPipelineSource',
       role: sourceCodeBuildRole,
       bucket: artifactsBucket,
       environmentVariables: {
-        PIPELINE_STEP_FUNCTION_ARN: stateMachineArnEnv
+        PIPELINE_STEP_FUNCTION_ARN: {
+          type: BuildEnvironmentVariableType.PlainText,
+          value: stateMachine.stateMachineArn
+        },
+        ARTIFACTS_BUCKET_NAME: {
+          type: BuildEnvironmentVariableType.PlainText,
+          value: artifactsBucket.bucketName
+        },
+        ARTIFACTS_BUCKET_ARN: {
+          type: BuildEnvironmentVariableType.PlainText,
+          value: artifactsBucket.bucketArn
+        }
       }
     })
   }
