@@ -49,7 +49,6 @@ build/Release
 vim-markdown-preview.html
 
 # Temporary output generate during build
-module-config.env
 build-artifacts/
 
 # Temporary Git repo for checking changes

@@ -6,17 +6,14 @@ import config from '../../config'
 import CodeBuildRole from '../code-build-role'
 import {
   Parallel,
-  Task,
   Choice,
   Condition,
-  Succeed,
-  Wait,
-  WaitDuration,
-  Fail
+  Succeed
 } from '@aws-cdk/aws-stepfunctions'
 import { Function } from '@aws-cdk/aws-lambda'
 import { S3BucketSource, S3BucketBuildArtifacts } from '@aws-cdk/aws-codebuild'
 import { Bucket } from '@aws-cdk/aws-s3'
+import { BuildJob } from './build-job'
 
 export interface BuildModulesStateProps {
   stageNo: number
@@ -93,8 +90,7 @@ export default class BuildModulesStage extends Construct {
                 `${moduleName}/package.json`,
                 `${moduleName}/package-lock.json`,
                 `${moduleName}/build-artifacts/**/*`,
-                `${moduleName}/build/**/*`,
-                'module-config.env'
+                `${moduleName}/build/**/*`
               ]
             }
           },
@@ -103,64 +99,11 @@ export default class BuildModulesStage extends Construct {
         }
       )
 
-      const moduleBuildTask = new Task(
-        this,
-        `${moduleName} ${stageName} build`,
-        {
-          resource: props.runCodeBuildFunction,
-          parameters: {
-            codeBuildProjectArn: this.buildModuleProjects[moduleName]
-              .projectArn,
-            'sourceLocation.$': '$.sourceLocation'
-          },
-          inputPath: '$',
-          resultPath: `$.runBuildResult.${stageName}${moduleName}`,
-          outputPath: '$' // Pass all input to the output
-        }
-      )
-
-      const checkBuildTask = new Task(
-        this,
-        `Check ${moduleName} ${stageName} status`,
-        {
-          resource: props.checkCodeBuildFunction,
-          parameters: {
-            'build.$': `$.runBuildResult.${stageName}${moduleName}.build`
-          },
-          inputPath: `$`,
-          resultPath: `$.buildStatus.${stageName}${moduleName}`,
-          outputPath: '$'
-        }
-      )
-
-      const waitForBuild = new Wait(
-        this,
-        `Wait for ${moduleName} ${stageName} build`,
-        {
-          duration: WaitDuration.seconds(10)
-        }
-      )
-
-      moduleBuildTask.next(waitForBuild)
-      waitForBuild.next(checkBuildTask)
-      checkBuildTask.next(
-        new Choice(this, `${stageName} ${moduleName} built?`)
-          .when(
-            Condition.stringEquals(
-              `$.buildStatus.${stageName}${moduleName}.buildStatus`,
-              'SUCCEEDED'
-            ),
-            new Succeed(this, `Success ${moduleName} ${stageName}`)
-          )
-          .when(
-            Condition.stringEquals(
-              `$.buildStatus.${stageName}${moduleName}.buildStatus`,
-              'IN_PROGRESS'
-            ),
-            waitForBuild
-          )
-          .otherwise(new Fail(this, `Failure ${moduleName} ${stageName}`))
-      )
+      const buildJob = new BuildJob(this, `${moduleName}_${stageName}_build`, {
+        codeBuildProjectArn: this.buildModuleProjects[moduleName].projectArn,
+        checkCodeBuildFunction: props.checkCodeBuildFunction,
+        runCodeBuildFunction: props.runCodeBuildFunction
+      })
 
       const ifChangedChoice = new Choice(
         this,
@@ -171,7 +114,7 @@ export default class BuildModulesStage extends Construct {
             Condition.booleanEquals(`$.changes.${moduleName}`, true),
             Condition.booleanEquals('$.changes.all_modules', true)
           ),
-          moduleBuildTask
+          buildJob.task
         )
         .otherwise(new Succeed(this, `Skip ${stageName} ${moduleName}`))
 
