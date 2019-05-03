@@ -15,7 +15,7 @@ import {
   Fail
 } from '@aws-cdk/aws-stepfunctions'
 import { Function } from '@aws-cdk/aws-lambda'
-import { S3BucketSource } from '@aws-cdk/aws-codebuild'
+import { S3BucketSource, S3BucketBuildArtifacts } from '@aws-cdk/aws-codebuild'
 import { Bucket } from '@aws-cdk/aws-s3'
 
 export interface BuildModulesStateProps {
@@ -43,11 +43,19 @@ export default class BuildModulesStage extends Construct {
     })
 
     stageModules.forEach(moduleName => {
+      const artifacts = new S3BucketBuildArtifacts({
+        bucket: props.artifactsBucket,
+        name: `${stageName}_${moduleName}_build.zip`,
+        includeBuildId: true,
+        packageZip: true
+      })
+
       this.buildModuleProjects[moduleName] = new codeBuild.Project(
         this,
         `${stageName}_${moduleName}_build_project`,
         {
           projectName: `${stageName}_${moduleName}_build`,
+          artifacts,
           source: new S3BucketSource({
             bucket: props.artifactsBucket,
             path: '' // Path to be changed on override for each build
