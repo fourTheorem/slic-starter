@@ -101,7 +101,6 @@ ${moduleName}BuildModuleProject:
             - '${moduleName}/package-lock.json'
             - '${moduleName}/build-artifacts/**/*'
             - '${moduleName}/build/**/*'
-            - 'module-config.env'
     Artifacts:
       Type: CODEPIPELINE
       Packaging: NONE

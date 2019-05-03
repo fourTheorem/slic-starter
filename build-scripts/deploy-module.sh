@@ -2,8 +2,6 @@
 
 set -e
 
-source module-config.env
-
 run_deploy () {
   source build-scripts/assume-cross-account-role.env
 	cd ${MODULE_NAME}
