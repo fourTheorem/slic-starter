@@ -76,7 +76,8 @@ for key in "${!changedModules[@]}"; do
 done
 
 printf -v ESC_LOG "%q" "$COMMIT_LOG" # Escape the commit log
-OUTPUT_JSON="{\"changes\":{${CHANGES}},\"buildId\":\"${CODEBUILD_BUILD_ID}\",\"resolvedVersion\":\"${CODEBUILD_RESOLVED_SOURCE_VERSION}\",\"sourceVersion\":\"${CODEBUILD_SOURCE_VERSION}\",\"commitLog\":\"${ESC_LOG}\"}"
+SOURCE_LOCATION=/$(echo ${CODEBUILD_BUILD_ID} | awk -F ':' '{print $2}')/SLICPipelineArtifacts
+OUTPUT_JSON="{\"changes\":{${CHANGES}},\"sourceLocation\":\"${SOURCE_LOCATION}\",\"buildId\":\"${CODEBUILD_BUILD_ID}\",\"resolvedVersion\":\"${CODEBUILD_RESOLVED_SOURCE_VERSION}\",\"sourceVersion\":\"${CODEBUILD_SOURCE_VERSION}\",\"commitLog\":\"${ESC_LOG}\"}"
 
 echo done with output $OUTPUT_JSON
 

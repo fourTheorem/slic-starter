@@ -11,10 +11,12 @@ import {
 import { SourceProject } from './projects/source-project'
 import CodeBuildRole from './code-build-role'
 import { Bucket } from '@aws-cdk/aws-s3'
+import { PolicyStatement } from '@aws-cdk/aws-iam'
 import BuildModulesStage from './stages/build-modules-stage'
 
 import modules from '../modules'
 import StageName from './stage-name'
+
 const { stages } = modules
 
 export class Cicd2Stack extends cdk.Stack {
@@ -22,6 +24,7 @@ export class Cicd2Stack extends cdk.Stack {
     super(scope, id, props)
 
     const runCodeBuildFunction = new lambda.Function(this, 'runCodeBuild', {
+      functionName: 'runCodeBuild',
       runtime: lambda.Runtime.NodeJS810,
       handler: 'index.handler',
       code: lambda.Code.inline(
@@ -30,6 +33,34 @@ export class Cicd2Stack extends cdk.Stack {
           'utf-8'
         )
       )
+    })
+    runCodeBuildFunction.addToRolePolicy(
+      new PolicyStatement()
+        .allow()
+        .addAction('codeBuild:StartBuild')
+        .addAllResources()
+    )
+
+    const checkCodeBuildFunction = new lambda.Function(this, 'checkCodeBuild', {
+      functionName: 'checkCodeBuild',
+      runtime: lambda.Runtime.NodeJS810,
+      handler: 'index.handler',
+      code: lambda.Code.inline(
+        fs.readFileSync(
+          path.join(__dirname, 'tasks', 'check-codebuild.js'),
+          'utf-8'
+        )
+      )
+    })
+    checkCodeBuildFunction.addToRolePolicy(
+      new PolicyStatement()
+        .allow()
+        .addAction('codeBuild:BatchGetBuilds')
+        .addAllResources()
+    )
+
+    const artifactsBucket = new Bucket(this, 'artifactsBucket', {
+      bucketName: `slic-build-artifacts-${this.env.account}-${this.env.region}`
     })
 
     const codeBuildRole = new CodeBuildRole(this, 'stageBuildRole')
@@ -44,9 +75,12 @@ export class Cicd2Stack extends cdk.Stack {
           stageModules,
           stageName: StageName.stg,
           codeBuildRole,
-          runCodeBuildFunction
+          checkCodeBuildFunction,
+          runCodeBuildFunction,
+          artifactsBucket
         })
       )
+
       /*
       resources.stgDeployModulesStage = new DeployModulesStage(
         this,
@@ -78,10 +112,6 @@ export class Cicd2Stack extends cdk.Stack {
       type: BuildEnvironmentVariableType.PlainText,
       value: stateMachine.stateMachineArn
     }
-
-    const artifactsBucket = new Bucket(this, 'artifactsBucket', {
-      bucketName: `slic-build-artifacts-${this.env.account}-${this.env.region}`
-    })
 
     new SourceProject(this, 'sourceProject', {
       projectName: 'SLICPipelineSource',
