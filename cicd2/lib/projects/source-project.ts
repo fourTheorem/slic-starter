@@ -26,7 +26,7 @@ export class SourceProject extends Project {
 
     const artifacts = new S3BucketBuildArtifacts({
       bucket: props.bucket,
-      name: 'SLICPipelineArtifacts',
+      name: 'slic_pipeline_source.zip',
       includeBuildId: true,
       packageZip: true
     })
