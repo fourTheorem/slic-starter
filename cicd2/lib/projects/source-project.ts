@@ -9,6 +9,8 @@ import config from '../../config'
 import { defaultEnvironment } from '../code-build-environments'
 import { IBucket } from '@aws-cdk/aws-s3'
 
+export const SLIC_PIPELINE_SOURCE_ARTIFACT = 'slic_pipeline_source.zip'
+
 export interface SourceProjectProps extends ProjectProps {
   readonly bucket: IBucket
 }
@@ -26,7 +28,7 @@ export class SourceProject extends Project {
 
     const artifacts = new S3BucketBuildArtifacts({
       bucket: props.bucket,
-      name: 'slic_pipeline_source.zip',
+      name: SLIC_PIPELINE_SOURCE_ARTIFACT,
       includeBuildId: true,
       packageZip: true
     })
