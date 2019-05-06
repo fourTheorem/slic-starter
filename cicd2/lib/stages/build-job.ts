@@ -11,6 +11,7 @@ import {
 import { Function } from '@aws-cdk/aws-lambda'
 
 export interface BuildJobProps {
+  sourceLocationPath: string
   codeBuildProjectArn: string
   checkCodeBuildFunction: Function
   runCodeBuildFunction: Function
@@ -30,7 +31,7 @@ export class BuildJob extends Construct {
       resource: props.runCodeBuildFunction,
       parameters: {
         codeBuildProjectArn: props.codeBuildProjectArn,
-        'sourceLocation.$': '$.sourceLocation'
+        'sourceLocation.$': props.sourceLocationPath
       },
       inputPath: '$',
       resultPath: `$.runBuildResult.${id}`,

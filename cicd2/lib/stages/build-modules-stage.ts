@@ -36,7 +36,7 @@ export default class BuildModulesStage extends Construct {
 
     this.stageState = new Parallel(this, `${stageName}Build${stageNo}`, {
       inputPath: '$',
-      outputPath: '$.[0]' // Pass changes
+      outputPath: '$' // Pass changes
     })
 
     stageModules.forEach(moduleName => {
@@ -105,7 +105,8 @@ export default class BuildModulesStage extends Construct {
         {
           codeBuildProjectArn: this.buildModuleProjects[moduleName].projectArn,
           checkCodeBuildFunction: props.checkCodeBuildFunction,
-          runCodeBuildFunction: props.runCodeBuildFunction
+          runCodeBuildFunction: props.runCodeBuildFunction,
+          sourceLocationPath: '$.sourceLocation'
         }
       )
 
