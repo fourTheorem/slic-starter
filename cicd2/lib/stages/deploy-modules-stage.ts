@@ -38,7 +38,7 @@ export default class DeployModulesStage extends Construct {
       outputPath: '$.[0]'
     })
 
-    stageModules.forEach(moduleName => {
+    stageModules.forEach((moduleName, moduleIndex) => {
       this.deployModuleProjects[moduleName] = new codeBuild.Project(
         this,
         `${stageName}_${moduleName}_deploy_project`,
@@ -70,7 +70,8 @@ export default class DeployModulesStage extends Construct {
         {
           codeBuildProjectArn: this.deployModuleProjects[moduleName].projectArn,
           checkCodeBuildFunction: props.checkCodeBuildFunction,
-          runCodeBuildFunction: props.runCodeBuildFunction
+          runCodeBuildFunction: props.runCodeBuildFunction,
+          sourceLocationPath: `$.[${moduleIndex}].runBuildResult.${moduleName}_${stageName}_build_job`
         }
       )
 
