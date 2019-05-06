@@ -22,8 +22,6 @@ TOKEN_SECRET=$(aws secretsmanager get-secret-value --secret-id CICD --query Secr
 GITHUB_TOKEN=$(echo $TOKEN_SECRET | node -e 'console.log(JSON.parse(JSON.parse(fs.readFileSync("/dev/stdin", "utf-8"))).GitHubPersonalAccessToken)')
 export REPO_URL=$(echo $REPO_URL | sed -e 's/https:\/\/github.com/https:\/\/'"$GITHUB_TOKEN@"'github.com/')
 
-OUTPUT=$PWD/module-config.env
-
 # rm -rf _GIT_REPO
 # mkdir -p _GIT_REPO
 # cd _GIT_REPO
