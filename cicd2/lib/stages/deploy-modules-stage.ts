@@ -1,32 +1,49 @@
 import { Construct } from '@aws-cdk/cdk'
 import codeBuild = require('@aws-cdk/aws-codebuild')
-import { PipelineProject } from '@aws-cdk/aws-codebuild'
-import codePipelineActions = require('@aws-cdk/aws-codepipeline-actions')
 import { defaultEnvironment } from '../code-build-environments'
-import { CodeBuildAction } from '@aws-cdk/aws-codepipeline-actions'
-import { Pipeline } from '@aws-cdk/aws-codepipeline'
-import modules from '../../modules'
 import StageName from '../stage-name'
 import config from '../../config'
-const { deployOrder } = modules
+import CodeBuildRole from '../code-build-role'
+import { Bucket } from '@aws-cdk/aws-s3'
+import {
+  Parallel,
+  Choice,
+  Condition,
+  Succeed
+} from '@aws-cdk/aws-stepfunctions'
+import { BuildJob } from './build-job'
+import { Function } from '@aws-cdk/aws-lambda'
+
+export interface DeployModulesStageProps {
+  stageNo: number
+  stageModules: string[]
+  stageName: StageName
+  codeBuildRole: CodeBuildRole
+  checkCodeBuildFunction: Function
+  runCodeBuildFunction: Function
+  artifactsBucket: Bucket
+}
 
 export default class DeployModulesStage extends Construct {
-  constructor(
-    scope: Construct,
-    stageNo: number,
-    stageModules: Array<string>,
-    resources: any,
-    stageName: StageName
-  ) {
-    super(scope, `${stageName}DeployMod${stageNo}`)
-    const deployModuleProjects: { [name: string]: PipelineProject } = {}
+  readonly deployModuleProjects: { [name: string]: codeBuild.Project } = {}
+  readonly stageState: Parallel
 
-    const pipeline: Pipeline = resources.pipeline
+  constructor(scope: Construct, props: DeployModulesStageProps) {
+    super(scope, `${props.stageName}DeployStage${props.stageNo}`)
+
+    const { stageName, stageModules, stageNo } = props
+
+    this.stageState = new Parallel(this, `${stageName}Deploy${stageNo}`, {
+      inputPath: '$',
+      outputPath: '$.[0]'
+    })
+
     stageModules.forEach(moduleName => {
-      deployModuleProjects[moduleName] = new codeBuild.PipelineProject(
+      this.deployModuleProjects[moduleName] = new codeBuild.Project(
         this,
-        `${stageName}_deploy_${moduleName}`,
+        `${stageName}_${moduleName}_deploy_project`,
         {
+          projectName: `${stageName}_${moduleName}_deploy`,
           buildSpec: {
             version: '0.2',
             env: {
@@ -43,25 +60,34 @@ export default class DeployModulesStage extends Construct {
             }
           },
           environment: defaultEnvironment,
-          role: resources.codeBuildRole
+          role: props.codeBuildRole
         }
       )
-    })
 
-    resources.deployModuleProjects = deployModuleProjects
-    const deployActions: { [moduleName: string]: CodeBuildAction } = {}
-    pipeline.addStage({
-      name: `${stageName}_deploy_${stageNo}`,
-      actions: stageModules.map(moduleName => {
-        deployActions[moduleName] = new codePipelineActions.CodeBuildAction({
-          actionName: `${stageName}_deploy_${moduleName}`,
-          input: resources.buildModuleActions[moduleName].output,
-          project: deployModuleProjects[moduleName],
-          runOrder: deployOrder[moduleName]
-        })
-        return deployActions[moduleName]
-      })
+      const deployJob = new BuildJob(
+        this,
+        `${moduleName}_${stageName}_deploy_job`,
+        {
+          codeBuildProjectArn: this.deployModuleProjects[moduleName].projectArn,
+          checkCodeBuildFunction: props.checkCodeBuildFunction,
+          runCodeBuildFunction: props.runCodeBuildFunction
+        }
+      )
+
+      const ifChangedChoice = new Choice(
+        this,
+        `${moduleName} changed? ${stageName} deploy`
+      )
+        .when(
+          Condition.or(
+            Condition.booleanEquals(`$.changes.${moduleName}`, true),
+            Condition.booleanEquals('$.changes.all_modules', true)
+          ),
+          deployJob.task
+        )
+        .otherwise(new Succeed(this, `Skip ${stageName} ${moduleName} deploy`))
+
+      this.stageState.branch(ifChangedChoice)
     })
-    resources.deployActions = deployActions
   }
 }

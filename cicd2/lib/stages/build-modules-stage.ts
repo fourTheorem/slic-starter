@@ -99,15 +99,19 @@ export default class BuildModulesStage extends Construct {
         }
       )
 
-      const buildJob = new BuildJob(this, `${moduleName}_${stageName}_build`, {
-        codeBuildProjectArn: this.buildModuleProjects[moduleName].projectArn,
-        checkCodeBuildFunction: props.checkCodeBuildFunction,
-        runCodeBuildFunction: props.runCodeBuildFunction
-      })
+      const buildJob = new BuildJob(
+        this,
+        `${moduleName}_${stageName}_build_job`,
+        {
+          codeBuildProjectArn: this.buildModuleProjects[moduleName].projectArn,
+          checkCodeBuildFunction: props.checkCodeBuildFunction,
+          runCodeBuildFunction: props.runCodeBuildFunction
+        }
+      )
 
       const ifChangedChoice = new Choice(
         this,
-        `${moduleName} changed? ${stageName}`
+        `${moduleName} changed? ${stageName} build`
       )
         .when(
           Condition.or(
@@ -116,7 +120,7 @@ export default class BuildModulesStage extends Construct {
           ),
           buildJob.task
         )
-        .otherwise(new Succeed(this, `Skip ${stageName} ${moduleName}`))
+        .otherwise(new Succeed(this, `Skip ${stageName} ${moduleName} build`))
 
       this.stageState.branch(ifChangedChoice)
     })

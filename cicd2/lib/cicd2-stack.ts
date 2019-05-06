@@ -13,6 +13,7 @@ import BuildModulesStage from './stages/build-modules-stage'
 
 import modules from '../modules'
 import StageName from './stage-name'
+import DeployModulesStage from './stages/deploy-modules-stage'
 
 const { stages } = modules
 
@@ -63,6 +64,7 @@ export class Cicd2Stack extends cdk.Stack {
     const codeBuildRole = new CodeBuildRole(this, 'stageBuildRole')
 
     const buildModuleStages: BuildModulesStage[] = []
+    const deployModuleStages: DeployModulesStage[] = []
 
     stages.forEach((stageModules, index) => {
       const stageNo = index + 1
@@ -78,19 +80,26 @@ export class Cicd2Stack extends cdk.Stack {
         })
       )
 
-      /*
-      resources.stgDeployModulesStage = new DeployModulesStage(
-        this,
-        stageNo,
-        stageModules,
-        StageName.stg
+      deployModuleStages.push(
+        new DeployModulesStage(this, {
+          stageNo,
+          stageModules,
+          stageName: StageName.stg,
+          codeBuildRole,
+          checkCodeBuildFunction,
+          runCodeBuildFunction,
+          artifactsBucket
+        })
       )
-      */
+
+      buildModuleStages[index].stageState.next(
+        deployModuleStages[index].stageState
+      )
     })
 
-    buildModuleStages.forEach((buildModuleStage, index) => {
-      if (index < buildModuleStages.length - 1) {
-        buildModuleStage.stageState.next(
+    deployModuleStages.forEach((deployModuleStage, index) => {
+      if (index < deployModuleStages.length - 1) {
+        deployModuleStage.stageState.next(
           buildModuleStages[index + 1].stageState
         )
       }
