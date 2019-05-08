@@ -35,7 +35,7 @@ export default class DeployModulesStage extends Construct {
 
     this.stageState = new Parallel(this, `${stageName}Deploy${stageNo}`, {
       inputPath: '$',
-      outputPath: '$.[0]'
+      outputPath: '$'
     })
 
     stageModules.forEach((moduleName, moduleIndex) => {
@@ -80,9 +80,9 @@ export default class DeployModulesStage extends Construct {
         `${moduleName} changed? ${stageName} deploy`
       )
         .when(
-          Condition.or(
-            Condition.booleanEquals(`$.changes.${moduleName}`, true),
-            Condition.booleanEquals('$.changes.all_modules', true)
+          Condition.booleanEquals(
+            `$.[${moduleIndex}].changes.${moduleName}`,
+            true
           ),
           deployJob.task
         )
