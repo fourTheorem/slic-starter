@@ -39,7 +39,7 @@ export default class BuildModulesStage extends Construct {
       outputPath: '$' // Pass changes
     })
 
-    stageModules.forEach(moduleName => {
+    stageModules.forEach((moduleName, moduleIndex) => {
       const artifacts = new S3BucketBuildArtifacts({
         bucket: props.artifactsBucket,
         name: `${stageName}_${moduleName}_build.zip`,
@@ -110,14 +110,19 @@ export default class BuildModulesStage extends Construct {
         }
       )
 
+      // TODO - Fix this
+      const changesPath = true || stageNo === 1 ? '$' : `$.[${moduleIndex}]`
       const ifChangedChoice = new Choice(
         this,
         `${moduleName} changed? ${stageName} build`
       )
         .when(
           Condition.or(
-            Condition.booleanEquals(`$.changes.${moduleName}`, true),
-            Condition.booleanEquals('$.changes.all_modules', true)
+            Condition.booleanEquals(
+              `${changesPath}.changes.${moduleName}`,
+              true
+            ),
+            Condition.booleanEquals(`${changesPath}.changes.all_modules`, true)
           ),
           buildJob.task
         )
