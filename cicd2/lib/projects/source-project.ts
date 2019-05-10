@@ -9,7 +9,7 @@ import config from '../../config'
 import { defaultEnvironment } from '../code-build-environments'
 import { IBucket } from '@aws-cdk/aws-s3'
 
-export const SLIC_PIPELINE_SOURCE_ARTIFACT = 'slic_pipeline_source.zip'
+export const SLIC_PIPELINE_SOURCE_ARTIFACT = 'orchestrator-pipeline-source.zip'
 
 export interface SourceProjectProps extends ProjectProps {
   readonly bucket: IBucket

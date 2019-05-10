@@ -10,7 +10,8 @@ export class Cicd2Stack extends cdk.Stack {
     super(scope, id, props)
 
     const artifactsBucket = new Bucket(this, 'artifactsBucket', {
-      bucketName: `slic-build-artifacts-${this.env.account}-${this.env.region}`
+      bucketName: `slic-build-artifacts-${this.env.account}-${this.env.region}`,
+      versioned: true
     })
 
     // const codeBuildRole = new CodeBuildRole(this, 'stageBuildRole')
