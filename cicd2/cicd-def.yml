@@ -1,0 +1,53 @@
+sourceCodeBuild:
+  Type: CodeBuildProject
+  Source: GitHub / any branch
+  BuildSpec:
+    - Detect changes
+    - Trigger orchestrator pipeline
+  Output:
+    - Source repo (S3)
+    - Build ID / Path
+    - Source metadata - commit revision, etc.
+    - Changed modules (CloudWatch Event or, less preferably, file artifact)
+
+orchestratorPipeline:
+  Type: CodePipeline
+  Source: S3 with path from CloudWatch event or environment variables
+  Stages:
+    - Name: Deploy Staging Stage
+      Type: CodeBuild Project
+      Timeout: Really long
+      BuildSpec:
+        foreach_changed_service:
+          - Trigger CodePipeline for each service
+          - Wait
+          - Check CodePipeline status
+          - Wait for completion
+          - If any failures, stop/fail everything
+    - Name: Run E2E Tests
+      Type: CodeBuild Project
+      BuildSpec:
+        - npm t for integration tests
+        - npm t for e2e tests
+    - Name: Deploy Production Stage
+      Type: CodeBuild Project
+      Timeout: Really long
+      BuildSpec:
+        foreach_changed_service:
+          -  # Same as staging, different env
+
+# For each service
+servicePipeline:
+  Type: CodePipeline [ or just CodeBuild ? ] - CodePipeline enables CF CodeDeploy ultimately / better SAM, etc.
+  Source: S3 with path from CloudWatch event or environment variables
+  Stages:
+    - Name: install deps
+      Type: CodeBuild Project
+      BuildSpec:
+        - npm install
+        - npm t
+        - npm package
+    - Name: deploy
+      Type: CodeBuild Project (ultimately CodeDeploy)
+      BuildSpect:
+        - sls deploy

@@ -29,7 +29,7 @@ export class SourceProject extends Project {
     const artifacts = new S3BucketBuildArtifacts({
       bucket: props.bucket,
       name: SLIC_PIPELINE_SOURCE_ARTIFACT,
-      includeBuildId: true,
+      includeBuildId: false,
       packageZip: true
     })
 
@@ -39,7 +39,7 @@ export class SourceProject extends Project {
         phases: {
           build: {
             commands: [
-              `bash ./build-scripts/check-changes.sh https://github.com/${
+              `bash ./build-scripts/source-kickoff.sh https://github.com/${
                 config.sourceRepoOwner
               }/${config.sourceRepoName}.git $CODEBUILD_RESOLVED_SOURCE_VERSION`
             ]

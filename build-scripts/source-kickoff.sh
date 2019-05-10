@@ -4,6 +4,7 @@
 # compares this with a target commit.
 # See this post for information: https://dev.to/eoinsha/find-changes-between-two-git-commits-without-cloning-4kkp
 
+STATE_FILE=${PWD}/pipeline-state.env
 set -e
 
 REPO_URL=$1
@@ -65,19 +66,12 @@ else
     done
 fi
 
-CHANGES=""
-for key in "${!changedModules[@]}"; do
-  if [ "${CHANGES}" != "" ]; then
-    CHANGES="${CHANGES},"
-  fi
-  CHANGES="${CHANGES}\"${key}\":${changedModules[${key}]}"
+echo > ${STATE_FILE}
+for var in changedModules CODEBUILD_BUILD_ID COMMIT_LOG CODEBUILD_SOURCE_VERSION CODEBUILD_RESOLVED_SOURCE_VERSION; do
+cat >> ${STATE_FILE} << EOF
+$(declare -p ${var})
+export ${var}
+EOF
 done
 
-printf -v ESC_LOG "%q" "$COMMIT_LOG" # Escape the commit log
-SOURCE_LOCATION=${ARTIFACTS_BUCKET_NAME}/$(echo ${CODEBUILD_BUILD_ID} | awk -F ':' '{print $2}')/slic_pipeline_source.zip
-OUTPUT_JSON="{\"changes\":{${CHANGES}},\"sourceLocation\":\"${SOURCE_LOCATION}\",\"buildId\":\"${CODEBUILD_BUILD_ID}\",\"resolvedVersion\":\"${CODEBUILD_RESOLVED_SOURCE_VERSION}\",\"sourceVersion\":\"${CODEBUILD_SOURCE_VERSION}\",\"commitLog\":\"${ESC_LOG}\"}"
-
-echo done with output $OUTPUT_JSON
-
-echo Invoking Step Function "${PIPELINE_STEP_FUNCTION_ARN}"
-aws stepfunctions start-execution --state-machine-arn "${PIPELINE_STEP_FUNCTION_ARN}" --input "${OUTPUT_JSON}"
+echo done with state $(cat ${STATE_FILE})
