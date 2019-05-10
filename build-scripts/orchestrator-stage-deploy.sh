@@ -9,3 +9,6 @@ pwd
 
 echo FIND
 find . -print
+
+echo PIPELINE STATE
+cat pipeline-state.env

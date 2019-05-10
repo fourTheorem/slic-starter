@@ -18,6 +18,7 @@ export class OrchestratorPipeline extends Pipeline {
     const { artifactsBucket, ...rest } = props
     super(scope, id, {
       pipelineName: 'OrchestratorPipeline',
+      artifactBucket: artifactsBucket,
       ...rest
     })
 
