@@ -3,10 +3,10 @@ import {
   PipelineProjectProps,
   BuildEnvironmentVariableType
 } from '@aws-cdk/aws-codebuild'
-import StageName from './stage-name'
+import StageName from '../stage-name'
 import { Construct } from '@aws-cdk/cdk'
-import config from '../config'
-import modules from '../modules'
+import config from '../../config'
+import modules from '../../modules'
 
 export interface OrchestratorDeployProjectProps extends PipelineProjectProps {
   stageName: StageName

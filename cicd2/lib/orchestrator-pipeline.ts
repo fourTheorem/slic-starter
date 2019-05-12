@@ -28,6 +28,7 @@ export class OrchestratorPipeline extends Pipeline {
       bucket: artifactsBucket,
       bucketKey: SLIC_PIPELINE_SOURCE_ARTIFACT,
       output: sourceOutputArtifact,
+      pollForSourceChanges: true,
       actionName: 'SLICSource'
     })
 

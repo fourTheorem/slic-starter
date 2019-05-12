@@ -4,6 +4,9 @@ import { SourceProject } from './projects/source-project'
 import CodeBuildRole from './code-build-role'
 import { Bucket } from '@aws-cdk/aws-s3'
 import { OrchestratorPipeline } from './orchestrator-pipeline'
+import modules from '../modules'
+import { ModulePipeline } from './module-pipeline'
+import StageName from './stage-name'
 
 export class Cicd2Stack extends cdk.Stack {
   constructor(scope: cdk.Construct, id: string, props?: cdk.StackProps) {
@@ -14,11 +17,22 @@ export class Cicd2Stack extends cdk.Stack {
       versioned: true
     })
 
-    // const codeBuildRole = new CodeBuildRole(this, 'stageBuildRole')
+    const codeBuildRole = new CodeBuildRole(this, 'slicCodeBuildRole')
 
     new OrchestratorPipeline(this, 'orchestrator-pipeline', {
       artifactsBucket
     })
+
+    ;[StageName.stg, StageName.prod].forEach((stageName: StageName) =>
+      modules.moduleNames.forEach(moduleName => {
+        new ModulePipeline(this, `${moduleName}_${stageName}_pipeline`, {
+          artifactsBucket: artifactsBucket,
+          codeBuildRole,
+          moduleName,
+          stageName
+        })
+      })
+    )
 
     const sourceCodeBuildRole = new CodeBuildRole(this, 'sourceCodeBuildRole')
 
