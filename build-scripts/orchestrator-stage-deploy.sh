@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -a 
+set -e 
 
 echo PIPELINE STATE:
 cat pipeline-state.env
