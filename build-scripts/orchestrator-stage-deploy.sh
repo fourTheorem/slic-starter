@@ -45,7 +45,7 @@ checkExecutions() {
 }
 
 checkExecutions
-while [[ $allSucceeded = true && $anyFailed != true ]]; do
+while [[ $allSucceeded != true && $anyFailed != true ]]; do
   sleep 10
   checkExecutions
 done
