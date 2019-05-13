@@ -31,7 +31,6 @@ checkExecutions() {
   for moduleName in ${MODULE_NAMES}; do
     if [[ ${changedModules[${moduleName}]} = true ]]; then
       status=$(aws codepipeline get-pipeline-execution --pipeline-name ${moduleName}_stg_pipeline --pipeline-execution-id ${pipelineExecutionIds[${moduleName}]}  --query pipelineExecution.status --output text)
-      echo "${moduleName} has status ${status}"
       if [[ $allSucceeded = true && "$status" = "Succeeded" ]]; then
         allSucceeded=true
       else
@@ -39,6 +38,7 @@ checkExecutions() {
       fi
       if [[ "$status" = "Failed" ]]; then
         anyFailed=true
+        echo "${moduleName} failed. Check https://${AWS_DEFAULT_REGION}.console.aws.amazon.com/codesuite/codepipeline/pipelines/${moduleName}_stg_pipeline/executions/${pipelineExecutionIds[${moduleName}]}/timeline?region=${AWS_DEFAULT_REGION}"
       fi
     fi
   done
