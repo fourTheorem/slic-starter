@@ -26,8 +26,6 @@ async function handleNewChecklist(event) {
       }
     },
     MessageBody: 'This is another message from handleNewChecklist',
-    QueueUrl:
-      'https://sqs.eu-west-1.amazonaws.com/935672627075/EmailServiceSQS.fifo',
     MessageGroupId: 'EmailGroup'
   }
 
