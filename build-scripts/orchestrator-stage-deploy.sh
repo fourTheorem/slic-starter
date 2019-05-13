@@ -30,7 +30,7 @@ anyFailed=false
 checkExecutions() {
   for moduleName in ${MODULE_NAMES}; do
     if [[ ${changedModules[${moduleName}]} = true ]]; then
-      status=$(aws get-pipeline-execution --pipeline-name ${moduleName}_stg_pipeline --pipeline-execution-id ${pipelineExecutionIds[${moduleName}]}  --query pipelineExecution.status --output text)
+      status=$(aws codepipeline get-pipeline-execution --pipeline-name ${moduleName}_stg_pipeline --pipeline-execution-id ${pipelineExecutionIds[${moduleName}]}  --query pipelineExecution.status --output text)
       echo "${moduleName} has status ${status}"
       if [[ $allSucceeded = true && "$status" = "Succeeded" ]]; then
         allSucceeded=true
