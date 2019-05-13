@@ -1,0 +1,5 @@
+- Effect: Allow
+  Action:
+    - sqs:GetQueueUrl
+    - sqs:SendMessage
+  Resource: arn:aws:sqs:::${self:custom.emailQueueName}
