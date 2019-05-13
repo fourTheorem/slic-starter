@@ -6,6 +6,8 @@ import StageName from '../stage-name'
 import { Construct } from '@aws-cdk/cdk'
 import config from '../../config'
 import CodeBuildRole from '../code-build-role'
+import { defaultEnvironment } from '../code-build-environments'
+import moduleArtifacts from './module-artifacts'
 
 export interface ModuleDeployProjectProps {
   moduleName: string
@@ -19,6 +21,7 @@ export class ModuleDeployProject extends PipelineProject {
     super(scope, id, {
       projectName: id,
       role: codeBuildRole,
+      environment: defaultEnvironment,
       environmentVariables: {
         SLIC_STAGE: {
           type: BuildEnvironmentVariableType.PlainText,
@@ -39,7 +42,8 @@ export class ModuleDeployProject extends PipelineProject {
           build: {
             commands: ['bash ./build-scripts/deploy-module.sh']
           }
-        }
+        },
+        artifacts: moduleArtifacts(moduleName)
       }
     })
   }
