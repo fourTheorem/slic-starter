@@ -27,6 +27,7 @@ export class OrchestratorPipeline extends Pipeline {
       this,
       'orchestrator-codebuild-role',
       {
+        roleName: 'orchestrator-codebuild-role',
         assumedBy: new ServicePrincipal('codebuild.amazonaws.com')
       }
     )

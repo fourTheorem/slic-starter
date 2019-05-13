@@ -18,6 +18,7 @@ export class OrchestratorDeployProject extends PipelineProject {
     id: string,
     props: OrchestratorDeployProjectProps
   ) {
+    const { stageName, ...rest } = props
     super(scope, id, {
       projectName: `${props.stageName}DeployProject`,
       environmentVariables: {
@@ -41,7 +42,8 @@ export class OrchestratorDeployProject extends PipelineProject {
             commands: ['bash ./build-scripts/orchestrator-stage-deploy.sh']
           }
         }
-      }
+      },
+      ...rest
     })
   }
 }
