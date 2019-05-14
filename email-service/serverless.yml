@@ -13,7 +13,7 @@ provider:
 
 custom: ${file(./custom.yml)}
 
-#functions: ${file(./sls-functions.yml)}
+functions: ${file(./sls-functions.yml)}
 
 resources:
   Resources: ${file(./sls-resources.yml)}

@@ -1,0 +1,8 @@
+sendEmail:
+  handler: services/email/email-handler.sendEmail
+  environment:
+    EMAIL_QUEUE_NAME: ${self:custom.emailQueueName}
+  events:
+    - ? sqs
+      arn: !GetAtt emailQueueName.Arn
+      batchSize: 1
