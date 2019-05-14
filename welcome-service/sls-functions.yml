@@ -1,5 +1,5 @@
 handleNewChecklist:
-  handler: services/welcome/new-checklist-handler
+  handler: services/welcome/new-checklist-handler.handleNewChecklist
   environment:
     EMAIL_QUEUE_NAME: ${self:custom.emailQueueName}
   events:
@@ -9,3 +9,5 @@ handleNewChecklist:
             - 'sliclists.checklist'
           detail-type:
             - 'LIST_CREATED_EVENT'
+    - ? sqs
+      arn: !GetAtt emailQueueName.Arn
