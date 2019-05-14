@@ -9,3 +9,8 @@ if [ -e package.json ]; then
 else
   echo No package.json, skipping NPM execution
 fi
+
+# Optional, module-specific build
+if [ -e ./scripts/build.sh ]; then
+  bash ./scripts/build.sh
+fi
