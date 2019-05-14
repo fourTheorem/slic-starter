@@ -50,7 +50,7 @@ resources:
                 - apigateway:PUT
                 - apigateway:DELETE
               Resource:
-                - 'arn:aws:apigateway:*::/restapis*'
+                - '*'
             - Effect: Allow
               Action:
                 - iam:GetRole
@@ -73,6 +73,8 @@ resources:
                 - s3:SetBucketEncryption
                 - s3:ListBucket
                 - s3:PutObject
+                - s3:PutBucketPolicy
+                - s3:PutBucketWebsite
               Resource:
                 - arn:aws:s3:::slic-*
             - Effect: Allow
@@ -105,6 +107,14 @@ resources:
                 - arn:aws:lambda:${self:custom.region}:*:function:*
             - Effect: Allow
               Action:
+                - cloudfront:CreateDistribution
+                - cloudfront:GetDistribution
+                - cloudfront:UpdateDistribution
+                - cloudfront:TagResource
+              Resource:
+                - '*'
+            - Effect: Allow
+              Action:
                 - dynamodb:CreateTable
                 - dynamodb:DescribeTable
                 - dynamodb:Query
@@ -113,7 +123,7 @@ resources:
                 - dynamodb:PutItem
                 - dynamodb:UpdateItem
                 - dynamodb:DeleteItem
-              Resource: 'arn:aws:dynamodb:${self:custom.region}:${self:custom.accountIds.dev}:*'
+              Resource: 'arn:aws:dynamodb:${self:custom.region}:*:*'
             - Effect: Allow
               Action: 'sqs:*'
               Resource:
@@ -156,6 +166,7 @@ resources:
                 - 'acm:DescribeCertificate'
                 - 'acm:AddTagsToCertificate'
                 - 'route53:GetChange'
+                - 'route53:GetHostedZone'
                 - 'route53:CreateHostedZone'
                 - 'route53:DeleteHostedZone'
                 - 'route53:ChangeResourceRecordSets'
@@ -191,5 +202,6 @@ resources:
                 - cognito-identity:SetIdentityPoolRoles
               Resource:
                 - '*'
+
         Roles:
           - Ref: deploymentRole
