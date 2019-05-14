@@ -1,6 +1,6 @@
 const fs = require('fs')
 const awscred = require('awscred')
-const { CloudFormation } = require('aws-sdk')
+const { CloudFormation, STS } = require('aws-sdk')
 
 const stage = process.env.SLIC_STAGE
 
@@ -21,36 +21,45 @@ if (!awsRegion) {
   )
 }
 
+console.log('Using region', awsRegion)
+
 const cf = new CloudFormation()
+const sts = new STS()
 
-cf.describeStacks({ StackName: stackName })
+sts
+  .getCallerIdentity({})
   .promise()
-  .then(data => {
-    if (data.Stacks && data.Stacks[0]) {
-      const stageEnvContents = data.Stacks[0].Outputs.filter(
-        output => !!output.ExportName
-      )
-        .map(({ OutputValue: value, ExportName: exportName }) => {
-          const envName = exportName
-            .split('-')
-            .slice(1)
-            .join('_')
-            .toUpperCase()
-          return `REACT_APP_${envName}=${value}`
-        })
-        .join('\n')
-      const envContents = `REACT_APP_API_ENDPOINT=https://api.${domainSuffix}sliclists.com
-REACT_APP_AWS_REGION=${process.env.AWS_REGION}
-${stageEnvContents}`
+  .then(identity => {
+    console.log('Identity', identity)
+    cf.describeStacks({ StackName: stackName })
+      .promise()
+      .then(data => {
+        if (data.Stacks && data.Stacks[0]) {
+          const stageEnvContents = data.Stacks[0].Outputs.filter(
+            output => !!output.ExportName
+          )
+            .map(({ OutputValue: value, ExportName: exportName }) => {
+              const envName = exportName
+                .split('-')
+                .slice(1)
+                .join('_')
+                .toUpperCase()
+              return `REACT_APP_${envName}=${value}`
+            })
+            .join('\n')
+          const envContents = `REACT_APP_API_ENDPOINT=https://api.${domainSuffix}sliclists.com
+  REACT_APP_AWS_REGION=${process.env.AWS_REGION}
+  ${stageEnvContents}`
 
-      const envFilename = `.env.production`
-      console.log('Writing', envFilename)
-      fs.writeFileSync(envFilename, envContents)
-    } else {
-      throw new Error(`Unable to find stack ${stackName}`)
-    }
-  })
-  .catch(err => {
-    console.error(err)
-    process.exit(1)
+          const envFilename = `.env.production`
+          console.log('Writing', envFilename)
+          fs.writeFileSync(envFilename, envContents)
+        } else {
+          throw new Error(`Unable to find stack ${stackName}`)
+        }
+      })
+      .catch(err => {
+        console.error(err)
+        process.exit(1)
+      })
   })
