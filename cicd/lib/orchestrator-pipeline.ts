@@ -4,7 +4,8 @@ import { Construct } from '@aws-cdk/cdk'
 import { Bucket } from '@aws-cdk/aws-s3'
 import {
   S3SourceAction,
-  CodeBuildAction
+  CodeBuildAction,
+  ManualApprovalAction
 } from '@aws-cdk/aws-codepipeline-actions'
 import StageName from './stage-name'
 import { OrchestratorDeployProject } from './projects/orchestrator-deploy-project'
@@ -53,26 +54,39 @@ export class OrchestratorPipeline extends Pipeline {
       actions: [sourceAction]
     })
 
+    this.addDeployStage(StageName.stg, orchestratorCodeBuildRole, sourceOutputArtifact)
+
+    this.addStage({
+      name: 'Approval',
+      actions: [new ManualApprovalAction({
+        actionName: 'MoveToProduction'
+      })]      
+    })
+
+    this.addDeployStage(StageName.prod, orchestratorCodeBuildRole, sourceOutputArtifact)
+  }
+
+  addDeployStage(stageName: StageName, orchestratorCodeBuildRole: Role, sourceOutputArtifact: Artifact) {
     const orchestratorDeployStagingProject = new OrchestratorDeployProject(
       this,
-      'orchestratorDeployStaging',
+      `${stageName}OrchestratorDeploy`,
       {
-        stageName: StageName.stg,
+        stageName,
         role: orchestratorCodeBuildRole
       }
     )
 
-    const stagingDeployOutputArtifact = new Artifact()
-    const stagingDeployAction = new CodeBuildAction({
-      actionName: 'Staging',
+    const deployOutputArtifact = new Artifact()
+    const deployAction = new CodeBuildAction({
+      actionName: stageName,
       input: sourceOutputArtifact,
-      output: stagingDeployOutputArtifact,
+      output: deployOutputArtifact,
       project: orchestratorDeployStagingProject
     })
 
     this.addStage({
-      name: 'StagingDeploy',
-      actions: [stagingDeployAction]
+      name: `${stageName}Deploy`,
+      actions: [deployAction]
     })
   }
 }
