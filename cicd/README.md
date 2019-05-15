@@ -1,3 +1,10 @@
+# SLIC Starter CI/CD
+
+```
+npm run cdk -- bootstrap $AWS_ACCOUNT_ID/eu-west-1
+npm run deploy
+```
+
 # Useful commands
 
 - `npm run build` compile typescript to js
