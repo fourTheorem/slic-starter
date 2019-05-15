@@ -8,7 +8,7 @@ import modules from '../modules'
 import { ModulePipeline } from './module-pipeline'
 import StageName from './stage-name'
 
-export class Cicd2Stack extends cdk.Stack {
+export class CicdStack extends cdk.Stack {
   constructor(scope: cdk.Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props)
 
