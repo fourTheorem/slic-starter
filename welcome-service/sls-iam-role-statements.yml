@@ -2,4 +2,4 @@
   Action:
     - sqs:GetQueueUrl
     - sqs:SendMessage
-  Resource: arn:aws:sqs:::${self:custom.emailQueueName}
+  Resource: arn:aws:sqs:*:*:${self:custom.emailQueueName}

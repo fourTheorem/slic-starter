@@ -3,6 +3,6 @@ sendEmail:
   environment:
     EMAIL_QUEUE_NAME: ${self:custom.emailQueueName}
   events:
-    - ? sqs
-      arn: !GetAtt emailQueueName.Arn
-      batchSize: 1
+    - sqs:
+        arn: !GetAtt emailQueue.Arn
+        batchSize: 1

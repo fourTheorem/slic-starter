@@ -6,6 +6,8 @@ const log = require('../../lib/log')
 const queueName = process.env.EMAIL_QUEUE_NAME
 if (!queueName) {
   throw new Error('EMAIL_QUEUE_NAME must be set')
+} else {
+  log.info({ queueName }, 'Using queue')
 }
 
 // Get the queue here using the queue name
@@ -16,7 +18,9 @@ const params = {
 const queueUrlPromise = fetchQueueUrl()
 
 async function fetchQueueUrl() {
-  return (await SQS.getQueueUrl(params).promise()).QueueUrl
+  const queueUrl = (await SQS.getQueueUrl(params).promise()).QueueUrl
+  log.info({ queueUrl }, 'Using queue URL')
+  return queueUrl
 }
 
 async function handleNewChecklist(event) {
@@ -41,8 +45,9 @@ async function handleNewChecklist(event) {
     QueueUrl: await queueUrlPromise
   }
 
+  log.info({ params }, 'Sending SQS message')
   const result = await SQS.sendMessage(params).promise()
-  log.info({ result, params }, 'Sent SQS message')
+  log.info({ result }, 'Sent SQS message')
 }
 
 module.exports = {

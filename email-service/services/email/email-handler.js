@@ -22,7 +22,7 @@ async function sendEmail(message) {
       }
     },
 
-    Source: 'paul.kevany@fourtheorem.com'
+    Source: 'paul.kevany+slicsqs@fourtheorem.com'
   }
 
   const result = await new AWS.SES().sendEmail(params).promise()
