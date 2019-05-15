@@ -19,6 +19,7 @@ for moduleName in ${MODULE_NAMES}; do
     echo Executing ${CMD}
     ${CMD}
     pipelineExecutionIds[${moduleName}]=$(aws codepipeline start-pipeline-execution --name ${moduleName}_stg_pipeline --query "pipelineExecutionId" --output text)
+    echo "Pipeline execution ID for ${moduleName} is ${pipelineExecutionIds[${moduleName}]}" 
   else 
     echo Skipping unchanged module ${moduleName}
   fi
@@ -31,6 +32,7 @@ checkExecutions() {
   for moduleName in ${MODULE_NAMES}; do
     if [[ ${changedModules[${moduleName}]} = true ]]; then
       status=$(aws codepipeline get-pipeline-execution --pipeline-name ${moduleName}_stg_pipeline --pipeline-execution-id ${pipelineExecutionIds[${moduleName}]}  --query pipelineExecution.status --output text)
+      echo ${moduleName} status is ${status}
       if [[ $allSucceeded = true && "$status" = "Succeeded" ]]; then
         allSucceeded=true
       else
@@ -46,6 +48,7 @@ checkExecutions() {
 
 checkExecutions
 while [[ $allSucceeded != true && $anyFailed != true ]]; do
+  echo "allSucceeded ? $allSucceeded, anyFailed? $anyFailed"
   sleep 10
   checkExecutions
 done
