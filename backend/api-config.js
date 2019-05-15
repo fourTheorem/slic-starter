@@ -18,24 +18,32 @@ module.exports = serverless => {
   const provider = serverless.getProvider('aws')
   const { credentials } = provider.getCredentials()
 
+  console.log('Using credentials', credentials)
   const cf = new provider.sdk.CloudFormation({ credentials, region })
+  const sts = new provider.sdk.STS({ credentials, region })
 
-  return cf
-    .describeStacks({ StackName: stackName })
+  return sts
+    .getCallerIdentity({})
     .promise()
-    .then(data => {
-      if (data.Stacks && data.Stacks[0]) {
-        data.Stacks[0].Outputs.filter(
-          output => exports[output.ExportName]
-        ).forEach(({ ExportName: exportName, OutputValue: value }) => {
-          values[exports[exportName]] = value
-        })
+    .then(identity => {
+      console.log('Identity', identity)
+      return cf
+        .describeStacks({ StackName: stackName })
+        .promise()
+        .then(data => {
+          if (data.Stacks && data.Stacks[0]) {
+            data.Stacks[0].Outputs.filter(
+              output => exports[output.ExportName]
+            ).forEach(({ ExportName: exportName, OutputValue: value }) => {
+              values[exports[exportName]] = value
+            })
 
-        console.log('Using api config', values)
-        return values
-      } else {
-        throw new Error(`No stack found with name ${stackName}`)
-      }
+            console.log('Using api config', values)
+            return values
+          } else {
+            throw new Error(`No stack found with name ${stackName}`)
+          }
+        })
     })
     .catch(err => {
       const errMsg =

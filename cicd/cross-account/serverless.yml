@@ -1,12 +1,17 @@
 service: deployment-target-resources
 
+custom:
+  stage: ${opt:stage, 'cicd'}
+  region: eu-west-1
+  runtime: nodejs8.10
+  accountIds:
+    cicd: 285982925560
+
 provider:
   name: aws
   runtime: ${self:custom.runtime}
   stage: ${self:custom.stage}
   region: ${self:custom.region}
-
-custom: ${file(../custom.yml)}
 
 resources:
   Resources:
@@ -77,20 +82,6 @@ resources:
                 - s3:PutBucketWebsite
               Resource:
                 - arn:aws:s3:::slic-*
-            - Effect: Allow
-              Action:
-                - s3:DeleteObject
-                - s3:GetBucket*
-                - s3:GetObject
-                - s3:GetObjectVersion
-                - s3:ListBucket
-                - s3:PutObject
-                - s3:GetBucketPolicy
-                - s3:GetEncryptionConfiguration
-                - s3:PutEncryptionConfiguration
-              Resource:
-                - arn:aws:s3:::${self:custom.buildBucket}
-                - arn:aws:s3:::${self:custom.buildBucket}/*
             - Effect: Allow
               Action:
                 - lambda:Get*
