@@ -1,0 +1,5 @@
+- Effect: Allow
+  Action:
+    - cognito-idp:AdminGetUser
+  Resource:
+    - arn:aws:cognito-idp:*:*:userpool/${self:custom.userPoolId}

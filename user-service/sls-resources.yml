@@ -1,0 +1,13 @@
+UserServiceNameParameter:
+  Type: AWS::SSM::Parameter
+  Properties:
+    Name: UserServiceUrl
+    Type: String
+    Value:
+      {
+        'Fn::Sub':
+          [
+            'https://#{RestApi}.execute-api.#{AWS::Region}.amazonaws.com/${self:custom.stage}/user/',
+            { Ref: ApiGatewayRestApi },
+          ],
+      }
