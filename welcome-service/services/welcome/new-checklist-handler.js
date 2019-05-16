@@ -1,6 +1,9 @@
 const AWS = require('aws-sdk')
 const SQS = new AWS.SQS()
+const SSM = new AWS.SSM()
 const log = require('../../lib/log')
+
+const axios = require('axios')
 
 const queueName = process.env.EMAIL_QUEUE_NAME
 if (!queueName) {
@@ -9,43 +12,49 @@ if (!queueName) {
   log.info({ queueName }, 'Using queue')
 }
 
-// Get the queue here using the queue name
-const params = {
-  QueueName: queueName
-}
-
 const queueUrlPromise = fetchQueueUrl()
 
 async function fetchQueueUrl() {
-  const queueUrl = (await SQS.getQueueUrl(params).promise()).QueueUrl
+  const queueUrl = (await SQS.getQueueUrl({ QueueName: queueName }).promise())
+    .QueueUrl
   log.info({ queueUrl }, 'Using queue URL')
   return queueUrl
 }
 
+const userServiceUrlPromise = getUserServiceUrl()
+
+async function getUserServiceUrl() {
+  const {
+    Parameter: { Value: userServiceUrl }
+  } = await SSM.getParameter({ Name: 'UserServiceUrl' })
+  return userServiceUrl
+}
+
 async function handleNewChecklist(event) {
-  log.info(event)
+  log.info({ event })
 
-  var params = {
-    MessageAttributes: {
-      Name: {
-        DataType: 'String',
-        StringValue: event.detail.name
-      },
-      UserId: {
-        DataType: 'String',
-        StringValue: event.detail.userId
-      }
-    },
+  const checklist = event.detail
+  const { userId, name } = checklist
 
-    MessageBody:
-      "You created the list: '" + event.detail.name + "' on SLICLists.com!",
+  const { email } = getUser(userId)
+  const message = {
+    to: email,
+    subject: 'Your SLIC List',
+    body: `Congratulations! You created the list ${name}`
+  }
+
+  const params = {
+    MessageBody: JSON.stringify(message),
     QueueUrl: await queueUrlPromise
   }
 
   log.info({ params }, 'Sending SQS message')
   const result = await SQS.sendMessage(params).promise()
-
   log.info({ result }, 'Sent SQS message')
+}
+
+async function getUser(userId) {
+  return axios.get(`${await userServiceUrlPromise}/${userId}`)
 }
 
 module.exports = {

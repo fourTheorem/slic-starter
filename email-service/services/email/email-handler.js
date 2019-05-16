@@ -3,26 +3,27 @@ const AWS = require('aws-sdk')
 const log = require('../../lib/log')
 
 async function sendEmail(message) {
-  log.info('message parameter: ', message)
+  log.info({ message }, 'sendEmail')
+
+  const { to, subject, body } = JSON.parse(message.Records[0].body)
+
   const params = {
     Destination: {
-      ToAddresses: ['paul.kevany@fourtheorem.com']
+      ToAddresses: [to]
     },
-
     Message: {
       Body: {
         Text: {
           Charset: 'UTF-8',
-          Data: message.Records[0].body
+          Data: body
         }
       },
-
       Subject: {
         Charset: 'UTF-8',
-        Data: 'Your First SLIClist'
+        Data: subject
       }
     },
-
+    // TODO - Change the 'from' email address
     Source: 'paul.kevany+slicsqs@fourtheorem.com'
   }
 

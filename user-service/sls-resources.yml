@@ -4,10 +4,8 @@ UserServiceNameParameter:
     Name: UserServiceUrl
     Type: String
     Value:
-      {
-        'Fn::Sub':
-          [
-            'https://#{RestApi}.execute-api.#{AWS::Region}.amazonaws.com/${self:custom.stage}/user/',
-            { Ref: ApiGatewayRestApi },
-          ],
-      }
+      Fn::Join:
+        - ''
+        - - 'https://'
+          - !Ref ApiGatewayRestApi
+          - '.execute-api.${self:custom.region}.amazonaws.com/${self:custom.stage}/user/'

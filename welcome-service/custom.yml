@@ -4,4 +4,4 @@ runtime: nodejs8.10
 emailQueueName: ${self:custom.stage}-email-queue
 prune:
   automatic: true
-number: 3
+  number: 3

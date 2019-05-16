@@ -3,6 +3,7 @@ service: slic-starter-welcome-service
 plugins:
   - serverless-offline
   - serverless-prune-plugin
+  - serverless-pseudo-parameters
 
 provider:
   name: aws
