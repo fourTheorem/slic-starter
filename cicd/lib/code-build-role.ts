@@ -37,6 +37,13 @@ export default class CodeBuildRole extends iam.Role {
         )
     )
 
+    this.addToPolicy(
+      new iam.PolicyStatement()
+      .allow()
+      .addAction('ssm:GetParameters')
+      .addResource(`arn:aws:ssm:${config.region}:${config.accountIds.cicd}:parameter/MailosaurApiKey`)
+    )
+
     if (pipelineStateMachine) {
       this.addToPolicy(
         new iam.PolicyStatement()
