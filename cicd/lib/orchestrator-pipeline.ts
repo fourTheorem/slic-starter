@@ -9,6 +9,7 @@ import {
 } from '@aws-cdk/aws-codepipeline-actions'
 import StageName from './stage-name'
 import { OrchestratorDeployProject } from './projects/orchestrator-deploy-project'
+import { IntegrationTestProject } from './projects/integration-test-project'
 import { SLIC_PIPELINE_SOURCE_ARTIFACT } from './projects/source-project'
 
 export interface OrchestratorPipelineProps extends PipelineProps {
@@ -56,6 +57,8 @@ export class OrchestratorPipeline extends Pipeline {
 
     this.addDeployStage(StageName.stg, orchestratorCodeBuildRole, sourceOutputArtifact)
 
+    this.addTestStage(orchestratorCodeBuildRole, sourceOutputArtifact)
+
     this.addStage({
       name: 'Approval',
       actions: [new ManualApprovalAction({
@@ -64,6 +67,30 @@ export class OrchestratorPipeline extends Pipeline {
     })
 
     this.addDeployStage(StageName.prod, orchestratorCodeBuildRole, sourceOutputArtifact)
+  }
+
+  addTestStage(orchestratorCodeBuildRole: Role, sourceOutputArtifact: Artifact) {
+    const integrationTestProject = new IntegrationTestProject(
+      this,
+      `IntegrationTests`,
+      {
+        role: orchestratorCodeBuildRole,
+        stageName: StageName.stg
+      }
+    )
+
+    const integrationTestOutputArtifact = new Artifact()
+    const integrationTestAction = new CodeBuildAction({
+      actionName: 'integration_tests',
+      input: sourceOutputArtifact,
+      output: integrationTestOutputArtifact,
+      project: integrationTestProject
+    })
+
+    this.addStage({
+      name: `Test`,
+      actions:[integrationTestAction]
+    })
   }
 
   addDeployStage(stageName: StageName, orchestratorCodeBuildRole: Role, sourceOutputArtifact: Artifact) {

@@ -17,7 +17,7 @@ SLIC_STAGE=local npm test
 To run against the _remote_ system, simply execute the following, substituting `stg` with the value of the stage you wish to target.
 
 ```
-SLIC_STAGE=stg npm run test
+SLIC_STAGE=stg npm test
 ```
 
 In both cases, ensure that relevant AWS credentials are set in your environment (either through `AWS_PROFILE` with `AWS_SDK_LOAD_CONFIG=true` or with individual environment variables (`AWS_ACCESS_KEY_ID`, etc.).
