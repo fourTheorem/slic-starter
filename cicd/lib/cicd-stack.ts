@@ -20,7 +20,8 @@ export class CicdStack extends cdk.Stack {
     const codeBuildRole = new CodeBuildRole(this, 'slicCodeBuildRole')
 
     new OrchestratorPipeline(this, 'orchestrator-pipeline', {
-      artifactsBucket
+      artifactsBucket,
+      codeBuildRole
     })
 
     ;[StageName.stg, StageName.prod].forEach((stageName: StageName) =>
