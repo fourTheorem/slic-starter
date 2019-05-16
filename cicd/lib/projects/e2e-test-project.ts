@@ -18,6 +18,7 @@ export class E2ETestProject extends PipelineProject {
     props: E2ETestProjectProps
   ) {
     const { stageName, ...rest } = props
+
     super(scope, id, {
       projectName: `${props.stageName}E2ETest`,
       environmentVariables: {
@@ -28,6 +29,10 @@ export class E2ETestProject extends PipelineProject {
         CROSS_ACCOUNT_ID: {
           type: BuildEnvironmentVariableType.PlainText,
           value: `${config.accountIds[props.stageName]}`
+        },
+        MAILOSAUR_API_KEY: {
+          type: BuildEnvironmentVariableType.ParameterStore,
+          value: 'MailosaurApiKey'
         }
       },
       buildSpec: 'e2e-tests/buildspec.yml',
