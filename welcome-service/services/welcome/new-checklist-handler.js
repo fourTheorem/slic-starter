@@ -1,6 +1,5 @@
 const AWS = require('aws-sdk')
 const SQS = new AWS.SQS()
-
 const log = require('../../lib/log')
 
 const queueName = process.env.EMAIL_QUEUE_NAME
@@ -24,29 +23,28 @@ async function fetchQueueUrl() {
 }
 
 async function handleNewChecklist(event) {
-  log.info('handleNewChecklist', event)
+  log.info(event)
+
   var params = {
     MessageAttributes: {
       Name: {
         DataType: 'String',
-        StringValue: 'hi'
-      },
-      Description: {
-        DataType: 'String',
-        StringValue: 'John Grisham'
+        StringValue: event.detail.name
       },
       UserId: {
-        DataType: 'Number',
-        StringValue: '1234'
+        DataType: 'String',
+        StringValue: event.detail.userId
       }
     },
 
-    MessageBody: 'Im a message body',
+    MessageBody:
+      "You created the list: '" + event.detail.name + "' on SLICLists.com!",
     QueueUrl: await queueUrlPromise
   }
 
   log.info({ params }, 'Sending SQS message')
   const result = await SQS.sendMessage(params).promise()
+
   log.info({ result }, 'Sent SQS message')
 }
 
