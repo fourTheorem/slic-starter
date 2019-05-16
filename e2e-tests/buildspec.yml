@@ -1,13 +1,13 @@
-# Integration tests CodeBuild
+# e2e tests CodeBuild
 version: 0.2
 phases:
   install:
     commands:
-      - cd integration-tests
+      - cd e2e-tests
       - npm install
   build:
     commands:
       - bash ./codebuild-run-tests.sh
 artifacts:
   files:
-    - integration-tests/**/*
+    - e2e-tests/**/*
