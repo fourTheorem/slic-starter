@@ -13,6 +13,7 @@
     "chance": "^1.0.18",
     "dotenv": "^7.0.0",
     "eslint-plugin-testcafe": "^0.2.1",
+    "random-words": "^1.1.0",
     "testcafe": "^1.1.0",
     "testcafe-react-selectors": "^3.1.0"
   },

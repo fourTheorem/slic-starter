@@ -3,16 +3,24 @@
 require('dotenv').config()
 
 const Mailosaur = require('mailosaur')
+const RandomWords = require('random-words')
 
-const client = new Mailosaur(process.env.MAILOSAUR_API_KEY)
+const {
+  MAILOSAUR_API_KEY: apiKey,
+  MAILOSAUR_SERVER_ID: serverId
+} = process.env
+
+console.log('Using mailosaur config', { apiKey, serverId })
+const client = new Mailosaur(apiKey)
 
 export function generateEmailAddress() {
-  return client.servers.generateEmailAddress(process.env.MAILOSAUR_SERVER_ID)
+  return `${RandomWords(3).join('-')}.${serverId}@mailosaur.io`
 }
 
-export function retrieveCode(emailAddress) {
-  return client.messages
-    .waitFor(process.env.MAILOSAUR_SERVER_ID, {
+export async function retrieveCode(emailAddress) {
+  console.log('Retrieving code for', emailAddress)
+  const code = await client.messages
+    .waitFor(serverId, {
       sentTo: emailAddress
     })
     .then(email => {
@@ -21,4 +29,6 @@ export function retrieveCode(emailAddress) {
       const confirmationCode = splitBody[splitBody.length - 1]
       return confirmationCode
     })
+  console.log('Retrieved code', code, 'for', emailAddress)
+  return code
 }
