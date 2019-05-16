@@ -7,19 +7,19 @@ import StageName from '../stage-name'
 import { Construct } from '@aws-cdk/cdk'
 import config from '../../config'
 
-export interface IntegrationTestProjectProps extends PipelineProjectProps {
+export interface E2ETestProjectProps extends PipelineProjectProps {
   stageName: StageName
 }
 
-export class IntegrationTestProject extends PipelineProject {
+export class E2ETestProject extends PipelineProject {
   constructor(
     scope: Construct,
     id: string,
-    props: IntegrationTestProjectProps
+    props: E2ETestProjectProps
   ) {
     const { stageName, ...rest } = props
     super(scope, id, {
-      projectName: `${props.stageName}IntegrationTest`,
+      projectName: `${props.stageName}E2ETest`,
       environmentVariables: {
         SLIC_STAGE: {
           type: BuildEnvironmentVariableType.PlainText,
@@ -30,7 +30,7 @@ export class IntegrationTestProject extends PipelineProject {
           value: `${config.accountIds[props.stageName]}`
         }
       },
-      buildSpec: 'integration-tests/buildspec.yml',
+      buildSpec: 'e2e-tests/buildspec.yml',
       ...rest
     })
   }

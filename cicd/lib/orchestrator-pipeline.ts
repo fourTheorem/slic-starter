@@ -10,21 +10,26 @@ import {
 import StageName from './stage-name'
 import { OrchestratorDeployProject } from './projects/orchestrator-deploy-project'
 import { IntegrationTestProject } from './projects/integration-test-project'
+import { E2ETestProject } from './projects/e2e-test-project'
+import CodeBuildRole from './code-build-role';
+
 import { SLIC_PIPELINE_SOURCE_ARTIFACT } from './projects/source-project'
 
 export interface OrchestratorPipelineProps extends PipelineProps {
   artifactsBucket: Bucket
+  codeBuildRole: CodeBuildRole
 }
 
 export class OrchestratorPipeline extends Pipeline {
   constructor(scope: Construct, id: string, props: OrchestratorPipelineProps) {
-    const { artifactsBucket, ...rest } = props
+    const { artifactsBucket, codeBuildRole, ...rest } = props
     super(scope, id, {
       pipelineName: 'OrchestratorPipeline',
       artifactBucket: artifactsBucket,
       ...rest
     })
 
+    // This role is for managing module pipelines
     const orchestratorCodeBuildRole = new Role(
       this,
       'orchestrator-codebuild-role',
@@ -57,7 +62,7 @@ export class OrchestratorPipeline extends Pipeline {
 
     this.addDeployStage(StageName.stg, orchestratorCodeBuildRole, sourceOutputArtifact)
 
-    this.addTestStage(orchestratorCodeBuildRole, sourceOutputArtifact)
+    this.addTestStage(codeBuildRole, sourceOutputArtifact)
 
     this.addStage({
       name: 'Approval',
@@ -69,12 +74,12 @@ export class OrchestratorPipeline extends Pipeline {
     this.addDeployStage(StageName.prod, orchestratorCodeBuildRole, sourceOutputArtifact)
   }
 
-  addTestStage(orchestratorCodeBuildRole: Role, sourceOutputArtifact: Artifact) {
+  addTestStage(codeBuildRole: CodeBuildRole, sourceOutputArtifact: Artifact) {
     const integrationTestProject = new IntegrationTestProject(
       this,
       `IntegrationTests`,
       {
-        role: orchestratorCodeBuildRole,
+        role: codeBuildRole,
         stageName: StageName.stg
       }
     )
@@ -87,9 +92,26 @@ export class OrchestratorPipeline extends Pipeline {
       project: integrationTestProject
     })
 
+    const e2eTestProject = new E2ETestProject(
+      this,
+      `e2eTests`,
+      {
+        role: codeBuildRole,
+        stageName: StageName.stg
+      }
+    )
+
+    const e2eTestOutputArtifact = new Artifact()
+    const e2eTestAction = new CodeBuildAction({
+      actionName: 'e2e_tests',
+      input: sourceOutputArtifact,
+      output: e2eTestOutputArtifact,
+      project: e2eTestProject
+    })
+
     this.addStage({
       name: `Test`,
-      actions:[integrationTestAction]
+      actions:[integrationTestAction, e2eTestAction]
     })
   }
 
