@@ -22,6 +22,8 @@ This project is free to use by enterprise, startups, students, educators, enthus
 
 ### Configuration
 
+### Secret Management
+
 ### Authentication
 
 ### User Accounts and Authorization
