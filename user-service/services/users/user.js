@@ -17,7 +17,12 @@ async function get({ userId }) {
     Username: userId
   }
 
-  const attributes = await cognito.adminGetUser(params).promise()
-  log.info('Got user attributes', attributes.UserAttributes)
-  return attributes
+  const cognitoUser = await cognito.adminGetUser(params).promise()
+  log.info('Got user', cognitoUser)
+  const result = {}
+  cognitoUser.UserAttributes.forEach(({ Name, Value }) => {
+    result[Name] = Value
+  })
+  log.info({ result }, 'Got user')
+  return result
 }
