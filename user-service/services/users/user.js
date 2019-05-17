@@ -5,7 +5,6 @@ const AWS = require('aws-sdk')
 const log = require('../../lib/log')
 
 const cognito = new AWS.CognitoIdentityServiceProvider()
-const poolId = process.env.USER_POOL_ID
 
 module.exports = {
   get
@@ -13,7 +12,7 @@ module.exports = {
 
 async function get({ userId }) {
   const params = {
-    UserPoolId: poolId,
+    UserPoolId: process.env.USER_POOL_ID,
     Username: userId
   }
 
