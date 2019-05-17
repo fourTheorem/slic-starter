@@ -24,9 +24,11 @@ async function fetchQueueUrl() {
 const userServiceUrlPromise = getUserServiceUrl()
 
 async function getUserServiceUrl() {
+  const result = await SSM.getParameter({ Name: 'UserServiceUrl' }).promise()
+  log.info({ result }, 'Got parameter')
   const {
     Parameter: { Value: userServiceUrl }
-  } = await SSM.getParameter({ Name: 'UserServiceUrl' })
+  } = result
   return userServiceUrl
 }
 
@@ -36,7 +38,7 @@ async function handleNewChecklist(event) {
   const checklist = event.detail
   const { userId, name } = checklist
 
-  const { email } = getUser(userId)
+  const { email } = await getUser(userId)
   const message = {
     to: email,
     subject: 'Your SLIC List',
