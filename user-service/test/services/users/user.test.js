@@ -20,8 +20,8 @@ awsMock.mock('CognitoIdentityServiceProvider', 'adminGetUser', function(
   params,
   callback
 ) {
-  received.cognito.adminGetUser = params
-  callback(null, { ...params })
+  const UserAttributes = [{ Name: 'email', Value: 'email@example.com' }]
+  callback(null, { UserAttributes })
 })
 
 test('adminGetUser retrieves cognito user information', async t => {
