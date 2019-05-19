@@ -5,3 +5,9 @@ emailQueueName: ${self:custom.stage}-email-queue
 prune:
   automatic: true
 number: 3
+serverless-offline:
+  port: 4002
+serverless-offline-sqs:
+  endpoint: ${env:SQS_ENDPOINT_URL,'http://0.0.0.0:4576'}
+  autoCreate: true
+  region: ${self:custom.region}

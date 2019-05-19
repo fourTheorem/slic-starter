@@ -1,0 +1,10 @@
+resourcePolicy:
+  - Effect: Allow
+    Principal:
+      AWS:
+        - 'arn:aws:iam::#{AWS::AccountId}:root'
+        - 'arn:aws:iam::#{AWS::AccountId}:iam/*'
+        - 'arn:aws:iam::#{AWS::AccountId}:role/*'
+    Action: 'execute-api:Invoke'
+    Resource:
+      - execute-api:/*/*/*

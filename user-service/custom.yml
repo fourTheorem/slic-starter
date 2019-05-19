@@ -5,3 +5,5 @@ userPoolId: ${env:USER_POOL_ID}
 prune:
   automatic: true
   number: 3
+serverless-offline:
+  port: 4003

@@ -19,7 +19,6 @@
     "@dathuis/serverless-dynamodb-local": "^0.2.40",
     "aws-sdk": "^2.339.0",
     "aws-sdk-mock": "^4.3.0",
-    "awscred": "^1.4.2",
     "eslint": "^5.13.0",
     "eslint-config-prettier": "^4.0.0",
     "eslint-config-standard": "^12.0.0",
@@ -37,6 +36,7 @@
     "tap": "^12.5.2"
   },
   "dependencies": {
+    "aws4": "^1.8.0",
     "axios": "^0.18.0",
     "bourne": "^1.1.2",
     "node-mailjet": "^3.3.1",

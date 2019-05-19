@@ -5,3 +5,5 @@ emailQueueName: ${self:custom.stage}-email-queue
 prune:
   automatic: true
   number: 3
+serverless-offline:
+  port: 4001

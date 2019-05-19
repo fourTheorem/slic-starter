@@ -6,5 +6,6 @@ get:
     - http:
         path: user/{id}
         method: get
-        private: true
         cors: false
+        authorizer: aws_iam
+        private: true

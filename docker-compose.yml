@@ -1,0 +1,22 @@
+version: '3'
+
+services:
+  localstack:
+    image: localstack/localstack
+    ports:
+      - '18080:8080'
+      - '4576:4576' # SQS
+      - '4579:4579' # SES
+      - '4582:4582' # CloudWatch
+      - '4583:4583' # SSM
+    environment:
+      - DEFAULT_REGION=us-east-1
+      - SERVICES=sqs,sns,cloudwatch,ssm
+
+  create_localstack_resources:
+    image: anigeo/awscli
+    entrypoint: '/root/localstack/create_localstack_resources.sh'
+    volumes:
+      - .:/root
+    depends_on:
+      - localstack

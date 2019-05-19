@@ -7,4 +7,8 @@
     - dynamodb:PutItem
     - dynamodb:UpdateItem
     - dynamodb:DeleteItem
-  Resource: "arn:aws:dynamodb:${self:custom.region}:*:*"
+  Resource: 'arn:aws:dynamodb:${self:custom.region}:*:*'
+- Effect: Allow
+  Action:
+    - events:PutEvents
+  Resource: '*'

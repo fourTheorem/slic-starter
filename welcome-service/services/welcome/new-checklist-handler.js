@@ -1,9 +1,11 @@
+const url = require('url')
+const aws4 = require('aws4')
+const axios = require('axios')
 const AWS = require('aws-sdk')
-const SQS = new AWS.SQS()
-const SSM = new AWS.SSM()
 const log = require('../../lib/log')
 
-const axios = require('axios')
+const SQS = new AWS.SQS({ endpoint: process.env.SQS_ENDPOINT_URL })
+const SSM = new AWS.SSM({ endpoint: process.env.SSM_ENDPOINT_URL })
 
 const queueName = process.env.EMAIL_QUEUE_NAME
 if (!queueName) {
@@ -56,7 +58,27 @@ async function handleNewChecklist(event) {
 }
 
 async function getUser(userId) {
-  return axios.get(`${await userServiceUrlPromise}/${userId}`)
+  const userUrl = `${await userServiceUrlPromise}${userId}`
+  const { host, pathname } = new url.URL(userUrl)
+  const request = {
+    path: pathname,
+    host,
+    method: 'GET',
+    url: userUrl
+  }
+
+  const signedRequest = aws4.sign(request, {
+    secretAccessKey: AWS.config.credentials.secretAccessKey,
+    accessKeyId: AWS.config.credentials.accessKeyId,
+    sessionToken: AWS.config.credentials.sessionToken
+  })
+
+  delete signedRequest.headers['Host']
+  delete signedRequest.headers['Content-Length']
+  log.info({ request, signedRequest }, 'SIGNED REQUEST')
+  const { data: result } = await axios(signedRequest)
+  log.info({ result }, 'RESULT')
+  return result
 }
 
 module.exports = {

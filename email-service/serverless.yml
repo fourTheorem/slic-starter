@@ -2,6 +2,7 @@ service: slic-starter-email-service
 
 plugins:
   - serverless-offline
+  - serverless-offline-sqs
   - serverless-prune-plugin
 
 provider:
