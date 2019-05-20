@@ -32,7 +32,7 @@ We chose a _monorepo_ approach. Every serverless module (service) is a folder at
 1. Dependencies on common code and libraries are easier when you avoid referencing.
 1. All applcation code and infrastructure-as-code exist together.
 1. Changes across multiple services are managed and tracked in the same commits, PRs and merges.
-1. End-to-end tests existing in the same place as the code under test.
+1. End-to-end tests exist in the same place as the code under test.
 
 ### Tooling Choice
 
@@ -57,11 +57,13 @@ SLIC Starter includes useful, working examples of typical CRUD (create, read, up
 
 ### Messaging
 
-A major goal of SLIC Starter is to provide a realistic, working examples for event-driven messaging, including a scalable and real-time message bus. Following the KISS principle, SLIC Starter only requires the simplest messaging possible, so we use CloudWatch Events as inspired by [this article](https://aws.amazon.com/blogs/aws/building-serverless-pipelines-with-amazon-cloudwatch-events/).
+A major goal of SLIC Starter is to provide a realistic, working examples for event-driven messaging, including a scalable and real-time message bus.
+
+Following the KISS principle, SLIC Starter only requires the simplest messaging possible _for now_, so we use CloudWatch Events as inspired by [this article](https://aws.amazon.com/blogs/aws/building-serverless-pipelines-with-amazon-cloudwatch-events/).
 
 ### Front End
 
-SLIC Starter has a front-end web application. It uses React, Redux and [http://material-ui.com/](Material UI). Out of the box, the front end is configured, built, packaged and deployed to S3 and CloudFront with a domain and HTTPS certificate.
+SLIC Starter has a front-end web application. It uses React, Redux and [Material UI](http://material-ui.com/). Out of the box, the front end is configured, built, packaged and deployed to S3 and CloudFront with a domain and HTTPS certificate.
 
 1. API calls and authentication are managed with AWS Amplify
 1. The build process automatically looks up the Cognito parameters so you don't have to
@@ -95,7 +97,14 @@ All tests can be run in local development mode as well as against a fully-deploy
 
 ### Secret Management
 
+We use AWS Secrets Manager for storing the GitHub personal access token and AWS Systems Manager Parameter Store for storing other secrets, such as API access tokens.
+
 ## Getting Started
+
+To set up deployment to your own accounts, first run through these steps.
+
+1. Enable CodeBuild to access your GitHub repo. The only way to do this is to create a temporary CodeBuild project in your CICD account and set up your GitHub repostitory as a source. Grant access to your GitHub repo. Your account now has access to the repo and the SLIC Starter CodeBuild will be able to monitor and clone your repo. The temporary CodeBuild project can alreay be deleted.
+1. (Optional - this will be required for repo tagging). Set up GitHub authentication for your repo. Create a GitHub Personal Access Token and add it as an secret with the name `GitHubPersonalAccessToken` in Secrets Manager _in the CICD account_. See [this post](https://medium.com/@eoins/securing-github-tokens-in-a-serverless-codepipeline-dc3a24ddc356) for more detail on this approach.
 
 ## Local Development
 
