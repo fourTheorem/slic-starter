@@ -3,7 +3,6 @@ const { createNewListEvent } = require('../../lib/event-dispatcher')
 
 const Uuid = require('uuid')
 const { dynamoDocClient } = require('../../lib/aws')
-const log = require('../../lib/log')
 
 const tableName = 'checklists'
 
