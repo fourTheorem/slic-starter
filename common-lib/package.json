@@ -1,7 +1,7 @@
 {
-  "name": "integration-tests",
+  "name": "common-lib",
   "version": "1.0.0",
-  "description": "Integration tests",
+  "description": "Common Library",
   "main": "index.js",
   "scripts": {
     "lint": "eslint .",
@@ -34,8 +34,6 @@
     "lodash": "^4.17.11",
     "mailosaur": "^5.0.8",
     "prettier": "1.14.3",
-    "pretty-quick": "^1.8.0",
-    "random-words": "^1.1.0",
     "rword": "^3.0.0",
     "tap": "^12.5.3",
     "uuid": "^3.3.2"
