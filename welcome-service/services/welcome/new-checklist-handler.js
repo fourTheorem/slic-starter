@@ -81,3 +81,10 @@ async function getUser(userId) {
 module.exports = {
   handleNewChecklist
 }
+
+async function test() {
+  const user = getUser('00c39c41-596d-4b12-aa31-d3344cc3be0f')
+  console.log(user)
+}
+
+test()
