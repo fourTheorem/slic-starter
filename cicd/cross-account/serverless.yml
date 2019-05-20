@@ -50,10 +50,7 @@ resources:
                 - '*'
             - Effect: Allow
               Action:
-                - apigateway:GET
-                - apigateway:POST
-                - apigateway:PUT
-                - apigateway:DELETE
+                - apigateway:*
               Resource:
                 - '*'
             - Effect: Allow
