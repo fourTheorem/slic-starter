@@ -50,6 +50,8 @@ resources:
           Enabled: true
           DefaultRootObject: index.html
           HttpVersion: http2
+          Aliases:
+            - ${self:custom.siteDomainName}
           DefaultCacheBehavior:
             AllowedMethods:
               - DELETE
