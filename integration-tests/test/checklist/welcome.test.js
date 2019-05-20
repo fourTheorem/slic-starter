@@ -32,6 +32,5 @@ test('Welcome tests', async t => {
       })
 
     t.ok(content)
-    //TODO: Check that content contains the same name as testList
   })
 })
