@@ -6,4 +6,6 @@
 - Effect: Allow
   Action:
     - ssm:GetParameter
-  Resource: arn:aws:ssm:#{AWS::Region}:#{AWS::AccountId}:parameter/UserServiceUrl
+  Resource:
+    - arn:aws:ssm:#{AWS::Region}:#{AWS::AccountId}:parameter/UserServiceUrl
+    - arn:aws:ssm:#{AWS::Region}:#{AWS::AccountId}:parameter/UserServiceApiKey

@@ -1,12 +1,10 @@
 const url = require('url')
-const aws4 = require('aws4')
 const axios = require('axios')
 const AWS = require('aws-sdk')
 const log = require('../../lib/log')
 
 const SQS = new AWS.SQS({ endpoint: process.env.SQS_ENDPOINT_URL })
 const SSM = new AWS.SSM({ endpoint: process.env.SSM_ENDPOINT_URL })
-const STS = new AWS.STS({})
 
 const queueName = process.env.EMAIL_QUEUE_NAME
 if (!queueName) {
@@ -28,18 +26,25 @@ const userServiceUrlPromise = getUserServiceUrl()
 
 async function getUserServiceUrl() {
   const result = await SSM.getParameter({ Name: 'UserServiceUrl' }).promise()
-  log.info({ result }, 'Got parameter')
   const {
     Parameter: { Value: userServiceUrl }
   } = result
   return userServiceUrl
 }
 
+const userServiceApiKeyPromise = getUserServiceApiKey()
+
+async function getUserServiceApiKey() {
+  const result = await SSM.getParameter({ Name: 'UserServiceApiKey' }).promise()
+  const {
+    Parameter: { Value: userServiceApiKey }
+  } = result
+  return userServiceApiKey
+}
+
 async function handleNewChecklist(event) {
   log.info({ event })
 
-  const identity = await STS.getCallerIdentity({}).promise()
-  log.info({ identity }, 'CALLER IDENTITY')
   const checklist = event.detail
   const { userId, name } = checklist
 
@@ -62,24 +67,19 @@ async function handleNewChecklist(event) {
 
 async function getUser(userId) {
   const userUrl = `${await userServiceUrlPromise}${userId}`
+  const apiKey = await userServiceApiKeyPromise
   const { host, pathname } = new url.URL(userUrl)
   const request = {
     path: pathname,
     host,
     method: 'GET',
-    url: userUrl
+    url: userUrl,
+    headers: {
+      'X-Api-Key': apiKey
+    }
   }
 
-  const signedRequest = aws4.sign(request, {
-    secretAccessKey: AWS.config.credentials.secretAccessKey,
-    accessKeyId: AWS.config.credentials.accessKeyId,
-    sessionToken: AWS.config.credentials.sessionToken
-  })
-
-  delete signedRequest.headers['Host']
-  delete signedRequest.headers['Content-Length']
-  log.info({ request, signedRequest }, 'SIGNED REQUEST')
-  const { data: result } = await axios(signedRequest)
+  const { data: result } = await axios(request)
   log.info({ result }, 'RESULT')
   return result
 }
@@ -87,10 +87,3 @@ async function getUser(userId) {
 module.exports = {
   handleNewChecklist
 }
-
-async function test() {
-  const user = getUser('00c39c41-596d-4b12-aa31-d3344cc3be0f')
-  console.log(user)
-}
-
-test()
