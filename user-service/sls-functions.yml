@@ -7,5 +7,4 @@ get:
         path: user/{id}
         method: get
         cors: false
-        authorizer: aws_iam
         private: true

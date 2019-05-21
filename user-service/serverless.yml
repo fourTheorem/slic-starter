@@ -11,10 +11,11 @@ provider:
   stage: ${self:custom.stage}
   region: ${self:custom.region}
   iamRoleStatements: ${file(./sls-iam-role-statements.yml)}
+  apiKeys:
+    - userServiceApiKey
   resourcePolicy:
     - Effect: Allow
-      Principal:
-        AWS: 'arn:aws:iam::#{AWS::AccountId}:root'
+      Principal: '*'
       Action: 'execute-api:Invoke'
       Resource:
         - execute-api:/*/*/*

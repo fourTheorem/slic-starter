@@ -6,6 +6,7 @@ const log = require('../../lib/log')
 
 const SQS = new AWS.SQS({ endpoint: process.env.SQS_ENDPOINT_URL })
 const SSM = new AWS.SSM({ endpoint: process.env.SSM_ENDPOINT_URL })
+const STS = new AWS.STS({})
 
 const queueName = process.env.EMAIL_QUEUE_NAME
 if (!queueName) {
@@ -37,6 +38,8 @@ async function getUserServiceUrl() {
 async function handleNewChecklist(event) {
   log.info({ event })
 
+  const identity = await STS.getCallerIdentity({}).promise()
+  log.info({ identity }, 'CALLER IDENTITY')
   const checklist = event.detail
   const { userId, name } = checklist
 
