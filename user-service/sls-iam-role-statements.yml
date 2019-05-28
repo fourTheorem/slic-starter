@@ -2,7 +2,7 @@
   Action:
     - cognito-idp:AdminGetUser
   Resource:
-    - arn:aws:cognito-idp:*:*:userpool/${self:custom.userPoolId}
+    - arn:aws:cognito-idp:*:*:userpool/${ssm:UserPoolId}
 - Effect: Allow
   Action:
     - ssm:GetParameter

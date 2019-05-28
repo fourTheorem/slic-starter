@@ -1,0 +1,15 @@
+{
+  "name": "logging-service",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^7.0.0"
+  },
+  "devDependencies": {
+    "serverless-dotenv-plugin": "^2.0.1",
+    "serverless-offline": "^3.33.0"
+  }
+}

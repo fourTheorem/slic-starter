@@ -1,0 +1,6 @@
+stage: ${opt:stage, 'dev'}
+region: eu-west-1
+runtime: nodejs-8.10
+TOKEN: ${env:TOKEN}
+URL: ${env:URL}
+TYPE: ${env:TYPE}

@@ -1,0 +1,9 @@
+LogzioCloudWatchShipper:
+  Type: AWS::Serverless::Application
+  Properties:
+    Location:
+      ApplicationId: arn:aws:serverlessrepo:us-east-1:486140753397:applications/LogzioCloudWatchShipper
+      SemanticVersion: 1.2.0
+    Parameters:
+      LogzioTOKEN: ${self:custom.TOKEN}
+      LogzioURL: ${self:custom.URL}

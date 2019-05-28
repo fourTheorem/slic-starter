@@ -1,7 +1,7 @@
 {
   "name": "slic-starter",
   "version": "1.0.0",
-  "description": "Welcome Service for SLIC Starter",
+  "description": "User Service for SLIC Starter",
   "scripts": {
     "start": "SLIC_STAGE=local sls offline start --migrate true",
     "lint": "eslint --ignore-pattern \"scripts/**\" .",
