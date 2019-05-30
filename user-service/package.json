@@ -16,7 +16,6 @@
     "url": "https://github.com/fourTheorem/slic-starter"
   },
   "devDependencies": {
-    "@dathuis/serverless-dynamodb-local": "^0.2.40",
     "aws-sdk": "^2.339.0",
     "aws-sdk-mock": "^4.3.0",
     "awscred": "^1.4.2",
@@ -40,8 +39,7 @@
   "dependencies": {
     "bourne": "^1.1.2",
     "node-mailjet": "^3.3.1",
-    "pino": "^5.8.1",
-    "serverless-dynamodb-local": "^0.2.36"
+    "pino": "^5.8.1"
   },
   "husky": {
     "hooks": {
