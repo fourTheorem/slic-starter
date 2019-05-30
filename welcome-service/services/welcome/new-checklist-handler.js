@@ -38,6 +38,11 @@ async function getUserServiceApiKey() {
   const {
     Parameter: { Value: userServiceApiKey }
   } = result
+
+  if (!userServiceApiKey) {
+    log.info('No Parameter for userServiceApiKey found..')
+  }
+
   return userServiceApiKey
 }
 

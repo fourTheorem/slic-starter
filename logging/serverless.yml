@@ -1,18 +1,21 @@
-service: logging-service 
+service: logging-service
 
 plugins:
   - serverless-offline
 provider:
   name: aws
-  runtime: nodejs10.x
+  runtime: python2.7
   stage: ${self:custom.stage}
   region: ${self:custom.region}
 # iamRoleStatements: ${file(./sls-iam-role-statements.yml)}
 
 custom: ${file(./custom.yml)}
 
-#functions: ${file(./sls-functions.yml)}
+functions: ${file(./sls-functions.yml)}
 
-resources: 
-  Resources: ${file(./sls-resources.yml)}
-  Transform: AWS::Serverless-2016-10-31
+resources:
+  Outputs:
+    loggingFunctionArn:
+      Value: !GetAtt LambdaUnderscorehandlerLambdaFunction.Arn
+      Export:
+        Name: ${self:provider.stage}-log-forwarder-function-arn

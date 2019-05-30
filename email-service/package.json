@@ -41,6 +41,7 @@
     "node-mailjet": "^3.3.1",
     "pino": "^5.8.1",
     "serverless-dynamodb-local": "^0.2.36",
+    "serverless-log-forwarding": "^1.4.0",
     "serverless-offline-sqs": "^2.0.2"
   },
   "husky": {

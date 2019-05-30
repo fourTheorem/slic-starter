@@ -1,5 +1,2 @@
 lambda_handler:
-  handler: lambda_function.lambda_handler
-  events:
-    - cloudwatchLog:
-      arn: arn:aws:logs:eu-west-1:935672627075:log-group:/aws/lambda/slic-starter-backend-dev-create 
+  handler: services/lambda_function.lambda_handler
