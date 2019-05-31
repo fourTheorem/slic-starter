@@ -12,11 +12,11 @@
     "chance": "^1.0.18",
     "dotenv": "^7.0.0",
     "eslint-plugin-testcafe": "^0.2.1",
-    "testcafe": "^1.1.0",
+    "test-common": "file:../test-common",
+    "testcafe": "^1.2.0",
     "testcafe-react-selectors": "^3.1.0"
   },
   "devDependencies": {
-    "mailosaur": "^5.0.3",
     "serverless-dotenv-plugin": "^2.0.1"
   }
 }

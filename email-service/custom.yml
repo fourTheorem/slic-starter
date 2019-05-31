@@ -7,6 +7,13 @@ prune:
 number: 3
 serverless-offline:
   port: 4002
+nsDomain: sliclists.com
+domainPrefixes:
+  local: ''
+  dev: dev.
+  stg: stg.
+  prod: ''
+emailDomainName: ${self:custom.domainPrefixes.${self:provider.stage}}${self:custom.nsDomain}
 serverless-offline-sqs:
   endpoint: ${env:SQS_ENDPOINT_URL,'http://0.0.0.0:4576'}
   autoCreate: true

@@ -42,6 +42,11 @@ This project is free to use by enterprise, startups, students, educators, enthus
 
 ## Getting Started
 
+### Set up your domain for email
+
+By default, SLIC Lists will send emails from `no-reply@[stage].sliclists.com`. In order for the email service to send requests to SES with this as the Source address, either the email address or the domain needs to be verified. This is not automatically done as part of the SLIC Starter deployment.
+Because we use Route 53 for our DNS records, the verification process is quite straightforward. See [here](https://docs.aws.amazon.com/ses/latest/DeveloperGuide/receiving-email-getting-started-verify.html) for documentation on how to achieve domain verification throught the AWS Management Console.
+
 ## Local Development
 
 In backend:

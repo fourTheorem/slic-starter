@@ -1,6 +1,15 @@
+'use strict'
+
 const AWS = require('aws-sdk')
 
 const log = require('../../lib/log')
+
+const fromAddress = process.env.EMAIL_FROM_ADDRESS
+if (!fromAddress) {
+  throw new Error('EMAIL_FROM_ADDRESS must be specified')
+}
+
+const ses = new AWS.SES({ endpoint: process.env.SES_ENDPOINT_URL })
 
 async function sendEmail(message) {
   log.info({ message }, 'sendEmail')
@@ -23,11 +32,10 @@ async function sendEmail(message) {
         Data: subject
       }
     },
-    // TODO - Change the 'from' email address
-    Source: 'paul.kevany+slicsqs@fourtheorem.com'
+    Source: fromAddress
   }
 
-  const result = await new AWS.SES().sendEmail(params).promise()
+  const result = await ses.sendEmail(params).promise()
 
   log.info({ result }, 'Sent email')
 }

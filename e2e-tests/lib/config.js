@@ -1,5 +1,5 @@
 const localConfig = require('./local-email-config.js')
-const realConfig = require('../../common-lib/real-email-config')
+const realConfig = require('test-common/real-email-config')
 
 const stage = process.env.SLIC_STAGE
 export function getBaseURL() {
