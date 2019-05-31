@@ -19,8 +19,7 @@ const updateHandler = proxyquire('../../../services/checklists/update', {
 test('update handler updates current checklist', async t => {
   const payload = {
     name: 'checklist name',
-    description: 'Checklist Description',
-    category: 'In Progress'
+    description: 'Checklist Description'
   }
   const event = {
     requestContext: userRequestContext,
@@ -37,7 +36,6 @@ test('update handler updates current checklist', async t => {
   t.equal(received.updateParams.userId, userId)
   t.equal(received.updateParams.name, payload.name)
   t.equal(received.updateParams.description, payload.description)
-  t.equal(received.updateParams.category, payload.category)
   t.notEqual(received.updateParams.name, null)
   t.notEqual(received.updateParams.description, null)
 
