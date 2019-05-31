@@ -1,2 +1,2 @@
-lambda_handler:
-  handler: services/lambda_function.lambda_handler
+logForwarder:
+  handler: lambda_function.lambda_handler

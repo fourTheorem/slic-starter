@@ -2,7 +2,7 @@ import json
 import logging
 import sys
 import time
-import urllib2
+import requests
 
 MAX_BULK_SIZE_IN_BYTES = 1 * 1024 * 1024  # 1 MB
 
@@ -62,7 +62,7 @@ class LogzioShipper(object):
             max_retries = 4
             sleep_between_retries = 2
 
-            for retries in xrange(max_retries):
+            for retries in range(max_retries):
                 if retries:
                     sleep_between_retries *= 2
                     logger.info("Failure in sending logs - Trying again in {} seconds"
@@ -70,8 +70,9 @@ class LogzioShipper(object):
                     time.sleep(sleep_between_retries)
                 try:
                     res = func()
-                except urllib2.HTTPError as e:
-                    status_code = e.getcode()
+                    res.raise_for_status()
+                except requests.exceptions.HTTPError as e:
+                    status_code = res.status_code
                     if status_code == 400:
                         raise BadLogsException(e.reason)
                     elif status_code == 401:
@@ -81,7 +82,7 @@ class LogzioShipper(object):
                     else:
                         logger.error("Unknown HTTP exception: {}".format(e))
                         continue
-                except urllib2.URLError:
+                except requests.exceptions.RequestException:
                     raise
                 return res
 
@@ -93,9 +94,8 @@ class LogzioShipper(object):
         @LogzioShipper.retry
         def do_request():
             headers = {"Content-type": "application/json"}
-            request = urllib2.Request(self._logzio_url, data='\n'.join(self._logs), headers=headers)
-            return urllib2.urlopen(request)
-
+            response = requests.post(self._logzio_url, data='\n'.join(self._logs), headers=headers)
+            return response
         try:
             do_request()
             logger.info("Successfully sent bulk of {} logs to Logz.io!".format(len(self._logs)))
@@ -112,7 +112,7 @@ class LogzioShipper(object):
         except UnknownURL:
             logger.error("Please check your url...")
             raise UnknownURL()
-        except urllib2.HTTPError as e:
+        except requests.exceptions.RequestException as e:
             logger.error("Unexpected error while trying to send logs: {}".format(e))
             raise
 

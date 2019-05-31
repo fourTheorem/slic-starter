@@ -1,6 +1,8 @@
 stage: ${opt:stage, 'dev'}
 region: eu-west-1
-runtime: nodejs-8.10
-TOKEN: ${env:TOKEN}
-URL: ${env:URL}
-TYPE: ${env:TYPE}
+runtime: python3.6
+pythonRequirements:
+  slim: true
+  useDownloadCache: true
+  useStaticCache: true
+  dockerizePip: non-linux

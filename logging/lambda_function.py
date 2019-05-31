@@ -1,21 +1,30 @@
 import gzip
+import io
 import json
 import logging
 import os
+import base64
+import boto3
 
 from shipper import LogzioShipper
-from StringIO import StringIO
 
 # set logger
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
+#set boto3 client
+ssm = boto3.client('ssm')
+print('boto3 client set. Getting params')
+logzio_token = ssm.get_parameter(Name='LogzioToken', WithDecryption=True)
+logzio_url_base = ssm.get_parameter(Name='LogzioUrl')
+logzio_type = ssm.get_parameter(Name='LogzioType')
+logzio_format = ssm.get_parameter(Name='LogzioFormat')
 
 def _extract_aws_logs_data(event):
     # type: (dict) -> dict
     try:
-        logs_data_decoded = event['awslogs']['data'].decode('base64')
-        logs_data_unzipped = gzip.GzipFile(fileobj=StringIO(logs_data_decoded)).read()
+        logs_data_decoded = base64.b64decode(event['awslogs']['data'])
+        logs_data_unzipped = gzip.GzipFile(fileobj=io.BytesIO(logs_data_decoded)).read()
         logs_data_dict = json.loads(logs_data_unzipped)
         return logs_data_dict
     except ValueError as e:
@@ -36,11 +45,10 @@ def _parse_cloudwatch_log(log, aws_logs_data):
     log['logGroup'] = aws_logs_data['logGroup']
     log['function_version'] = aws_logs_data['function_version']
     log['invoked_function_arn'] = aws_logs_data['invoked_function_arn']
-    #log['memory_limit_in_mb'] = aws_logs_data['memory_limit_in_mb']
 
     # If FORMAT is json treat message as a json
     try:
-        if os.environ['FORMAT'].lower() == 'json':
+        if logzio_format['Params']['Value'] == 'json':
             json_object = json.loads(log['message'])
             for key, value in json_object.items():
                 log[key] = value
@@ -58,12 +66,7 @@ def _enrich_logs_data(aws_logs_data, context):
 
 
 def lambda_handler(event, context):
-    # type: (dict, 'LambdaContext') -> None
-    try:
-        logzio_url = "{0}/?token={1}&type={2}".format(os.environ['URL'], os.environ['TOKEN'], os.environ['TYPE'])
-    except KeyError as e:
-        logger.error("Missing one of the environment variable: {}".format(e))
-        raise
+    logzio_url = "{0}/?token={1}&type={2}".format(logzio_url_base['Parameter']['Value'], logzio_token['Parameter']['Value'], logzio_type['Parameter']['Value'])
 
     aws_logs_data = _extract_aws_logs_data(event)
     _enrich_logs_data(aws_logs_data, context)
