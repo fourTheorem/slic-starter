@@ -1,5 +1,5 @@
 logForwarding:
-  destinationARN: 'arn:aws:lambda:eu-west-1:935672627075:function:logzio-cloudwatch-log-shipper'
+  destinationARN: !ImportValue ${self:provider.stage}-log-forwarder-function-arn
 stage: ${opt:stage, 'dev'}
 region: eu-west-1
 runtime: nodejs8.10
