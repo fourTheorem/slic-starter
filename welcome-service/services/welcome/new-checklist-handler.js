@@ -1,4 +1,3 @@
-const url = require('url')
 const axios = require('axios')
 const AWS = require('aws-sdk')
 const log = require('../../lib/log')
@@ -68,18 +67,13 @@ async function handleNewChecklist(event) {
 async function getUser(userId) {
   const userUrl = `${await userServiceUrlPromise}${userId}`
   const apiKey = await userServiceApiKeyPromise
-  const { host, pathname } = new url.URL(userUrl)
-  const request = {
-    path: pathname,
-    host,
-    method: 'GET',
-    url: userUrl,
+
+  const { data: result } = await axios.get(userUrl, {
     headers: {
       'X-Api-Key': apiKey
     }
-  }
+  })
 
-  const { data: result } = await axios(request)
   log.info({ result }, 'RESULT')
   return result
 }

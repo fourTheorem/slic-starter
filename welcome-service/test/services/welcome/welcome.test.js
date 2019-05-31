@@ -27,7 +27,7 @@ awsMock.mock('SQS', 'getQueueUrl', function(params, callback) {
 awsMock.mock('SSM', 'getParameter', function(params, callback) {
   callback(null, {
     Parameter: {
-      Value: 'url'
+      Value: 'http://userservice.example.com/'
     }
   })
 })
@@ -35,7 +35,7 @@ awsMock.mock('SSM', 'getParameter', function(params, callback) {
 test('handleNewChecklist requires queue name to be set', t => {
   delete process.env.EMAIL_QUEUE_NAME
   t.throws(() => {
-    require('../../../services/welcome/new-checklist-handler.js')
+    require('../../../services/welcome/new-checklist-handler')
   })
   t.end()
 })
@@ -50,17 +50,18 @@ test('handleNewChecklist sends a message to an SQS queue', async t => {
 
   process.env.EMAIL_QUEUE_NAME = 'test-queue-name'
   const checklistHandler = proxyquire(
-    '../../../services/welcome/new-checklist-handler.js',
+    '../../../services/welcome/new-checklist-handler',
     {
       axios: {
         get: url => {
-          return Promise.resolve({ email: 'test@example.com' })
+          return Promise.resolve({ data: { email: 'test@example.com' } })
         }
-      }
+      },
+      '@noCallThru': true
     }
   )
 
-  const response = await checklistHandler.handleNewChecklist(event)
+  await checklistHandler.handleNewChecklist(event)
 
   const sqsParams = received.SQS.sendMessage
   const parsedBody = JSON.parse(sqsParams.MessageBody)
