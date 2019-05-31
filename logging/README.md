@@ -3,8 +3,8 @@
 The Centralized Logging service enables developers to ship their logs from CloudWatch Logs to Logz.io. 
 
 ## How this works
-This service will deploy a lambda function located in `/logging/lambda_function.py` 
-This lambda function will take Cloudwatch Logs as inputs, and ship them to Logz.io
+This service will deploy a lambda function located in `/logging/lambda_function.py`, which will take Cloudwatch Logs as inputs, and ship them to Logz.io 
+Each service automatically subscribes itself to the logging function upon deployment.
 
 ## Getting Started
 Before deploying this service, log into your logz.io account and find your **Logz.io API Token**.
@@ -18,3 +18,5 @@ To do this, log into your AWS Console and navigate to Systems Manager (SSM). Und
 ## Deployment
 Navigate to the logging directory with `cd logging/`
 Deploy the logging service with `AWS_PROFILE=profile SLIC_STAGE=stage sls deploy`
+
+
