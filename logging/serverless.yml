@@ -1,10 +1,8 @@
-service: slic-starter-email-service
+service: logging-service
 
 plugins:
-  - serverless-offline
-  - serverless-offline-sqs
-  - serverless-prune-plugin
-  - serverless-log-forwarding
+  - serverless-python-requirements
+  - serverless-pseudo-parameters
 
 provider:
   name: aws
@@ -18,4 +16,8 @@ custom: ${file(./custom.yml)}
 functions: ${file(./sls-functions.yml)}
 
 resources:
-  Resources: ${file(./sls-resources.yml)}
+  Outputs:
+    loggingFunctionArn:
+      Value: !GetAtt LogForwarderLambdaFunction.Arn
+      Export:
+        Name: ${self:provider.stage}-log-forwarder-function-arn

@@ -1,3 +1,5 @@
+logForwarding:
+  destinationARN: !ImportValue ${self:provider.stage}-log-forwarder-function-arn
 stage: ${opt:stage, 'dev'}
 region: eu-west-1
 runtime: nodejs8.10

@@ -6,6 +6,7 @@ plugins:
   - '@dathuis/serverless-dynamodb-local'
   - serverless-offline
   - serverless-prune-plugin
+  - serverless-log-forwarding
 
 provider:
   name: aws

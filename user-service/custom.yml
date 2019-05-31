@@ -1,7 +1,8 @@
+logForwarding:
+  destinationARN: !ImportValue ${self:provider.stage}-log-forwarder-function-arn
 stage: ${opt:stage, 'dev'}
 region: eu-west-1
 runtime: nodejs8.10
-userPoolId: ${env:USER_POOL_ID}
 prune:
   automatic: true
   number: 3

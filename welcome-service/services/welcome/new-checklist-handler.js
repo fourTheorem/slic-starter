@@ -38,6 +38,7 @@ async function getUserServiceApiKey() {
   const {
     Parameter: { Value: userServiceApiKey }
   } = result
+
   return userServiceApiKey
 }
 
@@ -59,7 +60,6 @@ async function handleNewChecklist(event) {
     QueueUrl: await queueUrlPromise
   }
 
-  log.info({ params }, 'Sending SQS message')
   const result = await SQS.sendMessage(params).promise()
   log.info({ result }, 'Sent SQS message')
 }
@@ -74,7 +74,6 @@ async function getUser(userId) {
     }
   })
 
-  log.info({ result }, 'RESULT')
   return result
 }
 

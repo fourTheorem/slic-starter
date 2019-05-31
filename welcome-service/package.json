@@ -39,6 +39,7 @@
     "axios": "^0.18.0",
     "bourne": "^1.1.2",
     "pino": "^5.8.1",
+    "serverless-log-forwarding": "^1.4.0",
     "serverless-pseudo-parameters": "^2.4.0"
   },
   "husky": {
