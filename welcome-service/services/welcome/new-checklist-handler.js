@@ -60,7 +60,6 @@ async function handleNewChecklist(event) {
     QueueUrl: await queueUrlPromise
   }
 
-  log.info({ params }, 'Sending SQS message')
   const result = await SQS.sendMessage(params).promise()
   log.info({ result }, 'Sent SQS message')
 }
@@ -75,17 +74,9 @@ async function getUser(userId) {
     }
   })
 
-  log.info({ result }, 'RESULT')
   return result
 }
 
 module.exports = {
   handleNewChecklist
 }
-
-async function test() {
-  const user = getUser('00c39c41-596d-4b12-aa31-d3344cc3be0f')
-  console.log(user)
-}
-
-test()

@@ -56,7 +56,7 @@ test('create puts a dynamodb item', async t => {
   const record = {
     userId,
     name: 'Test List',
-    description: 'Test Description',
+    description: 'Test Description'
   }
 
   const checklist = proxyquire('../../../services/checklists/checklist', {
