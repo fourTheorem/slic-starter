@@ -12,12 +12,14 @@ const testLists = [
     listId: 'list1',
     name: 'List One',
     description: 'List One Description',
+    category: 'TODO',
     entries: {}
   },
   {
     listId: 'list2',
     name: 'List Two',
     description: 'List Two Description',
+    category: 'In Progress',
     entries: {}
   }
 ]
@@ -55,7 +57,8 @@ test('create puts a dynamodb item', async t => {
   const record = {
     userId,
     name: 'Test List',
-    description: 'Test Description'
+    description: 'Test Description',
+    category: 'TODO'
   }
 
   const checklist = require('../../../services/checklists/checklist')
@@ -67,6 +70,7 @@ test('create puts a dynamodb item', async t => {
   t.ok(received.dynamoDb.put.Item.listId)
   t.same(received.dynamoDb.put.Item.entries, {})
   t.equal(received.dynamoDb.put.Item.description, record.description)
+  t.equal(received.dynamoDb.put.Item.category, record.category)
   t.match(response, record)
 
   t.end()
@@ -77,7 +81,8 @@ test('update function updates current checklists', async t => {
     listId: '1234',
     userId,
     name: 'New title',
-    description: 'New Description'
+    description: 'New Description',
+    category: 'TODO'
   }
 
   const checklist = require('../../../services/checklists/checklist')
@@ -88,6 +93,7 @@ test('update function updates current checklists', async t => {
   t.ok(received.dynamoDb.update.ExpressionAttributeValues[':updatedAt'])
   t.equal(received.dynamoDb.update.Key.userId, record.userId)
   t.equal(received.dynamoDb.update.Key.listId, record.listId)
+  t.ok(received.dynamoDb.update.ExpressionAttributeValues[':category'])
   t.end()
 })
 
@@ -106,6 +112,7 @@ test('update function updates current checklists when name not specified', async
     received.dynamoDb.update.ExpressionAttributeValues[':description'],
     null
   )
+  t.equal(received.dynamoDb.update.ExpressionAttributeValues[':category'], null)
   t.ok(received.dynamoDb.update.ExpressionAttributeValues[':updatedAt'])
   t.equal(received.dynamoDb.update.Key.userId, record.userId)
   t.equal(received.dynamoDb.update.Key.listId, record.listId)

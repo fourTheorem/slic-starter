@@ -1,0 +1,39 @@
+fuge_global:
+  run_containers: false
+  dns_enabled: false
+  tail: false
+  monitor: true
+  monitor_excludes:
+    - '**/node_modules/**'
+    - '**/.git/**'
+    - '**/.serverless/**'
+    - '*.log'
+    - '**/*.sw?'
+  environment:
+    - 'SQS_ENDPOINT_URL=http://localhost:4576'
+    - 'SES_ENDPOINT_URL=http://localhost:4579'
+    - 'CLOUDWATCH_ENDPOINT_URL=http://localhost:4582'
+    - 'SSM_ENDPOINT_URL=http://localhost:4583'
+
+backend:
+  type: process
+  run: 'npm start'
+  path: backend
+
+welcome:
+  type: process
+  run: 'npm start'
+  path: welcome-service
+
+email:
+  type: process
+  run: 'npm start'
+  path: email-service
+
+user:
+  type: process
+  run: 'npm start'
+  path: user-service
+
+include:
+  - docker-compose.yml

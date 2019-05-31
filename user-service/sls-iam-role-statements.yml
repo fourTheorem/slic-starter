@@ -1,0 +1,9 @@
+- Effect: Allow
+  Action:
+    - cognito-idp:AdminGetUser
+  Resource:
+    - arn:aws:cognito-idp:*:*:userpool/${self:custom.userPoolId}
+- Effect: Allow
+  Action:
+    - ssm:GetParameter
+  Resource: arn:aws:ssm:#{AWS::Region}:#{AWS::AccountId}:parameter/UserPoolId

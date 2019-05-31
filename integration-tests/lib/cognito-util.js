@@ -2,10 +2,9 @@
 
 const AWS = require('aws-sdk')
 const jwt = require('jsonwebtoken')
-
 const chance = require('chance').Chance()
-const { rword } = require('rword')
 
+const { generateEmailAddress } = require('test-common/real-email-config')
 const { loadBackendConfig } = require('./backend-config')
 
 const cognitoServiceProvider = new AWS.CognitoIdentityServiceProvider()
@@ -13,7 +12,7 @@ const cognitoServiceProvider = new AWS.CognitoIdentityServiceProvider()
 const generatePassword = () => `${chance.string({ length: 10 })}!Aa0`
 
 async function createUser() {
-  const email = `${rword.generate(3).join('-')}@example.com`
+  const email = generateEmailAddress()
   const password = generatePassword()
 
   const backendConfig = await loadBackendConfig()

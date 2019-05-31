@@ -1,4 +1,5 @@
 'use strict'
+const { createNewListEvent } = require('../../lib/event-dispatcher')
 
 const Uuid = require('uuid')
 const { dynamoDocClient } = require('../../lib/aws')
@@ -28,6 +29,8 @@ async function create({ userId, name, description }) {
       Item: item
     })
     .promise()
+  await createNewListEvent(item)
+
   return item
 }
 

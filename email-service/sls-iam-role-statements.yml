@@ -1,0 +1,10 @@
+- Effect: Allow
+  Action:
+    - sqs:ReceiveMessage
+  Resource:
+    - arn:aws:sqs:::${self:custom.emailQueueName}
+- Effect: Allow
+  Action:
+    - ses:SendEmail
+  Resource:
+    - arn:aws:ses:*:*:identity/*

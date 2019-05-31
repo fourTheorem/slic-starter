@@ -1,0 +1,10 @@
+get:
+  handler: services/users/get.main
+  environment:
+    USER_POOL_ID: ${self:custom.userPoolId}
+  events:
+    - http:
+        path: user/{id}
+        method: get
+        cors: false
+        private: true

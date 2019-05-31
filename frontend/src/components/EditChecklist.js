@@ -187,6 +187,30 @@ class EditChecklist extends Component {
                     onChange={this.handleChange}
                   />
                 </Grid>
+<<<<<<< 313a7e8b363e1a1eb0938454061537bb66a5c9cf
+=======
+                <Grid item>
+                  <FormControl className={classes.textField}>
+                    <InputLabel id="category-label" htmlFor="category">
+                      Category
+                    </InputLabel>
+                    <Select
+                      id="category-select"
+                      label="category"
+                      value={this.state.category}
+                      onChange={this.handleCategoryChange}
+                      inputProps={{ id: 'category' }}
+                    >
+                      <MenuItem id="cat1" value="TODO">
+                        TODO
+                      </MenuItem>
+                      <MenuItem id="cat2" value="In Progress">
+                        In Progress
+                      </MenuItem>
+                    </Select>
+                  </FormControl>
+                </Grid>
+>>>>>>> Update E2E, Integration and Unit Tests for Category Functionality
                 <Grid
                   container
                   item

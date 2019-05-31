@@ -123,6 +123,13 @@ apiDomainDns:
           DNSName: { Fn::GetAtt: [apiCustomDomain, DistributionDomainName] }
           HostedZoneId: ${self:custom.cloudFrontHostedZoneId}
 
+userPoolIdParameter:
+  Type: AWS::SSM::Parameter
+  Properties:
+    Name: UserPoolId
+    Type: String
+    Value: !Ref slicUserPool
+
 cognitoAuthorizer:
   Type: AWS::ApiGateway::Authorizer
   Properties:

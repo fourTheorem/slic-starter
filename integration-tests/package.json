@@ -6,7 +6,7 @@
   "scripts": {
     "lint": "eslint .",
     "format": "prettier --write \"**/*.js\"",
-    "test": "tap \"test/**/*.test.js\""
+    "test": "tap --no-coverage \"test/**/*.test.js\""
   },
   "author": "Eoin Shanaghy <eoin.shanaghy@fourtheorem.com>",
   "license": "MIT",
@@ -34,13 +34,17 @@
     "lodash": "^4.17.11",
     "prettier": "1.14.3",
     "pretty-quick": "^1.8.0",
-    "rword": "^3.0.0",
-    "tap": "^12.5.3",
+    "rword": "^3.1.1",
+    "tap": "^14.2.0",
     "uuid": "^3.3.2"
   },
   "husky": {
     "hooks": {
       "pre-commit": "pretty-quick --staged"
     }
+  },
+  "dependencies": {
+    "dotenv": "^8.0.0",
+    "test-common": "file:../test-common"
   }
 }

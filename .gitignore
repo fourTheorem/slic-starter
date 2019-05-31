@@ -47,3 +47,4 @@ build/Release
 .serverless
 *.sw?
 vim-markdown-preview.html
+.vscode/

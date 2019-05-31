@@ -1,0 +1,11 @@
+- Effect: Allow
+  Action:
+    - sqs:GetQueueUrl
+    - sqs:SendMessage
+  Resource: arn:aws:sqs:*:*:${self:custom.emailQueueName}
+- Effect: Allow
+  Action:
+    - ssm:GetParameter
+  Resource:
+    - arn:aws:ssm:#{AWS::Region}:#{AWS::AccountId}:parameter/UserServiceUrl
+    - arn:aws:ssm:#{AWS::Region}:#{AWS::AccountId}:parameter/UserServiceApiKey
