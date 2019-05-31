@@ -1,4 +1,5 @@
 'use strict'
+
 const proxyquire = require('proxyquire').noPreserveCache()
 
 const { test } = require('tap')
@@ -21,7 +22,6 @@ test('A DynamoDB client is provided', t => {
   const result = aws().dynamoDocClient()
 
   t.equal(result.message, 'Dummy Dynamo')
-  t.notOk(received.options)
 
   t.end()
 })
@@ -31,7 +31,6 @@ test('A DynamoDB client is provided when the port is specified', t => {
   const result = aws().dynamoDocClient()
 
   t.equal(result.message, 'Dummy Dynamo')
-  t.notOk(received.options)
 
   t.end()
 })

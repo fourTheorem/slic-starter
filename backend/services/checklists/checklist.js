@@ -1,4 +1,5 @@
 'use strict'
+
 const { createNewListEvent } = require('../../lib/event-dispatcher')
 
 const Uuid = require('uuid')

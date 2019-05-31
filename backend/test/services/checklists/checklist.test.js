@@ -1,6 +1,7 @@
 'use strict'
 
 const path = require('path')
+const proxyquire = require('proxyquire')
 const awsMock = require('aws-sdk-mock')
 const { test } = require('tap')
 
@@ -12,14 +13,12 @@ const testLists = [
     listId: 'list1',
     name: 'List One',
     description: 'List One Description',
-    category: 'TODO',
     entries: {}
   },
   {
     listId: 'list2',
     name: 'List Two',
     description: 'List Two Description',
-    category: 'In Progress',
     entries: {}
   }
 ]
@@ -57,11 +56,17 @@ test('create puts a dynamodb item', async t => {
   const record = {
     userId,
     name: 'Test List',
-    description: 'Test Description',
-    category: 'TODO'
+    description: 'Test Description'
   }
 
-  const checklist = require('../../../services/checklists/checklist')
+  const checklist = proxyquire('../../../services/checklists/checklist', {
+    '../../lib/event-dispatcher': {
+      createNewListEvent: item => {
+        received.eventItem = item
+        return Promise.resolve()
+      }
+    }
+  })
 
   const response = await checklist.create(record)
   t.equal(received.dynamoDb.put.Item.userId, userId)
@@ -69,8 +74,11 @@ test('create puts a dynamodb item', async t => {
   t.ok(received.dynamoDb.put.Item.createdAt)
   t.ok(received.dynamoDb.put.Item.listId)
   t.same(received.dynamoDb.put.Item.entries, {})
+
+  t.ok(received.eventItem)
+  t.match(received.eventItem, record)
+
   t.equal(received.dynamoDb.put.Item.description, record.description)
-  t.equal(received.dynamoDb.put.Item.category, record.category)
   t.match(response, record)
 
   t.end()
@@ -81,8 +89,7 @@ test('update function updates current checklists', async t => {
     listId: '1234',
     userId,
     name: 'New title',
-    description: 'New Description',
-    category: 'TODO'
+    description: 'New Description'
   }
 
   const checklist = require('../../../services/checklists/checklist')
@@ -93,7 +100,6 @@ test('update function updates current checklists', async t => {
   t.ok(received.dynamoDb.update.ExpressionAttributeValues[':updatedAt'])
   t.equal(received.dynamoDb.update.Key.userId, record.userId)
   t.equal(received.dynamoDb.update.Key.listId, record.listId)
-  t.ok(received.dynamoDb.update.ExpressionAttributeValues[':category'])
   t.end()
 })
 
@@ -112,7 +118,6 @@ test('update function updates current checklists when name not specified', async
     received.dynamoDb.update.ExpressionAttributeValues[':description'],
     null
   )
-  t.equal(received.dynamoDb.update.ExpressionAttributeValues[':category'], null)
   t.ok(received.dynamoDb.update.ExpressionAttributeValues[':updatedAt'])
   t.equal(received.dynamoDb.update.Key.userId, record.userId)
   t.equal(received.dynamoDb.update.Key.listId, record.listId)

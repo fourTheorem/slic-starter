@@ -7,13 +7,9 @@ const { userId, userRequestContext } = require('../../fixtures')
 const received = {}
 const payload = {
   name: 'hello',
-<<<<<<< 313a7e8b363e1a1eb0938454061537bb66a5c9cf
   description: 'New Description'
-=======
-  description: 'New Description',
-  category: 'TODO'
->>>>>>> Update E2E, Integration and Unit Tests for Category Functionality
 }
+
 const createHandler = proxyquire('../../../services/checklists/create', {
   './checklist': {
     create: params => {
