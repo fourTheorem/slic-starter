@@ -6,6 +6,7 @@ import {
 import StageName from '../stage-name'
 import { Construct } from '@aws-cdk/cdk'
 import config from '../../config'
+import CodeBuildRole from '../code-build-role'
 
 export interface IntegrationTestProjectProps extends PipelineProjectProps {
   stageName: StageName
@@ -18,6 +19,9 @@ export class IntegrationTestProject extends PipelineProject {
     props: IntegrationTestProjectProps
   ) {
     const { stageName, ...rest } = props
+
+    const role = new CodeBuildRole(scope, `${props.stageName}IntegrationTestRole`)
+
     super(scope, id, {
       projectName: `${props.stageName}IntegrationTest`,
       environmentVariables: {
@@ -31,6 +35,7 @@ export class IntegrationTestProject extends PipelineProject {
         }
       },
       buildSpec: 'integration-tests/buildspec.yml',
+      role,
       ...rest
     })
   }

@@ -1,8 +1,8 @@
 {
-  "name": "cicd2",
+  "name": "cicd",
   "version": "0.1.0",
   "bin": {
-    "cicd2": "bin/cicd2.js"
+    "cicd": "bin/cicd.js"
   },
   "scripts": {
     "build": "tsc",

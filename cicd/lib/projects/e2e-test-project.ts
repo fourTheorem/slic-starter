@@ -5,7 +5,9 @@ import {
 } from '@aws-cdk/aws-codebuild'
 import StageName from '../stage-name'
 import { Construct } from '@aws-cdk/cdk'
+import iam = require('@aws-cdk/aws-iam')
 import config from '../../config'
+import CodeBuildRole from '../code-build-role'
 
 export interface E2ETestProjectProps extends PipelineProjectProps {
   stageName: StageName
@@ -18,6 +20,14 @@ export class E2ETestProject extends PipelineProject {
     props: E2ETestProjectProps
   ) {
     const { stageName, ...rest } = props
+
+    const role = new CodeBuildRole(scope, `${props.stageName}E2ETestRole`)
+    role.addToPolicy(
+      new iam.PolicyStatement()
+      .allow()
+      .addAction('ssm:GetParameters')
+      .addResource(`arn:aws:ssm:${config.region}:${config.accountIds.cicd}:parameter/Mailosaur*`)
+    )
 
     super(scope, id, {
       projectName: `${props.stageName}E2ETest`,
@@ -40,6 +50,7 @@ export class E2ETestProject extends PipelineProject {
         }
       },
       buildSpec: 'e2e-tests/buildspec.yml',
+      role,
       ...rest
     })
   }

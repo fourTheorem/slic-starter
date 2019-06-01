@@ -37,14 +37,6 @@ export default class CodeBuildRole extends iam.Role {
         )
     )
 
-    this.addToPolicy(
-      new iam.PolicyStatement()
-      .allow()
-      .addAction('ssm:GetParameters')
-      .addResource(`arn:aws:ssm:${config.region}:${config.accountIds.cicd}:parameter/Mailosaur*`)
-    )
-
-    
     if (pipelineStateMachine) {
       this.addToPolicy(
         new iam.PolicyStatement()
@@ -104,7 +96,7 @@ export default class CodeBuildRole extends iam.Role {
         .addAction('apigateway:GET')
         .addAction('apigateway:POST')
         .addAction('apigateway:PUT')
-        .addAction('apigateway:DELET')
+        .addAction('apigateway:DELETE')
         .addResource('arn:aws:apigateway:*::/restapis*')
     )
     this.addToPolicy(

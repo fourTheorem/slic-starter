@@ -6,13 +6,11 @@ import {
   CodeBuildAction
 } from '@aws-cdk/aws-codepipeline-actions'
 import StageName from './stage-name'
-import CodeBuildRole from './code-build-role'
 import { ModuleDeployProject } from './projects/module-deploy-project'
 import { ModuleBuildProject } from './projects/module-build-project'
 
 export interface ModulePipelineProps {
   artifactsBucket: Bucket
-  codeBuildRole: CodeBuildRole
   stageName: StageName
   moduleName: string
 }
@@ -21,7 +19,6 @@ export class ModulePipeline extends Pipeline {
   constructor(scope: Construct, id: string, props: ModulePipelineProps) {
     const {
       artifactsBucket,
-      codeBuildRole,
       moduleName,
       stageName,
       ...rest
@@ -53,7 +50,6 @@ export class ModulePipeline extends Pipeline {
       this,
       `${moduleName}_${stageName}_build`,
       {
-        codeBuildRole,
         moduleName,
         stageName
       }
@@ -77,7 +73,6 @@ export class ModulePipeline extends Pipeline {
       this,
       `${moduleName}_${stageName}_deploy`,
       {
-        codeBuildRole,
         moduleName,
         stageName
       }

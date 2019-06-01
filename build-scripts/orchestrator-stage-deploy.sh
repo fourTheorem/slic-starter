@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -e 
+set -e
 
 echo PIPELINE STATE:
 cat pipeline-state.env
@@ -19,8 +19,8 @@ for moduleName in ${MODULE_NAMES}; do
     echo Executing ${CMD}
     ${CMD}
     pipelineExecutionIds[${moduleName}]=$(aws codepipeline start-pipeline-execution --name ${moduleName}_${SLIC_STAGE}_pipeline --query "pipelineExecutionId" --output text)
-    echo "Pipeline execution ID for ${moduleName} is ${pipelineExecutionIds[${moduleName}]}" 
-  else 
+    echo "Pipeline execution ID for ${moduleName} is ${pipelineExecutionIds[${moduleName}]}"
+  else
     echo Skipping unchanged module ${moduleName}
   fi
 done

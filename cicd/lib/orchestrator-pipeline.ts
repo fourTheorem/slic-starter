@@ -11,18 +11,16 @@ import StageName from './stage-name'
 import { OrchestratorDeployProject } from './projects/orchestrator-deploy-project'
 import { IntegrationTestProject } from './projects/integration-test-project'
 import { E2ETestProject } from './projects/e2e-test-project'
-import CodeBuildRole from './code-build-role';
 
 import { SLIC_PIPELINE_SOURCE_ARTIFACT } from './projects/source-project'
 
 export interface OrchestratorPipelineProps extends PipelineProps {
   artifactsBucket: Bucket
-  codeBuildRole: CodeBuildRole
 }
 
 export class OrchestratorPipeline extends Pipeline {
   constructor(scope: Construct, id: string, props: OrchestratorPipelineProps) {
-    const { artifactsBucket, codeBuildRole, ...rest } = props
+    const { artifactsBucket, ...rest } = props
     super(scope, id, {
       pipelineName: 'OrchestratorPipeline',
       artifactBucket: artifactsBucket,
@@ -62,24 +60,23 @@ export class OrchestratorPipeline extends Pipeline {
 
     this.addDeployStage(StageName.stg, orchestratorCodeBuildRole, sourceOutputArtifact)
 
-    this.addTestStage(codeBuildRole, sourceOutputArtifact)
+    this.addTestStage(sourceOutputArtifact)
 
     this.addStage({
       name: 'Approval',
       actions: [new ManualApprovalAction({
         actionName: 'MoveToProduction'
-      })]      
+      })]
     })
 
     this.addDeployStage(StageName.prod, orchestratorCodeBuildRole, sourceOutputArtifact)
   }
 
-  addTestStage(codeBuildRole: CodeBuildRole, sourceOutputArtifact: Artifact) {
+  addTestStage(sourceOutputArtifact: Artifact) {
     const integrationTestProject = new IntegrationTestProject(
       this,
       `IntegrationTests`,
       {
-        role: codeBuildRole,
         stageName: StageName.stg
       }
     )
@@ -96,7 +93,6 @@ export class OrchestratorPipeline extends Pipeline {
       this,
       `e2eTests`,
       {
-        role: codeBuildRole,
         stageName: StageName.stg
       }
     )

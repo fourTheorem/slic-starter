@@ -12,15 +12,14 @@ import moduleArtifacts from './module-artifacts'
 export interface ModuleDeployProjectProps {
   moduleName: string
   stageName: StageName
-  codeBuildRole: CodeBuildRole
 }
 
 export class ModuleDeployProject extends PipelineProject {
   constructor(scope: Construct, id: string, props: ModuleDeployProjectProps) {
-    const { codeBuildRole, moduleName, stageName } = props
+    const { moduleName, stageName } = props
     super(scope, id, {
       projectName: id,
-      role: codeBuildRole,
+      role: new CodeBuildRole(scope, `${stageName}_${moduleName}DeployRole`),
       environment: defaultEnvironment,
       environmentVariables: {
         SLIC_STAGE: {
