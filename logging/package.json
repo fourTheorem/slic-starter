@@ -2,9 +2,10 @@
   "name": "logging-service",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
-  "author": "",
-  "license": "ISC",
+  "scripts": {
+    "test": "echo No tests for third-party log forwarder"
+  },
+  "license": "MIT",
   "dependencies": {
     "dotenv": "^7.0.0",
     "serverless-pseudo-parameters": "^2.4.0"
