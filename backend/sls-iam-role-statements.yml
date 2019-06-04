@@ -12,3 +12,9 @@
   Action:
     - events:PutEvents
   Resource: '*'
+- Effect: Allow
+  Action:
+    - xray:PutTraceSegments
+    - xray:PutTelemetryRecords
+  Resource:
+    - '*'

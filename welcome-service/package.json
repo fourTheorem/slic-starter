@@ -36,6 +36,7 @@
     "tap": "^12.5.2"
   },
   "dependencies": {
+    "aws-xray-sdk": "^2.3.3",
     "aws4": "^1.8.0",
     "axios": "^0.18.0",
     "bourne": "^1.1.2",
