@@ -6,3 +6,9 @@
     - arn:aws:ssm:#{AWS::Region}:#{AWS::AccountId}:parameter/LogzioUrl
     - arn:aws:ssm:#{AWS::Region}:#{AWS::AccountId}:parameter/LogzioType
     - arn:aws:ssm:#{AWS::Region}:#{AWS::AccountId}:parameter/LogzioFormat
+- Effect: Allow
+  Action:
+    - xray:PutTraceSegments
+    - xray:PutTelemetryRecords
+  Resource:
+    - '*'

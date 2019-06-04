@@ -11,6 +11,7 @@
   },
   "devDependencies": {
     "serverless-dotenv-plugin": "^2.0.1",
+    "serverless-plugin-tracing": "^2.0.0",
     "serverless-prune-plugin": "^1.3.2",
     "serverless-python-requirements": "^4.3.0"
   }

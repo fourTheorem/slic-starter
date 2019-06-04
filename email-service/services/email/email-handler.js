@@ -1,6 +1,7 @@
 'use strict'
 
-const AWS = require('aws-sdk')
+const awsXray = require('aws-xray-sdk')
+const AWS = awsXray.captureAWS(require('aws-sdk'))
 
 const log = require('../../lib/log')
 
