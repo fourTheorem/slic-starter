@@ -1,2 +1,3 @@
 logForwarder:
   handler: lambda_function.lambda_handler
+  tracing: true

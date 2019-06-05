@@ -20,6 +20,8 @@ logzio_url_base = ssm.get_parameter(Name='LogzioUrl')
 logzio_type = ssm.get_parameter(Name='LogzioType')
 logzio_format = ssm.get_parameter(Name='LogzioFormat')
 
+print(logzio_format['Parameter']['Value'])
+
 def _extract_aws_logs_data(event):
     # type: (dict) -> dict
     try:
@@ -48,7 +50,7 @@ def _parse_cloudwatch_log(log, aws_logs_data):
 
     # If FORMAT is json treat message as a json
     try:
-        if logzio_format['Params']['Value'] == 'json':
+        if logzio_format['Parameter']['Value'] == 'json':
             json_object = json.loads(log['message'])
             for key, value in json_object.items():
                 log[key] = value
