@@ -55,9 +55,12 @@ resources:
                 - '*'
             - Effect: Allow
               Action:
+                - iam:AttachRolePolicy
+                - iam:DetachRolePolicy
                 - iam:GetRole
                 - iam:CreateRole
                 - iam:PassRole
+                - iam:GetRolePolicy
                 - iam:PutRolePolicy
                 - iam:DeleteRolePolicy
                 - iam:DeleteRole
@@ -78,11 +81,13 @@ resources:
                 - s3:PutBucketPolicy
                 - s3:PutBucketWebsite
               Resource:
-                - arn:aws:s3:::slic-*
+                - '*'
             - Effect: Allow
               Action:
                 - lambda:Get*
                 - lambda:List*
+                - lambda:CreateEventSourceMapping
+                - lambda:DeleteEventSourceMapping
                 - lambda:CreateFunction
                 - lambda:AddPermission
                 - lambda:CreateAlias
@@ -92,7 +97,7 @@ resources:
                 - lambda:RemovePermission
                 - lambda:Update*
               Resource:
-                - arn:aws:lambda:${self:custom.region}:*:function:*
+                - '*'
             - Effect: Allow
               Action:
                 - cloudfront:CreateDistribution
@@ -126,15 +131,10 @@ resources:
                 - logs:CreateLogGroup
                 - logs:CreateLogStream
                 - logs:DeleteLogGroup
-              Resource:
-                - arn:aws:logs:*:*:*
-            - Effect: Allow
-              Action:
+                - logs:DeleteSubscriptionFilter
+                - logs:DescribeSubscriptionFilters
                 - logs:PutLogEvents
-              Resource:
-                - arn:aws:logs:*:*:*
-            - Effect: Allow
-              Action:
+                - logs:PutSubscriptionFilter
                 - logs:DescribeLogStreams
                 - logs:DescribeLogGroups
                 - logs:FilterLogEvents
@@ -145,6 +145,7 @@ resources:
                 - events:Put*
                 - events:Remove*
                 - events:Delete*
+                - events:Describe*
               Resource:
                 - 'arn:aws:events:*:*:rule/*'
             - Effect: Allow
@@ -188,6 +189,18 @@ resources:
                 - cognito-identity:ListIdentityPools
                 - cognito-identity:GetIdentityPoolRoles
                 - cognito-identity:SetIdentityPoolRoles
+              Resource:
+                - '*'
+            - Effect: Allow
+              Action:
+                - 'ssm:ListTagsForResource'
+                - 'ssm:AddTagsToResource'
+                - 'ssm:RemoveTagsFromResource'
+                - 'ssm:DeleteParameter'
+                - 'ssm:DescribeParameters'
+                - 'ssm:PutParameter'
+                - 'ssm:GetParameter'
+                - 'ssm:GetParameters'
               Resource:
                 - '*'
 

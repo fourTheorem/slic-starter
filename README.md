@@ -17,6 +17,8 @@ This project is free to use by enterprise, startups, students, educators, enthus
 
 ## What does it provide?
 
+![SLIC Starter Architecture](./architecture.png)
+
 SLIC Starter is a complete, working application. By including all the aspects of a real application, SLIC Starter goes beyond a typical demo project. You are encouraged to:
 
 - Take SLIC Starter and copy it
@@ -45,11 +47,7 @@ SLIC Starter uses:
 
 ### Authentication
 
-Authentication is a difficult problem with constantly-evolving security requirements. SLIC Starter uses [Cognito](https://aws.amazon.com/cognito/) and [Amplify](https://aws-amplify.github.io/) to remove the burden. Cognito can still be complex when getting started. SLIC Starter provides a complete setup with user pool and identity pool, sign-up and login. Amplify is used to authenticate in the web client. There is even a Cognito/Amplify simulation that allows you to work in local development mode, avoiding the need for a real Cognito backend in all cases.
-
-### User Accounts and Authorization
-
-_Coming soon_. SLIC Starter will include support for roles and Role-Based Access Control (RBAC).
+Authentication is a difficult problem with constantly-evolving security requirements. SLIC Starter uses [Cognito](https://aws.amazon.com/cognito/) and the [Amplify](https://aws-amplify.github.io/) SDK to remove the burden. Cognito can still be complex when getting started. SLIC Starter provides a complete setup with user pool and identity pool, sign-up and login. Amplify is used to authenticate in the web client. There is even a Cognito/Amplify simulation that allows you to work in local development mode, avoiding the need for a real Cognito backend in all cases.
 
 ### Data Access with a RESTful API
 
@@ -95,9 +93,17 @@ All tests can be run in local development mode as well as against a fully-deploy
 
 ### Logging
 
+As a default log centralization solution, SLIC Starter publishes logs to [logz.io](https://logz.io). The [logging](./logging) module handles this using the logz.io forwarder. This is integrated into each service's Lambda function using  the [serverless-log-forwarding](https://github.com/amplify-education/serverless-log-forwarding) plugin.
+
+Lambdas use [pino](https://github.com/pinojs/pino) as the logger, outputing structured JSON.
+
 ### Secret Management
 
 We use AWS Secrets Manager for storing the GitHub personal access token and AWS Systems Manager Parameter Store for storing other secrets, such as API access tokens.
+
+### User Accounts and Authorization
+
+_Coming soon_. SLIC Starter will include support for roles and Role-Based Access Control (RBAC).
 
 ## Getting Started
 
