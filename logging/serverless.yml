@@ -22,3 +22,28 @@ resources:
       Value: !GetAtt LogForwarderLambdaFunction.Arn
       Export:
         Name: ${self:provider.stage}-log-forwarder-function-arn
+
+# NOTE: /logging/logzio/token must be added manually as a SecretString
+
+  Resources:
+    logzioFormatParameter:
+      Type: AWS::SSM::Parameter
+      Properties:
+        Name: /logging/logzio/format
+        Type: String
+        Value: json
+
+    logzioUrlParameter:
+      Type: AWS::SSM::Parameter
+      Properties:
+        Name: /logging/logzio/url
+        Type: String
+        Value: https://listener.logz.io:8071
+
+    logzioTypeParameter:
+      Type: AWS::SSM::Parameter
+      Properties:
+        Name: /logging/logzio/type
+        Type: String
+        Value: cloudwatch-logs
+

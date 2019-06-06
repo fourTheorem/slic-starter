@@ -2,34 +2,42 @@ import gzip
 import io
 import json
 import logging
-import os
 import base64
 import boto3
 
 from shipper import LogzioShipper
 
-# set logger
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
-#set boto3 client
 ssm = boto3.client('ssm')
-print('boto3 client set. Getting params')
-logzio_token = ssm.get_parameter(Name='LogzioToken', WithDecryption=True)
-logzio_url_base = ssm.get_parameter(Name='LogzioUrl')
-logzio_type = ssm.get_parameter(Name='LogzioType')
-logzio_format = ssm.get_parameter(Name='LogzioFormat')
+
+
+logzio_param_list = ssm.get_parameters_by_path(
+        Path='/logging/logzio',
+        WithDecryption=True
+        )['Parameters']
+logzio_params = {
+        logzio_param_list[i]['Name']: logzio_param_list[i]['Value']
+        for i in range(0, len(logzio_param_list))
+        }
+logzio_url_base = logzio_params['/logging/logzio/url']
+logzio_type = logzio_params['/logging/logzio/type']
+logzio_format = logzio_params['/logging/logzio/format']
+logzio_token = logzio_params['/logging/logzio/token']
+
 
 def _extract_aws_logs_data(event):
-    # type: (dict) -> dict
     try:
         logs_data_decoded = base64.b64decode(event['awslogs']['data'])
-        logs_data_unzipped = gzip.GzipFile(fileobj=io.BytesIO(logs_data_decoded)).read()
+        logs_data_unzipped = gzip.GzipFile(
+                fileobj=io.BytesIO(logs_data_decoded)
+                ).read()
         logs_data_dict = json.loads(logs_data_unzipped)
         return logs_data_dict
     except ValueError as e:
-        logger.error("Got exception while loading json, message: {}".format(e))
-        raise ValueError("Exception: json loads")
+        logger.error('Got exception while loading json, message: {}'.format(e))
+        raise ValueError('Exception: json loads')
 
 
 def _parse_cloudwatch_log(log, aws_logs_data):
@@ -48,7 +56,7 @@ def _parse_cloudwatch_log(log, aws_logs_data):
 
     # If FORMAT is json treat message as a json
     try:
-        if logzio_format['Parameter']['Value'] == 'json':
+        if logzio_format == 'json':
             json_object = json.loads(log['message'])
             for key, value in json_object.items():
                 log[key] = value
@@ -66,19 +74,22 @@ def _enrich_logs_data(aws_logs_data, context):
 
 
 def lambda_handler(event, context):
-    logzio_url = "{0}/?token={1}&type={2}".format(logzio_url_base['Parameter']['Value'], logzio_token['Parameter']['Value'], logzio_type['Parameter']['Value'])
+    logzio_url = '{0}/?token={1}&type={2}'.format(
+            logzio_url_base, logzio_token, logzio_type
+            )
 
     aws_logs_data = _extract_aws_logs_data(event)
     _enrich_logs_data(aws_logs_data, context)
     shipper = LogzioShipper(logzio_url)
 
-    logger.info("About to send {} logs".format(len(aws_logs_data['logEvents'])))
+    logger.info('About to send {} logs'.format(
+        len(aws_logs_data['logEvents']))
+        )
     for log in aws_logs_data['logEvents']:
         if not isinstance(log, dict):
-            raise TypeError("Expected log inside logEvents to be a dict but found another type")
+            raise TypeError('Expected log inside logEvents to be a dict but found another type')
 
         _parse_cloudwatch_log(log, aws_logs_data)
         shipper.add(log)
 
     shipper.flush()
-

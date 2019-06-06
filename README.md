@@ -95,7 +95,7 @@ All tests can be run in local development mode as well as against a fully-deploy
 
 As a default log centralization solution, SLIC Starter publishes logs to [logz.io](https://logz.io). The [logging](./logging) module handles this using the logz.io forwarder. This is integrated into each service's Lambda function using  the [serverless-log-forwarding](https://github.com/amplify-education/serverless-log-forwarding) plugin.
 
-Lambdas use [pino](https://github.com/pinojs/pino) as the logger, outputing structured JSON.
+For further details, see the [logging README](./logging/README.md)
 
 ### Secret Management
 
