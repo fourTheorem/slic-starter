@@ -32,6 +32,14 @@ export class IntegrationTestProject extends PipelineProject {
         CROSS_ACCOUNT_ID: {
           type: BuildEnvironmentVariableType.PlainText,
           value: `${config.accountIds[props.stageName]}`
+        },
+        MAILOSAUR_API_KEY: {
+          type: BuildEnvironmentVariableType.ParameterStore,
+          value: '/test/mailosaur/apiKey'
+        },
+        MAILOSAUR_SERVER_ID: {
+          type: BuildEnvironmentVariableType.ParameterStore,
+          value: '/test/mailosaur/serverId'
         }
       },
       buildSpec: 'integration-tests/buildspec.yml',

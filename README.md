@@ -112,7 +112,14 @@ To set up deployment to your own accounts, first run through these steps.
 1. Enable CodeBuild to access your GitHub repo. The only way to do this is to create a temporary CodeBuild project in your CICD account and set up your GitHub repostitory as a source. Grant access to your GitHub repo. Your account now has access to the repo and the SLIC Starter CodeBuild will be able to monitor and clone your repo. The temporary CodeBuild project can alreay be deleted.
 2. (Optional - this will be required for repo tagging). Set up GitHub authentication for your repo. Create a GitHub Personal Access Token and add it as an secret with the name `GitHubPersonalAccessToken` in Secrets Manager _in the CICD account_. See [this post](https://medium.com/@eoins/securing-github-tokens-in-a-serverless-codepipeline-dc3a24ddc356) for more detail on this approach.
 3. Edit the account IDs in `cicd/cross-account/serverless.yml` and `cicd/config.ts`.
-4. Give permissions for your CICD account to deploy to staging and production accounts.
+4. Create a [Mailosaur](https://mailosaur.com) account. Take the server ID and API key and add them in your CICD account to the Parameter Store as `SecretString` values with the following names
+
+ * `test/mailosaur/serverId`
+ * `test/mailosaur/apiKey`
+
+These are picked up by the integration and end-to-end test CodeBuild projects.
+
+5. Give permissions for your CICD account to deploy to staging and production accounts.
 
 ```
 npm install -g serverless
@@ -121,8 +128,8 @@ AWS_PROFILE=your-staging-account serverless deploy
 AWS_PROFILE=your-production-account serverless deploy
 ```
 
-4. Alter the `nsDomain` property in `backend/custom.yml` and `frontend/custom.yml`. Use a domain you own so you can update DNS entries to point to your deployed environment. When the deployment process runs, the domain owner will be sent an email to verify ownership before the deployment completes.
-5. Deploy the CI/CD pipeline to your CICD account!
+6. Alter the `nsDomain` property in `backend/custom.yml` and `frontend/custom.yml`. Use a domain you own so you can update DNS entries to point to your deployed environment. When the deployment process runs, the domain owner will be sent an email to verify ownership before the deployment completes.
+7. Deploy the CI/CD pipeline to your CICD account.
 
 ```
 cd cicd
@@ -130,8 +137,8 @@ npm install
 AWS_PROFILE=your-cicd-account npm deploy
 ```
 
-6. Trigger your pipeline by commiting your changes to the repository
-7. Monitor your deployment by viewing the orchestrator pipeline in the AWS Console CodePipeline page.
+8. Trigger your pipeline by commiting your changes to the repository
+9. Monitor your deployment by viewing the orchestrator pipeline in the AWS Console CodePipeline page.
 
 ### Set up your domain for email
 

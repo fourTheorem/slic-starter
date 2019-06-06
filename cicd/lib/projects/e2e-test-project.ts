@@ -42,11 +42,11 @@ export class E2ETestProject extends PipelineProject {
         },
         MAILOSAUR_API_KEY: {
           type: BuildEnvironmentVariableType.ParameterStore,
-          value: 'MailosaurApiKey'
+          value: '/test/mailosaur/apiKey'
         },
         MAILOSAUR_SERVER_ID: {
           type: BuildEnvironmentVariableType.ParameterStore,
-          value: 'MailosaurServerId'
+          value: '/test/mailosaur/serverId'
         }
       },
       buildSpec: 'e2e-tests/buildspec.yml',
