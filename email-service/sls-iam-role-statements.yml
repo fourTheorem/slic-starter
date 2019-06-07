@@ -8,3 +8,9 @@
     - ses:SendEmail
   Resource:
     - arn:aws:ses:*:*:identity/*
+- Effect: Allow
+  Action:
+    - xray:PutTraceSegments
+    - xray:PutTelemetryRecords
+  Resource:
+    - '*'

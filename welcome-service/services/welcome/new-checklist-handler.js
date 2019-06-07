@@ -1,5 +1,7 @@
 const axios = require('axios')
-const AWS = require('aws-sdk')
+const awsXray = require('aws-xray-sdk')
+const AWS = awsXray.captureAWS(require('aws-sdk'))
+
 const log = require('../../lib/log')
 
 const SQS = new AWS.SQS({ endpoint: process.env.SQS_ENDPOINT_URL })

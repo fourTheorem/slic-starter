@@ -7,3 +7,9 @@
   Action:
     - ssm:GetParameter
   Resource: arn:aws:ssm:#{AWS::Region}:#{AWS::AccountId}:parameter/UserPoolId
+- Effect: Allow
+  Action:
+    - xray:PutTraceSegments
+    - xray:PutTelemetryRecords
+  Resource:
+    - '*'

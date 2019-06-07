@@ -1,6 +1,7 @@
 'use strict'
 
-const AWS = require('aws-sdk')
+const awsXray = require('aws-xray-sdk')
+const AWS = awsXray.captureAWS(require('aws-sdk'))
 
 const defaultOptions = {
   convertEmptyValues: true // If this is not set, empty strings cause an error. This converts them automatically to NULL
