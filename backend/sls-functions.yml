@@ -1,6 +1,5 @@
 create:
   handler: services/checklists/create.main
-  tracing: true
   events:
     - http:
         path: checklist
@@ -13,7 +12,6 @@ create:
 
 get:
   handler: services/checklists/get.main
-  tracing: true
   events:
     - http:
         path: checklist/{id}
@@ -26,7 +24,6 @@ get:
 
 list:
   handler: services/checklists/list.main
-  tracing: true
   events:
     - http:
         path: checklist
@@ -39,7 +36,6 @@ list:
 
 update:
   handler: services/checklists/update.main
-  tracing: true
   events:
     - http:
         path: checklist/{id}
@@ -52,7 +48,6 @@ update:
 
 delete:
   handler: services/checklists/delete.main
-  tracing: true
   events:
     - http:
         path: checklist/{id}
@@ -65,7 +60,6 @@ delete:
 
 addEntry:
   handler: services/checklists/entries/add.main
-  tracing: true
   events:
     - http:
         path: checklist/{id}/entries
@@ -78,7 +72,6 @@ addEntry:
 
 listEntries:
   handler: services/checklists/entries/list.main
-  tracing: true
   events:
     - http:
         path: checklist/{id}/entries
@@ -91,7 +84,6 @@ listEntries:
 
 updateEntry:
   handler: services/checklists/entries/update.main
-  tracing: true
   events:
     - http:
         path: checklist/{id}/entries/{entId}
@@ -104,7 +96,6 @@ updateEntry:
 
 deleteEntry:
   handler: services/checklists/entries/delete.main
-  tracing: true
   events:
     - http:
         path: checklist/{id}/entries/{entId}

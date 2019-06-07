@@ -1,6 +1,5 @@
 sendEmail:
   handler: services/email/email-handler.sendEmail
-  tracing: true
   environment:
     EMAIL_QUEUE_NAME: ${self:custom.emailQueueName}
     EMAIL_FROM_ADDRESS: no-reply@${self:custom.emailDomainName}

@@ -20,8 +20,6 @@ logzio_url_base = ssm.get_parameter(Name='LogzioUrl')
 logzio_type = ssm.get_parameter(Name='LogzioType')
 logzio_format = ssm.get_parameter(Name='LogzioFormat')
 
-print(logzio_format['Parameter']['Value'])
-
 def _extract_aws_logs_data(event):
     # type: (dict) -> dict
     try:

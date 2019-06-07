@@ -3,7 +3,6 @@ service: logging-service
 plugins:
   - serverless-python-requirements
   - serverless-pseudo-parameters
-  - serverless-plugin-tracing
 
 provider:
   name: aws
