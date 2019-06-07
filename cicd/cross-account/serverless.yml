@@ -4,8 +4,7 @@ custom:
   stage: ${opt:stage, 'cicd'}
   region: eu-west-1
   runtime: nodejs8.10
-  accountIds:
-    cicd: 285982925560
+  accountIds: ${file(../../aws-accounts.json)}
 
 provider:
   name: aws

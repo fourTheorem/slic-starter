@@ -2,4 +2,4 @@
 !lib/tasks/**/*.js
 *.d.ts
 node_modules
-
+cdk.out/

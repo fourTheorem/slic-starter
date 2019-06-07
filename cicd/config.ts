@@ -1,8 +1,8 @@
-const accountIds: { [stageName: string]: number } = {
-  cicd: 285982925560,
-  dev: 935672627075,
-  stg: 835483165098,
-  prod: 302391791660
+let accountIds
+try {
+  accountIds = require('../aws-accounts.json')
+} catch (err) {
+  throw new Error('AWS account IDs must be configured in aws-accounts.json first. Copy aws-accounts.json.sample to get started!')
 }
 
 export default {

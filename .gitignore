@@ -54,4 +54,6 @@ build-artifacts/
 # Temporary Git repo for checking changes
 _GIT_REPO/
 .vscode/
-pipeline-state.env
+pipeline-state.env\
+aws-accounts.json
+
