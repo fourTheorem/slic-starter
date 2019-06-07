@@ -6,7 +6,7 @@ module.exports = serverless => {
     })()
 
   const region = 'us-east-1'
-  const stackName = `slic-starter-certs-${stage}`
+  const stackName = `baseline-${stage}`
   const exports = {
     [`${stage}-site-cert`]: 'siteCert',
     [`${stage}-public-hosted-zone`]: 'publicHostedZone'
