@@ -51,7 +51,7 @@ Authentication is a difficult problem with constantly-evolving security requirem
 
 ### Data Access with a RESTful API
 
-SLIC Starter includes useful, working examples of typical CRUD (create, read, update and delete) actions with a REST API. Currently, these APIs are implemented with DynamoDB and the `DocumentClient` API. For an example of this, look at the implementation of the [Checklist](./backend) service.
+SLIC Starter includes useful, working examples of typical CRUD (create, read, update and delete) actions with a REST API. Currently, these APIs are implemented with DynamoDB and the `DocumentClient` API. For an example of this, look at the implementation of the [Checklist](./checklist-service) service.
 
 ### Messaging
 
@@ -128,7 +128,7 @@ AWS_PROFILE=your-staging-account serverless deploy
 AWS_PROFILE=your-production-account serverless deploy
 ```
 
-6. Alter the `nsDomain` property in `backend/custom.yml` and `frontend/custom.yml`. Use a domain you own so you can update DNS entries to point to your deployed environment. When the deployment process runs, the domain owner will be sent an email to verify ownership before the deployment completes.
+6. Alter the `nsDomain` property in `checklist-service/custom.yml` and `frontend/custom.yml`. Use a domain you own so you can update DNS entries to point to your deployed environment. When the deployment process runs, the domain owner will be sent an email to verify ownership before the deployment completes.
 7. Deploy the CI/CD pipeline to your CICD account.
 
 ```
@@ -161,7 +161,7 @@ SLIC_STAGE=local sls offline start --migrate true
 
 ## Backend configuration for front end
 
-When working in local development, the backend configuration is pulled from `.env.local`. When building the production frontend for any deployed _stage_, `npm run build` will, by default, generate a `.env.production` file. This file is `.gitignore`d so it will not be committed. The values for this file are dynamically generated using the CloudFormation outputs retrieved from the stage specified using the `SLIC_STAGE` environment variable.
+When working in local development, the backend configuration is pulled from [.env.local](./frontend/.env.local). When building the production frontend for any deployed _stage_, `npm run build` will, by default, generate a `.env.production` file. This file is `.gitignore`d so it will not be committed. The values for this file are dynamically generated using the CloudFormation outputs retrieved from the stage specified using the `SLIC_STAGE` environment variable.
 
 ## Demo
 

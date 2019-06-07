@@ -1,4 +1,4 @@
-service: slic-starter-backend
+service: checklist-service
 
 plugins:
   # Order of plugins is important for dynamodb-local

@@ -1,4 +1,4 @@
-service: slic-starter-welcome-service
+service: welcome-service
 
 plugins:
   - serverless-offline

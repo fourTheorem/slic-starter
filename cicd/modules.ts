@@ -5,9 +5,9 @@ export interface Modules {
 const modules: Modules = {
   moduleNames: [
     'frontend',
-    'backend',
     'baseline',
     'logging',
+    'checklist-service',
     'user-service',
     'email-service',
     'welcome-service'

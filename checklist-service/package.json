@@ -1,7 +1,7 @@
 {
-  "name": "slic-starter",
+  "name": "checklist-service",
   "version": "1.0.0",
-  "description": "Backend for SLIC Starter",
+  "description": "Checklist Service",
   "scripts": {
     "start": "SLIC_STAGE=local sls offline start --migrate true",
     "lint": "eslint --ignore-pattern \"scripts/**\" .",

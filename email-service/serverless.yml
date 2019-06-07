@@ -1,4 +1,4 @@
-service: slic-starter-email-service
+service: email-service
 
 plugins:
   - serverless-offline

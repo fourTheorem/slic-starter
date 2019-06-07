@@ -1,4 +1,4 @@
-service: slic-starter-frontend
+service: frontend
 
 plugins:
   - serverless-s3-sync

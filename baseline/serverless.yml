@@ -1,4 +1,4 @@
-service: slic-starter-certs
+service: baseline
 
 provider:
   name: aws

@@ -1,4 +1,4 @@
-service: deployment-target-resources
+service: cicd-deployment-target
 
 custom:
   stage: ${opt:stage, 'cicd'}
