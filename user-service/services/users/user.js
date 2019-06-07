@@ -14,7 +14,7 @@ module.exports = {
 
 async function get({ userId }) {
   const params = {
-    UserPoolId: await userPoolIdPromise,
+    UserPoolId: await getUserPoolId(),
     Username: userId
   }
 
@@ -28,13 +28,13 @@ async function get({ userId }) {
   return result
 }
 
-const userPoolIdPromise = getUserPoolId()
+let userPoolIdPromise
 
-async function getUserPoolId() {
-  const result = await SSM.getParameter({ Name: 'UserPoolId' }).promise()
-  log.info({ result }, 'Got parameter')
-  const {
-    Parameter: { Value: userPoolId }
-  } = result
-  return userPoolId
+function getUserPoolId() {
+  if (!userPoolIdPromise) {
+    userPoolIdPromise = SSM.getParameter({ Name: 'UserPoolId' })
+      .promise()
+      .then(result => result.Parameter.Value)
+  }
+  return userPoolIdPromise
 }
