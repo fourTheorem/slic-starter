@@ -1,6 +1,6 @@
 const awsXray = require('aws-xray-sdk')
-const AWS = awsXray.captureAWS(require('aws-sdk'))
-const cwEvents = new AWS.CloudWatchEvents()
+const AWS = require('aws-sdk')
+const cwEvents = awsXray.captureAWSClient(new AWS.CloudWatchEvents())
 
 async function createNewListEvent(list) {
   const params = {
