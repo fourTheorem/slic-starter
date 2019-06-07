@@ -5,6 +5,7 @@ import {
 } from '@aws-cdk/aws-codebuild'
 import StageName from '../stage-name'
 import { Construct } from '@aws-cdk/cdk'
+import iam = require('@aws-cdk/aws-iam')
 import config from '../../config'
 import CodeBuildRole from '../code-build-role'
 
@@ -21,7 +22,13 @@ export class IntegrationTestProject extends PipelineProject {
     const { stageName, ...rest } = props
 
     const role = new CodeBuildRole(scope, `${props.stageName}IntegrationTestRole`)
-
+    // Allow access to secret environment variables in Parameter Store required for tests
+    role.addToPolicy(
+      new iam.PolicyStatement()
+        .allow()
+        .addAction('ssm:GetParameters')
+        .addResource(`arn:aws:ssm:${config.region}:${config.accountIds.cicd}:parameter/test/*`)
+)
     super(scope, id, {
       projectName: `${props.stageName}IntegrationTest`,
       environmentVariables: {

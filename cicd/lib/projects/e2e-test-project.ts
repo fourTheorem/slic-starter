@@ -22,11 +22,12 @@ export class E2ETestProject extends PipelineProject {
     const { stageName, ...rest } = props
 
     const role = new CodeBuildRole(scope, `${props.stageName}E2ETestRole`)
+    // Allow access to secret environment variables in Parameter Store required for tests
     role.addToPolicy(
       new iam.PolicyStatement()
       .allow()
       .addAction('ssm:GetParameters')
-      .addResource(`arn:aws:ssm:${config.region}:${config.accountIds.cicd}:parameter/Mailosaur*`)
+      .addResource(`arn:aws:ssm:${config.region}:${config.accountIds.cicd}:parameter/test/*`)
     )
 
     super(scope, id, {
