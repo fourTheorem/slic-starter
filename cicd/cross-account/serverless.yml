@@ -54,6 +54,8 @@ resources:
                 - '*'
             - Effect: Allow
               Action:
+                - iam:CreateServiceLinkedRole
+                - iam:DeleteServiceLinkedRole
                 - iam:AttachRolePolicy
                 - iam:DetachRolePolicy
                 - iam:GetRole
