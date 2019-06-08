@@ -1,12 +1,16 @@
 'use strict'
 
+const AWS = require('aws-sdk')
 const awsXray = require('aws-xray-sdk')
-const AWS = awsXray.captureAWS(require('aws-sdk'))
 
 const log = require('../../lib/log')
 
-const cognito = new AWS.CognitoIdentityServiceProvider()
-const SSM = new AWS.SSM({ endpoint: process.env.SSM_ENDPOINT_URL })
+const cognito = awsXray.captureAWSClient(
+  new AWS.CognitoIdentityServiceProvider()
+)
+const SSM = awsXray.captureAWSClient(
+  new AWS.SSM({ endpoint: process.env.SSM_ENDPOINT_URL })
+)
 
 module.exports = {
   get

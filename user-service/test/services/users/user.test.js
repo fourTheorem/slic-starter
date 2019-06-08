@@ -31,4 +31,10 @@ test('user service retrieves cognito user information', async t => {
   t.match(response, {
     email: testEmail
   })
+
+  // Run again to test pre-cached user ID
+  const responser2 = await userService.get(uid)
+  t.match(responser2, {
+    email: testEmail
+  })
 })
