@@ -120,7 +120,7 @@ SLIC Starter is designed to get you up in running with a real-world application 
 To set up deployment to your own accounts, first run through these steps.
 
 1. Decide when DNS name you will use for your application. If you need to register one, the best place to do this is probably in your production account using [Amazon Route 53](https://aws.amazon.com/route53/).
-2. Copy `aws-accounts.json.sample` to `aws-accounts.json` and edit it to include the AWS Account IDs of your staging, production and CI/CD accounts. This file is `.gitignore`'d so your account IDs are not commited to Git.
+2. Copy `slic-config.json.sample` to `slic-config.json` and edit it to include the AWS Account IDs of your staging, production and CI/CD accounts. This file is `.gitignore`'d so your account IDs are not commited to Git. Also specify your GitHub repository details and DNS domain for your deployment. Use a domain you own so you can update DNS entries to point to your deployed environment. When the deployment process runs, the domain owner will be sent an email to verify ownership before the deployment completes.
 3. Fork the repository into your own account or organization on GitHub. If you don't use GitHub, you will have to tweak the source project in the CICD module ([source-project.ts](./cicd/lib/project/source-project.ts))
 4. Enable CodeBuild to access your GitHub repo. The only way to do this is to create a temporary CodeBuild project in your CICD account and set up your GitHub repostitory as a source. Grant access to your GitHub repo. Your account now has access to the repo and the SLIC Starter CodeBuild will be able to monitor and clone your repo. The temporary CodeBuild project can alreay be deleted. You will need to have **admin** priveleges for the repository or **owner** permissions for the GitHub organization in order for WebHooks to be create automatically by [the CodeBuild project](./cicd/lib/project/source-project.ts).
 5. (Optional - this will be required for repo tagging). Set up GitHub authentication for your repo. Create a GitHub Personal Access Token and add it as an secret with the name `GitHubPersonalAccessToken` in Secrets Manager _in the CICD account_. See [this post](https://medium.com/@eoins/securing-github-tokens-in-a-serverless-codepipeline-dc3a24ddc356) for more detail on this approach.
@@ -141,8 +141,7 @@ AWS_PROFILE=your-staging-account serverless deploy
 AWS_PROFILE=your-production-account serverless deploy
 ```
 
-9. Alter the `nsDomain` property in `checklist-service/custom.yml` and `frontend/custom.yml`. Use a domain you own so you can update DNS entries to point to your deployed environment. When the deployment process runs, the domain owner will be sent an email to verify ownership before the deployment completes.
-10. Deploy the CI/CD pipeline to your CICD account.
+9. Deploy the CI/CD pipeline to your CICD account.
 
 ```
 cd cicd
@@ -150,9 +149,9 @@ npm install
 AWS_PROFILE=your-cicd-account npm deploy
 ```
 
-11. Trigger your pipeline by commiting your changes to the repository
-12. Monitor your deployment by viewing the orchestrator pipeline in the AWS Console CodePipeline page.
-13. Wait for your deployment to fail! _Wait, what?_ Yes, your first deployment will fail. This is expected and all part of the process. Read on to find out more!
+10. Trigger your pipeline by commiting your changes to the repository
+11. Monitor your deployment by viewing the orchestrator pipeline in the AWS Console CodePipeline page.
+12. Wait for your deployment to fail! _Wait, what?_ Yes, your first deployment will fail. This is expected and all part of the process. Read on to find out more!
 
 ## Getting to your First Successful Deployment
 

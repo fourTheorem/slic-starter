@@ -3,7 +3,7 @@ region: eu-west-1
 runtime: nodejs8.10
 defaultStage: dev
 bucketName: slic-starter-site-assets-${self:provider.stage}
-nsDomain: sliclists.com
+nsDomain: ${env:SLIC_NS_DOMAIN}
 domainPrefixes:
   dev: dev.
   stg: stg.

@@ -4,7 +4,7 @@ custom:
   stage: ${opt:stage, 'cicd'}
   region: eu-west-1
   runtime: nodejs8.10
-  accountIds: ${file(../../aws-accounts.json)}
+  accountIds: ${file(../../slic-config.json):accountIds}
 
 provider:
   name: aws

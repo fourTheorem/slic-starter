@@ -1,0 +1,16 @@
+{
+  "deployment": {
+    "region": "eu-west-1",
+    "nsDomain": "your-apex.domain"
+  },
+  "accountIds": {
+    "cicd": "123467890",
+    "stg": "1234567891",
+    "prod": "1234567892"
+  },
+  "sourceRepo": {
+    "owner": "fourTheorem",
+    "name": "slic-starter",
+    "branch": "feature/advanced-cicd-#19"
+  }
+}

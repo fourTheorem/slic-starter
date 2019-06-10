@@ -1,16 +1,16 @@
-let accountIds
+let config
 try {
-  accountIds = require('../aws-accounts.json')
+  config = require('../slic-config.json')
 } catch (err) {
-  throw new Error('AWS account IDs must be configured in aws-accounts.json first. Copy aws-accounts.json.sample to get started!')
+  throw new Error('SLIC must be configured in slic-config.json first. Copy slic-config.json.sample to get started!')
 }
 
 export default {
-  stage: process.env.SLIC_STAGE || 'dev',
-  region: 'eu-west-1',
+  region: config.deployment.region,
+  nsDomain: config.deployment.nsDomain,
   runtime: 'nodejs:8.10',
-  sourceRepoOwner: 'fourTheorem',
-  sourceRepoName: 'slic-starter',
-  sourceBranch: 'feature/advanced-cicd-#19', // TODO - change this to master
-  accountIds
+  sourceRepoOwner: config.sourceRepo.owner,
+  sourceRepoName: config.sourceRepo.name,
+  sourceBranch: config.sourceRepo.branch,
+  accountIds: config.accountIds
 }
