@@ -6,7 +6,7 @@ const { CloudFormation } = require('aws-sdk')
 const stage = process.env.SLIC_STAGE || 'local'
 
 const domainSuffix = stage === 'prod' ? '' : `${stage}.`
-const stackName = `slic-starter-backend-${stage}`
+const stackName = `checklist-service-${stage}`
 
 let backendConfig
 
