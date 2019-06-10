@@ -27,6 +27,7 @@ done
 
 checkExecutions() {
   anyFailed=false
+  anyInProgress=false
   allSucceeded=true
   for moduleName in ${MODULE_NAMES}; do
     if [[ ${changedModules[${moduleName}]} = true ]]; then
@@ -37,6 +38,11 @@ checkExecutions() {
       else
         allSucceeded=false
       fi
+
+      if [[ "$status" = "InProgress" ]]; then
+        anyInProgress=true
+      fi
+
       if [[ "$status" = "Failed" ]]; then
         anyFailed=true
         echo "${moduleName} failed. Check https://${AWS_DEFAULT_REGION}.console.aws.amazon.com/codesuite/codepipeline/pipelines/${moduleName}_${SLIC_STAGE}_pipeline/executions/${pipelineExecutionIds[${moduleName}]}/timeline?region=${AWS_DEFAULT_REGION}"
@@ -46,8 +52,8 @@ checkExecutions() {
 }
 
 checkExecutions
-while [[ $allSucceeded != true && $anyFailed != true ]]; do
-  echo "allSucceeded ? $allSucceeded, anyFailed? $anyFailed"
+while [[ $anyInProgress = true ]]; do
+  echo "In progres: allSucceeded ? $allSucceeded, anyFailed? $anyFailed"
   sleep 10
   checkExecutions
 done
