@@ -37,6 +37,10 @@ export class E2ETestProject extends PipelineProject {
           type: BuildEnvironmentVariableType.PlainText,
           value: props.stageName
         },
+        SLIC_NS_DOMAIN: {
+          type: BuildEnvironmentVariableType.PlainText,
+          value: config.nsDomain
+        },
         CROSS_ACCOUNT_ID: {
           type: BuildEnvironmentVariableType.PlainText,
           value: `${config.accountIds[props.stageName]}`

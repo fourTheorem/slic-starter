@@ -9,7 +9,11 @@ export function getBaseURL() {
   if (stage === 'local') {
     url = 'http://localhost:3000'
   } else {
-    url = `https://${domainSuffix}sliclists.com`
+    const nsDomain = process.env.SLIC_NS_DOMAIN
+    if (!nsDomain) {
+      throw new Error('SLIC_NS_DOMAIN must be set')
+    }
+    url = `https://${domainSuffix}${nsDomain}`
   }
 
   return url

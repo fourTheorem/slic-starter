@@ -4,7 +4,6 @@ const awscred = require('awscred')
 const { CloudFormation } = require('aws-sdk')
 
 const stage = process.env.SLIC_STAGE || 'local'
-
 const domainSuffix = stage === 'prod' ? '' : `${stage}.`
 const stackName = `checklist-service-${stage}`
 
@@ -27,7 +26,11 @@ async function loadBackendConfig() {
       }
     }
 
-    const apiEndpoint = `https://api.${domainSuffix}sliclists.com`
+    const nsDomain = process.env.SLIC_NS_DOMAIN
+    if (!nsDomain) {
+      throw new Error('SLIC_NS_DOMAIN must be set')
+    }
+    const apiEndpoint = `https://api.${domainSuffix}${nsDomain}`
 
     const awsRegion = awscred.loadRegionSync()
 
