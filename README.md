@@ -71,7 +71,7 @@ SLIC Starter has a front-end web application. It uses React, Redux and [Material
 
 Getting continuous integration and deployment (CI/CD) right is one of the most important things in your microservice or serverless project. Having a good foundation here allows you to keep making changes fast. It's also fairly difficult to get right. SLIC Starter has made key choices to help you here.
 
-1. SLIC Starter uses multiple AWS accounts for secure isolation of environemnts. By default, we assume a production, test(staging) and cicd account exist. These can be set up under one root account using [AWS Organizations](https://aws.amazon.com/organizations/).
+1. SLIC Starter uses multiple AWS accounts for secure isolation of environments. By default, we assume a production, test(staging) and cicd account exist.
 1. CodePipeline and CodeBuild are used, so the CI/CD process is deployed using Infrastructure-as-Code, just like the serverless application itself. For this, we use the [CDK](https://github.com/awslabs/aws-cdk).
 1. The process dynamically creates a pipeline for _each module_(service) in the application. An **orchestrator pipeline** detects which modules need to be built, monitors their pipelines and triggers deployment to the staging account.
 1. Integration (API) and end-to-end UI tests are run before deployment to production. A manual approval step before deployment to production is included too.
@@ -105,10 +105,21 @@ We use AWS Secrets Manager for storing the GitHub personal access token and AWS 
 
 _Coming soon_. SLIC Starter will include support for roles and Role-Based Access Control (RBAC).
 
+## Before you Begin!
+
+SLIC Starter is designed to get you up in running with a real-world application as quickly as possible.  The fact that we go beyond the average sample application, there is a bit more involved in getting to production.  For example:
+
+1. We assume that you want to keep the CICD, staging and production accounts separate. These can be set up under one root account using [AWS Organizations](https://aws.amazon.com/organizations/).
+1. SLIC Starter assumes you are using a registered domain (like `sliclists.com`) and will set up DNS entries for use in production (like `api.sliclists.com`) and staging (`stg.sliclists.com`, `api.stg.sliclists.com`).
+1. This means you will have to take some steps to set up DNS records and allow these to propagate.
+1. When your application is automatically deploying as part of the CICD process and HTTPS certificates are being created, you (the domain owner) will be sent an email by Amazon Route53 to verify that you are the domain owner.
+1. You will also have to validate your domains with SES in order to have permissions for emails to be sent.
+
 ## Getting Started
 
 To set up deployment to your own accounts, first run through these steps.
 
+1. Decide when DNS name you will use for your application. If you need to register one, the best place to do this is probably in your production account using [Amazon Route 53](https://aws.amazon.com/route53/).
 1. Copy `aws-accounts.json.sample` to `aws-accounts.json` and edit it to include the AWS Account IDs of your staging, production and CI/CD accounts. This file is `.gitignore`'d so your account IDs are not commited to Git.
 2. Enable CodeBuild to access your GitHub repo. The only way to do this is to create a temporary CodeBuild project in your CICD account and set up your GitHub repostitory as a source. Grant access to your GitHub repo. Your account now has access to the repo and the SLIC Starter CodeBuild will be able to monitor and clone your repo. The temporary CodeBuild project can alreay be deleted.
 3. (Optional - this will be required for repo tagging). Set up GitHub authentication for your repo. Create a GitHub Personal Access Token and add it as an secret with the name `GitHubPersonalAccessToken` in Secrets Manager _in the CICD account_. See [this post](https://medium.com/@eoins/securing-github-tokens-in-a-serverless-codepipeline-dc3a24ddc356) for more detail on this approach.
@@ -140,6 +151,22 @@ AWS_PROFILE=your-cicd-account npm deploy
 
 9. Trigger your pipeline by commiting your changes to the repository
 10. Monitor your deployment by viewing the orchestrator pipeline in the AWS Console CodePipeline page.
+11. Wait for your deployment to fail! _Wait, what?_ Yes, your first deployment will fail. This is expected and all part of the process. Read on to find out more!
+
+## Getting to your First Successful Deployment
+
+The CICD process attempts to build and deploy each service in parallel. This is done so you get quick feedback and to improve the overall deployment speed. It also means that deployment can fail if there are dependencies between services. Out of the box, SLIC Starter has a `baseline` module that sets up a Route 53 Hosted Zone and some certificates. These are required by the `frontend` and `checklist-service` services, so those builds will fail if the cerificates aren't ready yet. This is just one example. There are other services that depend on common resources so it will require a few retries in both staging and production before everything is deployed.
+
+You can inspect the failures in the Orchestrator Pipeline view in the CodePipeline console of your CICD account. You can retry the `stgDeploy` phase by clicking the _Retry_ button in the pipeline.
+
+Once you get all services in staging successfully deployed, you might find that the test stage fails. This is likely to do with the front end being in accessible. As we already mentioned, your DNS entries will need to be set up. Let's understand how this all works better!
+
+1. CICD will create `NS` and `A` records for staging in your staging account. When production deployment happens, it will also create `NS` and `A` records in your production account.
+1. You need to decide who will own the records for your APEX domain, i.e. the parent domain (such as `sliclists.com`)
+1. If you let your production AWS account own these records, you need to copy the `NS` records from your production Route53 into your domain registration. You will then need to copy the `NS` records (only the `NS` records!) for staging into your production Route53 for the apex domain.
+1. Alternatively, if you want another provider to own the nameserver records for your domain, you should copy all generated DNS records (except `NS` type records) from your staging and production account into that provider's DNS records.
+
+Once you have set up the required DNS configuration and it has propagated, your front end staging application should be available at `https://stg.YOUR-DOMAIN.TLD` and you can click _Retry_ on the test phase of the pipeline!
 
 ### Set up your domain for email
 

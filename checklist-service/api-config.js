@@ -18,7 +18,6 @@ module.exports = serverless => {
   const provider = serverless.getProvider('aws')
   const { credentials } = provider.getCredentials()
 
-  console.log('Using credentials', credentials)
   const cf = new provider.sdk.CloudFormation({ credentials, region })
   const sts = new provider.sdk.STS({ credentials, region })
 
