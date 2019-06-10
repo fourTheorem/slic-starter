@@ -110,28 +110,29 @@ _Coming soon_. SLIC Starter will include support for roles and Role-Based Access
 SLIC Starter is designed to get you up in running with a real-world application as quickly as possible.  The fact that we go beyond the average sample application, there is a bit more involved in getting to production.  For example:
 
 1. We assume that you want to keep the CICD, staging and production accounts separate. These can be set up under one root account using [AWS Organizations](https://aws.amazon.com/organizations/).
-1. SLIC Starter assumes you are using a registered domain (like `sliclists.com`) and will set up DNS entries for use in production (like `api.sliclists.com`) and staging (`stg.sliclists.com`, `api.stg.sliclists.com`).
-1. This means you will have to take some steps to set up DNS records and allow these to propagate.
-1. When your application is automatically deploying as part of the CICD process and HTTPS certificates are being created, you (the domain owner) will be sent an email by Amazon Route53 to verify that you are the domain owner.
-1. You will also have to validate your domains with SES in order to have permissions for emails to be sent.
+2. SLIC Starter assumes you are using a registered domain (like `sliclists.com`) and will set up DNS entries for use in production (like `api.sliclists.com`) and staging (`stg.sliclists.com`, `api.stg.sliclists.com`).
+3. This means you will have to take some steps to set up DNS records and allow these to propagate.
+4. When your application is automatically deploying as part of the CICD process and HTTPS certificates are being created, you (the domain owner) will be sent an email by Amazon Route53 to verify that you are the domain owner.
+5. You will also have to validate your domains with SES in order to have permissions for emails to be sent.
 
 ## Getting Started
 
 To set up deployment to your own accounts, first run through these steps.
 
 1. Decide when DNS name you will use for your application. If you need to register one, the best place to do this is probably in your production account using [Amazon Route 53](https://aws.amazon.com/route53/).
-1. Copy `aws-accounts.json.sample` to `aws-accounts.json` and edit it to include the AWS Account IDs of your staging, production and CI/CD accounts. This file is `.gitignore`'d so your account IDs are not commited to Git.
-2. Enable CodeBuild to access your GitHub repo. The only way to do this is to create a temporary CodeBuild project in your CICD account and set up your GitHub repostitory as a source. Grant access to your GitHub repo. Your account now has access to the repo and the SLIC Starter CodeBuild will be able to monitor and clone your repo. The temporary CodeBuild project can alreay be deleted.
-3. (Optional - this will be required for repo tagging). Set up GitHub authentication for your repo. Create a GitHub Personal Access Token and add it as an secret with the name `GitHubPersonalAccessToken` in Secrets Manager _in the CICD account_. See [this post](https://medium.com/@eoins/securing-github-tokens-in-a-serverless-codepipeline-dc3a24ddc356) for more detail on this approach.
-4. Edit the account IDs in `cicd/cross-account/serverless.yml` and `cicd/config.ts`.
-5. Create a [Mailosaur](https://mailosaur.com) account. Take the server ID and API key and add them in your CICD account to the Parameter Store as `SecretString` values with the following names
+2. Copy `aws-accounts.json.sample` to `aws-accounts.json` and edit it to include the AWS Account IDs of your staging, production and CI/CD accounts. This file is `.gitignore`'d so your account IDs are not commited to Git.
+3. Fork the repository into your own account or organization on GitHub. If you don't use GitHub, you will have to tweak the source project in the CICD module ([source-project.ts](./cicd/lib/project/source-project.ts))
+4. Enable CodeBuild to access your GitHub repo. The only way to do this is to create a temporary CodeBuild project in your CICD account and set up your GitHub repostitory as a source. Grant access to your GitHub repo. Your account now has access to the repo and the SLIC Starter CodeBuild will be able to monitor and clone your repo. The temporary CodeBuild project can alreay be deleted. You will need to have **admin** priveleges for the repository or **owner** permissions for the GitHub organization in order for WebHooks to be create automatically by [the CodeBuild project](./cicd/lib/project/source-project.ts).
+5. (Optional - this will be required for repo tagging). Set up GitHub authentication for your repo. Create a GitHub Personal Access Token and add it as an secret with the name `GitHubPersonalAccessToken` in Secrets Manager _in the CICD account_. See [this post](https://medium.com/@eoins/securing-github-tokens-in-a-serverless-codepipeline-dc3a24ddc356) for more detail on this approach.
+6. Edit the account IDs in `cicd/cross-account/serverless.yml` and `cicd/config.ts`.
+7. Create a [Mailosaur](https://mailosaur.com) account. Take the server ID and API key and add them in your CICD account to the Parameter Store as `SecretString` values with the following names
 
  * `test/mailosaur/serverId`
  * `test/mailosaur/apiKey`
 
 These are picked up by the integration and end-to-end test CodeBuild projects.
 
-6. Give permissions for your CICD account to deploy to staging and production accounts.
+8. Give permissions for your CICD account to deploy to staging and production accounts.
 
 ```
 npm install -g serverless
@@ -140,8 +141,8 @@ AWS_PROFILE=your-staging-account serverless deploy
 AWS_PROFILE=your-production-account serverless deploy
 ```
 
-7. Alter the `nsDomain` property in `checklist-service/custom.yml` and `frontend/custom.yml`. Use a domain you own so you can update DNS entries to point to your deployed environment. When the deployment process runs, the domain owner will be sent an email to verify ownership before the deployment completes.
-8. Deploy the CI/CD pipeline to your CICD account.
+9. Alter the `nsDomain` property in `checklist-service/custom.yml` and `frontend/custom.yml`. Use a domain you own so you can update DNS entries to point to your deployed environment. When the deployment process runs, the domain owner will be sent an email to verify ownership before the deployment completes.
+10. Deploy the CI/CD pipeline to your CICD account.
 
 ```
 cd cicd
@@ -149,9 +150,9 @@ npm install
 AWS_PROFILE=your-cicd-account npm deploy
 ```
 
-9. Trigger your pipeline by commiting your changes to the repository
-10. Monitor your deployment by viewing the orchestrator pipeline in the AWS Console CodePipeline page.
-11. Wait for your deployment to fail! _Wait, what?_ Yes, your first deployment will fail. This is expected and all part of the process. Read on to find out more!
+11. Trigger your pipeline by commiting your changes to the repository
+12. Monitor your deployment by viewing the orchestrator pipeline in the AWS Console CodePipeline page.
+13. Wait for your deployment to fail! _Wait, what?_ Yes, your first deployment will fail. This is expected and all part of the process. Read on to find out more!
 
 ## Getting to your First Successful Deployment
 
