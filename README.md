@@ -163,7 +163,7 @@ Once you get all services in staging successfully deployed, you might find that 
 
 1. CICD will create `NS` and `A` records for staging in your staging account. When production deployment happens, it will also create `NS` and `A` records in your production account.
 1. You need to decide who will own the records for your APEX domain, i.e. the parent domain (such as `sliclists.com`)
-1. If you let your production AWS account own these records, you need to copy the `NS` records from your production Route53 into your domain registration. You will then need to copy the `NS` records (only the `NS` records!) for staging into your production Route53 for the apex domain.
+1. If you let your production AWS account own these records, you need to copy the `NS` records from your production Route53 into your domain registration name server settings. You will then need to copy the `NS` record (only the `NS` record!) for staging into your production Route 53 for the apex domain and give the NS record the staging domain (e.g., `stg.sliclists.com`).
 1. Alternatively, if you want another provider to own the nameserver records for your domain, you should copy all generated DNS records (except `NS` type records) from your staging and production account into that provider's DNS records.
 
 Once you have set up the required DNS configuration and it has propagated, your front end staging application should be available at `https://stg.YOUR-DOMAIN.TLD` and you can click _Retry_ on the test phase of the pipeline!
