@@ -6,10 +6,8 @@
 // as the CloudFormation resource output.
 // $
 // See https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-lambda-function-code.html#cfn-lambda-function-code-cfnresponsemodule
-//
 const response = require('cfn-response')
-const awsXray = require('aws-xray-sdk')
-const AWS = awsXray.captureAWS(require('aws-sdk'))
+const AWS = require('aws-sdk')
 const apiGateway = new AWS.APIGateway()
 
 function handler(event, context) {
