@@ -2,7 +2,6 @@
 
 # This script finds the latest tagged release for a repo and
 # compares this with a target commit.
-# See this post for information: https://dev.to/eoinsha/find-changes-between-two-git-commits-without-cloning-4kkp
 
 STATE_FILE=${PWD}/pipeline-state.env
 set -e
@@ -18,10 +17,6 @@ $0 repository_url target_version \n\
   target_version             The SHA, branch or tag to compare to\n\n"
   exit 1
 fi
-
-TOKEN_SECRET=$(aws secretsmanager get-secret-value --secret-id CICD --query SecretString)
-GITHUB_TOKEN=$(echo $TOKEN_SECRET | node -e 'console.log(JSON.parse(JSON.parse(fs.readFileSync("/dev/stdin", "utf-8"))).GitHubPersonalAccessToken)')
-export REPO_URL=$(echo $REPO_URL | sed -e 's/https:\/\/github.com/https:\/\/'"$GITHUB_TOKEN@"'github.com/')
 
 # Find the latest release using the format NUM.NUM.NUM. Anything else, like "1.2.3-pre" is assumed to not be a relase tag and is excluded
 # Redirect STDERR to /dev/null as it will print out the Git remote URL including the access token
