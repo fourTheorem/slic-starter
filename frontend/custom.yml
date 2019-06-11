@@ -3,7 +3,7 @@ region: eu-west-1
 runtime: nodejs8.10
 defaultStage: dev
 accountId: ${file(../slic-config.json):accountIds.${self:provider.stage}}
-bucketName: slic-starter-site-assets-${self:custom.accountId}-${self:provider.stage}
+bucketName: slic-starter-site-assets-${self:custom.siteDomainName}
 nsDomain: ${env:SLIC_NS_DOMAIN}
 domainPrefixes:
   dev: dev.
