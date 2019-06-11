@@ -61,6 +61,7 @@
     "eslint-config-prettier": "^4.1.0",
     "eslint-plugin-prettier": "^3.0.1",
     "eslint-plugin-react-app": "^4.0.1",
-    "prettier": "^1.16.4"
+    "prettier": "^1.16.4",
+    "serverless-pseudo-parameters": "^2.4.0"
   }
 }
