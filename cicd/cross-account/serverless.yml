@@ -1,12 +1,16 @@
-service: deployment-target-resources
+service: cicd-deployment-target
+
+custom:
+  stage: ${opt:stage, 'cicd'}
+  region: eu-west-1
+  runtime: nodejs8.10
+  accountIds: ${file(../../slic-config.json):accountIds}
 
 provider:
   name: aws
   runtime: ${self:custom.runtime}
   stage: ${self:custom.stage}
   region: ${self:custom.region}
-
-custom: ${file(../custom.yml)}
 
 resources:
   Resources:
@@ -32,12 +36,6 @@ resources:
           Statement:
             - Effect: Allow
               Action:
-                - codebuild:StartBuild
-                - codebuild:BatchGetBuilds
-                - codebuild:StopBuild
-              Resource: '*'
-            - Effect: Allow
-              Action:
                 - cloudformation:List*
                 - cloudformation:Get*
                 - cloudformation:PreviewStackUpdate
@@ -51,17 +49,19 @@ resources:
                 - '*'
             - Effect: Allow
               Action:
-                - apigateway:GET
-                - apigateway:POST
-                - apigateway:PUT
-                - apigateway:DELETE
+                - apigateway:*
               Resource:
-                - 'arn:aws:apigateway:*::/restapis*'
+                - '*'
             - Effect: Allow
               Action:
+                - iam:CreateServiceLinkedRole
+                - iam:DeleteServiceLinkedRole
+                - iam:AttachRolePolicy
+                - iam:DetachRolePolicy
                 - iam:GetRole
                 - iam:CreateRole
                 - iam:PassRole
+                - iam:GetRolePolicy
                 - iam:PutRolePolicy
                 - iam:DeleteRolePolicy
                 - iam:DeleteRole
@@ -70,6 +70,8 @@ resources:
             - Effect: Allow
               Action:
                 - s3:CreateBucket
+                - s3:DeleteBucket
+                - s3:DeleteBucketPolicy
                 - s3:GetBucket*
                 - s3:GetBucketPolicy
                 - s3:GetObject
@@ -79,26 +81,16 @@ resources:
                 - s3:SetBucketEncryption
                 - s3:ListBucket
                 - s3:PutObject
+                - s3:PutBucketPolicy
+                - s3:PutBucketWebsite
               Resource:
-                - arn:aws:s3:::slic-*
-            - Effect: Allow
-              Action:
-                - s3:DeleteObject
-                - s3:GetBucket*
-                - s3:GetObject
-                - s3:GetObjectVersion
-                - s3:ListBucket
-                - s3:PutObject
-                - s3:GetBucketPolicy
-                - s3:GetEncryptionConfiguration
-                - s3:PutEncryptionConfiguration
-              Resource:
-                - arn:aws:s3:::${self:custom.buildBucket}
-                - arn:aws:s3:::${self:custom.buildBucket}/*
+                - '*'
             - Effect: Allow
               Action:
                 - lambda:Get*
                 - lambda:List*
+                - lambda:CreateEventSourceMapping
+                - lambda:DeleteEventSourceMapping
                 - lambda:CreateFunction
                 - lambda:AddPermission
                 - lambda:CreateAlias
@@ -108,7 +100,16 @@ resources:
                 - lambda:RemovePermission
                 - lambda:Update*
               Resource:
-                - arn:aws:lambda:${self:custom.region}:*:function:*
+                - '*'
+            - Effect: Allow
+              Action:
+                - cloudfront:CreateDistribution
+                - cloudfront:DeleteDistribution
+                - cloudfront:GetDistribution
+                - cloudfront:UpdateDistribution
+                - cloudfront:TagResource
+              Resource:
+                - '*'
             - Effect: Allow
               Action:
                 - dynamodb:CreateTable
@@ -119,7 +120,7 @@ resources:
                 - dynamodb:PutItem
                 - dynamodb:UpdateItem
                 - dynamodb:DeleteItem
-              Resource: 'arn:aws:dynamodb:${self:custom.region}:${self:custom.accountIds.dev}:*'
+              Resource: 'arn:aws:dynamodb:${self:custom.region}:*:*'
             - Effect: Allow
               Action: 'sqs:*'
               Resource:
@@ -134,18 +135,38 @@ resources:
                 - logs:CreateLogGroup
                 - logs:CreateLogStream
                 - logs:DeleteLogGroup
-              Resource:
-                - arn:aws:logs:*:*:*
-            - Effect: Allow
-              Action:
+                - logs:DeleteSubscriptionFilter
+                - logs:DescribeSubscriptionFilters
                 - logs:PutLogEvents
-              Resource:
-                - arn:aws:logs:*:*:*
-            - Effect: Allow
-              Action:
+                - logs:PutSubscriptionFilter
                 - logs:DescribeLogStreams
                 - logs:DescribeLogGroups
                 - logs:FilterLogEvents
+              Resource:
+                - '*'
+            - Effect: Allow
+              Action:
+                - events:Put*
+                - events:Remove*
+                - events:Delete*
+                - events:Describe*
+              Resource:
+                - 'arn:aws:events:*:*:rule/*'
+            - Effect: Allow
+              Action:
+                - 'acm:RequestCertificate'
+                - 'acm:DeleteCertificate'
+                - 'acm:DescribeCertificate'
+                - 'acm:AddTagsToCertificate'
+                - 'route53:GetChange'
+                - 'route53:GetHostedZone'
+                - 'route53:CreateHostedZone'
+                - 'route53:DeleteHostedZone'
+                - 'route53:ChangeResourceRecordSets'
+                - 'route53:ChangeTagsForResource'
+                - 'route53:ListResourceRecordSets'
+                - 'route53:ListHostedZones'
+                - 'route53:ListQueryLoggingConfigs'
               Resource:
                 - '*'
             - Effect: Allow
@@ -157,6 +178,12 @@ resources:
                 - 'arn:aws:events:*:*:rule/*'
             - Effect: Allow
               Action:
+                # Start permissions required for integration tests
+                - cognito-idp:AdminCreateUser
+                - cognito-idp:AdminDeleteUser
+                - cognito-idp:AdminInitiateAuth
+                - cognito-idp:AdminRespondToAuthChallenge
+                # End permissions required for integration tests
                 - cognito-idp:CreateUserPool*
                 - cognito-idp:DeleteUserPool*
                 - cognito-idp:ListUserPool*
@@ -168,5 +195,18 @@ resources:
                 - cognito-identity:SetIdentityPoolRoles
               Resource:
                 - '*'
+            - Effect: Allow
+              Action:
+                - 'ssm:ListTagsForResource'
+                - 'ssm:AddTagsToResource'
+                - 'ssm:RemoveTagsFromResource'
+                - 'ssm:DeleteParameter'
+                - 'ssm:DescribeParameters'
+                - 'ssm:PutParameter'
+                - 'ssm:GetParameter'
+                - 'ssm:GetParameters'
+              Resource:
+                - '*'
+
         Roles:
           - Ref: deploymentRole

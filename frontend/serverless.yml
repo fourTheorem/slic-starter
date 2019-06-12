@@ -1,7 +1,9 @@
-service: slic-starter-frontend
+service: frontend
 
 plugins:
   - serverless-s3-sync
+  - serverless-pseudo-parameters
+
 provider:
   name: aws
   runtime: ${self:custom.runtime}
@@ -14,7 +16,6 @@ resources:
   Resources:
     siteBucket:
       Type: AWS::S3::Bucket
-
       Properties:
         BucketName: ${self:custom.bucketName}
         WebsiteConfiguration:

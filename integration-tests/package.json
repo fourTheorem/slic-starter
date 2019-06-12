@@ -47,6 +47,7 @@
   },
   "dependencies": {
     "dotenv": "^8.0.0",
-    "random-words": "^1.1.0"
+    "random-words": "^1.1.0",
+    "test-common": "file:../test-common"
   }
 }

@@ -1,7 +1,7 @@
 'use strict'
 
+const AWS = require('aws-sdk')
 const awsXray = require('aws-xray-sdk')
-const AWS = awsXray.captureAWS(require('aws-sdk'))
 
 const log = require('../../lib/log')
 
@@ -10,7 +10,9 @@ if (!fromAddress) {
   throw new Error('EMAIL_FROM_ADDRESS must be specified')
 }
 
-const ses = new AWS.SES({ endpoint: process.env.SES_ENDPOINT_URL })
+const ses = awsXray.captureAWSClient(
+  new AWS.SES({ endpoint: process.env.SES_ENDPOINT_URL })
+)
 
 async function sendEmail(message) {
   log.info({ message }, 'sendEmail')

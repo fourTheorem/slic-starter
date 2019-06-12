@@ -1,8 +1,6 @@
 - Effect: Allow
   Action:
     - ssm:GetParameter
+    - ssm:GetParametersByPath
   Resource:
-    - arn:aws:ssm:#{AWS::Region}:#{AWS::AccountId}:parameter/LogzioToken
-    - arn:aws:ssm:#{AWS::Region}:#{AWS::AccountId}:parameter/LogzioUrl
-    - arn:aws:ssm:#{AWS::Region}:#{AWS::AccountId}:parameter/LogzioType
-    - arn:aws:ssm:#{AWS::Region}:#{AWS::AccountId}:parameter/LogzioFormat
+    - arn:aws:ssm:#{AWS::Region}:#{AWS::AccountId}:parameter/logging/*

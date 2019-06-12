@@ -1,0 +1,24 @@
+{
+  "name": "slic-starter",
+  "version": "1.0.0",
+  "description": "A complete serverless starter application",
+  "scripts": {
+    "test": "echo"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fourTheorem/slic-starter.git"
+  },
+  "keywords": [
+    "serverless",
+    "starter",
+    "project",
+    "aws"
+  ],
+  "author": "Eoin Shanaghy <eoin.shanaghy@fourtheorem.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/fourTheorem/slic-starter/issues"
+  },
+  "homepage": "https://github.com/fourTheorem/slic-starter#readme"
+}

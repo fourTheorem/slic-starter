@@ -1,0 +1,14 @@
+# Integration tests CodeBuild
+version: 0.2
+phases:
+  install:
+    commands:
+      - cd integration-tests
+      - npm install -g npm@6
+      - npm install
+  build:
+    commands:
+      - bash ./codebuild-run-tests.sh
+artifacts:
+  files:
+    - integration-tests/**/*

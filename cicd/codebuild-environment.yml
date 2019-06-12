@@ -1,5 +1,0 @@
-Type: LINUX_CONTAINER
-Image: aws/codebuild/nodejs:8.11.0
-ComputeType: BUILD_GENERAL1_SMALL
-EnvironmentVariables: []
-PrivilegedMode: false

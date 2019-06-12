@@ -48,3 +48,13 @@ build/Release
 *.sw?
 vim-markdown-preview.html
 .vscode/
+# Temporary output generate during build
+build-artifacts/
+
+# Temporary Git repo for checking changes
+_GIT_REPO/
+.vscode/
+pipeline-state.env\
+aws-accounts.json
+slic-config.json
+

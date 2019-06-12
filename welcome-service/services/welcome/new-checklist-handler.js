@@ -1,11 +1,15 @@
 const axios = require('axios')
 const awsXray = require('aws-xray-sdk')
-const AWS = awsXray.captureAWS(require('aws-sdk'))
+const AWS = require('aws-sdk')
 
 const log = require('../../lib/log')
 
-const SQS = new AWS.SQS({ endpoint: process.env.SQS_ENDPOINT_URL })
-const SSM = new AWS.SSM({ endpoint: process.env.SSM_ENDPOINT_URL })
+const SQS = awsXray.captureAWSClient(
+  new AWS.SQS({ endpoint: process.env.SQS_ENDPOINT_URL })
+)
+const SSM = awsXray.captureAWSClient(
+  new AWS.SSM({ endpoint: process.env.SSM_ENDPOINT_URL })
+)
 
 const queueName = process.env.EMAIL_QUEUE_NAME
 if (!queueName) {

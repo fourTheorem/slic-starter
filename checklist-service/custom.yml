@@ -1,0 +1,22 @@
+logForwarding:
+  destinationARN: !ImportValue ${self:provider.stage}-log-forwarder-function-arn
+stage: ${opt:stage, 'dev'}
+region: eu-west-1
+runtime: nodejs8.10
+nsDomain: ${env:SLIC_NS_DOMAIN}
+domainPrefixes:
+  local: ''
+  dev: dev.
+  stg: stg.
+  prod: ''
+apiDomainName: api.${self:custom.domainPrefixes.${self:provider.stage}}${self:custom.nsDomain}
+# The HostedZoneId for CloudFront distributions is always this value.
+# See http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-route53-aliastarget.html
+# AND http://docs.aws.amazon.com/general/latest/gr/rande.html
+cloudFrontHostedZoneId: Z2FDTNDATAQYW2
+apiConfig: ${file(./api-config.js)}
+serverless-offline:
+  port: 4000
+prune:
+  automatic: true
+number: 3

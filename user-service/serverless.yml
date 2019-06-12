@@ -1,4 +1,4 @@
-service: slic-starter-user-service
+service: user-service
 
 plugins:
   - serverless-offline

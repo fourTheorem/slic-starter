@@ -1,6 +1,5 @@
-# package directories
+*.js
+!lib/tasks/**/*.js
+*.d.ts
 node_modules
-jspm_packages
-
-# Serverless directories
-.serverless
+cdk.out/
