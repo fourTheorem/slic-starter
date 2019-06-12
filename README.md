@@ -1,7 +1,8 @@
 # SLIC Starter
 
+[![serverless](http://public.serverless.com/badges/v3.svg)](http://www.serverless.com)
 [![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square)](https://github.com/prettier/prettier)
-
+[![license](https://img.shields.io/npm/l/slic-starter.svg)](./LICENSE)
 
 **SLIC Starter** is a complete starter project for production-grade **serverless** applications on AWS. SLIC Starter uses an opinionated, pragmatic approach to structuring, developing and deploying a modern, serverless application with one simple, overarching goal:
 
