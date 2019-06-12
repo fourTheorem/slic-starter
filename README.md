@@ -126,7 +126,7 @@ All tests can be run in local development mode as well as against a fully-deploy
 For details on integration (API) tests, see the [README.md in integration-tests](./integration-tests/README.md)
 
 ### Monitoring
-_Work in progres_
+_Work in progress_
 
 ### Logging
 
