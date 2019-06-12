@@ -26,6 +26,12 @@ console.log('Using region', awsRegion)
 const cf = new CloudFormation()
 const sts = new STS()
 
+const nsDomain = process.env.SLIC_NS_DOMAIN
+if (!nsDomain) {
+  throw new Error('SLIC_NS_DOMAIN must be specified')
+}
+console.log(`Using domain ${nsDomain}`)
+
 sts
   .getCallerIdentity({})
   .promise()
@@ -47,7 +53,7 @@ sts
               return `REACT_APP_${envName}=${value}`
             })
             .join('\n')
-          const envContents = `REACT_APP_API_ENDPOINT=https://api.${domainSuffix}sliclists.com
+          const envContents = `REACT_APP_API_ENDPOINT=https://api.${domainSuffix}${nsDomain}
   REACT_APP_AWS_REGION=${process.env.AWS_REGION}
   ${stageEnvContents}`
 
