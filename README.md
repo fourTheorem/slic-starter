@@ -2,7 +2,6 @@
 
 [![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square)](https://github.com/prettier/prettier)
 
-<!-- TOC -->autoauto- [How does SLIC starter help you?](#how-does-slic-starter-help-you)auto- [What does it provide?](#what-does-it-provide)auto  - [Structure](#structure)auto  - [Tooling Choice](#tooling-choice)auto  - [Authentication](#authentication)auto  - [Data Access with a RESTful API](#data-access-with-a-restful-api)auto  - [Messaging](#messaging)auto  - [Front End](#front-end)auto  - [CI/CD](#cicd)auto  - [Testing](#testing)auto  - [Monitoring](#monitoring)auto  - [Logging](#logging)auto  - [Secret Management](#secret-management)auto  - [User Accounts and Authorization](#user-accounts-and-authorization)auto- [Before you Begin!](#before-you-begin)auto- [Getting Started](#getting-started)auto- [Getting to your First Successful Deployment](#getting-to-your-first-successful-deployment)auto  - [Set up your domain for email](#set-up-your-domain-for-email)auto- [Local Development](#local-development)auto- [Backend configuration for front end](#backend-configuration-for-front-end)auto- [Demo](#demo)auto- [Code Style and Syntax](#code-style-and-syntax)auto- [Who is behind it?](#who-is-behind-it)auto- [Contributing](#contributing)auto- [License](#license)autoauto<!-- /TOC -->
 
 **SLIC Starter** is a complete starter project for production-grade **serverless** applications on AWS. SLIC Starter uses an opinionated, pragmatic appraoch to structuring, developing and deploying a modern, serverless application with one simple, overarching goal:
 
@@ -33,6 +32,7 @@
 - [Demo](#demo)
 - [Code Style and Syntax](#code-style-and-syntax)
 - [Who is behind it?](#who-is-behind-it)
+- [Troubleshooting](#troubleshooting)
 - [Contributing](#contributing)
 - [License](#license)
 
@@ -158,7 +158,7 @@ To set up deployment to your own accounts, first run through these steps.
 1. Decide when DNS name you will use for your application. If you need to register one, the best place to do this is probably in your production account using [Amazon Route 53](https://aws.amazon.com/route53/).
 2. Copy `slic-config.json.sample` to `slic-config.json` and edit it to include the AWS Account IDs of your staging, production and CI/CD accounts. This file is `.gitignore`'d so your account IDs are not commited to Git. Also specify your GitHub repository details and DNS domain for your deployment. Use a domain you own so you can update DNS entries to point to your deployed environment. When the deployment process runs, the domain owner will be sent an email to verify ownership before the deployment completes.
 3. Fork the repository into your own account or organization on GitHub. If you don't use GitHub, you will have to tweak the source project in the CICD module ([source-project.ts](./cicd/lib/project/source-project.ts))
-4. Enable CodeBuild to access your GitHub repo. The only way to do this is to create a temporary CodeBuild project in your CICD account and set up your GitHub repostitory as a source. Grant access to your GitHub repo. Your account now has access to the repo and the SLIC Starter CodeBuild will be able to monitor and clone your repo. The temporary CodeBuild project can alreay be deleted. You will need to have **admin** priveleges for the repository or **owner** permissions for the GitHub organization in order for WebHooks to be create automatically by [the CodeBuild project](./cicd/lib/project/source-project.ts).
+4. Enable CodeBuild to access your GitHub repo. The only way to do this is to create a temporary CodeBuild project in your CICD account and set up your GitHub repostitory as a source. Grant access to your GitHub repo. Your account now has access to the repo and the SLIC Starter CodeBuild will be able to monitor and clone your repo. The temporary CodeBuild project can already be deleted. You will need to have **admin** priveleges for the repository or **owner** permissions for the GitHub organization in order for WebHooks to be create automatically by [the CodeBuild project](./cicd/lib/project/source-project.ts).
 5. (Optional - this will be required for repo tagging). Set up GitHub authentication for your repo. Create a GitHub Personal Access Token and add it as an secret with the name `GitHubPersonalAccessToken` in Secrets Manager _in the CICD account_. See [this post](https://medium.com/@eoins/securing-github-tokens-in-a-serverless-codepipeline-dc3a24ddc356) for more detail on this approach.
 6. Edit the account IDs in `cicd/cross-account/serverless.yml` and `cicd/config.ts`.
 7. Create a [Mailosaur](https://mailosaur.com) account. Take the server ID and API key and add them in your CICD account to the Parameter Store as `SecretString` values with the following names
@@ -182,7 +182,8 @@ AWS_PROFILE=your-production-account serverless deploy
 ```
 cd cicd
 npm install
-AWS_PROFILE=your-cicd-account npm deploy
+npm run cdk -- bootstrap <<AWS_ACCOUNT_ID>>/eu-west-1
+AWS_PROFILE=your-cicd-account npm run deploy
 ```
 
 10. Trigger your pipeline by commiting your changes to the repository
@@ -193,9 +194,11 @@ AWS_PROFILE=your-cicd-account npm deploy
 
 The CICD process attempts to build and deploy each service in parallel. This is done so you get quick feedback and to improve the overall deployment speed. It also means that deployment can fail if there are dependencies between services. Out of the box, SLIC Starter has a `baseline` module that sets up a Route 53 Hosted Zone and some certificates. These are required by the `frontend` and `checklist-service` services, so those builds will fail if the cerificates aren't ready yet. This is just one example. There are other services that depend on common resources so it will require a few retries in both staging and production before everything is deployed.
 
+*Note* that deployment of some services can take quite some time! In particular, `frontend` deployment will wait until the CloudFront distribution has been created. This can take _at least_ 15 minutes.
+
 You can inspect the failures in the Orchestrator Pipeline view in the CodePipeline console of your CICD account. You can retry the `stgDeploy` phase by clicking the _Retry_ button in the pipeline.
 
-Once you get all services in staging successfully deployed, you might find that the test stage fails. This is likely to do with the front end being in accessible. As we already mentioned, your DNS entries will need to be set up. Let's understand how this all works better!
+Once you get all services in staging successfully deployed, you might find that the test stage fails. This is likely to do with the front end being inaccessible. As we already mentioned, your DNS entries will need to be set up. Let's understand how this all works better!
 
 1. CICD will create `NS` and `A` records for staging in your staging account. When production deployment happens, it will also create `NS` and `A` records in your production account.
 1. You need to decide who will own the records for your APEX domain, i.e. the parent domain (such as `sliclists.com`)
@@ -207,9 +210,15 @@ Once you have set up the required DNS configuration and it has propagated, your 
 ### Set up your domain for email
 
 By default, SLIC Lists will send emails from `no-reply@[stage].sliclists.com`. In order for the email service to send requests to SES with this as the Source address, either the email address or the domain needs to be verified. This is not automatically done as part of the SLIC Starter deployment.
+
 Because we use Route 53 for our DNS records, the verification process is quite straightforward. See [here](https://docs.aws.amazon.com/ses/latest/DeveloperGuide/receiving-email-getting-started-verify.html) for documentation on how to achieve domain verification throught the AWS Management Console.
 
+By default, SES will require validation of each email address to which emails are being sent. To avoid this, you can [request a sending limit increase](https://docs.aws.amazon.com/ses/latest/DeveloperGuide/request-production-access.html), which will remove your account/region from the SES Sandbox.
+
+
 ## Local Development
+
+Work on a more seamless local development environment is _in progress_. In the meantime, here's an introduction to running the `checklist-service` locally:
 
 In backend services:
 
@@ -241,6 +250,16 @@ SLIC Starter uses [Prettier](https://github.com/prettier/prettier) for code form
 ## Who is behind it?
 
 SLIC Starter is open source and contributions are welcome from everyone. It was started by the team at [fourTheorem](https://fourtheorem.com), also the authors of the [AI as a Service](https://www.aiasaservicebook.com/), a [Manning publication](https://www.manning.com/books/ai-as-a-service) book on Serverless, AI-enabled applications.
+
+## Troubleshooting
+
+1. I get this error in the CodeBuild source project:
+ ```
+ 87/101 | 1:05:21 PM | CREATE_FAILED | AWS::CodeBuild::Project |
+ sourceProject (sourceProjectBCA86C81) Failed to call CreateWebhook, reason: Repository not found or permission denied.
+ ```
+
+ - This is because your CodeBuild configuration does not have access to your GitHub account. To grant access, create a CodeBuild project manually in the AWS Console and grant access to your repository. This project can be safely deleted afterwards once CodeBuild has been granted access.
 
 ## Contributing
 
