@@ -2,11 +2,44 @@
 
 [![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square)](https://github.com/prettier/prettier)
 
+<!-- TOC -->autoauto- [How does SLIC starter help you?](#how-does-slic-starter-help-you)auto- [What does it provide?](#what-does-it-provide)auto  - [Structure](#structure)auto  - [Tooling Choice](#tooling-choice)auto  - [Authentication](#authentication)auto  - [Data Access with a RESTful API](#data-access-with-a-restful-api)auto  - [Messaging](#messaging)auto  - [Front End](#front-end)auto  - [CI/CD](#cicd)auto  - [Testing](#testing)auto  - [Monitoring](#monitoring)auto  - [Logging](#logging)auto  - [Secret Management](#secret-management)auto  - [User Accounts and Authorization](#user-accounts-and-authorization)auto- [Before you Begin!](#before-you-begin)auto- [Getting Started](#getting-started)auto- [Getting to your First Successful Deployment](#getting-to-your-first-successful-deployment)auto  - [Set up your domain for email](#set-up-your-domain-for-email)auto- [Local Development](#local-development)auto- [Backend configuration for front end](#backend-configuration-for-front-end)auto- [Demo](#demo)auto- [Code Style and Syntax](#code-style-and-syntax)auto- [Who is behind it?](#who-is-behind-it)auto- [Contributing](#contributing)auto- [License](#license)autoauto<!-- /TOC -->
+
 **SLIC Starter** is a complete starter project for production-grade **serverless** applications on AWS. SLIC Starter uses an opinionated, pragmatic appraoch to structuring, developing and deploying a modern, serverless application with one simple, overarching goal:
 
 > _Get your serverless application into production fast_
 
-_How does SLIC starter help you?_
+<!-- TOC -->
+
+- [How does SLIC starter help you?](#how-does-slic-starter-help-you)
+- [What does it provide?](#what-does-it-provide)
+  - [Structure](#structure)
+  - [Tooling Choice](#tooling-choice)
+  - [Authentication](#authentication)
+  - [Data Access with a RESTful API](#data-access-with-a-restful-api)
+  - [Messaging](#messaging)
+  - [Front End](#front-end)
+  - [CI/CD](#cicd)
+  - [Testing](#testing)
+  - [Monitoring](#monitoring)
+  - [Logging](#logging)
+  - [Secret Management](#secret-management)
+  - [User Accounts and Authorization](#user-accounts-and-authorization)
+- [Before you Begin!](#before-you-begin)
+- [Getting Started](#getting-started)
+- [Getting to your First Successful Deployment](#getting-to-your-first-successful-deployment)
+  - [Set up your domain for email](#set-up-your-domain-for-email)
+- [Local Development](#local-development)
+- [Backend configuration for front end](#backend-configuration-for-front-end)
+- [Demo](#demo)
+- [Code Style and Syntax](#code-style-and-syntax)
+- [Who is behind it?](#who-is-behind-it)
+- [Contributing](#contributing)
+- [License](#license)
+
+<!-- /TOC -->
+
+
+## How does SLIC starter help you?
 
 1. Serverless development involves a lot of decisions around which approach to take for a multitude of issues. It aims to remove 80% of this decision making and let you focus on building valuable features.
 1. It is deployable _out of the box_. Without making any code changes, you have a cloud-hosted production-grade app as a starting point for your product.
