@@ -11,6 +11,7 @@
 <!-- TOC -->
 
 - [How does SLIC starter help you?](#how-does-slic-starter-help-you)
+- [Application Architecture](#application-architecture)
 - [What does it provide?](#what-does-it-provide)
   - [Structure](#structure)
   - [Tooling Choice](#tooling-choice)
@@ -49,10 +50,12 @@
 
 This project is free to use by enterprise, startups, students, educators, enthusiasts and skeptics alike. We actively encourage contributions, suggestions and questions from _anyone_.
 
-## What does it provide?
-
+## Application Architecture
 ![SLIC Starter Architecture](./architecture.png)
 
+For the CICD pipeline architecture, see [CI/CD](#cicd)
+
+## What does it provide?
 SLIC Starter is a complete, working application. By including all the aspects of a real application, SLIC Starter goes beyond a typical demo project. You are encouraged to:
 
 - Take SLIC Starter and copy it
@@ -250,7 +253,7 @@ SLIC Starter uses [Prettier](https://github.com/prettier/prettier) for code form
 
 ## Who is behind it?
 
-SLIC Starter is open source and contributions are welcome from everyone. It was started by the team at [fourTheorem](https://fourtheorem.com), also the authors of the [AI as a Service](https://www.aiasaservicebook.com/), a [Manning publication](https://www.manning.com/books/ai-as-a-service) book on Serverless, AI-enabled applications.
+SLIC Starter is open source and contributions are welcome from everyone. It was started by the team at [fourTheorem](https://fourtheorem.com), also the authors of the book, [AI as a Service](https://www.aiasaservicebook.com/), a [Manning publication](https://www.manning.com/books/ai-as-a-service) on Serverless, AI-enabled applications.
 
 ## Troubleshooting
 
