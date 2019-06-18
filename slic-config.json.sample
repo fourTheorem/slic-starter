@@ -11,6 +11,6 @@
   "sourceRepo": {
     "owner": "fourTheorem",
     "name": "slic-starter",
-    "branch": "feature/advanced-cicd-#19"
+    "branch": "master"
   }
 }
