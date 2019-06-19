@@ -1,8 +1,14 @@
 'use strict'
 
-const awsXray = require('aws-xray-sdk')
-const AWS = awsXray.captureAWS(require('aws-sdk'))
+const stage = process.env.SLIC_STAGE
+let AWS
 
+if (stage == 'local') {
+  AWS = require('aws-sdk')
+} else {
+  const awsXray = require('aws-xray-sdk')
+  AWS = awsXray.captureAWS(require('aws-sdk'))
+}
 const defaultOptions = {
   convertEmptyValues: true // If this is not set, empty strings cause an error. This converts them automatically to NULL
 }
