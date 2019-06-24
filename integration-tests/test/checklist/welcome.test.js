@@ -3,7 +3,7 @@
 const { test } = require('tap')
 const httpClient = require('../../lib/http-client')
 const { getUser } = require('../../lib/user-util')
-const config = require('../../../test-common/config.js')
+const { retrieveEmail } = require('test-common/real-email-config')
 
 const testList = {
   name: 'New Checklist',
@@ -20,7 +20,7 @@ test('Creating an email result in a welcome email being received', async t => {
     t.ok(data.createdAt)
     t.ok(data.listId)
 
-    const message = await config.retrieveEmail(email)
+    const message = await retrieveEmail(email)
 
     t.equal(
       message.text.body,

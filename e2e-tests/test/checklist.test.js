@@ -2,7 +2,7 @@ import { ClientFunction, Selector } from 'testcafe'
 import { waitForReact } from 'testcafe-react-selectors'
 import Page from './PageModels/page-model'
 
-const config = require('../../test-common/config.js')
+const config = require('../lib/config.js')
 
 const page = new Page()
 const baseUrl = config.getBaseURL()
@@ -42,8 +42,7 @@ test('User can create a new List', async t => {
   await t.click(Selector('a').withText('First List'))
   await t.click(Selector('#expansion-summary'))
   await t.expect(Selector('#list-name').withText('First List')).exists
-  await t.expect(Selector('#list-description').withText('List Description'))
-    .exists
+  await t.expect(Selector('#list-description').withText('List Description')).exists
   const getLocation = ClientFunction(() => document.location.href)
   await t.expect(getLocation()).contains('/list/')
 })
