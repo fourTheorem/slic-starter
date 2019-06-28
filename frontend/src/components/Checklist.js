@@ -20,6 +20,7 @@ import {
 import { withStyles } from '@material-ui/core/styles'
 import Loading from './Loading'
 import Entries from './Entries'
+import ShareList from './Sharelist.js'
 
 const dateFns = require('date-fns')
 
@@ -136,6 +137,7 @@ class Checklist extends Component {
             </CardContent>
             <CardActions>{removing ? <CircularProgress /> : null}</CardActions>
           </Card>
+          <ShareList list={list} />
         </Grid>
       </Grid>
     ) : (

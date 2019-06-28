@@ -31,6 +31,12 @@ import {
   REMOVE_ENTRY_FAILURE
 } from '../actions/entries'
 
+import {
+  ADD_COLLABORATOR_REQUEST,
+  ADD_COLLABORATOR_SUCCESS,
+  ADD_COLLABORATOR_FAILURE
+} from '../actions/share.js'
+
 const defaultState = {
   creating: false,
   updating: false,
@@ -292,6 +298,30 @@ export default (state = defaultState, { type, meta, payload, error }) => {
         ...state,
         removingEntry: false,
         removeEntryError: error
+      }
+
+    case ADD_COLLABORATOR_REQUEST:
+      return {
+        ...state,
+        creatingCollaborator: true,
+        createdCollaborator: false,
+        createCollaboratorError: null
+      }
+
+    case ADD_COLLABORATOR_SUCCESS:
+      return {
+        ...state,
+        creatingCollaborator: false,
+        createdCollaborator: true,
+        createCollaboratorError: null
+      }
+
+    case ADD_COLLABORATOR_FAILURE:
+      return {
+        ...state,
+        creatingCollaborator: false,
+        createdCollaborator: false,
+        createCollaboratorError: error
       }
 
     default:
