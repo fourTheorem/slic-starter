@@ -1,4 +1,4 @@
-const axios = require('axios')
+const signedAxios = require('aws-signed-axios')
 const awsXray = require('aws-xray-sdk')
 const AWS = require('aws-sdk')
 
@@ -37,17 +37,6 @@ async function getUserServiceUrl() {
   return userServiceUrl
 }
 
-const userServiceApiKeyPromise = getUserServiceApiKey()
-
-async function getUserServiceApiKey() {
-  const result = await SSM.getParameter({ Name: 'UserServiceApiKey' }).promise()
-  const {
-    Parameter: { Value: userServiceApiKey }
-  } = result
-
-  return userServiceApiKey
-}
-
 async function handleNewChecklist(event) {
   log.info({ event })
 
@@ -72,12 +61,10 @@ async function handleNewChecklist(event) {
 
 async function getUser(userId) {
   const userUrl = `${await userServiceUrlPromise}${userId}`
-  const apiKey = await userServiceApiKeyPromise
 
-  const { data: result } = await axios.get(userUrl, {
-    headers: {
-      'X-Api-Key': apiKey
-    }
+  const { data: result } = await signedAxios({
+    method: 'GET',
+    url: userUrl
   })
 
   return result
