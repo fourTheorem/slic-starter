@@ -1,20 +1,10 @@
-const stage = process.env.SLIC_STAGE
-let AWS
-let cwEvents
+'use strict'
 
-if (stage == 'local') {
-  AWS = require('aws-sdk')
-} else {
-  const awsXray = require('aws-xray-sdk')
-  AWS = require('aws-sdk')
-  cwEvents = awsXray.captureAWSClient(new AWS.CloudWatchEvents())
-}
+const awsXray = require('aws-xray-sdk')
+const AWS = require('aws-sdk')
+const cwEvents = awsXray.captureAWSClient(new AWS.CloudWatchEvents())
 
 async function createNewListEvent(list) {
-  if (stage == 'local') {
-    return 'using local cloudwatch events'
-  }
-
   const params = {
     Entries: [
       {
