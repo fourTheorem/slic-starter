@@ -1,3 +1,4 @@
+import { getEmailFromUserId } from '../../../slic-tools/user-tools/get'
 const signedAxios = require('aws-signed-axios')
 const awsXray = require('aws-xray-sdk')
 const AWS = require('aws-sdk')
@@ -43,7 +44,7 @@ async function handleNewChecklist(event) {
   const checklist = event.detail
   const { userId, name } = checklist
 
-  const { email } = await getUser(userId)
+  const { email } = await getEmailFromUserId(userId)
   const message = {
     to: email,
     subject: 'Your SLIC List',
@@ -57,17 +58,6 @@ async function handleNewChecklist(event) {
 
   const result = await SQS.sendMessage(params).promise()
   log.info({ result }, 'Sent SQS message')
-}
-
-async function getUser(userId) {
-  const userUrl = `${await userServiceUrlPromise}${userId}`
-
-  const { data: result } = await signedAxios({
-    method: 'GET',
-    url: userUrl
-  })
-
-  return result
 }
 
 module.exports = {
