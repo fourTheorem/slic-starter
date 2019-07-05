@@ -15,3 +15,9 @@
     - xray:PutTelemetryRecords
   Resource:
     - '*'
+- Effect: Allow
+  Action:
+    - execute-api:Invoke
+    - execute-api:GET
+  Resource:
+    - arn:aws:execute-api:#{AWS::Region}:#{AWS::AccountId}:*/${self:provider.stage}/*/user/*

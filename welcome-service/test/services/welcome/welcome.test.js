@@ -52,11 +52,8 @@ test('handleNewChecklist sends a message to an SQS queue', async t => {
   const checklistHandler = proxyquire(
     '../../../services/welcome/new-checklist-handler',
     {
-      axios: {
-        get: url => {
-          return Promise.resolve({ data: { email: 'test@example.com' } })
-        }
-      },
+      'aws-signed-axios': args =>
+        Promise.resolve({ data: { email: 'test@example.com' } }),
       '@noCallThru': true
     }
   )

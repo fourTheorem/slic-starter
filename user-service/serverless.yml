@@ -14,8 +14,6 @@ provider:
   region: ${self:custom.region}
   tracing: true
   iamRoleStatements: ${file(./sls-iam-role-statements.yml)}
-  apiKeys:
-    - userServiceApiKey
   resourcePolicy:
     - Effect: Allow
       Principal: '*'
