@@ -9,7 +9,7 @@ import {
 } from '@material-ui/core'
 import { withStyles } from '@material-ui/core/styles'
 import PropTypes from 'prop-types'
-
+import { connect } from 'react-redux'
 import { addCollaborator, loadCollaborators } from '../actions/share'
 
 const styles = {
@@ -41,11 +41,12 @@ class ShareList extends Component {
   }
 
   handleSubmit = event => {
+    const { dispatch, list } = this.props
     event.preventDefault()
-    this.props.dispatch(
+    dispatch(
       addCollaborator({
         email: this.state.collabEmail,
-        listId: this.props.list.listId
+        listId: list.listId
       })
     )
     this.setState({ collabEmail: '' })
@@ -53,9 +54,9 @@ class ShareList extends Component {
 
   conponentDidMount() {
     this.setState({ collabEmail: '' })
-    const { list, dispatch } = this.props
+    const { list } = this.props
     if (list) {
-      dispatch(loadCollaborators({ listId: list.listId }))
+      this.props.dispatch(loadCollaborators({ listId: list.listId }))
     }
   }
 
@@ -69,10 +70,10 @@ class ShareList extends Component {
           <Typography variant="h4">Collaborators</Typography>
         </ExpansionPanelSummary>
         <ExpansionPanelDetails>
-          <Grid container direction="column" xs={12}>
+          <Grid container direction="column">
             <Grid item>
               <Typography
-                variant="subheading"
+                variant="subtitle1"
                 gutterBottom
                 className={classes.desc}
               >
@@ -80,13 +81,14 @@ class ShareList extends Component {
               </Typography>
             </Grid>
             <Grid item>
-              <TextField
-                className={classes.textfield}
-                placeholder="Add Collaborator"
-                value={this.state.collabEmail}
-                onChange={this.handleChange}
-                onSubmit={this.handleSubmit}
-              />
+              <form onSubmit={this.handleSubmit}>
+                <TextField
+                  className={classes.textfield}
+                  placeholder="Add Collaborator"
+                  value={this.state.collabEmail}
+                  onChange={this.handleChange}
+                />
+              </form>
             </Grid>
           </Grid>
         </ExpansionPanelDetails>
@@ -96,9 +98,11 @@ class ShareList extends Component {
 }
 
 ShareList.propTypes = {
-  classes: PropTypes.func.isRequired,
   dispatch: PropTypes.func.isRequired,
+  classes: PropTypes.object.isRequired,
   list: PropTypes.object
 }
 
-export default withStyles(styles)(ShareList)
+const mapStateToProps = ({ auth }) => ({ auth })
+
+export default connect(mapStateToProps)(withStyles(styles)(ShareList))

@@ -1,9 +1,9 @@
 'use strict'
 
-const { createNewListEvent } = require('../../lib/event-dispatcher')
+const { createNewListEvent } = require('../../../slic-tools/event-dispatcher')
 
 const Uuid = require('uuid')
-const { dynamoDocClient } = require('../../lib/aws')
+const { dynamoDocClient } = require('../../../slic-tools/aws')
 
 const tableName = 'checklists'
 

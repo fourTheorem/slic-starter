@@ -2,7 +2,7 @@ const signedAxios = require('aws-signed-axios')
 const awsXray = require('aws-xray-sdk')
 const AWS = require('aws-sdk')
 
-const log = require('../../lib/log')
+const log = require('../../../slic-tools/log')
 
 const SQS = awsXray.captureAWSClient(
   new AWS.SQS({ endpoint: process.env.SQS_ENDPOINT_URL })

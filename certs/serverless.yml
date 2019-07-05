@@ -1,4 +1,4 @@
-service: baseline
+service: certs
 
 provider:
   name: aws

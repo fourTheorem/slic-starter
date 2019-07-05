@@ -1,0 +1,34 @@
+cognitoAuthorizer:
+  Type: AWS::ApiGateway::Authorizer
+  Properties:
+    IdentitySource: method.request.header.Authorization
+    Name: slic-user-pool-authorizer
+    RestApiId:
+      Ref: ApiGatewayRestApi
+    Type: COGNITO_USER_POOLS
+    ProviderARNs: ${ssm:/UserPoolArn}
+
+apiCustomDomainPathMappings:
+  Type: AWS::ApiGateway::BasePathMapping
+  Properties:
+    BasePath: '/share'
+    RestApiId:
+      Ref: ApiGatewayRestApi
+    DomainName: ${self:custom.apiDomainName}
+    Stage: ${self:provider.stage}
+
+apiDomainDns:
+  Type: AWS::Route53::RecordSetGroup
+  Properties:
+    HostedZoneId: ${self:custom.apiConfig.publicHostedZone}
+    RecordSets:
+      - Name: ${self:custom.apiDomainName}
+        Type: A
+        AliasTarget:
+          DNSName: !ImportValue ${self:provider.stage}-api-distribution-domain-name
+          HostedZoneId: ${self:custom.cloudFrontHostedZoneId}
+      - Name: ${self:custom.apiDomainName}
+        Type: AAAA
+        AliasTarget:
+          DNSName: !ImportValue ${self:provider.stage}-api-distribution-domain-name
+          HostedZoneId: ${self:custom.cloudFrontHostedZoneId}

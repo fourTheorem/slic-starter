@@ -5,12 +5,14 @@ export const ADD_COLLABORATOR_REQUEST = 'ADD_COLLABORATOR_REQUEST'
 export const ADD_COLLABORATOR_SUCCESS = 'ADD_COLLABORATOR_SUCCESS'
 export const ADD_COLLABORATOR_FAILURE = 'ADD_COLLABORATOR_FAILURE'
 
-export function addCollaborator({ emailAddress, listId }) {
+export function addCollaborator({ userId, emailAddress, listId }) {
   return function(dispatch) {
-    dispatch({ ADD_COLLABORATOR_REQUEST })
-    AmplifyApi.post('checklists', `/checklist/{listId}/collaborators`, {
+    dispatch({ type: ADD_COLLABORATOR_REQUEST })
+    AmplifyApi.post('checklists', `/share/{listId}`, {
       body: {
-        emailAddress
+        emailAddress,
+        userId,
+        listId
       }
     })
       .then(result => {

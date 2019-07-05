@@ -1,8 +1,8 @@
 'use strict'
 
 const user = require('./user')
-const { processEvent } = require('../../lib/event-util')
-const { createResponse } = require('../../lib/response')
+const { processEvent } = require('../../../slic-tools/event-util')
+const { createResponse } = require('../../../slic-tools/response')
 
 async function main(event) {
   const { pathParameters } = processEvent(event)

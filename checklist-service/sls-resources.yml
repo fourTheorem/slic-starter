@@ -23,6 +23,13 @@ slicUserPool:
     UsernameAttributes: [email]
     AutoVerifiedAttributes: [email]
 
+slicUserPoolArn:
+  Type: AWS::SSM::Parameter
+  Properties:
+    Name: UserPoolArn
+    Type: String
+    Value: !GetAtt slicUserPool.Arn
+
 slicUserPoolClient:
   Type: AWS::Cognito::UserPoolClient
   Properties:
@@ -91,20 +98,13 @@ slicIdentityPoolRoleAttachment:
     Roles:
       authenticated: { Fn::GetAtt: [slicAuthenticatedIdentityPoolRole, Arn] }
 
-apiCustomDomain:
-  Type: AWS::ApiGateway::DomainName
-  Properties:
-    CertificateArn: ${self:custom.apiConfig.apiCert}
-    DomainName: ${self:custom.apiDomainName}
-
 apiCustomDomainPathMappings:
   Type: AWS::ApiGateway::BasePathMapping
   Properties:
     BasePath: ''
     RestApiId:
       Ref: ApiGatewayRestApi
-    DomainName:
-      Ref: apiCustomDomain
+    DomainName: ${self:custom.apiDomainName}
     Stage: ${self:provider.stage}
 
 apiDomainDns:
@@ -112,15 +112,15 @@ apiDomainDns:
   Properties:
     HostedZoneId: ${self:custom.apiConfig.publicHostedZone}
     RecordSets:
-      - Name: ${self:resources.Resources.apiCustomDomain.Properties.DomainName}
+      - Name: ${self:custom.apiDomainName}
         Type: A
         AliasTarget:
-          DNSName: { Fn::GetAtt: [apiCustomDomain, DistributionDomainName] }
+          DNSName: !ImportValue ${self:provider.stage}-api-distribution-domain-name
           HostedZoneId: ${self:custom.cloudFrontHostedZoneId}
-      - Name: ${self:resources.Resources.apiCustomDomain.Properties.DomainName}
+      - Name: ${self:custom.apiDomainName}
         Type: AAAA
         AliasTarget:
-          DNSName: { Fn::GetAtt: [apiCustomDomain, DistributionDomainName] }
+          DNSName: !ImportValue ${self:provider.stage}-api-distribution-domain-name
           HostedZoneId: ${self:custom.cloudFrontHostedZoneId}
 
 userPoolIdParameter:

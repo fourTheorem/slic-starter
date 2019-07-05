@@ -1,0 +1,33 @@
+create:
+  handler: services/sharing/create.main
+  events:
+    - http:
+        path: share/{listId}
+        method: post
+        cors: true
+        authorizer:
+          type: COGNITO_USER_POOLS
+          authorizerId:
+            Ref: cognitoAuthorizer
+#load:
+#  handler: services/sharing/list.main
+#  events:
+#    - http:
+#        path: share/{listId}/collaborators
+#        method: get
+#        cors: true
+#        authorizer:
+#          type: COGNITO_USER_POOLS
+#          authorizerId:
+#            Ref: cognitoAuthorizer
+#remove:
+#  handler: services/sharing/remove.main
+#  events:
+#    - http:
+#        path: share/{listId}/collaborators/{userId}
+#        method: delete
+#        cors: true
+#        authorizer:
+#          type: COGNITO_USER_POOLS
+#          authorizerId:
+#            Ref: cognitoAuthorizer

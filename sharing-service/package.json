@@ -1,0 +1,21 @@
+{
+  "name": "sharing-service",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@dathuis/serverless-dynamodb-local": "^0.2.41",
+    "aws-xray-sdk": "^2.3.3",
+    "bourne": "^1.1.2",
+    "pino": "^5.12.6",
+    "serverless-offline": "^5.5.0"
+  }
+}

@@ -34,7 +34,13 @@ import {
 import {
   ADD_COLLABORATOR_REQUEST,
   ADD_COLLABORATOR_SUCCESS,
-  ADD_COLLABORATOR_FAILURE
+  ADD_COLLABORATOR_FAILURE,
+  REMOVE_COLLABORATOR_REQUEST,
+  REMOVE_COLLABORATOR_SUCCESS,
+  REMOVE_COLLABORATOR_FAILURE,
+  LOAD_COLLABORATOR_REQUEST,
+  LOAD_COLLABORATOR_SUCCESS,
+  LOAD_COLLABORATOR_FAILURE
 } from '../actions/share.js'
 
 const defaultState = {
@@ -322,6 +328,51 @@ export default (state = defaultState, { type, meta, payload, error }) => {
         creatingCollaborator: false,
         createdCollaborator: false,
         createCollaboratorError: error
+      }
+
+    case REMOVE_COLLABORATOR_REQUEST:
+      return {
+        ...state,
+        removingCollaborator: true,
+        collaboratorRemoved: false,
+        collaboratorRemovalError: null
+      }
+
+    case REMOVE_COLLABORATOR_SUCCESS:
+      return {
+        ...state,
+        removingCollaborator: false,
+        collaboratorRemoved: true,
+        collaboratorRemovalError: null
+      }
+
+    case REMOVE_COLLABORATOR_FAILURE:
+      return {
+        ...state,
+        removingCollaborator: false,
+        collaboratorRemoved: false,
+        collaboratorRemovalError: error
+      }
+
+    case LOAD_COLLABORATOR_REQUEST:
+      return {
+        loadingCollaborators: true,
+        collaboratorsLoaded: false,
+        loadCollaboratorError: null
+      }
+
+    case LOAD_COLLABORATOR_SUCCESS:
+      return {
+        loadingCollaborators: false,
+        collaboratorsLoaded: true,
+        loadCollaboratorError: null
+      }
+
+    case LOAD_COLLABORATOR_FAILURE:
+      return {
+        loadingCollaborators: false,
+        collaboratorsLoaded: false,
+        loadCollaboratorError: error
       }
 
     default:

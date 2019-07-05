@@ -1,0 +1,19 @@
+service: api-service
+provider:
+  name: aws
+  runtime: ${self:custom.runtime}
+  region: ${self:custom.region}
+  stage: ${self:custom.stage}
+custom: ${file(./custom.yml)}
+resources:
+  Resources:
+    apiCustomDomain:
+      Type: AWS::ApiGateway::DomainName
+      Properties:
+        CertificateArn: ${self:custom.apiConfig.apiCert}
+        DomainName: ${self:custom.apiDomainName}
+  Outputs:
+    ApiDistributionDomainName:
+      Value: !GetAtt apiCustomDomain.DistributionDomainName
+      Export:
+        Name: ${self:provider.stage}-api-distribution-domain-name
