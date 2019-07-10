@@ -9,6 +9,7 @@ import NavigationBar from './NavigationBar'
 import Lists from './Lists'
 import Loading from './Loading'
 import EditChecklist from './EditChecklist'
+import AcceptShare from './AcceptShare'
 
 import { loadLists } from '../actions/checklists'
 
@@ -32,6 +33,7 @@ class Home extends Component {
         <Route exact path="/new-list" component={EditChecklist} />
         <Route exact path="/list/:id" component={Checklist} />
         <Route path="/list/:id/edit" component={EditChecklist} />
+        <Route path="/invitation/:id" component={AcceptShare} />
         <Route path="/" component={Lists} />
       </Switch>
     )

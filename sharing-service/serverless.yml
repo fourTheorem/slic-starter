@@ -9,7 +9,7 @@ provider:
   runtime: ${self:custom.runtime}
   stage: ${self:custom.stage}
   region: ${self:custom.region}
-  #iamRoleStatements: ${file(./sls-iam-role-statements.yml)}  
+  iamRoleStatements: ${file(./sls-iam-role-statements.yml)}  
 
 custom: ${file(./custom.yml)}
 

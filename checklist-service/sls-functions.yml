@@ -2,7 +2,7 @@ create:
   handler: services/checklists/create.main
   events:
     - http:
-        path: checklist
+        path: ''
         method: post
         cors: true
         authorizer:
@@ -14,7 +14,7 @@ get:
   handler: services/checklists/get.main
   events:
     - http:
-        path: checklist/{id}
+        path: /{id}
         method: get
         cors: true
         authorizer:
@@ -26,7 +26,7 @@ list:
   handler: services/checklists/list.main
   events:
     - http:
-        path: checklist
+        path: ''
         method: get
         cors: true
         authorizer:
@@ -38,7 +38,7 @@ update:
   handler: services/checklists/update.main
   events:
     - http:
-        path: checklist/{id}
+        path: /{id}
         method: put
         cors: true
         authorizer:
@@ -50,7 +50,7 @@ delete:
   handler: services/checklists/delete.main
   events:
     - http:
-        path: checklist/{id}
+        path: /{id}
         method: delete
         cors: true
         authorizer:
@@ -62,7 +62,7 @@ addEntry:
   handler: services/checklists/entries/add.main
   events:
     - http:
-        path: checklist/{id}/entries
+        path: /{id}/entries
         method: post
         cors: true
         authorizer:
@@ -74,7 +74,7 @@ listEntries:
   handler: services/checklists/entries/list.main
   events:
     - http:
-        path: checklist/{id}/entries
+        path: /{id}/entries
         method: get
         cors: true
         authorizer:
@@ -86,7 +86,7 @@ updateEntry:
   handler: services/checklists/entries/update.main
   events:
     - http:
-        path: checklist/{id}/entries/{entId}
+        path: /{id}/entries/{entId}
         method: put
         cors: true
         authorizer:
@@ -98,7 +98,7 @@ deleteEntry:
   handler: services/checklists/entries/delete.main
   events:
     - http:
-        path: checklist/{id}/entries/{entId}
+        path: /{id}/entries/{entId}
         method: delete
         cors: true
         authorizer:

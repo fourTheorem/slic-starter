@@ -98,30 +98,25 @@ slicIdentityPoolRoleAttachment:
     Roles:
       authenticated: { Fn::GetAtt: [slicAuthenticatedIdentityPoolRole, Arn] }
 
+# Workaround for "Invalid stage identifier specified"
+# See https://github.com/serverless/serverless/issues/4029
+resApiGatewayDeployment: 
+  Type: AWS::ApiGateway::Deployment
+  DependsOn: ApiGatewayMethodPost
+  Properties: 
+    StageName: ${self:provider.stage}
+    RestApiId: 
+      Ref: ApiGatewayRestApi
+
 apiCustomDomainPathMappings:
   Type: AWS::ApiGateway::BasePathMapping
   Properties:
-    BasePath: ''
+    BasePath: 'checklist'
     RestApiId:
       Ref: ApiGatewayRestApi
     DomainName: ${self:custom.apiDomainName}
     Stage: ${self:provider.stage}
-
-apiDomainDns:
-  Type: AWS::Route53::RecordSetGroup
-  Properties:
-    HostedZoneId: ${self:custom.apiConfig.publicHostedZone}
-    RecordSets:
-      - Name: ${self:custom.apiDomainName}
-        Type: A
-        AliasTarget:
-          DNSName: !ImportValue ${self:provider.stage}-api-distribution-domain-name
-          HostedZoneId: ${self:custom.cloudFrontHostedZoneId}
-      - Name: ${self:custom.apiDomainName}
-        Type: AAAA
-        AliasTarget:
-          DNSName: !ImportValue ${self:provider.stage}-api-distribution-domain-name
-          HostedZoneId: ${self:custom.cloudFrontHostedZoneId}
+  DependsOn: resApiGatewayDeployment
 
 userPoolIdParameter:
   Type: AWS::SSM::Parameter

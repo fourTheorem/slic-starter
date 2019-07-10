@@ -3,7 +3,7 @@
 const AWS = require('aws-sdk')
 const awsXray = require('aws-xray-sdk')
 
-const log = require('../../../slic-tools/log')
+const log = require('slic-tools/log')
 
 const fromAddress = process.env.EMAIL_FROM_ADDRESS
 if (!fromAddress) {

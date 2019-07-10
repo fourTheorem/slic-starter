@@ -1,9 +1,9 @@
-import { getEmailFromUserId } from '../../../slic-tools/user-tools/get'
+import { getUser } from 'slic-tools/user-tools/get'
 const signedAxios = require('aws-signed-axios')
 const awsXray = require('aws-xray-sdk')
 const AWS = require('aws-sdk')
 
-const log = require('../../../slic-tools/log')
+const log = require('slic-tools/log')
 
 const SQS = awsXray.captureAWSClient(
   new AWS.SQS({ endpoint: process.env.SQS_ENDPOINT_URL })
@@ -44,7 +44,7 @@ async function handleNewChecklist(event) {
   const checklist = event.detail
   const { userId, name } = checklist
 
-  const { email } = await getEmailFromUserId(userId)
+  const { email } = await getUser(userId)
   const message = {
     to: email,
     subject: 'Your SLIC List',

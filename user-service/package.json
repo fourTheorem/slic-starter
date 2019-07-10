@@ -42,6 +42,7 @@
     "bourne": "^1.1.2",
     "pino": "^5.8.1",
     "serverless-log-forwarding": "^1.4.0"
+    "slic-tools": "file:../slic-tools"
   },
   "husky": {
     "hooks": {

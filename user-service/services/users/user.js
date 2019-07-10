@@ -3,7 +3,7 @@
 const AWS = require('aws-sdk')
 const awsXray = require('aws-xray-sdk')
 
-const log = require('../../../slic-tools/log')
+const log = require('slic-tools/log')
 
 const cognito = awsXray.captureAWSClient(
   new AWS.CognitoIdentityServiceProvider()
@@ -42,3 +42,4 @@ function getUserPoolId() {
   }
   return userPoolIdPromise
 }
+

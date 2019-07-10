@@ -1,8 +1,8 @@
 {
   "service": {
-    "service": "slic-starter-frontend",
+    "service": "frontend",
     "serviceObject": {
-      "name": "slic-starter-frontend"
+      "name": "frontend"
     },
     "provider": {
       "stage": "dev",
@@ -33,7 +33,7 @@
           "siteBucket": {
             "Type": "AWS::S3::Bucket",
             "Properties": {
-              "BucketName": "slic-starter-site-assets-dev",
+              "BucketName": "slic-starter-site-assets-dev.sliclists.com",
               "WebsiteConfiguration": {
                 "IndexDocument": "index.html",
                 "ErrorDocument": "index.html"
@@ -49,7 +49,9 @@
               "PolicyDocument": {
                 "Statement": [
                   {
-                    "Action": ["s3:GetObject"],
+                    "Action": [
+                      "s3:GetObject"
+                    ],
                     "Effect": "Allow",
                     "Resource": {
                       "Fn::Join": [
@@ -76,9 +78,12 @@
                 "Origins": [
                   {
                     "DomainName": {
-                      "Fn::GetAtt": ["siteBucket", "DomainName"]
+                      "Fn::GetAtt": [
+                        "siteBucket",
+                        "DomainName"
+                      ]
                     },
-                    "Id": "slic-starter-site-assets-dev-origin",
+                    "Id": "slic-starter-site-assets-dev.sliclists.com-origin",
                     "S3OriginConfig": {
                       "OriginAccessIdentity": ""
                     }
@@ -87,7 +92,9 @@
                 "Enabled": true,
                 "DefaultRootObject": "index.html",
                 "HttpVersion": "http2",
-                "Aliases": ["dev.sliclists.com"],
+                "Aliases": [
+                  "dev.sliclists.com"
+                ],
                 "DefaultCacheBehavior": {
                   "AllowedMethods": [
                     "DELETE",
@@ -98,7 +105,7 @@
                     "POST",
                     "PUT"
                   ],
-                  "TargetOriginId": "slic-starter-site-assets-dev-origin",
+                  "TargetOriginId": "slic-starter-site-assets-dev.sliclists.com-origin",
                   "ForwardedValues": {
                     "QueryString": "false",
                     "Cookies": {
@@ -108,7 +115,7 @@
                   "ViewerProtocolPolicy": "redirect-to-https"
                 },
                 "ViewerCertificate": {
-                  "AcmCertificateArn": "arn:aws:acm:us-east-1:935672627075:certificate/13cf5ff6-3371-4720-9119-02e336a5a5ad",
+                  "AcmCertificateArn": "arn:aws:acm:us-east-1:935672627075:certificate/dfd11574-0f9f-4f83-9a2f-360b6ad75d9a",
                   "SslSupportMethod": "sni-only"
                 },
                 "CustomErrorResponses": [
@@ -129,14 +136,17 @@
           "webRecordSets": {
             "Type": "AWS::Route53::RecordSetGroup",
             "Properties": {
-              "HostedZoneId": "Z1IY6O9IZ4CE3B",
+              "HostedZoneId": "Z2FVU6U5QIN255",
               "RecordSets": [
                 {
                   "Name": "dev.sliclists.com",
                   "Type": "A",
                   "AliasTarget": {
                     "DNSName": {
-                      "Fn::GetAtt": ["siteDistribution", "DomainName"]
+                      "Fn::GetAtt": [
+                        "siteDistribution",
+                        "DomainName"
+                      ]
                     },
                     "HostedZoneId": "Z2FDTNDATAQYW2"
                   }
@@ -186,7 +196,7 @@
       "region": "eu-west-1",
       "runtime": "nodejs8.10",
       "defaultStage": "dev",
-      "bucketName": "slic-starter-site-assets-dev",
+      "bucketName": "slic-starter-site-assets-dev.sliclists.com",
       "nsDomain": "sliclists.com",
       "domainPrefixes": {
         "dev": "dev.",
@@ -196,17 +206,20 @@
       "siteDomainName": "dev.sliclists.com",
       "s3Sync": [
         {
-          "bucketName": "slic-starter-site-assets-dev",
+          "bucketName": "slic-starter-site-assets-dev.sliclists.com",
           "localDir": "build"
         }
       ],
       "cloudFrontHostedZoneId": "Z2FDTNDATAQYW2",
       "siteConfig": {
-        "publicHostedZone": "Z1IY6O9IZ4CE3B",
-        "siteCert": "arn:aws:acm:us-east-1:935672627075:certificate/13cf5ff6-3371-4720-9119-02e336a5a5ad"
+        "publicHostedZone": "Z2FVU6U5QIN255",
+        "siteCert": "arn:aws:acm:us-east-1:935672627075:certificate/dfd11574-0f9f-4f83-9a2f-360b6ad75d9a"
       }
     },
-    "plugins": ["serverless-s3-sync"],
+    "plugins": [
+      "serverless-s3-sync",
+      "serverless-pseudo-parameters"
+    ],
     "pluginsData": {},
     "functions": {},
     "resources": {
@@ -214,7 +227,7 @@
         "siteBucket": {
           "Type": "AWS::S3::Bucket",
           "Properties": {
-            "BucketName": "slic-starter-site-assets-dev",
+            "BucketName": "slic-starter-site-assets-dev.sliclists.com",
             "WebsiteConfiguration": {
               "IndexDocument": "index.html",
               "ErrorDocument": "index.html"
@@ -230,7 +243,9 @@
             "PolicyDocument": {
               "Statement": [
                 {
-                  "Action": ["s3:GetObject"],
+                  "Action": [
+                    "s3:GetObject"
+                  ],
                   "Effect": "Allow",
                   "Resource": {
                     "Fn::Join": [
@@ -257,9 +272,12 @@
               "Origins": [
                 {
                   "DomainName": {
-                    "Fn::GetAtt": ["siteBucket", "DomainName"]
+                    "Fn::GetAtt": [
+                      "siteBucket",
+                      "DomainName"
+                    ]
                   },
-                  "Id": "slic-starter-site-assets-dev-origin",
+                  "Id": "slic-starter-site-assets-dev.sliclists.com-origin",
                   "S3OriginConfig": {
                     "OriginAccessIdentity": ""
                   }
@@ -268,7 +286,9 @@
               "Enabled": true,
               "DefaultRootObject": "index.html",
               "HttpVersion": "http2",
-              "Aliases": ["dev.sliclists.com"],
+              "Aliases": [
+                "dev.sliclists.com"
+              ],
               "DefaultCacheBehavior": {
                 "AllowedMethods": [
                   "DELETE",
@@ -279,7 +299,7 @@
                   "POST",
                   "PUT"
                 ],
-                "TargetOriginId": "slic-starter-site-assets-dev-origin",
+                "TargetOriginId": "slic-starter-site-assets-dev.sliclists.com-origin",
                 "ForwardedValues": {
                   "QueryString": "false",
                   "Cookies": {
@@ -289,7 +309,7 @@
                 "ViewerProtocolPolicy": "redirect-to-https"
               },
               "ViewerCertificate": {
-                "AcmCertificateArn": "arn:aws:acm:us-east-1:935672627075:certificate/13cf5ff6-3371-4720-9119-02e336a5a5ad",
+                "AcmCertificateArn": "arn:aws:acm:us-east-1:935672627075:certificate/dfd11574-0f9f-4f83-9a2f-360b6ad75d9a",
                 "SslSupportMethod": "sni-only"
               },
               "CustomErrorResponses": [
@@ -310,14 +330,17 @@
         "webRecordSets": {
           "Type": "AWS::Route53::RecordSetGroup",
           "Properties": {
-            "HostedZoneId": "Z1IY6O9IZ4CE3B",
+            "HostedZoneId": "Z2FVU6U5QIN255",
             "RecordSets": [
               {
                 "Name": "dev.sliclists.com",
                 "Type": "A",
                 "AliasTarget": {
                   "DNSName": {
-                    "Fn::GetAtt": ["siteDistribution", "DomainName"]
+                    "Fn::GetAtt": [
+                      "siteDistribution",
+                      "DomainName"
+                    ]
                   },
                   "HostedZoneId": "Z2FDTNDATAQYW2"
                 }
@@ -331,7 +354,7 @@
     "layers": {}
   },
   "package": {
-    "artifactDirectoryName": "serverless/slic-starter-frontend/dev/1559808153703-2019-06-06T08:02:33.703Z",
+    "artifactDirectoryName": "serverless/frontend/dev/1562683138502-2019-07-09T14:38:58.502Z",
     "artifact": ""
   }
 }

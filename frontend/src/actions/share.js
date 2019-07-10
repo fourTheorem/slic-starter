@@ -8,7 +8,7 @@ export const ADD_COLLABORATOR_FAILURE = 'ADD_COLLABORATOR_FAILURE'
 export function addCollaborator({ userId, emailAddress, listId }) {
   return function(dispatch) {
     dispatch({ type: ADD_COLLABORATOR_REQUEST })
-    AmplifyApi.post('checklists', `/share/{listId}`, {
+    AmplifyApi.post('checklists', `/share/${listId}`, {
       body: {
         emailAddress,
         userId,
@@ -61,6 +61,23 @@ export function removeCollaborator({ listId, email }) {
           type: REMOVE_COLLABORATOR_FAILURE,
           error: translateError(err)
         })
+      })
+  }
+}
+
+export const ACCEPT_SHARE_REQUEST = 'ACCEPT_SHARE_REQUEST'
+export const ACCEPT_SHARE_SUCCESS = 'ACCEPT_SHARE_SUCCESS'
+export const ACCEPT_SHARE_FAILURE = 'ACCEPT_SHARE_FAILURE'
+
+export function acceptShareRequest({ code }) {
+  return function(dispatch) {
+    dispatch({ type: ACCEPT_SHARE_REQUEST })
+    AmplifyApi.post('share', `/share/confirm/${code}`)
+      .then(result => {
+        dispatch({ type: ACCEPT_SHARE_SUCCESS })
+      })
+      .catch(err => {
+        dispatch({ type: ACCEPT_SHARE_FAILURE, error: translateError(err) })
       })
   }
 }

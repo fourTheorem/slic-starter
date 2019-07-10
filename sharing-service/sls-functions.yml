@@ -2,7 +2,7 @@ create:
   handler: services/sharing/create.main
   events:
     - http:
-        path: share/{listId}
+        path: /share/{listId}
         method: post
         cors: true
         authorizer:
@@ -31,3 +31,15 @@ create:
 #          type: COGNITO_USER_POOLS
 #          authorizerId:
 #            Ref: cognitoAuthorizer
+
+confirmInvite:
+  handler: services/sharing/confirmInvite.main
+  events:
+    - http:
+        path: /share/confirm/{code}
+        method: post
+        cors: true
+        authorizer:
+          type: COGNITO_USER_POOLS
+          authorizerId:
+            Ref: cognitoAuthorizer

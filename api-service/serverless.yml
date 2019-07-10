@@ -12,6 +12,22 @@ resources:
       Properties:
         CertificateArn: ${self:custom.apiConfig.apiCert}
         DomainName: ${self:custom.apiDomainName}
+
+    apiDomainDns:
+      Type: AWS::Route53::RecordSetGroup
+      Properties:
+        HostedZoneId: ${self:custom.apiConfig.publicHostedZone}
+        RecordSets:
+          - Name: ${self:custom.apiDomainName}
+            Type: A
+            AliasTarget:
+              DNSName: !GetAtt apiCustomDomain.DistributionDomainName
+              HostedZoneId: ${self:custom.cloudFrontHostedZoneId}
+          - Name: ${self:custom.apiDomainName}
+            Type: AAAA
+            AliasTarget:
+              DNSName: !GetAtt apiCustomDomain.DistributionDomainName
+              HostedZoneId: ${self:custom.cloudFrontHostedZoneId}
   Outputs:
     ApiDistributionDomainName:
       Value: !GetAtt apiCustomDomain.DistributionDomainName

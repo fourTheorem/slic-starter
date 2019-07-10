@@ -43,6 +43,7 @@
     "pino": "^5.8.1",
     "serverless-log-forwarding": "^1.4.0",
     "serverless-pseudo-parameters": "^2.4.0"
+    "test-common": "file:../slic-tools"
   },
   "husky": {
     "hooks": {

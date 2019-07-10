@@ -6,7 +6,7 @@ module.exports = serverless => {
     })()
 
   const region = 'us-east-1'
-  const stackName = `baseline-${stage}`
+  const stackName = `certs-${stage}`
   const exports = {
     [`${stage}-site-cert`]: 'siteCert',
     [`${stage}-public-hosted-zone`]: 'publicHostedZone'

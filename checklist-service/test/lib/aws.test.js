@@ -7,7 +7,7 @@ const { test } = require('tap')
 const message = 'Dummy Dynamo'
 const received = {}
 const aws = () =>
-  proxyquire('../../lib/aws', {
+  proxyquire('test-common/aws', {
     'aws-sdk': {
       DynamoDB: {
         DocumentClient: function DocumentClient(options) {

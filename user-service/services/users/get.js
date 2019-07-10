@@ -1,13 +1,12 @@
 'use strict'
 
 const user = require('./user')
-const { processEvent } = require('../../../slic-tools/event-util')
-const { createResponse } = require('../../../slic-tools/response')
+const { processEvent } = require('slic-tools/event-util')
+const { createResponse } = require('slic-tools/response')
 
 async function main(event) {
   const { pathParameters } = processEvent(event)
   const { id: userId } = pathParameters
   return createResponse(user.get({ userId }))
 }
-
 module.exports = { main }

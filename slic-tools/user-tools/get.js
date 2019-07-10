@@ -4,7 +4,7 @@ const signedAxios = require('aws-signed-axios')
 
 const userServiceUrlPromise = getUserServiceUrl()
 
-async function getEmailFromUserId(userId) {
+async function getUser(userId) {
   const userUrl = `${await userServiceUrlPromise}${userId}`
 
   const { data: result } = await signedAxios({
@@ -20,5 +20,5 @@ async function getEmailFromUserId(userId) {
 
 
 module.exports = {
-  getEmailFromUserId
+  getUser
 }

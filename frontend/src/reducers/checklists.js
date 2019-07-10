@@ -40,7 +40,10 @@ import {
   REMOVE_COLLABORATOR_FAILURE,
   LOAD_COLLABORATOR_REQUEST,
   LOAD_COLLABORATOR_SUCCESS,
-  LOAD_COLLABORATOR_FAILURE
+  LOAD_COLLABORATOR_FAILURE,
+  ACCEPT_SHARE_REQUEST,
+  ACCEPT_SHARE_SUCCESS,
+  ACCEPT_SHARE_FAILURE
 } from '../actions/share.js'
 
 const defaultState = {
@@ -356,6 +359,7 @@ export default (state = defaultState, { type, meta, payload, error }) => {
 
     case LOAD_COLLABORATOR_REQUEST:
       return {
+        ...state,
         loadingCollaborators: true,
         collaboratorsLoaded: false,
         loadCollaboratorError: null
@@ -363,6 +367,7 @@ export default (state = defaultState, { type, meta, payload, error }) => {
 
     case LOAD_COLLABORATOR_SUCCESS:
       return {
+        ...state,
         loadingCollaborators: false,
         collaboratorsLoaded: true,
         loadCollaboratorError: null
@@ -370,9 +375,33 @@ export default (state = defaultState, { type, meta, payload, error }) => {
 
     case LOAD_COLLABORATOR_FAILURE:
       return {
+        ...state,
         loadingCollaborators: false,
         collaboratorsLoaded: false,
         loadCollaboratorError: error
+      }
+
+    case ACCEPT_SHARE_REQUEST:
+      return {
+        ...state,
+        acceptingShareRequest: true,
+        shareRequestAccepted: false,
+        shareRequestError: null
+      }
+
+    case ACCEPT_SHARE_SUCCESS:
+      return {
+        ...state,
+        acceptingShareRequest: false,
+        shareRequestAccepted: true,
+        shareRequestError: false
+      }
+    case ACCEPT_SHARE_FAILURE:
+      return {
+        ...state,
+        acceptShareRequest: false,
+        shareRequestAccepted: false,
+        shareRequestError: error
       }
 
     default:

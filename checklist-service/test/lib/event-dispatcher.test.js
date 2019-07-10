@@ -16,7 +16,7 @@ awsMock.mock('CloudWatchEvents', 'putEvents', function(params, callback) {
 })
 
 test('createNewListEvent dispatches a CloudWatch custom event', async t => {
-  const eventDispatcher = require('../../lib/event-dispatcher')
+  const eventDispatcher = require('test-common/event-dispatcher')
 
   const testList = {
     name: 'Test List',
