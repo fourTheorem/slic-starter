@@ -1,11 +1,12 @@
-import { Construct } from '@aws-cdk/cdk'
+import { Construct } from '@aws-cdk/core'
 import {
+  Artifacts,
   Project,
-  GitHubSource,
-  S3BucketBuildArtifacts,
   ProjectProps,
   FilterGroup,
-  EventAction
+  EventAction,
+  BuildSpec,
+  Source
 } from '@aws-cdk/aws-codebuild'
 import config from '../../config'
 import { defaultEnvironment } from '../code-build-environments'
@@ -21,7 +22,7 @@ export class SourceProject extends Project {
   constructor(scope: Construct, id: string, props: SourceProjectProps) {
     const { bucket, ...rest } = props
 
-    const buildSource = new GitHubSource({
+    const buildSource = Source.gitHub({
       cloneDepth: 2,
       owner: config.sourceRepoOwner,
       repo: config.sourceRepoName,
@@ -31,7 +32,7 @@ export class SourceProject extends Project {
       ]
     })
 
-    const artifacts = new S3BucketBuildArtifacts({
+    const artifacts = Artifacts.s3({
       bucket: props.bucket,
       name: SLIC_PIPELINE_SOURCE_ARTIFACT,
       includeBuildId: false,
@@ -39,13 +40,13 @@ export class SourceProject extends Project {
     })
 
     super(scope, id, {
-      buildSpec: {
+      buildSpec: BuildSpec.fromObject({
         version: '0.2',
         phases: {
           build: {
             commands: [
               `bash ./build-scripts/source-kickoff.sh https://github.com/${
-                config.sourceRepoOwner
+              config.sourceRepoOwner
               }/${config.sourceRepoName}.git $CODEBUILD_RESOLVED_SOURCE_VERSION`
             ]
           }
@@ -53,7 +54,7 @@ export class SourceProject extends Project {
         artifacts: {
           files: '**/*'
         }
-      },
+      }),
       source: buildSource,
       environment: defaultEnvironment,
       artifacts,

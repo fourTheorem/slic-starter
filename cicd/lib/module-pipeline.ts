@@ -1,9 +1,10 @@
 import { Pipeline, Artifact } from '@aws-cdk/aws-codepipeline'
-import { Construct } from '@aws-cdk/cdk'
+import { Construct } from '@aws-cdk/core'
 import { Bucket } from '@aws-cdk/aws-s3'
 import {
   S3SourceAction,
-  CodeBuildAction
+  CodeBuildAction,
+  S3Trigger
 } from '@aws-cdk/aws-codepipeline-actions'
 import StageName from './stage-name'
 import { ModuleDeployProject } from './projects/module-deploy-project'
@@ -36,12 +37,12 @@ export class ModulePipeline extends Pipeline {
       bucket: artifactsBucket,
       bucketKey: `${stageName}_module_pipelines/module_source/${moduleName}.zip`,
       output: sourceOutputArtifact,
-      pollForSourceChanges: false,
+      trigger: S3Trigger.POLL,
       actionName: `${moduleName}_${stageName}_src`
     })
 
     this.addStage({
-      name: 'Source',
+      stageName: 'Source',
       actions: [sourceAction]
     })
 
@@ -59,12 +60,12 @@ export class ModulePipeline extends Pipeline {
     const moduleBuildAction = new CodeBuildAction({
       actionName: 'Build',
       input: sourceOutputArtifact,
-      output: moduleBuildOutputArtifact,
+      outputs: [moduleBuildOutputArtifact],
       project: moduleBuildProject
     })
 
     this.addStage({
-      name: 'Build',
+      stageName: 'Build',
       actions: [moduleBuildAction]
     })
 
@@ -82,12 +83,12 @@ export class ModulePipeline extends Pipeline {
     const moduleDeployAction = new CodeBuildAction({
       actionName: 'Deploy',
       input: moduleBuildOutputArtifact,
-      output: moduleDeployOutputArtifact,
+      outputs: [moduleDeployOutputArtifact],
       project: moduleDeployProject
     })
 
     this.addStage({
-      name: 'Deploy',
+      stageName: 'Deploy',
       actions: [moduleDeployAction]
     })
   }

@@ -4,6 +4,6 @@ export const defaultEnvironment = {
   buildImage: LinuxBuildImage.fromDockerHub(
     'eoinsha/codebuild-nodejs-serverless:8.11.0'
   ),
-  computeType: ComputeType.Small,
+  computeType: ComputeType.SMALL,
   privileged: false
 }

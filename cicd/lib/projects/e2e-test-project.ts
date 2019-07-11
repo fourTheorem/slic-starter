@@ -1,10 +1,11 @@
 import {
   PipelineProject,
   PipelineProjectProps,
-  BuildEnvironmentVariableType
+  BuildEnvironmentVariableType,
+  BuildSpec
 } from '@aws-cdk/aws-codebuild'
 import StageName from '../stage-name'
-import { Construct } from '@aws-cdk/cdk'
+import { Construct } from '@aws-cdk/core'
 import iam = require('@aws-cdk/aws-iam')
 import config from '../../config'
 import CodeBuildRole from '../code-build-role'
@@ -24,37 +25,37 @@ export class E2ETestProject extends PipelineProject {
     const role = new CodeBuildRole(scope, `${props.stageName}E2ETestRole`)
     // Allow access to secret environment variables in Parameter Store required for tests
     role.addToPolicy(
-      new iam.PolicyStatement()
-      .allow()
-      .addAction('ssm:GetParameters')
-      .addResource(`arn:aws:ssm:${config.region}:${config.accountIds.cicd}:parameter/test/*`)
+      new iam.PolicyStatement({
+        actions: ['ssm:GetParameters'],
+        resources: [`arn:aws:ssm:${config.region}:${config.accountIds.cicd}:parameter/test/*`]
+      })
     )
 
     super(scope, id, {
       projectName: `${props.stageName}E2ETest`,
       environmentVariables: {
         SLIC_STAGE: {
-          type: BuildEnvironmentVariableType.PlainText,
+          type: BuildEnvironmentVariableType.PLAINTEXT,
           value: props.stageName
         },
         SLIC_NS_DOMAIN: {
-          type: BuildEnvironmentVariableType.PlainText,
+          type: BuildEnvironmentVariableType.PLAINTEXT,
           value: config.nsDomain
         },
         CROSS_ACCOUNT_ID: {
-          type: BuildEnvironmentVariableType.PlainText,
+          type: BuildEnvironmentVariableType.PLAINTEXT,
           value: `${config.accountIds[props.stageName]}`
         },
         MAILOSAUR_API_KEY: {
-          type: BuildEnvironmentVariableType.ParameterStore,
+          type: BuildEnvironmentVariableType.PARAMETER_STORE,
           value: '/test/mailosaur/apiKey'
         },
         MAILOSAUR_SERVER_ID: {
-          type: BuildEnvironmentVariableType.ParameterStore,
+          type: BuildEnvironmentVariableType.PARAMETER_STORE,
           value: '/test/mailosaur/serverId'
         }
       },
-      buildSpec: 'e2e-tests/buildspec.yml',
+      buildSpec: BuildSpec.fromSourceFilename('e2e-tests/buildspec.yml'),
       role,
       ...rest
     })
