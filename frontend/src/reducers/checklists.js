@@ -52,6 +52,7 @@ const defaultState = {
   loading: false,
   removing: false,
   entriesByListId: {},
+  collaboratorsByListId: {},
   listIds: [],
   listsById: {},
   updatingEntryValue: false,
@@ -320,6 +321,16 @@ export default (state = defaultState, { type, meta, payload, error }) => {
     case ADD_COLLABORATOR_SUCCESS:
       return {
         ...state,
+        collaboratorsByListId: {
+          ...state.collaboratorsByListId,
+          [meta.listId]: [
+            ...(state.collaboratorsByListId[meta.listId] || []),
+            {
+              title: meta.email,
+              ...payload
+            }
+          ]
+        },
         creatingCollaborator: false,
         createdCollaborator: true,
         createCollaboratorError: null
@@ -370,7 +381,14 @@ export default (state = defaultState, { type, meta, payload, error }) => {
         ...state,
         loadingCollaborators: false,
         collaboratorsLoaded: true,
-        loadCollaboratorError: null
+        loadCollaboratorError: null,
+        collaboratorsByListId: {
+          ...state.collaboratorsByListId,
+          [meta.listId]: Object.collaborators(payload).map(pair => ({
+            email: pair[0],
+            ...pair[1]
+          }))
+        }
       }
 
     case LOAD_COLLABORATOR_FAILURE:

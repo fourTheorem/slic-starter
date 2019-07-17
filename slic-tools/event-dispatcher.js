@@ -18,6 +18,26 @@ async function createNewListEvent(list) {
   await cwEvents.putEvents(params).promise()
 }
 
+async function createShareAcceptedEvent(userId, listId, email) {
+  const details = {
+    userId,
+    listId,
+    email
+  }
+  const params = {
+    Entries: [
+      {
+        Detail: JSON.stringify(details),
+        DetailType: 'COLLABORATOR_ACCEPTED_EVENT',
+        Source: 'sliclists.sharing'
+      }
+    ]
+  }
+
+  await cwEvents.putEvents(params).promise()
+}
+
 module.exports = {
-  createNewListEvent
+  createNewListEvent,
+  createShareAcceptedEvent
 }

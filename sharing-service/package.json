@@ -21,6 +21,7 @@
     "pino": "^5.12.6",
     "serverless-offline": "^5.5.0",
     "signed-objectid": "^1.0.1",
-    "slic-tools": "file:../slic-tools"
+    "slic-tools": "file:../slic-tools",
+    "aws-signed-axios": "^1.0.6"
   }
 }

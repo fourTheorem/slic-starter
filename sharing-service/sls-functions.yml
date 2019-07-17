@@ -2,7 +2,7 @@ create:
   handler: services/sharing/create.main
   events:
     - http:
-        path: /share/{listId}
+        path: /{listId}
         method: post
         cors: true
         authorizer:
@@ -13,7 +13,7 @@ create:
 #  handler: services/sharing/list.main
 #  events:
 #    - http:
-#        path: share/{listId}/collaborators
+#        path: /{listId}/collaborators
 #        method: get
 #        cors: true
 #        authorizer:
@@ -24,7 +24,7 @@ create:
 #  handler: services/sharing/remove.main
 #  events:
 #    - http:
-#        path: share/{listId}/collaborators/{userId}
+#        path: /{listId}/collaborators/{userId}
 #        method: delete
 #        cors: true
 #        authorizer:
@@ -36,7 +36,7 @@ confirmInvite:
   handler: services/sharing/confirmInvite.main
   events:
     - http:
-        path: /share/confirm/{code}
+        path: /confirm/{code}
         method: post
         cors: true
         authorizer:

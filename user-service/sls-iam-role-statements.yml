@@ -13,3 +13,8 @@
     - xray:PutTelemetryRecords
   Resource:
     - '*'
+- Effect: Allow
+  Action:
+    - cognito-idp:ListUsers
+  Resource:
+    - arn:aws:cognito-idp:*:*:userpool/${ssm:UserPoolId}

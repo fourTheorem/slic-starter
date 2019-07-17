@@ -13,6 +13,12 @@ const uid = {
   userId: 'userId'
 }
 
+const user = {
+
+  "Users": [{"Username": "123"}]
+  
+}
+
 awsMock.mock('SSM', 'getParameter', function(params, callback) {
   callback(null, { Parameter: { Value: 'test-user-pool-id' } })
 })
@@ -23,6 +29,13 @@ awsMock.mock('CognitoIdentityServiceProvider', 'adminGetUser', function(
 ) {
   const UserAttributes = [{ Name: 'email', Value: testEmail }]
   callback(null, { UserAttributes })
+})
+
+awsMock.mock('CognitoIdentityServiceProvider', 'listUsers', function(
+  params,
+  callback
+) {
+  callback(null, user)
 })
 
 test('user service retrieves cognito user information', async t => {
@@ -37,4 +50,12 @@ test('user service retrieves cognito user information', async t => {
   t.match(responser2, {
     email: testEmail
   })
+})
+
+test('retrieve a username from cognito when provided with an email', async t => {
+  const userService = require('../../../services/users/user')
+  const result = await userService.getUserIdByEmail(testEmail)
+  t.match(result, user.Users[0].Username)
+
+
 })

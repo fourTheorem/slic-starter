@@ -10,6 +10,12 @@ provider:
   stage: ${self:custom.stage}
   region: ${self:custom.region}
   iamRoleStatements: ${file(./sls-iam-role-statements.yml)}  
+  resourcePolicy:
+    - Effect: Allow
+      Principal: '*'
+      Action: 'execute-api:Invoke'
+      Resource:
+        - execute-api:/*/*/*
 
 custom: ${file(./custom.yml)}
 

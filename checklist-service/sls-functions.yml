@@ -105,3 +105,13 @@ deleteEntry:
           type: COGNITO_USER_POOLS
           authorizerId:
             Ref: cognitoAuthorizer
+
+addCollaboratorToList:
+  handler: services/checklists/collaboratorHandler.main
+  events:
+    - cloudwatchEvent:
+        event:
+          source:
+            - 'sliclists.sharing'
+          detail-type:
+            - 'COLLABORATOR_ACCEPTED_EVENT'

@@ -1,4 +1,18 @@
 - Effect: Allow
   Action:
     - ssm:GetParameter
-  Resource: arn:aws:ssm:eu-west-1:*:parameter/UserPoolArn
+  Resource:
+    - arn:aws:ssm:eu-west-1:*:parameter/UserPoolArn
+    - arn:aws:ssm:eu-west-1:*:parameter/CODE_SECRET
+    - arn:aws:ssm:eu-west-1:*:parameter/UserServiceUrl
+    - arn:aws:ssm:eu-west-1:*:parameter/UserPoolId
+- Effect: Allow
+  Action:
+    - sqs:GetQueueUrl
+    - sqs:SendMessage
+  Resource: arn:aws:sqs:*:*:${self:custom.emailQueueName}
+- Effect: Allow
+  Action:
+    - cognito-idp:listUsers
+  Resource:
+    - arn:aws:cognito-idp:*:*:userpool/${ssm:UserPoolId}

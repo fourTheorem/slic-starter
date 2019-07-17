@@ -1,0 +1,12 @@
+{
+  "body": "{\"email\":\"paul.kevany@fourtheorem.com\",\"listId\":\"2bdbaedb-8fa8-4a50-bf89-8541180b3620\"}",
+  "pathParameters": {
+    "listId": "1234"
+  },
+
+  "requestContext": {
+    "identity": {
+      "cognitoIdentityId": "USER-SUB-1234"
+    }
+  }
+}

@@ -41,7 +41,7 @@
     "aws-xray-sdk": "^2.3.3",
     "bourne": "^1.1.2",
     "pino": "^5.8.1",
-    "serverless-log-forwarding": "^1.4.0"
+    "serverless-log-forwarding": "^1.4.0",
     "slic-tools": "file:../slic-tools"
   },
   "husky": {

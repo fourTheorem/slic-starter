@@ -1,8 +1,10 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
+import { Redirect } from 'react-router'
 import { Button, Grid, Paper, Typography } from '@material-ui/core'
 import { withStyles } from '@material-ui/core/styles'
+import { acceptShareRequest } from '../actions/share'
 
 const style = theme => ({
   root: {
@@ -31,67 +33,71 @@ const style = theme => ({
   }
 })
 
-class ConfirmShare extends Component {
-  state = {}
+class AcceptShare extends Component {
+  state = { code: '' }
+
+  handleConfirm = event => {
+    event.preventDefault()
+    this.props.dispatch(acceptShareRequest(this.state.code))
+  }
+
   render() {
-    const { classes, code } = this.props
+    const { classes } = this.props
+
+    const { code } = this.props
+
+    if (!code) {
+      return <Redirect to={`/Home`} />
+    }
+
     return (
       <div className={classes.root}>
-        <form onSubmit={this.handleSubmit}>
-          <Paper className={classes.paper}>
+        <Paper className={classes.paper}>
+          <Grid
+            className={classes.input}
+            container
+            direction="column"
+            justify="center"
+            alignItems="stretch"
+            spacing={8}
+          >
+            <Grid item>
+              <Typography variant="h4">
+                Accept invitation to collaborate
+              </Typography>
+              <Typography>Your code is: {code}</Typography>
+            </Grid>
+
+            <Grid item />
+
             <Grid
-              className={classes.input}
+              item
               container
-              direction="column"
-              justify="center"
-              alignItems="stretch"
-              spacing={8}
+              layout="row"
+              justify="flex-end"
+              alignItems="center"
             >
               <Grid item>
-                <Typography variant="h4">{code}</Typography>
-              </Grid>
-
-              <Grid item />
-
-              <Grid
-                item
-                container
-                layout="row"
-                justify="flex-end"
-                alignItems="center"
-              >
-                <Grid item>
-                  <Button
-                    id="resend-code-btn"
-                    className={classes.button}
-                    onClick={this.resendConfirmation}
-                    disabled={!this.state.email}
-                  >
-                    Resend Code
-                  </Button>
-                </Grid>
-                <Grid item>
-                  <Button
-                    vavriant="contained"
-                    color="secondary"
-                    type="submit"
-                    id="confirm-signup-btn"
-                    className={classes.button}
-                  />
-                </Grid>
+                <Button
+                  id="accept"
+                  className={classes.button}
+                  onClick={this.handleConfirm}
+                >
+                  Accept Invite
+                </Button>
               </Grid>
             </Grid>
-          </Paper>
-        </form>
+          </Grid>
+        </Paper>
       </div>
     )
   }
 }
 
-ConfirmShare.propTypes = {
+AcceptShare.propTypes = {
   dispatch: PropTypes.func.isRequired,
   classes: PropTypes.object.isRequired,
-  code: PropTypes.object
+  code: PropTypes.string
 }
 
 const makeMapStateToProps = (initialState, ownProps) => {
@@ -103,4 +109,4 @@ const makeMapStateToProps = (initialState, ownProps) => {
   return code
 }
 
-export default connect(makeMapStateToProps)(withStyles(style)(ConfirmShare))
+export default connect(makeMapStateToProps)(withStyles(style)(AcceptShare))

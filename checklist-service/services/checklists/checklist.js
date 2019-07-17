@@ -99,3 +99,25 @@ async function list({ userId }) {
     })
     .promise()).Items
 }
+
+
+async function addCollaboratorToList({userId, listId, email}){
+  const result = await dynamoDocClient()
+    .update({
+      TableName: tableName,
+      Key: { listId },
+      UpdateExpression:
+        'SET #collaborators = :collaborators',
+      ExpressionAttributeNames: {
+        '#collaborators': 'collaborators',
+      },
+      ExpressionAttributeValues: {
+        ':collaborators': userId
+      },
+
+      ReturnValues: 'ALL_NEW'
+    })
+    .promise()
+
+   return result.Attributes
+}

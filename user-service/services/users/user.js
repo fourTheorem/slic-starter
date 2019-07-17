@@ -3,7 +3,7 @@
 const AWS = require('aws-sdk')
 const awsXray = require('aws-xray-sdk')
 
-const log = require('slic-tools/log')
+const log = require('slic-tools/log.js')
 
 const cognito = awsXray.captureAWSClient(
   new AWS.CognitoIdentityServiceProvider()
@@ -13,7 +13,8 @@ const SSM = awsXray.captureAWSClient(
 )
 
 module.exports = {
-  get
+  get,
+  getUserIdByEmail
 }
 
 async function get({ userId }) {
@@ -43,3 +44,14 @@ function getUserPoolId() {
   return userPoolIdPromise
 }
 
+async function getUserIdByEmail(email) {
+  const filter = `email = "${email}"`
+  const params = {
+    UserPoolId: await getUserPoolId(),
+    Filter: filter
+  }
+  const users = await cognito.listUsers(params).promise()
+
+  log.info({ users }, 'Got users')
+  return users.Users[0].Username
+}

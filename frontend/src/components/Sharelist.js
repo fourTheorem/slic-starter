@@ -29,7 +29,7 @@ const styles = {
 class ShareList extends Component {
   state = {
     isPanelExpanded: false,
-    collabEmail: ''
+    email: ''
   }
 
   handlePanelExpansion = () => {
@@ -37,23 +37,21 @@ class ShareList extends Component {
   }
 
   handleChange = ({ target: { value } }) => {
-    this.setState({ collabEmail: value })
+    this.setState({ email: value })
   }
 
   handleSubmit = event => {
-    const { dispatch, list } = this.props
     event.preventDefault()
-    dispatch(
+    this.props.dispatch(
       addCollaborator({
-        email: this.state.collabEmail,
-        listId: list.listId
+        email: this.state.email,
+        listId: this.props.list.listId
       })
     )
-    this.setState({ collabEmail: '' })
+    this.setState({ email: '' })
   }
 
   conponentDidMount() {
-    this.setState({ collabEmail: '' })
     const { list } = this.props
     if (list) {
       this.props.dispatch(loadCollaborators({ listId: list.listId }))
@@ -85,8 +83,8 @@ class ShareList extends Component {
                 <TextField
                   className={classes.textfield}
                   placeholder="Add Collaborator"
-                  value={this.state.collabEmail}
                   onChange={this.handleChange}
+                  value={this.state.email}
                 />
               </form>
             </Grid>

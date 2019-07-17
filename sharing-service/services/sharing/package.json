@@ -12,6 +12,7 @@
   "license": "ISC",
   "dependencies": {
     "aws-xray-sdk": "^2.3.3",
-    "tap": "^14.4.1"
+    "tap": "^14.4.1",
+    "slic-tools": "file:../../../slic-tools"
   }
 }

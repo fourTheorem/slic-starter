@@ -1,10 +1,11 @@
 'use strict'
-const { getUser } = require('../../../slic-tools/user-tools/get')
-const { createResponse } = require('../../../slic-tools/response')
+const { getUser } = require('slic-tools/get')
+const { createResponse } = require('slic-tools/response')
 const share = require('./share')
-const { processEvent } = require('../../../slic-tools/event-util')
+const { processEvent } = require('slic-tools/event-util')
 const { getSSMValue } = require('./lib/getSSMValue')
 const crypto = require('crypto')
+const { createShareAcceptedEvent } = require('slic-tools/event-dispatcher')
 
 async function main(event) {
   const { body } = processEvent(event)
@@ -30,6 +31,9 @@ async function main(event) {
   const listId = bufToValue(databuffer.subarray(0, 16))
   const userId = bufToValue(databuffer.subarray(16, 32))
   const email = dataBuffer.subarray(32).toString('utf8')
+
+  await createShareAcceptedEvent(userId, listId, email)  
+
 }
 
 function bufToValue(buffer) {

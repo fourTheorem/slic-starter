@@ -1,23 +1,23 @@
 const crypto = require('crypto')
+const log = require('slic-tools/log')
 
-const {getSSMValue} = import('./getSSMValue.js')
-const listId = '23538fda-ab6c-44c5-a5da-adb56e795950'
-const userId = '0c796e4e-607b-4dad-a912-4427bff5eabc'
-const email = 'paul.kevany@fourtheorem.com'
+const getSSMValue = require('./getSSMValue.js')
 const AWS = require('aws-sdk')
 const SSM = new AWS.SSM()
 
-async function createSignedLink(listId, userId, email) {
-  const SECRET = await getSSMValue()
+async function createSignedLink(listId, collaboratorUserId, email) {
+  if (!listId || !collaboratorUserId || !email) {
+      throw new Error('Failed to retrieve required valued for code signing')
+  }
+  const SECRET = await getSSMValue.getSSMValue()
+  log.info('got secret: ', SECRET)
   const bufferConcat = Buffer.concat([
     Buffer.from(listId.replace(/-/g, ''), 'hex'),
-    Buffer.from(userId.replace(/-/g, ''), 'hex'),
+    Buffer.from(collaboratorUserId.replace(/-/g, ''), 'hex'),
     Buffer.from(email)
   ])
 
   const hmac = crypto.createHmac('sha256', SECRET)
-
-  hmac.update(bufferConcat)
 
   const digest = hmac.digest()
 
@@ -29,12 +29,10 @@ async function createSignedLink(listId, userId, email) {
     .replace(/\+/g, '-')
     .replace(/\//g, '_')
 
-  console.log('secret: ', SECRET)
+  console.log('secret: ', SECRET.toString())
   console.log(code)
-
+  return code
 }
-
-createSignedLink(listId, userId, email)
 
 module.exports = {
   createSignedLink
