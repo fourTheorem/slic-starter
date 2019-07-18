@@ -9,7 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "aws-xray-sdk": "^2.3.3",
-    "aws-signed-axios": "^1.0.6"
+    "aws-signed-axios": "^1.0.6",
+    "aws-xray-sdk": "^2.3.3"
   }
 }

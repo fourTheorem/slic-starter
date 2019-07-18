@@ -3,25 +3,28 @@
   "version": "1.0.0",
   "description": "Sharing Service",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "tap \"test/**/*.test.js\" --branches=100 --statements=100 --functions=100 --lines=100"
   },
   "author": "Paul Kevany <paul.kevany@fourtheorem.com>",
-  "license": "ISC",
+  "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/fourtheorem/slic-starter"
+    "url": "https://github.com/fourTheorem/slic-starter"
   },
   "devDependencies": {
-    "serverless-pseudo-parameters": "^2.4.0"
+    "serverless-pseudo-parameters": "^2.4.0",
+    "tap": "^14.2.0"
   },
   "dependencies": {
     "@dathuis/serverless-dynamodb-local": "^0.2.41",
+    "aws-signed-axios": "^1.0.6",
     "aws-xray-sdk": "^2.3.3",
     "bourne": "^1.1.2",
+    "lambda-logger-middleware": "^1.0.3",
+    "middy": "^0.28.4",
     "pino": "^5.12.6",
     "serverless-offline": "^5.5.0",
     "signed-objectid": "^1.0.1",
-    "slic-tools": "file:../slic-tools",
-    "aws-signed-axios": "^1.0.6"
+    "slic-tools": "file:../slic-tools"
   }
 }
