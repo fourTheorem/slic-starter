@@ -1,7 +1,7 @@
 stage: ${opt:stage, 'dev'}
 region: eu-west-1
 runtime: nodejs8.10
-nsDomain: ${env:SLIC_NS_DOMAIN}
+nsDomain: ${env:SLIC_NS_DOMAIN, 'sliclists.com'}
 domainPrefixes: 
   local: ''
   dev: dev. 

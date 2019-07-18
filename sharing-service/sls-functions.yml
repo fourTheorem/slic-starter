@@ -1,8 +1,12 @@
 create:
   handler: services/sharing/create.main
+  environment:
+    SLIC_NS_DOMAIN: ${self:custom.nsDomain}
+    SLIC_STAGE: ${self:custom.stage}
+    EMAIL_QUEUE_NAME: ${self:custom.emailQueueName}
   events:
     - http:
-        path: /{listId}
+        path: /{code}
         method: post
         cors: true
         authorizer:

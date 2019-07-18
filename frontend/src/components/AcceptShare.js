@@ -1,8 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { connect } from 'react-redux'
-import { Redirect } from 'react-router'
 import { Button, Grid, Paper, Typography } from '@material-ui/core'
+import { connect } from 'react-redux'
 import { withStyles } from '@material-ui/core/styles'
 import { acceptShareRequest } from '../actions/share'
 
@@ -34,21 +33,22 @@ const style = theme => ({
 })
 
 class AcceptShare extends Component {
-  state = { code: '' }
-
   handleConfirm = event => {
     event.preventDefault()
-    this.props.dispatch(acceptShareRequest(this.state.code))
+    const { params } = this.props.match
+    const { dispatch } = this.props
+    dispatch(acceptShareRequest(params.id))
   }
 
   render() {
     const { classes } = this.props
+    console.log(this.props)
 
-    const { code } = this.props
+    const { params } = this.props.match
 
-    if (!code) {
-      return <Redirect to={`/Home`} />
-    }
+    // if (!code) {
+    //   return <Redirect to={`/Home`} />
+    // }
 
     return (
       <div className={classes.root}>
@@ -65,10 +65,8 @@ class AcceptShare extends Component {
               <Typography variant="h4">
                 Accept invitation to collaborate
               </Typography>
-              <Typography>Your code is: {code}</Typography>
+              <Typography>Your code is: {params.id} </Typography>
             </Grid>
-
-            <Grid item />
 
             <Grid
               item
@@ -97,16 +95,11 @@ class AcceptShare extends Component {
 AcceptShare.propTypes = {
   dispatch: PropTypes.func.isRequired,
   classes: PropTypes.object.isRequired,
-  code: PropTypes.string
+  match: PropTypes.object.isRequired
 }
 
-const makeMapStateToProps = (initialState, ownProps) => {
-  const {
-    match: {
-      params: { id: code }
-    }
-  } = ownProps
-  return code
-}
+const mapStateToProps = dispatch => ({
+  dispatch
+})
 
-export default connect(makeMapStateToProps)(withStyles(style)(AcceptShare))
+export default connect(mapStateToProps)(withStyles(style)(AcceptShare))

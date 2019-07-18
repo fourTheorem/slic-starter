@@ -82,7 +82,11 @@ export const ACCEPT_SHARE_FAILURE = 'ACCEPT_SHARE_FAILURE'
 export function acceptShareRequest(code) {
   return function(dispatch) {
     dispatch({ type: ACCEPT_SHARE_REQUEST })
-    AmplifyApi.post('share', `${sharePath}/confirm/${code}`)
+    AmplifyApi.post('checklists', `${sharePath}/confirm/${code}`, {
+      body: {
+        code: code
+      }
+    })
       .then(result => {
         dispatch({ type: ACCEPT_SHARE_SUCCESS })
       })

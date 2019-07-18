@@ -14,7 +14,10 @@ const SSM = awsXray.captureAWSClient(
   new AWS.SSM({ endpoint: process.env.SSM_ENDPOINT_URL })
 )
 
+const stage = process.env.SLIC_STAGE
+const nsDomain = process.env.SLIC_NS_DOMAIN
 const queueName = process.env.EMAIL_QUEUE_NAME
+
 if (!queueName) {
   throw new Error('EMAIL_QUEUE_NAME must be set')
 } else {
@@ -58,16 +61,17 @@ async function getUserServiceUrl() {
 async function create({ email, listId }) {
   let link
   let message
-  const nsDomain = process.env.SLIC_NS_DOMAIN
+  const baseLink = `https:\/\/${stage}.${nsDomain}\/invitation/`
 
-  if(!nsDomain){
+  log.info('baseLink is: ', baseLink)
+  if (!nsDomain) {
     log.info('SLIC_NS_DOMAIN must be set')
   }
 
   log.info('attributes in share.create: ', email, listId)
   log.info('getting collaboratorUserId ')
-  const collaboratorUserId = await getUserIdFromEmail(email).then((res) => {
-    
+  const collaboratorUserId = await getUserIdFromEmail(email)
+
   if (collaboratorUserId == null || collaboratorUserId == []) {
     //User not signed up yet
     link = 'https://dev.sliclists.com/signup'
@@ -77,28 +81,18 @@ async function create({ email, listId }) {
       subject: 'You were added as a collaborator - Sign up today',
       body: `You were added as a collaborator, but it seems your not a member. Click ${link} to sign up!`
     }
+  } else if (collaboratorUserId) {
+    log.info('got collaboratorUserId value is ', collaboratorUserId)
 
-  }else if(collaboratorUserId){
-    log.info('result: ', res)
-
-  log.info('got collaboratorUserId value is ', collaboratorUserId)
-
-    link = await createSignedLink(listId, collaboratorUserId, email)
+    const code = await createSignedLink(listId, collaboratorUserId, email)
+    const fullLink = baseLink + code
     message = {
       to: email,
       subject: 'You were added as a SLICLists Collaborator',
-      body: `You were added you to a list. Click {https:/\/\sliclists.com/\invitation/\${link}} to accept`
+      body: `You were added you to a list. Click ${fullLink} to accept`
     }
-    
-  //Sign the code for the invite link
+  }
 
-  }
-})
-    
-    //User exists, use createSignedLink function
-  }
-  link = 'dev.' + nsDomain + '/invitation/' + link
-  log.info('Full link is: ', link)
   const params = {
     MessageBody: JSON.stringify(message),
     QueueUrl: await queueUrlPromise
@@ -108,7 +102,6 @@ async function create({ email, listId }) {
   const result = await SQS.sendMessage(params).promise()
   log.info({ result }, 'Send SQS Message')
 }
-
 module.exports = {
   create
 }
