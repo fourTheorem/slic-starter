@@ -22,7 +22,9 @@ export class IntegrationTestProject extends PipelineProject {
   ) {
     const { stageName, ...rest } = props
 
-    const role = new CodeBuildRole(scope, `${props.stageName}IntegrationTestRole`)
+    const role = new CodeBuildRole(scope, `${props.stageName}IntegrationTestRole`, {
+      stageName
+    })
     // Allow access to secret environment variables in Parameter Store required for tests
     role.addToPolicy(
       new iam.PolicyStatement({

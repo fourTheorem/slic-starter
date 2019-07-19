@@ -9,6 +9,9 @@ export default class PipelineDashboard extends cdk.Construct {
         applicationId:
           'arn:aws:serverlessrepo:us-east-1:923120264911:applications/pipeline-dashboard',
         semanticVersion: '0.0.7'
+      },
+      parameters: {
+        PipelinePattern: '*'
       }
     })
   }

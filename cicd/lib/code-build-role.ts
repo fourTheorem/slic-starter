@@ -1,23 +1,33 @@
 import iam = require('@aws-cdk/aws-iam')
 import { Construct } from '@aws-cdk/core'
 import config from '../config'
+import StageName from './stage-name';
 
-export interface CodeBuildRoleProps {}
+export interface CodeBuildRoleProps {
+  stageName?: StageName
+}
 
 export default class CodeBuildRole extends iam.Role {
   constructor(scope: Construct, name: string, props: CodeBuildRoleProps = {}) {
+    const { stageName, ...rest } = props
     super(scope, name, {
-      ...props,
+      ...rest,
       assumedBy: new iam.ServicePrincipal('codebuild.amazonaws.com')
     })
 
-    this.addToPolicy(new iam.PolicyStatement({
-      effect: iam.Effect.ALLOW,
-      actions: ['sts:AssumeRole'],
-      resources: Object.values(config.accountIds).map(accountId => 
-        `arn:aws:iam::${accountId}:role/slic-cicd-deployment-role`
-        )
-    }))
+    if (stageName) {
+      this.addToPolicy(new iam.PolicyStatement({
+        effect: iam.Effect.ALLOW,
+        actions: ['sts:AssumeRole'],
+        resources: [`arn:aws:iam::${config.accountIds[stageName]}:role/slic-cicd-deployment-role`]
+      }))
+
+      this.addToPolicy(new iam.PolicyStatement({
+        effect: iam.Effect.ALLOW,
+        actions: ['cloudformation:Describe*'],
+        resources: [`arn:aws:cloudformation:eu-west-1:${config.accountIds[stageName]}:stack/*/*`]
+      }))
+    }
 
     this.addToPolicy(new iam.PolicyStatement({
       effect: iam.Effect.ALLOW,
@@ -25,13 +35,6 @@ export default class CodeBuildRole extends iam.Role {
       resources: [`arn:aws:secretsmanager:${config.region}:${
         config.accountIds.cicd
         }:secret:CICD*`]
-    }))
-
-    this.addToPolicy(new iam.PolicyStatement({
-      effect: iam.Effect.ALLOW,
-      actions: ['cloudformation:Describe*'],
-      resources: Object.values(config.accountIds).map(accountId => 
-        `arn:aws:cloudformation:eu-west-1:${accountId}:stack/*/*`)
     }))
 
     this.addToPolicy(

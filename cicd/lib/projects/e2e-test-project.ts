@@ -22,7 +22,10 @@ export class E2ETestProject extends PipelineProject {
   ) {
     const { stageName, ...rest } = props
 
-    const role = new CodeBuildRole(scope, `${props.stageName}E2ETestRole`)
+    const role = new CodeBuildRole(scope, `${props.stageName}E2ETestRole`, {
+      stageName
+    })
+
     // Allow access to secret environment variables in Parameter Store required for tests
     role.addToPolicy(
       new iam.PolicyStatement({

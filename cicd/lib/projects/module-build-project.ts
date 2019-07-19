@@ -18,7 +18,7 @@ export interface ModuleBuildProjectProps {
 
 export class ModuleBuildProject extends PipelineProject {
   constructor(scope: Construct, id: string, props: ModuleBuildProjectProps) {
-    const { moduleName, stageName } = props
+    const { moduleName, stageName, ...rest } = props
     super(scope, id, {
       projectName: id,
       environment: defaultEnvironment,
@@ -51,7 +51,8 @@ export class ModuleBuildProject extends PipelineProject {
           }
         },
         artifacts: moduleArtifacts(moduleName)
-      })
+      }),
+      ...rest
     })
   }
 }
