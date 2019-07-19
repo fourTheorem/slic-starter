@@ -1,11 +1,14 @@
 import React, { Component } from 'react'
 import {
-  ExpansionPanel,
-  ExpansionPanelSummary,
-  ExpansionPanelDetails,
   Typography,
+  TextField,
   Grid,
-  TextField
+  Dialog,
+  DialogActions,
+  DialogTitle,
+  Button,
+  DialogContent,
+  DialogContentText
 } from '@material-ui/core'
 import { withStyles } from '@material-ui/core/styles'
 import PropTypes from 'prop-types'
@@ -28,12 +31,7 @@ const styles = {
 
 class ShareList extends Component {
   state = {
-    isPanelExpanded: false,
     email: ''
-  }
-
-  handlePanelExpansion = () => {
-    this.setState({ isPanelExpanded: !this.state.isPanelExpanded })
   }
 
   handleChange = ({ target: { value } }) => {
@@ -45,7 +43,8 @@ class ShareList extends Component {
     this.props.dispatch(
       addCollaborator({
         email: this.state.email,
-        listId: this.props.list.listId
+        listId: this.props.list.listId,
+        listName: this.props.list.name
       })
     )
     this.setState({ email: '' })
@@ -60,37 +59,47 @@ class ShareList extends Component {
 
   render() {
     const { classes } = this.props
-    const { list } = this.props
 
+    const { createdCollaborator } = this.props
+
+    const listShared = createdCollaborator ? (
+      <Grid item>
+        <Typography>List shared successfully</Typography>
+      </Grid>
+    ) : null
+
+    const { open, list, onClose } = this.props
     return (
-      <ExpansionPanel className={classes.collaboratorPanel}>
-        <ExpansionPanelSummary>
-          <Typography variant="h4">Collaborators</Typography>
-        </ExpansionPanelSummary>
-        <ExpansionPanelDetails>
-          <Grid container direction="column">
-            <Grid item>
-              <Typography
-                variant="subtitle1"
-                gutterBottom
-                className={classes.desc}
-              >
-                Invite collaborators to participate in your list {list.name}
-              </Typography>
-            </Grid>
-            <Grid item>
-              <form onSubmit={this.handleSubmit}>
-                <TextField
-                  className={classes.textfield}
-                  placeholder="Add Collaborator"
-                  onChange={this.handleChange}
-                  value={this.state.email}
-                />
-              </form>
-            </Grid>
-          </Grid>
-        </ExpansionPanelDetails>
-      </ExpansionPanel>
+      <Dialog
+        open={open}
+        list={list}
+        keepMounted
+        onClose={onClose}
+        aria-labelledby="alert-dialog-slide-title"
+        aria-describedby="alert-dialog-slide-description"
+      >
+        <DialogTitle id="alert-dialog-slide-title">Share List</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-slide-description">
+            Share {list.name} with friends!
+          </DialogContentText>
+          <form onSubmit={this.handleSubmit}>
+            <TextField
+              className={classes.textfield}
+              placeholder="Add Collaborator Email"
+              onChange={this.handleChange}
+              value={this.state.email}
+            />
+          </form>
+          {listShared}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={this.handleSubmit} color="primary">
+            Add
+          </Button>
+          <Button onClick={onClose}>Cancel</Button>
+        </DialogActions>
+      </Dialog>
     )
   }
 }
@@ -98,7 +107,11 @@ class ShareList extends Component {
 ShareList.propTypes = {
   dispatch: PropTypes.func.isRequired,
   classes: PropTypes.object.isRequired,
-  list: PropTypes.object
+  list: PropTypes.object,
+  createdCollaborator: PropTypes.string,
+  createCollaboratorError: PropTypes.string,
+  open: PropTypes.bool.isRequired,
+  onClose: PropTypes.func.isRequired
 }
 
 const mapStateToProps = ({ auth }) => ({ auth })

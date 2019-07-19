@@ -8,13 +8,14 @@ export const ADD_COLLABORATOR_REQUEST = 'ADD_COLLABORATOR_REQUEST'
 export const ADD_COLLABORATOR_SUCCESS = 'ADD_COLLABORATOR_SUCCESS'
 export const ADD_COLLABORATOR_FAILURE = 'ADD_COLLABORATOR_FAILURE'
 
-export function addCollaborator({ email, listId }) {
+export function addCollaborator({ email, listId, listName }) {
   return function(dispatch) {
     dispatch({ type: ADD_COLLABORATOR_REQUEST })
     AmplifyApi.post('checklists', `${sharePath}/${listId}`, {
       body: {
         email,
-        listId
+        listId,
+        listName
       }
     })
       .then(result => {
@@ -87,7 +88,7 @@ export function acceptShareRequest(code) {
         code: code
       }
     })
-      .then(result => {
+      .then(lt => {
         dispatch({ type: ACCEPT_SHARE_SUCCESS })
       })
       .catch(err => {

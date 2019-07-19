@@ -1,17 +1,9 @@
-const { createResponse } = require('slic-tools/response')
+'use strict'
+
 const checklist = require('./checklist')
 
 async function main(event) {
-
-  const details = event.detail
-  const { userId, listId, email } = details
-
-  return createResponse(
-    checklist.addCollaboratorToList({ userId, listId, email }),
-    {
-      successCode: 201
-    }
-  )
+  return await checklist.addCollaborator(event.detail)
 }
 
 module.exports = { main }

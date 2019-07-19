@@ -1,5 +1,3 @@
-'use strict'
-
 const { createNewListEvent } = require('slic-tools/event-dispatcher')
 
 const Uuid = require('uuid')
@@ -13,7 +11,7 @@ module.exports = {
   remove,
   get,
   list,
-  addCollaboratorToList
+  addCollaborator
 }
 
 async function create({ userId, name, description }) {
@@ -102,26 +100,19 @@ async function list({ userId }) {
     .promise()).Items
 }
 
-
-async function addCollaboratorToList({userId, listId, email}){
-  const result = await dynamoDocClient()
+async function addCollaborator({ userId, listId, collaboratorUserId }) {
+  const docClient = await dynamoDocClient()
+  const result = await docClient
     .update({
       TableName: tableName,
       Key: { userId, listId },
-      UpdateExpression:
-        'SET #collaborators = :collaborators',
-      ExpressionAttributeNames: {
-        '#collaborators': 'collaborators'
-      },
+      UpdateExpression: 'ADD collaborators :collaborators',
       ExpressionAttributeValues: {
-        ':collaborators': {
-          userId
-        }
+        ':collaborators': docClient.createSet([collaboratorUserId])
       },
-
-      ReturnValues: 'ALL_NEW'
+      ReturnValues: 'UPDATED_NEW'
     })
     .promise()
 
-   return result.Attributes
+  return result.Attributes
 }

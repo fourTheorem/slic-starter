@@ -4,7 +4,6 @@ stage: ${opt:stage, 'dev'}
 region: eu-west-1
 runtime: nodejs8.10
 nsDomain: ${env:SLIC_NS_DOMAIN}
-emailQueueName: ${env:EMAIL_QUEUE_NAME}
 domainPrefixes:
   local: ''
   dev: dev.

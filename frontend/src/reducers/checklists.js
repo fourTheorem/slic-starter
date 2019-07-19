@@ -321,16 +321,6 @@ export default (state = defaultState, { type, meta, payload, error }) => {
     case ADD_COLLABORATOR_SUCCESS:
       return {
         ...state,
-        collaboratorsByListId: {
-          ...state.collaboratorsByListId,
-          [meta.listId]: [
-            ...(state.collaboratorsByListId[meta.listId] || []),
-            {
-              title: meta.email,
-              ...payload
-            }
-          ]
-        },
         creatingCollaborator: false,
         createdCollaborator: true,
         createCollaboratorError: null
@@ -408,7 +398,18 @@ export default (state = defaultState, { type, meta, payload, error }) => {
       }
 
     case ACCEPT_SHARE_SUCCESS:
+      const oldCollabs = state.collaboratorsByListId[meta.listId]
+      const collabIndex = findIndex(oldCollabs, { userId: meta.userId })
+      const updatedCollaborators = [...oldCollabs]
+      if (collabIndex > -1) {
+        updatedCollaborators[index] = meta.email
+      }
       return {
+        ...state,
+        collaboratorsByListId: {
+          ...state.collaboratorsByListId,
+          [meta.listId]: updatedCollaborators
+        },
         ...state,
         acceptingShareRequest: false,
         shareRequestAccepted: true,

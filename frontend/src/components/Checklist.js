@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { Redirect, Link } from 'react-router-dom'
-import { ExpandMore, Edit } from '@material-ui/icons'
+import { ExpandMore, Edit, Share } from '@material-ui/icons'
 import {
   Card,
   CardActions,
@@ -65,11 +65,20 @@ class Checklist extends Component {
     description: '',
     isPanelExpanded: false,
     editingId: null,
-    updatedTitle: ''
+    updatedTitle: '',
+    isDialogOpen: false
   }
 
   handlePanelExpansion = () => {
     this.setState({ isPanelExpanded: !this.state.isPanelExpanded })
+  }
+
+  handleOpen = () => {
+    this.setState({ isDialogOpen: true })
+  }
+
+  handleClose = () => {
+    this.setState({ isDialogOpen: false })
   }
 
   render() {
@@ -123,6 +132,13 @@ class Checklist extends Component {
               <Grid container direction="row" justify="flex-end">
                 <Grid item>
                   <IconButton
+                    id="share-list-btn"
+                    aria-label="Share"
+                    onClick={this.handleOpen}
+                  >
+                    <Share />
+                  </IconButton>
+                  <IconButton
                     id="edit-list-btn"
                     aria-label="Edit"
                     component={Link}
@@ -137,7 +153,11 @@ class Checklist extends Component {
             </CardContent>
             <CardActions>{removing ? <CircularProgress /> : null}</CardActions>
           </Card>
-          <ShareList list={list} />
+          <ShareList
+            list={list}
+            open={this.state.isDialogOpen}
+            onClose={this.handleClose}
+          />
         </Grid>
       </Grid>
     ) : (
