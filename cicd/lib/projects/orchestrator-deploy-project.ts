@@ -1,10 +1,11 @@
 import {
   PipelineProject,
   PipelineProjectProps,
-  BuildEnvironmentVariableType
+  BuildEnvironmentVariableType,
+  BuildSpec
 } from '@aws-cdk/aws-codebuild'
 import StageName from '../stage-name'
-import { Construct } from '@aws-cdk/cdk'
+import { Construct } from '@aws-cdk/core'
 import config from '../../config'
 import modules from '../../modules'
 
@@ -23,26 +24,26 @@ export class OrchestratorDeployProject extends PipelineProject {
       projectName: `${props.stageName}DeployProject`,
       environmentVariables: {
         SLIC_STAGE: {
-          type: BuildEnvironmentVariableType.PlainText,
+          type: BuildEnvironmentVariableType.PLAINTEXT,
           value: props.stageName
         },
         CROSS_ACCOUNT_ID: {
-          type: BuildEnvironmentVariableType.PlainText,
+          type: BuildEnvironmentVariableType.PLAINTEXT,
           value: `${config.accountIds[props.stageName]}`
         },
         MODULE_NAMES: {
-          type: BuildEnvironmentVariableType.PlainText,
+          type: BuildEnvironmentVariableType.PLAINTEXT,
           value: modules.moduleNames.join(' ')
         }
       },
-      buildSpec: {
+      buildSpec: BuildSpec.fromObject({
         version: '0.2',
         phases: {
           build: {
             commands: ['bash ./build-scripts/orchestrator-stage-deploy.sh']
           }
         }
-      },
+      }),
       ...rest
     })
   }

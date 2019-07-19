@@ -1,137 +1,148 @@
 import iam = require('@aws-cdk/aws-iam')
-import { Construct } from '@aws-cdk/cdk'
+import { Construct } from '@aws-cdk/core'
 import config from '../config'
-import { StateMachine } from '@aws-cdk/aws-stepfunctions'
+import StageName from './stage-name';
 
 export interface CodeBuildRoleProps {
-  readonly pipelineStateMachine?: StateMachine
+  stageName?: StageName
 }
 
 export default class CodeBuildRole extends iam.Role {
   constructor(scope: Construct, name: string, props: CodeBuildRoleProps = {}) {
-    const { pipelineStateMachine, ...rest } = props
+    const { stageName, ...rest } = props
     super(scope, name, {
       ...rest,
       assumedBy: new iam.ServicePrincipal('codebuild.amazonaws.com')
     })
 
-    // Allow CodeBuild to assume the deployment role in the target account
-    const assumeRolePolicy = new iam.PolicyStatement()
-      .allow()
-      .addActions('sts:AssumeRole')
-    Object.values(config.accountIds).forEach(accountId =>
-      assumeRolePolicy.addResource(
-        `arn:aws:iam::${accountId}:role/slic-cicd-deployment-role`
-      )
-    )
-    this.addToPolicy(assumeRolePolicy)
+    if (stageName) {
+      this.addToPolicy(new iam.PolicyStatement({
+        effect: iam.Effect.ALLOW,
+        actions: ['sts:AssumeRole'],
+        resources: [`arn:aws:iam::${config.accountIds[stageName]}:role/slic-cicd-deployment-role`]
+      }))
 
-    this.addToPolicy(
-      new iam.PolicyStatement()
-        .allow()
-        .addAction('secretsmanager:GetSecretValue')
-        .addResource(
-          `arn:aws:secretsmanager:${config.region}:${
-            config.accountIds.cicd
-          }:secret:CICD*`
-        )
-    )
-
-    if (pipelineStateMachine) {
-      this.addToPolicy(
-        new iam.PolicyStatement()
-          .allow()
-          .addAction('states:DescribeExecution')
-          .addAction('states:StartExecution')
-          .addResource(pipelineStateMachine.stateMachineArn)
-      )
+      this.addToPolicy(new iam.PolicyStatement({
+        effect: iam.Effect.ALLOW,
+        actions: ['cloudformation:Describe*'],
+        resources: [`arn:aws:cloudformation:eu-west-1:${config.accountIds[stageName]}:stack/*/*`]
+      }))
     }
 
-    const cfPolicy = new iam.PolicyStatement()
-      .allow()
-      .addAction('cloudformation:Describe*')
-    Object.values(config.accountIds).forEach(accountId =>
-      cfPolicy.addResource(
-        `arn:aws:cloudformation:eu-west-1:${accountId}:stack/*/*`
-      )
-    )
-    this.addToPolicy(cfPolicy)
+    this.addToPolicy(new iam.PolicyStatement({
+      effect: iam.Effect.ALLOW,
+      actions: ['secretsmanager:GetSecretValue'],
+      resources: [`arn:aws:secretsmanager:${config.region}:${
+        config.accountIds.cicd
+        }:secret:CICD*`]
+    }))
 
     this.addToPolicy(
-      new iam.PolicyStatement()
-        .allow()
-        .addAction('lambda:Get*')
-        .addAction('lambda:List*')
-        .addAction('lambda:CreateFunction')
-        .addAllResources()
+      new iam.PolicyStatement({
+        effect: iam.Effect.ALLOW,
+        actions: [
+          'lambda:Get*',
+          'lambda:List*',
+          'lambda:CreateFunction'
+        ],
+        resources: ['*']
+      })
     )
+  
     this.addToPolicy(
-      new iam.PolicyStatement()
-        .allow()
-        .addAction('lambda:AddPermission')
-        .addAction('lambda:CreateAlias')
-        .addAction('lambda:DeleteFunction')
-        .addAction('lambda:InvokeFunction')
-        .addAction('lambda:PublishVersion')
-        .addAction('lambda:RemovePermission')
-        .addAction('lambda:Update*')
-        .addResource(`arn:aws:lambda:${config.region}:*:function:*`)
+      new iam.PolicyStatement({
+        effect: iam.Effect.ALLOW,
+        actions: [
+          'lambda:AddPermission',
+          'lambda:CreateAlias',
+          'lambda:DeleteFunction',
+          'lambda:InvokeFunction',
+          'lambda:PublishVersion',
+          'lambda:RemovePermission',
+          'lambda:Update*'
+        ],
+        resources: [`arn:aws:lambda:${config.region}:*:function:*`]
+      })
     )
+
     this.addToPolicy(
-      new iam.PolicyStatement()
-        .allow()
-        .addAction('route53:CreateHostedZone')
-        .addAction('route53:ChangeResourceRecordSets')
-        .addAllResources()
+      new iam.PolicyStatement({
+        effect: iam.Effect.ALLOW,
+        actions: [
+          'route53:CreateHostedZone',
+          'route53:ChangeResourceRecordSets'
+        ],
+        resources: ['*']
+      })
     )
+
     this.addToPolicy(
-      new iam.PolicyStatement()
-        .allow()
-        .addAction('acm:RequestCertificate')
-        .addAllResources()
+      new iam.PolicyStatement({
+        effect: iam.Effect.ALLOW,
+        actions: ['acm:RequestCertificate'],
+        resources: ['*']
+      })
     )
+
     this.addToPolicy(
-      new iam.PolicyStatement()
-        .allow()
-        .addAction('apigateway:GET')
-        .addAction('apigateway:POST')
-        .addAction('apigateway:PUT')
-        .addAction('apigateway:DELETE')
-        .addResource('arn:aws:apigateway:*::/restapis*')
+      new iam.PolicyStatement({
+        effect: iam.Effect.ALLOW,
+        actions:[
+          'apigateway:GET',
+          'apigateway:POST',
+          'apigateway:PUT',
+          'apigateway:DELETE'
+        ],
+        resources: ['arn:aws:apigateway:*::/restapis*']
+      })
     )
+
     this.addToPolicy(
-      new iam.PolicyStatement()
-        .allow()
-        .addAction('iam:PassRole')
-        .addAction('iam:GetRole')
-        .addAction('iam:CreateRole')
-        .addAction('iam:PutRolePolicy')
-        .addAction('iam:DeleteRolePolicy')
-        .addAction('iam:DeleteRole')
-        .addResource('arn:aws:iam::*:role/*')
+      new iam.PolicyStatement({
+        effect: iam.Effect.ALLOW,
+        actions:[
+          'iam:PassRole',
+          'iam:GetRole',
+          'iam:CreateRole',
+          'iam:PutRolePolicy',
+          'iam:DeleteRolePolicy',
+          'iam:DeleteRole'
+        ],
+        resources: ['arn:aws:iam::*:role/*']
+      })
     ) // TODO - Change to specific Lambda roles?
+
     this.addToPolicy(
-      new iam.PolicyStatement()
-        .allow()
-        .addAction('sqs:*')
-        .addResource('arn:aws:sqs:*:*:*')
+      new iam.PolicyStatement({
+        effect: iam.Effect.ALLOW,
+        actions: ['sqs:*'],
+        resources: ['arn:aws:sqs:*:*:*']
+      })
     )
+
     this.addToPolicy(
-      new iam.PolicyStatement()
-        .allow()
-        .addAction('logs:CreateLogGroup')
-        .addAction('logs:CreateLogStream')
-        .addAction('logs:DeleteLogGroup')
-        .addAction('logs:PutLogEvents')
-        .addResource(`arn:aws:logs:${config.region}:*:log-group:*`)
+      new iam.PolicyStatement({
+        effect: iam.Effect.ALLOW,
+        actions:[
+          'logs:CreateLogGroup',
+          'logs:CreateLogStream',
+          'logs:DeleteLogGroup',
+          'logs:PutLogEvents'
+        ],
+        resources: [`arn:aws:logs:${config.region}:*:log-group:*`]
+      })
     ) // TODO - specific log groups
+
     this.addToPolicy(
-      new iam.PolicyStatement()
-        .allow()
-        .addAction('events:Put*')
-        .addAction('events:Remove*')
-        .addAction('events:Delete*')
-        .addResource(`arn:aws:events:${config.region}:*:rule/*`)
+      new iam.PolicyStatement({
+        effect: iam.Effect.ALLOW,
+        actions: [
+          'events:Put*',
+          'events:Remove*',
+          'events:Delete*'
+        ],
+        resources: [`arn:aws:events:${config.region}:*:rule/*`]
+      })
     ) // TODO - specific events
   }
 }

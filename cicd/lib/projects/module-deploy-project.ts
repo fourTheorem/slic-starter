@@ -1,17 +1,19 @@
 import {
   PipelineProject,
-  BuildEnvironmentVariableType
+  BuildEnvironmentVariableType,
+  BuildSpec
 } from '@aws-cdk/aws-codebuild'
 import StageName from '../stage-name'
-import { Construct } from '@aws-cdk/cdk'
+import { Construct } from '@aws-cdk/core'
 import config from '../../config'
-import CodeBuildRole from '../code-build-role'
 import { defaultEnvironment } from '../code-build-environments'
 import moduleArtifacts from './module-artifacts'
+import { Role } from '@aws-cdk/aws-iam';
 
 export interface ModuleDeployProjectProps {
   moduleName: string
   stageName: StageName
+  role: Role
 }
 
 export class ModuleDeployProject extends PipelineProject {
@@ -19,27 +21,27 @@ export class ModuleDeployProject extends PipelineProject {
     const { moduleName, stageName } = props
     super(scope, id, {
       projectName: id,
-      role: new CodeBuildRole(scope, `${stageName}_${moduleName}DeployRole`),
+      role: props.role,
       environment: defaultEnvironment,
       environmentVariables: {
         SLIC_STAGE: {
-          type: BuildEnvironmentVariableType.PlainText,
+          type: BuildEnvironmentVariableType.PLAINTEXT,
           value: props.stageName
         },
         SLIC_NS_DOMAIN: {
-          type: BuildEnvironmentVariableType.PlainText,
+          type: BuildEnvironmentVariableType.PLAINTEXT,
           value: config.nsDomain
         },
         CROSS_ACCOUNT_ID: {
-          type: BuildEnvironmentVariableType.PlainText,
+          type: BuildEnvironmentVariableType.PLAINTEXT,
           value: `${config.accountIds[stageName]}`
         },
         MODULE_NAME: {
-          type: BuildEnvironmentVariableType.PlainText,
+          type: BuildEnvironmentVariableType.PLAINTEXT,
           value: moduleName
         }
       },
-      buildSpec: {
+      buildSpec: BuildSpec.fromObject({
         version: '0.2',
         phases: {
           build: {
@@ -47,7 +49,7 @@ export class ModuleDeployProject extends PipelineProject {
           }
         },
         artifacts: moduleArtifacts(moduleName)
-      }
+      })
     })
   }
 }

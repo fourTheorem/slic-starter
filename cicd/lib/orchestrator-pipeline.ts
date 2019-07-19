@@ -1,11 +1,12 @@
 import { Role, ServicePrincipal, PolicyStatement } from '@aws-cdk/aws-iam'
 import { Pipeline, PipelineProps, Artifact } from '@aws-cdk/aws-codepipeline'
-import { Construct } from '@aws-cdk/cdk'
+import { Construct } from '@aws-cdk/core'
 import { Bucket } from '@aws-cdk/aws-s3'
 import {
   S3SourceAction,
   CodeBuildAction,
-  ManualApprovalAction
+  ManualApprovalAction,
+  S3Trigger
 } from '@aws-cdk/aws-codepipeline-actions'
 import StageName from './stage-name'
 import { OrchestratorDeployProject } from './projects/orchestrator-deploy-project'
@@ -37,10 +38,13 @@ export class OrchestratorPipeline extends Pipeline {
       }
     )
     orchestratorCodeBuildRole.addToPolicy(
-      new PolicyStatement()
-        .addActions('codepipeline:GetPipelineExecution')
-        .addActions('codepipeline:StartPipelineExecution')
-        .addAllResources()
+      new PolicyStatement({
+        actions: [
+          'codepipeline:GetPipelineExecution',
+          'codepipeline:StartPipelineExecution'
+        ],
+        resources: ['*']
+      })
     )
 
     const sourceOutputArtifact = new Artifact()
@@ -49,12 +53,12 @@ export class OrchestratorPipeline extends Pipeline {
       bucket: artifactsBucket,
       bucketKey: SLIC_PIPELINE_SOURCE_ARTIFACT,
       output: sourceOutputArtifact,
-      pollForSourceChanges: true,
+      trigger: S3Trigger.POLL,
       actionName: 'SLICSource'
     })
 
     this.addStage({
-      name: 'Source',
+      stageName: 'Source',
       actions: [sourceAction]
     })
 
@@ -63,7 +67,7 @@ export class OrchestratorPipeline extends Pipeline {
     this.addTestStage(sourceOutputArtifact)
 
     this.addStage({
-      name: 'Approval',
+      stageName: 'Approval',
       actions: [new ManualApprovalAction({
         actionName: 'MoveToProduction'
       })]
@@ -85,7 +89,7 @@ export class OrchestratorPipeline extends Pipeline {
     const integrationTestAction = new CodeBuildAction({
       actionName: 'integration_tests',
       input: sourceOutputArtifact,
-      output: integrationTestOutputArtifact,
+      outputs: [integrationTestOutputArtifact],
       project: integrationTestProject
     })
 
@@ -101,13 +105,13 @@ export class OrchestratorPipeline extends Pipeline {
     const e2eTestAction = new CodeBuildAction({
       actionName: 'e2e_tests',
       input: sourceOutputArtifact,
-      output: e2eTestOutputArtifact,
+      outputs: [e2eTestOutputArtifact],
       project: e2eTestProject
     })
 
     this.addStage({
-      name: `Test`,
-      actions:[integrationTestAction, e2eTestAction]
+      stageName: 'Test',
+      actions: [integrationTestAction, e2eTestAction]
     })
   }
 
@@ -125,12 +129,12 @@ export class OrchestratorPipeline extends Pipeline {
     const deployAction = new CodeBuildAction({
       actionName: stageName,
       input: sourceOutputArtifact,
-      output: deployOutputArtifact,
+      outputs: [deployOutputArtifact],
       project: orchestratorDeployStagingProject
     })
 
     this.addStage({
-      name: `${stageName}Deploy`,
+      stageName: `${stageName}Deploy`,
       actions: [deployAction]
     })
   }

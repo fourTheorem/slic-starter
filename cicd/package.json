@@ -12,22 +12,23 @@
     "synth": "npm run build && npm run cdk -- synth"
   },
   "devDependencies": {
+    "@aws-cdk/aws-codebuild": "^1.0.0",
+    "@aws-cdk/aws-codepipeline": "^1.0.0",
+    "@aws-cdk/aws-codepipeline-actions": "^1.0.0",
+    "@aws-cdk/aws-iam": "^1.0.0",
+    "@aws-cdk/aws-lambda": "^1.0.0",
+    "@aws-cdk/aws-s3": "^1.0.0",
+    "@aws-cdk/aws-sam": "^1.0.0",
+    "@aws-cdk/aws-secretsmanager": "^1.0.0",
+    "@aws-cdk/aws-stepfunctions": "^1.0.0",
+    "@aws-cdk/core": "^1.0.0",
     "@types/node": "^8.10.45",
+    "aws-cdk": "^1.0.0",
     "aws-sdk": "^2.448.0",
-    "cdk": "^0.32.0",
     "tsort": "0.0.1",
     "typescript": "^3.3.3333"
   },
   "dependencies": {
-    "@aws-cdk/aws-codebuild": "^0.32.0",
-    "@aws-cdk/aws-codepipeline": "^0.32.0",
-    "@aws-cdk/aws-codepipeline-actions": "^0.32.0",
-    "@aws-cdk/aws-iam": "^0.32.0",
-    "@aws-cdk/aws-lambda": "^0.32.0",
-    "@aws-cdk/aws-s3": "^0.32.0",
-    "@aws-cdk/aws-secretsmanager": "^0.32.0",
-    "@aws-cdk/aws-stepfunctions": "^0.32.0",
-    "@aws-cdk/cdk": "^0.32.0",
     "source-map-support": "^0.5.9"
   }
 }

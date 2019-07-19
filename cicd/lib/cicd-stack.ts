@@ -1,4 +1,4 @@
-import cdk = require('@aws-cdk/cdk')
+import cdk = require('@aws-cdk/core')
 import { BuildEnvironmentVariableType } from '@aws-cdk/aws-codebuild'
 import { SourceProject } from './projects/source-project'
 import CodeBuildRole from './code-build-role'
@@ -7,13 +7,15 @@ import { OrchestratorPipeline } from './orchestrator-pipeline'
 import modules from '../modules'
 import { ModulePipeline } from './module-pipeline'
 import StageName from './stage-name'
+import ModulePipelineRole from './module-pipeline-role';
+import PipelineDashboard from './pipeline-dashboard'
 
 export class CicdStack extends cdk.Stack {
   constructor(scope: cdk.Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props)
 
     const artifactsBucket = new Bucket(this, 'artifactsBucket', {
-      bucketName: `slic-build-artifacts-${this.env.account}-${this.env.region}`,
+      bucketName: `slic-build-artifacts-${this.account}-${this.region}`,
       versioned: true
     })
 
@@ -21,15 +23,22 @@ export class CicdStack extends cdk.Stack {
       artifactsBucket
     })
 
-    ;[StageName.stg, StageName.prod].forEach((stageName: StageName) =>
+    ;[StageName.stg, StageName.prod].forEach((stageName: StageName) => {
+      const buildRole = new CodeBuildRole(this, `${stageName}BuildRole`, { stageName })
+      const deployRole = new CodeBuildRole(this, `${stageName}DeployRole`, { stageName })
+      const pipelineRole = new ModulePipelineRole(this, `${stageName}PipelineRole`)
+
       modules.moduleNames.forEach(moduleName => {
         new ModulePipeline(this, `${moduleName}_${stageName}_pipeline`, {
           artifactsBucket: artifactsBucket,
           moduleName,
-          stageName
+          stageName,
+          buildRole,
+          deployRole,
+          pipelineRole
         })
       })
-    )
+    })
 
     const sourceCodeBuildRole = new CodeBuildRole(this, 'sourceCodeBuildRole')
 
@@ -39,14 +48,16 @@ export class CicdStack extends cdk.Stack {
       bucket: artifactsBucket,
       environmentVariables: {
         ARTIFACTS_BUCKET_NAME: {
-          type: BuildEnvironmentVariableType.PlainText,
+          type: BuildEnvironmentVariableType.PLAINTEXT,
           value: artifactsBucket.bucketName
         },
         ARTIFACTS_BUCKET_ARN: {
-          type: BuildEnvironmentVariableType.PlainText,
+          type: BuildEnvironmentVariableType.PLAINTEXT,
           value: artifactsBucket.bucketArn
         }
       }
     })
+
+    new PipelineDashboard(this, 'pipeline-dashboard')
   }
 }

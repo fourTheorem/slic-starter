@@ -1,18 +1,23 @@
 import { Pipeline, Artifact } from '@aws-cdk/aws-codepipeline'
-import { Construct } from '@aws-cdk/cdk'
+import { Construct } from '@aws-cdk/core'
 import { Bucket } from '@aws-cdk/aws-s3'
 import {
   S3SourceAction,
-  CodeBuildAction
+  CodeBuildAction,
+  S3Trigger
 } from '@aws-cdk/aws-codepipeline-actions'
 import StageName from './stage-name'
 import { ModuleDeployProject } from './projects/module-deploy-project'
 import { ModuleBuildProject } from './projects/module-build-project'
+import { Role } from '@aws-cdk/aws-iam';
 
 export interface ModulePipelineProps {
   artifactsBucket: Bucket
   stageName: StageName
   moduleName: string
+  buildRole: Role,
+  deployRole: Role,
+  pipelineRole: Role
 }
 
 export class ModulePipeline extends Pipeline {
@@ -21,12 +26,16 @@ export class ModulePipeline extends Pipeline {
       artifactsBucket,
       moduleName,
       stageName,
+      buildRole,
+      deployRole,
+      pipelineRole,
       ...rest
     } = props
 
     super(scope, id, {
       pipelineName: `${moduleName}_${stageName}_pipeline`,
       artifactBucket: artifactsBucket,
+      role: pipelineRole,
       ...rest
     })
 
@@ -36,12 +45,13 @@ export class ModulePipeline extends Pipeline {
       bucket: artifactsBucket,
       bucketKey: `${stageName}_module_pipelines/module_source/${moduleName}.zip`,
       output: sourceOutputArtifact,
-      pollForSourceChanges: false,
-      actionName: `${moduleName}_${stageName}_src`
+      trigger: S3Trigger.POLL,
+      actionName: `${moduleName}_${stageName}_src`,
+      role: pipelineRole
     })
 
     this.addStage({
-      name: 'Source',
+      stageName: 'Source',
       actions: [sourceAction]
     })
 
@@ -51,7 +61,8 @@ export class ModulePipeline extends Pipeline {
       `${moduleName}_${stageName}_build`,
       {
         moduleName,
-        stageName
+        stageName,
+        role: buildRole
       }
     )
 
@@ -59,12 +70,13 @@ export class ModulePipeline extends Pipeline {
     const moduleBuildAction = new CodeBuildAction({
       actionName: 'Build',
       input: sourceOutputArtifact,
-      output: moduleBuildOutputArtifact,
-      project: moduleBuildProject
+      outputs: [moduleBuildOutputArtifact],
+      project: moduleBuildProject,
+      role: pipelineRole
     })
 
     this.addStage({
-      name: 'Build',
+      stageName: 'Build',
       actions: [moduleBuildAction]
     })
 
@@ -74,7 +86,8 @@ export class ModulePipeline extends Pipeline {
       `${moduleName}_${stageName}_deploy`,
       {
         moduleName,
-        stageName
+        stageName,
+        role: deployRole
       }
     )
 
@@ -82,12 +95,13 @@ export class ModulePipeline extends Pipeline {
     const moduleDeployAction = new CodeBuildAction({
       actionName: 'Deploy',
       input: moduleBuildOutputArtifact,
-      output: moduleDeployOutputArtifact,
-      project: moduleDeployProject
+      outputs: [moduleDeployOutputArtifact],
+      project: moduleDeployProject,
+      role: pipelineRole
     })
 
     this.addStage({
-      name: 'Deploy',
+      stageName: 'Deploy',
       actions: [moduleDeployAction]
     })
   }
