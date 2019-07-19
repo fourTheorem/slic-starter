@@ -36,23 +36,26 @@ module.exports = function invitation(secret) {
       .replace(/-/g, '+')
       .replace(/_/g, '/')
     const padded = normalized + Array(5 - normalized.length % 4).join('=')
-    const codeBuffer = Buffer.from(padded, 'base64')
+    log.info({padded}, 'padded code')
+    const codeBuffer = Buffer.from(normalized, 'base64')
     const digestBuffer = codeBuffer.subarray(0, 32)
 
     const dataBuffer = codeBuffer.subarray(32)
-
+    log.info({dataBuffer}, 'databuffer')
     const hmac = crypto.createHmac('sha256', secret)
-
+    log.info({hmac}, 'hmac value')
     hmac.update(dataBuffer)
-
+    
     const digest = hmac.digest()
-
+    log.info({digest}, 'digest value')
     if (!digest.equals(digestBuffer)) {
       throw new Error('Digest Mismatch Error')
     }
-
+    log.info({digest}, 'digest value')
     const listId = bufferToValue(dataBuffer.subarray(0, 16))
+    log.info({listId}, 'listId')
     const userId = bufferToValue(dataBuffer.subarray(16, 32))
+    log.info({userId}, 'userid')
     const email = dataBuffer.subarray(32).toString('utf8')
 
     return { listId, userId, email }

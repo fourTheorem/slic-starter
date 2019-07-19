@@ -37,7 +37,7 @@ create:
 #            Ref: cognitoAuthorizer
 
 confirmInvite:
-  handler: services/sharing/confirmInvite.main
+  handler: services/sharing/confirm.main
   events:
     - http:
         path: /confirm/{code}

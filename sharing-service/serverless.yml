@@ -3,6 +3,7 @@ service: sharing-service
 plugins:
   - '@dathuis/serverless-dynamodb-local'
   - serverless-offline
+  - serverless-pseudo-parameters
 
 provider:
   name: aws

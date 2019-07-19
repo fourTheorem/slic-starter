@@ -1,12 +1,10 @@
 'use strict'
-const log = require('slic-tools/log')
+
 const { createResponse } = require('slic-tools/response')
 const share = require('./share')
 const { processEvent } = require('slic-tools/event-util')
 
-const middy = require('middy')
-const { ssm } = require('middy/middlewares')
-const loggerMiddleware = require('lambda-logger-middleware')
+const { middify } = require('../../lib/middy-util')
 
 async function main(event) {
   const { body, userId } = processEvent(event)
@@ -17,24 +15,12 @@ async function main(event) {
   })
 }
 
-function middyExport(exports) {
-  Object.keys(exports).forEach(key => {
-    module.exports[key] = middy(exports[key])
-      .use(
-        loggerMiddleware({
-          logger: log
-        })
-      )
-      .use(
-        ssm({
-          cache: true,
-          names: {
-            USER_SERVICE_URL: 'UserServiceUrl',
-            CODE_SECRET: 'CODE_SECRET'
-          }
-        })
-      )
-  })
-}
-
-middyExport({ main })
+module.exports = middify(
+  { main },
+  {
+    ssmParameters: {
+      USER_SERVICE_URL: 'UserServiceUrl',
+      CODE_SECRET: 'CODE_SECRET'
+    }
+  }
+)

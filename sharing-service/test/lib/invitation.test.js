@@ -47,3 +47,9 @@ test('A code does not match with a different secret', t => {
   t.end()
 })
 
+test('A code will not be created if missing required data', t => {
+  const secret = 'secret'
+  const { createCode } = require('../../lib/invitation')(secret)
+  t.throws(() => createCode({ userId, email }))
+  t.end()
+})

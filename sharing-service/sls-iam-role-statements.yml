@@ -1,11 +1,9 @@
 - Effect: Allow
   Action:
-    - ssm:GetParameter
+    - ssm:GetParameter*
   Resource:
-    - arn:aws:ssm:eu-west-1:*:parameter/UserPoolArn
-    - arn:aws:ssm:eu-west-1:*:parameter/CODE_SECRET
-    - arn:aws:ssm:eu-west-1:*:parameter/UserServiceUrl
-    - arn:aws:ssm:eu-west-1:*:parameter/UserPoolId
+    - arn:aws:ssm:#{AWS::Region}:#{AWS::AccountId}:parameter/CODE_SECRET
+    - arn:aws:ssm:#{AWS::Region}:#{AWS::AccountId}:parameter/UserServiceUrl
 - Effect: Allow
   Action:
     - sqs:GetQueueUrl
@@ -13,6 +11,5 @@
   Resource: arn:aws:sqs:*:*:${self:custom.emailQueueName}
 - Effect: Allow
   Action:
-    - cognito-idp:listUsers
-  Resource:
-    - arn:aws:cognito-idp:*:*:userpool/${ssm:UserPoolId}
+    - events:PutEvents
+  Resource: '*'
