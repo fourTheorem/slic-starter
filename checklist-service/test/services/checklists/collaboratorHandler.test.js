@@ -3,11 +3,11 @@
 const proxyquire = require('proxyquire')
 const { test } = require('tap')
 
-const { userId, userRequestContext } = require('../../fixtures')
+const { userId } = require('../../fixtures')
 
 const received = {}
 
-const collabHandler = proxyquire(
+const collaboratorHandler = proxyquire(
   '../../../services/checklists/collaboratorHandler.js',
   {
     './checklist': {
@@ -19,20 +19,13 @@ const collabHandler = proxyquire(
   }
 )
 
-test('collabHandler adds collaborators to existing lists', async t => {
-  const payload = {
-    collaborators: {}
-  }
+test('collaboratorHandler adds collaborators to existing lists', async t => {
+  const collaboratorUserId = 'collaborator123'
   const event = {
-    requestContext: userRequestContext,
-    pathParameters: {
-      id: '1234'
-    },
-    body: JSON.stringify(payload),
-    detail: { userId: 'user123', listId: 'list123', email: 'email@example.com' }
+    detail: { userId, listId: 'list123', collaboratorUserId }
   }
 
-  await collabHandler.main(event)
+  await collaboratorHandler.main(event)
   t.equal(received.addCollaboratorParams.userId, userId)
   t.equal(received.addCollaboratorParams.collaboratorUserId, collaboratorUserId)
 

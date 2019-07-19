@@ -3,7 +3,7 @@
 const path = require('path')
 const { test } = require('tap')
 const awsMock = require('aws-sdk-mock')
-awsMock.setSDK(path.resolve('./node_modules/aws-sdk'))
+awsMock.setSDK(path.resolve('./node_modules/slic-tools/node_modules/aws-sdk'))
 
 const entries = require('../../../../services/checklists/entries/entries')
 

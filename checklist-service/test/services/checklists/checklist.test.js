@@ -171,3 +171,24 @@ test('list all checklists', async t => {
 
   t.end()
 })
+
+test('add a collaborator', async t => {
+  const checklist = require('../../../services/checklists/checklist')
+
+  const collaboratorUserId = 'collaborator123'
+  const listId = 'list123'
+
+  const record = {
+    userId,
+    listId,
+    collaboratorUserId
+  }
+
+  await checklist.addCollaborator(record)
+
+  t.ok(received.dynamoDb.update.ExpressionAttributeValues[':collaborators'])
+  t.equal(received.dynamoDb.update.Key.userId, record.userId)
+  t.equal(received.dynamoDb.update.Key.listId, record.listId)
+
+  t.end()
+})
