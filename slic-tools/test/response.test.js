@@ -2,7 +2,7 @@
 
 const { test } = require('tap')
 
-const { createResponse } = require('../../lib/response')
+const { createResponse } = require('../response')
 
 test('create response returns an error code when a promise reject', async t => {
   const failedPromise = new Promise((resolve, reject) => {

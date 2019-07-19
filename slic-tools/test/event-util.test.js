@@ -3,7 +3,7 @@
 const { test } = require('tap')
 const uuid = require('uuid')
 
-const { processEvent } = require('slic-tools/event-util')
+const { processEvent } = require('../event-util')
 
 test('userId is extracted from the cognito lambda-proxy-mapped authorizer claims', t => {
   const testUserId = uuid.v4()

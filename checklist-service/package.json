@@ -17,9 +17,6 @@
   },
   "devDependencies": {
     "@dathuis/serverless-dynamodb-local": "^0.2.41",
-    "aws-sdk": "^2.339.0",
-    "aws-sdk-mock": "^4.3.0",
-    "awscred": "^1.4.2",
     "eslint": "^5.13.0",
     "eslint-config-prettier": "^4.0.0",
     "eslint-config-standard": "^12.0.0",
@@ -38,9 +35,6 @@
     "tap": "^14.2.0"
   },
   "dependencies": {
-    "aws-xray-sdk": "^2.3.3",
-    "bourne": "^1.1.2",
-    "pino": "^5.8.1",
     "serverless-log-forwarding": "^1.4.0",
     "slic-tools": "file:../slic-tools"
   },

@@ -1,10 +1,8 @@
 'use strict'
 
-const path = require('path')
-
 const pino = require('pino')
 
-const { name } = require(path.join(process.cwd(), 'package.json'))
+const { name } = require('./service-info')
 
 module.exports = pino({
   name,

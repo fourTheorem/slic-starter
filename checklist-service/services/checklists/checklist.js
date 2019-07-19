@@ -1,6 +1,8 @@
-const { createNewListEvent } = require('slic-tools/event-dispatcher')
+'use strict'
 
 const Uuid = require('uuid')
+
+const { dispatchEvent } = require('slic-tools/event-dispatcher')
 const { dynamoDocClient } = require('slic-tools/aws')
 
 const tableName = 'checklists'
@@ -30,7 +32,8 @@ async function create({ userId, name, description }) {
       Item: item
     })
     .promise()
-  await createNewListEvent(item)
+
+  await dispatchEvent('LIST_CREATED_EVENT', item)
 
   return item
 }

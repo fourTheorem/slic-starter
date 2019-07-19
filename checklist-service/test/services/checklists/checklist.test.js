@@ -6,7 +6,7 @@ const awsMock = require('aws-sdk-mock')
 const { test } = require('tap')
 
 const userId = 'my-test-user'
-awsMock.setSDK(path.resolve('./node_modules/aws-sdk'))
+awsMock.setSDK(path.resolve('./node_modules/slic-tools/node_modules/aws-sdk'))
 
 const testLists = [
   {
@@ -60,9 +60,9 @@ test('create puts a dynamodb item', async t => {
   }
 
   const checklist = proxyquire('../../../services/checklists/checklist', {
-    '../../lib/event-dispatcher': {
-      createNewListEvent: item => {
-        received.eventItem = item
+    'slic-tools/event-dispatcher': {
+      dispatchEvent: (...args) => {
+        received.eventArgs = args
         return Promise.resolve()
       }
     }
@@ -75,8 +75,7 @@ test('create puts a dynamodb item', async t => {
   t.ok(received.dynamoDb.put.Item.listId)
   t.same(received.dynamoDb.put.Item.entries, {})
 
-  t.ok(received.eventItem)
-  t.match(received.eventItem, record)
+  t.match(received.eventArgs[1], record)
 
   t.equal(received.dynamoDb.put.Item.description, record.description)
   t.match(response, record)
