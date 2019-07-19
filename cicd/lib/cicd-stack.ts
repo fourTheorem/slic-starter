@@ -7,6 +7,7 @@ import { OrchestratorPipeline } from './orchestrator-pipeline'
 import modules from '../modules'
 import { ModulePipeline } from './module-pipeline'
 import StageName from './stage-name'
+import ModulePipelineRole from './module-pipeline-role';
 // import PipelineDashboard from './pipeline-dashboard'
 
 export class CicdStack extends cdk.Stack {
@@ -22,15 +23,22 @@ export class CicdStack extends cdk.Stack {
       artifactsBucket
     })
 
-    ;[StageName.stg, StageName.prod].forEach((stageName: StageName) =>
+    ;[StageName.stg, StageName.prod].forEach((stageName: StageName) => {
+      const buildRole = new CodeBuildRole(this, `${stageName}BuildRole`)
+      const deployRole = new CodeBuildRole(this, `${stageName}DeployRole`)
+      const pipelineRole = new ModulePipelineRole(this, `${stageName}PipelineRole`)
+
       modules.moduleNames.forEach(moduleName => {
         new ModulePipeline(this, `${moduleName}_${stageName}_pipeline`, {
           artifactsBucket: artifactsBucket,
           moduleName,
-          stageName
+          stageName,
+          buildRole,
+          deployRole,
+          pipelineRole
         })
       })
-    )
+    })
 
     const sourceCodeBuildRole = new CodeBuildRole(this, 'sourceCodeBuildRole')
 

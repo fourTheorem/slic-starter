@@ -9,11 +9,15 @@ import {
 import StageName from './stage-name'
 import { ModuleDeployProject } from './projects/module-deploy-project'
 import { ModuleBuildProject } from './projects/module-build-project'
+import { Role } from '@aws-cdk/aws-iam';
 
 export interface ModulePipelineProps {
   artifactsBucket: Bucket
   stageName: StageName
   moduleName: string
+  buildRole: Role,
+  deployRole: Role,
+  pipelineRole: Role
 }
 
 export class ModulePipeline extends Pipeline {
@@ -22,12 +26,16 @@ export class ModulePipeline extends Pipeline {
       artifactsBucket,
       moduleName,
       stageName,
+      buildRole,
+      deployRole,
+      pipelineRole,
       ...rest
     } = props
 
     super(scope, id, {
       pipelineName: `${moduleName}_${stageName}_pipeline`,
       artifactBucket: artifactsBucket,
+      role: pipelineRole,
       ...rest
     })
 
@@ -38,7 +46,8 @@ export class ModulePipeline extends Pipeline {
       bucketKey: `${stageName}_module_pipelines/module_source/${moduleName}.zip`,
       output: sourceOutputArtifact,
       trigger: S3Trigger.POLL,
-      actionName: `${moduleName}_${stageName}_src`
+      actionName: `${moduleName}_${stageName}_src`,
+      role: pipelineRole
     })
 
     this.addStage({
@@ -52,7 +61,8 @@ export class ModulePipeline extends Pipeline {
       `${moduleName}_${stageName}_build`,
       {
         moduleName,
-        stageName
+        stageName,
+        role: buildRole
       }
     )
 
@@ -61,7 +71,8 @@ export class ModulePipeline extends Pipeline {
       actionName: 'Build',
       input: sourceOutputArtifact,
       outputs: [moduleBuildOutputArtifact],
-      project: moduleBuildProject
+      project: moduleBuildProject,
+      role: pipelineRole
     })
 
     this.addStage({
@@ -75,7 +86,8 @@ export class ModulePipeline extends Pipeline {
       `${moduleName}_${stageName}_deploy`,
       {
         moduleName,
-        stageName
+        stageName,
+        role: deployRole
       }
     )
 
@@ -84,7 +96,8 @@ export class ModulePipeline extends Pipeline {
       actionName: 'Deploy',
       input: moduleBuildOutputArtifact,
       outputs: [moduleDeployOutputArtifact],
-      project: moduleDeployProject
+      project: moduleDeployProject,
+      role: pipelineRole
     })
 
     this.addStage({

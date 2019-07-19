@@ -1,11 +1,8 @@
 import iam = require('@aws-cdk/aws-iam')
 import { Construct } from '@aws-cdk/core'
 import config from '../config'
-import { StateMachine } from '@aws-cdk/aws-stepfunctions'
 
-export interface CodeBuildRoleProps {
-  readonly pipelineStateMachine?: StateMachine
-}
+export interface CodeBuildRoleProps {}
 
 export default class CodeBuildRole extends iam.Role {
   constructor(scope: Construct, name: string, props: CodeBuildRoleProps = {}) {

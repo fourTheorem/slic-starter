@@ -6,13 +6,14 @@ import {
 import StageName from '../stage-name'
 import { Construct } from '@aws-cdk/core'
 import config from '../../config'
-import CodeBuildRole from '../code-build-role'
 import { defaultEnvironment } from '../code-build-environments'
 import moduleArtifacts from './module-artifacts'
+import { Role } from '@aws-cdk/aws-iam'
 
 export interface ModuleBuildProjectProps {
   moduleName: string
   stageName: StageName
+  role: Role
 }
 
 export class ModuleBuildProject extends PipelineProject {
@@ -20,7 +21,6 @@ export class ModuleBuildProject extends PipelineProject {
     const { moduleName, stageName } = props
     super(scope, id, {
       projectName: id,
-      role: new CodeBuildRole(scope, `${stageName}_${moduleName}BuildRole`),
       environment: defaultEnvironment,
       environmentVariables: {
         SLIC_STAGE: {
