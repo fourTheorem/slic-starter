@@ -2,7 +2,6 @@ const { createResponse } = require('slic-tools/response')
 const checklist = require('./checklist')
 
 async function main(event) {
-  log.info({ event })
 
   const details = event.detail
   const { userId, listId, email } = details

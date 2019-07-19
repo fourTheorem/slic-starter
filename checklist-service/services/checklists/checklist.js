@@ -12,7 +12,8 @@ module.exports = {
   update,
   remove,
   get,
-  list
+  list,
+  addCollaboratorToList
 }
 
 async function create({ userId, name, description }) {
@@ -21,6 +22,7 @@ async function create({ userId, name, description }) {
     name,
     description,
     entries: {},
+    collaborators: {},
     listId: Uuid.v4(),
     createdAt: Date.now()
   }
@@ -105,14 +107,16 @@ async function addCollaboratorToList({userId, listId, email}){
   const result = await dynamoDocClient()
     .update({
       TableName: tableName,
-      Key: { listId },
+      Key: { userId, listId },
       UpdateExpression:
         'SET #collaborators = :collaborators',
       ExpressionAttributeNames: {
-        '#collaborators': 'collaborators',
+        '#collaborators': 'collaborators'
       },
       ExpressionAttributeValues: {
-        ':collaborators': userId
+        ':collaborators': {
+          userId
+        }
       },
 
       ReturnValues: 'ALL_NEW'
