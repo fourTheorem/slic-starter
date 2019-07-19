@@ -7,7 +7,7 @@ import { OrchestratorPipeline } from './orchestrator-pipeline'
 import modules from '../modules'
 import { ModulePipeline } from './module-pipeline'
 import StageName from './stage-name'
-import PipelineDashboard from './pipeline-dashboard'
+// import PipelineDashboard from './pipeline-dashboard'
 
 export class CicdStack extends cdk.Stack {
   constructor(scope: cdk.Construct, id: string, props?: cdk.StackProps) {
@@ -50,6 +50,6 @@ export class CicdStack extends cdk.Stack {
       }
     })
 
-    new PipelineDashboard(this, 'pipeline-dashboard')
+//    new PipelineDashboard(this, 'pipeline-dashboard')
   }
 }
