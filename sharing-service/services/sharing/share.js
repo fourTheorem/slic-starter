@@ -7,6 +7,7 @@ const log = require('slic-tools/log')
 const stage = process.env.SLIC_STAGE
 const nsDomain = process.env.SLIC_NS_DOMAIN
 
+const tableName = 'checklists'
 async function create({ email, listId, listName, userId }) {
   const baseLink = `https://${stage}.${nsDomain}/invitation/`
 
@@ -35,6 +36,20 @@ SLIC Lists
   await sendEmail(message)
 }
 
+async function list({ listId, userId }) {
+  return (await dynamoDocClient()
+    .query({
+      TableName: tableName,
+      ProjectionExpression: 'collaborators',
+      KeyConditionExpression: 'listId = :listId',
+      ExpressionAttributeValues: {
+        ':listId': listId
+      }
+    })
+    .promise()).Items
+}
+
 module.exports = {
-  create
+  create,
+  list
 }

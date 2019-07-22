@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { Button, Grid, Paper, Typography } from '@material-ui/core'
 import { connect } from 'react-redux'
+import { Redirect } from 'react-router-dom'
 import { withStyles } from '@material-ui/core/styles'
 import { acceptShareRequest } from '../actions/share'
 
@@ -41,8 +42,7 @@ class AcceptShare extends Component {
   }
 
   render() {
-    const { classes } = this.props
-    console.log(this.props)
+    const { classes, shareRequestAccepted } = this.props
 
     const { params } = this.props.match
 
@@ -50,9 +50,12 @@ class AcceptShare extends Component {
     //   return <Redirect to={`/Home`} />
     // }
 
+    const shareAccepted = shareRequestAccepted ? <Redirect to="/Home" /> : null
+
     return (
       <div className={classes.root}>
         <Paper className={classes.paper}>
+          {shareAccepted}
           <Grid
             className={classes.input}
             container
@@ -95,7 +98,8 @@ class AcceptShare extends Component {
 AcceptShare.propTypes = {
   dispatch: PropTypes.func.isRequired,
   classes: PropTypes.object.isRequired,
-  match: PropTypes.object.isRequired
+  match: PropTypes.object.isRequired,
+  shareRequestAccepted: PropTypes.bool
 }
 
 const mapStateToProps = dispatch => ({

@@ -14,6 +14,7 @@ import { withStyles } from '@material-ui/core/styles'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { addCollaborator, loadCollaborators } from '../actions/share'
+import ErrorMessage from './ErrorMessage'
 
 const styles = {
   collaboratorPanel: {
@@ -60,13 +61,20 @@ class ShareList extends Component {
   render() {
     const { classes } = this.props
 
-    const { createdCollaborator } = this.props
+    const { createdCollaborator, createCollaboratorError } = this.props
 
     const listShared = createdCollaborator ? (
       <Grid item>
         <Typography>List shared successfully</Typography>
       </Grid>
     ) : null
+
+    const errorItem =
+      !createdCollaborator && createCollaboratorError ? (
+        <Grid item>
+          <ErrorMessage messageId={createCollaboratorError.id} />
+        </Grid>
+      ) : null
 
     const { open, list, onClose } = this.props
     return (
@@ -92,6 +100,7 @@ class ShareList extends Component {
             />
           </form>
           {listShared}
+          {errorItem}
         </DialogContent>
         <DialogActions>
           <Button onClick={this.handleSubmit} color="primary">
