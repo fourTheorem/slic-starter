@@ -12,7 +12,7 @@ if (!stage) {
 }
 
 const domainSuffix = stage === 'prod' ? '' : `${stage}.`
-const stackName = `checklist-service-${stage}`
+const stackName = `user-service-${stage}`
 const awsRegion = awscred.loadRegionSync()
 
 if (!awsRegion) {

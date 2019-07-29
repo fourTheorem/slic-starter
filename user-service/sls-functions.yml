@@ -1,5 +1,7 @@
 get:
   handler: services/users/get.main
+  environment:
+    USER_POOL_ID: !Ref slicUserPool
   events:
     - http:
         path: user/{id}
@@ -7,11 +9,3 @@ get:
         cors: false
         authorizer: aws_iam
         private: true
-
-getUserIdByEmail:
-  handler: services/users/getUserId.main
-  events: 
-    - http: 
-        path: user/email/{id}
-        method: get
-        cors: false

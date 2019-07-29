@@ -19,7 +19,7 @@ async function create({ email, listId, listName, userId }) {
   }
 
   const { email: sharerEmail } = await getUser(userId)
-  log.info({ email })
+  log.info({ email, userId, listId })
 
   const { createCode } = invitation(process.env.CODE_SECRET)
   const code = createCode({ listId, userId, email })
@@ -52,14 +52,10 @@ async function list({ listId, userId }) {
   })
 
   log.info({ result })
-  return result.Promise().collaborators
+  return result
 }
 
-module.exports = middify(
-  { create, list },
-  {
-    ssmParameters: {
-      CODE_SECRET: 'CODE_SECRET'
-    }
-  }
-)
+module.exports = {
+  create,
+  list
+}

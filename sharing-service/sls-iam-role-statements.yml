@@ -3,7 +3,7 @@
     - ssm:GetParameter*
   Resource:
     - arn:aws:ssm:#{AWS::Region}:#{AWS::AccountId}:parameter/CODE_SECRET
-    - arn:aws:ssm:#{AWS::Region}:#{AWS::AccountId}:parameter/UserServiceUrl
+    - arn:aws:ssm:#{AWS::Region}:#{AWS::AccountId}:parameter/${self:custom.stage}/user-service/url
 - Effect: Allow
   Action:
     - sqs:GetQueueUrl

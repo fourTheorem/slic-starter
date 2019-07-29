@@ -1,3 +1,14 @@
+cognitoAuthorizer:
+  Type: AWS::ApiGateway::Authorizer
+  Properties:
+    IdentitySource: method.request.header.Authorization
+    Name: slic-user-pool-authorizer-checklist-service
+    RestApiId:
+      Ref: ApiGatewayRestApi
+    Type: COGNITO_USER_POOLS
+    ProviderARNs:
+      - ${ssm:/${self:provider.stage}/user-service/user-pool-arn}
+
 slicTable:
   Type: AWS::DynamoDB::Table
   Properties:

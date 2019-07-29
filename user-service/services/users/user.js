@@ -4,45 +4,25 @@ const AWS = require('aws-sdk')
 const awsXray = require('aws-xray-sdk')
 
 const log = require('slic-tools/log.js')
-const { middify } = require('slic-tools/middy-util')
 const cognito = awsXray.captureAWSClient(
   new AWS.CognitoIdentityServiceProvider()
 )
 
 async function get({ userId }) {
   const params = {
-    UserPoolId: process.env.UserPoolId,
+    UserPoolId: process.env.USER_POOL_ID,
     Username: userId
   }
-  log.info({ params }, 'params info')
+  log.info({ params }, 'User Pool Parameters')
 
   const cognitoUser = await cognito.adminGetUser(params).promise()
-  log.info('Got user', cognitoUser)
+  log.info({ cognitoUser }, 'Got user')
   const result = {}
   cognitoUser.UserAttributes.forEach(({ Name, Value }) => {
     result[Name] = Value
   })
-  log.info({ result }, 'Got user')
+  log.info({ result }, 'Got user attributes')
   return result
 }
 
-async function getUserIdByEmail(email) {
-  const filter = `email = "${email}"`
-  const params = {
-    UserPoolId: process.env.UserPoolId,
-    Filter: filter
-  }
-  const users = await cognito.listUsers(params).promise()
-
-  log.info({ users }, 'Got users')
-  return users.Users[0].Username
-}
-
-module.exports = middify(
-  { get, getUserIdByEmail },
-  {
-    ssmParameters: {
-      UserPoolId: 'UserPoolId'
-    }
-  }
-)
+module.exports = { get }

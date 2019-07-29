@@ -1,7 +1,6 @@
 'use strict'
 
 const { processEvent } = require('slic-tools/event-util')
-const { createResponse } = require('slic-tools/response')
 const { dispatchEvent } = require('slic-tools/event-dispatcher')
 const invitation = require('../../lib/invitation')
 const { middify } = require('slic-tools/middy-util')
@@ -14,13 +13,10 @@ async function main(event) {
 
   const parsedCode = parseCode(code)
 
-  await createResponse(
-    dispatchEvent('COLLABORATOR_ACCEPTED_EVENT', {
-      ...parsedCode,
-      collaboratorUserId: userId
-    })
-  )
-  log.info('event created')
+  await dispatchEvent('COLLABORATOR_ACCEPTED_EVENT', {
+    ...parsedCode,
+    collaboratorUserId: userId
+  })
 }
 
 module.exports = middify(

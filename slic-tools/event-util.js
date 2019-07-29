@@ -16,13 +16,13 @@ function processEvent(event) {
   // lambda-proxy with cognito user pool authorization
   // if the 'cognito:username' is set in a JWT-encoded Authorization token
   const userId = get(requestContext, 'authorizer.claims.cognito:username')
-  log.info(
+  log.debug(
     { resourceId, resourcePath, requestId, httpMethod, userId },
     'Request received'
   )
 
   return {
-    body: body && bourne.parse(body),
+    body: typeof body === 'string' ? bourne.parse(body) : body,
     queryStringParameters,
     pathParameters,
     userId

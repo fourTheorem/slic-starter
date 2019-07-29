@@ -7,7 +7,7 @@ cognitoAuthorizer:
       Ref: ApiGatewayRestApi
     Type: COGNITO_USER_POOLS
     ProviderARNs:
-      - ${ssm:UserPoolArn}
+      - ${ssm:/${self:provider.stage}/user-service/user-pool-arn}
 
 # Workaround for "Invalid stage identifier specified"
 # See https://github.com/serverless/serverless/issues/4029

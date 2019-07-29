@@ -2,11 +2,10 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { Button, Grid, Paper, Typography } from '@material-ui/core'
 import { connect } from 'react-redux'
-import { Redirect } from 'react-router-dom'
 import { withStyles } from '@material-ui/core/styles'
 import { acceptShareRequest } from '../actions/share'
 
-const style = theme => ({
+const styles = theme => ({
   root: {
     background: 'linear-gradient(to right, #4A00E0, #8E2DE2)',
     display: 'flex',
@@ -30,6 +29,10 @@ const style = theme => ({
   },
   success: {
     color: 'green'
+  },
+
+  failure: {
+    color: 'red'
   }
 })
 
@@ -42,20 +45,24 @@ class AcceptShare extends Component {
   }
 
   render() {
-    const { classes, shareRequestAccepted } = this.props
+    const { classes, shareRequestAccepted, shareRequestError } = this.props
 
     const { params } = this.props.match
 
-    // if (!code) {
-    //   return <Redirect to={`/Home`} />
-    // }
+    const shareAccepted = shareRequestAccepted ? (
+      <Typography className={classes.success}>
+        You were added as a collaborator!
+      </Typography>
+    ) : null
 
-    const shareAccepted = shareRequestAccepted ? <Redirect to="/Home" /> : null
+    const shareFailure =
+      !shareRequestAccepted && shareRequestError ? (
+        <Typography className={classes.failure}>An error occured</Typography>
+      ) : null
 
     return (
       <div className={classes.root}>
         <Paper className={classes.paper}>
-          {shareAccepted}
           <Grid
             className={classes.input}
             container
@@ -86,6 +93,8 @@ class AcceptShare extends Component {
                 >
                   Accept Invite
                 </Button>
+                {shareAccepted}
+                {shareFailure}
               </Grid>
             </Grid>
           </Grid>
@@ -96,14 +105,18 @@ class AcceptShare extends Component {
 }
 
 AcceptShare.propTypes = {
+  auth: PropTypes.object,
+  list: PropTypes.object.isRequired,
   dispatch: PropTypes.func.isRequired,
   classes: PropTypes.object.isRequired,
-  match: PropTypes.object.isRequired,
-  shareRequestAccepted: PropTypes.bool
+  acceptingShareRequest: PropTypes.bool.isRequired,
+  shareRequestAccepted: PropTypes.bool.isRequired,
+  shareRequestError: PropTypes.object,
+  match: PropTypes.object.isRequired
 }
 
-const mapStateToProps = dispatch => ({
-  dispatch
-})
+const mapStateToProps = ({
+  checklists: { acceptingShareRequest, shareRequestAccepted, shareRequestError }
+}) => ({ acceptingShareRequest, shareRequestAccepted, shareRequestError })
 
-export default connect(mapStateToProps)(withStyles(style)(AcceptShare))
+export default connect(mapStateToProps)(withStyles(styles)(AcceptShare))

@@ -1,14 +1,10 @@
-const signedAxios = require('aws-signed-axios')
+'use strict'
 const awsXray = require('aws-xray-sdk')
 const AWS = require('aws-sdk')
-const {middify} = require('slic-tools/middy-util')
-const log = require('slic-tools/log')
-import { getUser } from 'slic-tools/user-util'
-const { sendEmail } = require('slic-tools/email-util')
 
-async function getUserServiceUrl() {
-  return UserServiceUrl
-}
+const log = require('slic-tools/log')
+const { getUser } = require('slic-tools/user-util')
+const { sendEmail } = require('slic-tools/email-util')
 
 async function handleNewChecklist(event) {
   log.info({ event })
@@ -26,10 +22,6 @@ async function handleNewChecklist(event) {
   await sendEmail(message)
 }
 
-module.exports = middify(
-  {handleNewChecklist},
-    {
-      ssmParameters: {
-        UserServiceUrl: 'UserServiceUrl'
-      }}
-)
+module.exports = {
+  handleNewChecklist
+}

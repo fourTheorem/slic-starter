@@ -1,13 +1,12 @@
 handleNewChecklist:
   handler: services/welcome/new-checklist-handler.handleNewChecklist
   environment:
+    SLIC_STAGE: ${self:provider.stage}
     EMAIL_QUEUE_NAME: ${self:custom.emailQueueName}
   events:
     - cloudwatchEvent:
         event:
           source:
-            - 'sliclists.checklist'
+            - 'checklist-service'
           detail-type:
             - 'LIST_CREATED_EVENT'
-    - ? sqs
-      arn: !GetAtt emailQueueName.Arn

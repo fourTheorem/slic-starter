@@ -401,7 +401,7 @@ export default (state = defaultState, { type, meta, payload, error }) => {
         ...state,
         acceptingShareRequest: false,
         shareRequestAccepted: true,
-        shareRequestError: false
+        shareRequestError: null
       }
     case ACCEPT_SHARE_FAILURE:
       return {

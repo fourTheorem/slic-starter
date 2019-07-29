@@ -1,12 +1,19 @@
-const { getUserServiceUrl } = require('./url-retriever')
-const log = require('./log')
+'use strict'
 
+const AWS = require('aws-sdk')
+const awsXray = require('aws-xray-sdk')
 const signedAxios = require('aws-signed-axios')
+const SSM = awsXray.captureAWSClient(
+  new AWS.SSM({ endpoint: process.env.SSM_ENDPOINT_URL })
+)
 
-const userServiceUrlPromise = getUserServiceUrl()
+const log = require('./log')
+const userServiceUrlPromise = fetchUserServiceUrl()
 
 async function getUser(userId) {
-  const userUrl = `${await userServiceUrlPromise}${userId}`
+  const userUrl = `${await getUserServiceUrl()}${userId}`
+
+  debugger
 
   const { data: result } = await signedAxios({
     method: 'GET',
@@ -15,19 +22,21 @@ async function getUser(userId) {
   return result
 }
 
-async function getUserIdFromEmail(email) {
-  const userUrl = `${await userServiceUrlPromise}email/${email}`
-
-  const { data: result } = await signedAxios({
-    method: 'GET',
-    url: userUrl
-  })
-  return result
+function getUserServiceUrl() {
+  return userServiceUrlPromise
 }
 
-console.log(getUser('93ba6ea2-3d4f-40c4-acd9-44a63ffc8c3a'))
+async function fetchUserServiceUrl() {
+  const params = {
+    Name: `/${process.env.SLIC_STAGE}/user-service/url`
+  }
+
+  const result = await SSM.getParameter(params).promise()
+  console.log({ result }, 'User service URL retrieved')
+  return result.Parameter.Value
+}
 
 module.exports = {
   getUser,
-  getUserIdFromEmail
+  getUserServiceUrl
 }

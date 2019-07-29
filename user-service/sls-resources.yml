@@ -1,32 +1,14 @@
-userServiceNameParameter:
-  Type: AWS::SSM::Parameter
-  Properties:
-    Name: UserServiceUrl
-    Type: String
-    Value:
-      Fn::Join:
-        - ''
-        - - 'https://'
-          - !Ref ApiGatewayRestApi
-          - '.execute-api.${self:custom.region}.amazonaws.com/${self:custom.stage}/user/'
 slicUserPool:
   Type: AWS::Cognito::UserPool
   Properties:
-    UserPoolName: ${self:custom.stage}-slic-user-pool
+    UserPoolName: ${self:custom.stage}-user-pool
     UsernameAttributes: [email]
     AutoVerifiedAttributes: [email]
-
-slicUserPoolArn:
-  Type: AWS::SSM::Parameter
-  Properties:
-    Name: UserPoolArn
-    Type: String
-    Value: !GetAtt slicUserPool.Arn
 
 slicUserPoolClient:
   Type: AWS::Cognito::UserPoolClient
   Properties:
-    ClientName: ${self:custom.stage}-slic-user-pool-client
+    ClientName: ${self:custom.stage}-user-pool-client
     ExplicitAuthFlows: [ADMIN_NO_SRP_AUTH]
     RefreshTokenValidity: 30
     UserPoolId:
@@ -40,6 +22,32 @@ slicIdentityPool:
       - ClientId:
           Ref: slicUserPoolClient
         ProviderName: { Fn::GetAtt: [slicUserPool, ProviderName] }
+
+slicUserPoolArn:
+  Type: AWS::SSM::Parameter
+  Properties:
+    Name: /${self:provider.stage}/user-service/user-pool-arn
+    Type: String
+    Value: !GetAtt slicUserPool.Arn
+
+userPoolIdParameter:
+  Type: AWS::SSM::Parameter
+  Properties:
+    Name: /${self:provider.stage}/user-service/user-pool-id
+    Type: String
+    Value: !Ref slicUserPool
+
+userServiceNameParameter:
+  Type: AWS::SSM::Parameter
+  Properties:
+    Name: /${self:provider.stage}/user-service/url
+    Type: String
+    Value:
+      Fn::Join:
+        - ''
+        - - 'https://'
+          - !Ref ApiGatewayRestApi
+          - '.execute-api.${self:custom.region}.amazonaws.com/${self:custom.stage}/user/'
 
 slicAuthenticatedIdentityPoolRole:
   Type: AWS::IAM::Role
@@ -59,7 +67,7 @@ slicAuthenticatedIdentityPoolRole:
             ForAnyValue:StringLike:
               'cognito-identity.amazonaws.com:amr': authenticated
     Policies:
-      - PolicyName: ${self:custom.stage}-slic-cognito-authenticated-policy
+      - PolicyName: ${self:custom.stage}-cognito-authenticated-policy
         PolicyDocument:
           Version: '2012-10-17'
           Statement:
@@ -68,20 +76,6 @@ slicAuthenticatedIdentityPoolRole:
                 - cognito-identity:*
                 - cognito-sync:*
               Resource: '*'
-            - Effect: Allow
-              Action: execute-api:Invoke
-              Resource:
-                {
-                  'Fn::Join':
-                    [
-                      '',
-                      [
-                        'arn:aws:execute-api:${self:provider.region}:*:',
-                        { 'Ref': 'ApiGatewayRestApi' },
-                        '/*/*/*',
-                      ],
-                    ],
-                }
 
 slicIdentityPoolRoleAttachment:
   Type: AWS::Cognito::IdentityPoolRoleAttachment
@@ -90,21 +84,3 @@ slicIdentityPoolRoleAttachment:
       Ref: slicIdentityPool
     Roles:
       authenticated: { Fn::GetAtt: [slicAuthenticatedIdentityPoolRole, Arn] }
-
-userPoolIdParameter:
-  Type: AWS::SSM::Parameter
-  Properties:
-    Name: UserPoolId
-    Type: String
-    Value: !Ref slicUserPool
-
-cognitoAuthorizer:
-  Type: AWS::ApiGateway::Authorizer
-  Properties:
-    IdentitySource: method.request.header.Authorization
-    Name: slic-user-pool-authorizer
-    RestApiId:
-      Ref: ApiGatewayRestApi
-    Type: COGNITO_USER_POOLS ]
-    ProviderARNs:
-      - !GetAtt slicUserPool.Arn

@@ -24,22 +24,4 @@ custom: ${file(./custom.yml)}
 functions: ${file(./sls-functions.yml)}
 
 resources:
-  Outputs:
-    userPool:
-      Value: !Ref slicUserPool
-      Export:
-        Name: ${self:provider.stage}-user-pool-id
-    userPoolClient:
-      Value: !Ref slicUserPoolClient
-      Export:
-        Name: ${self:provider.stage}-user-pool-client-id
-    identityPool:
-      Value: !Ref slicIdentityPool
-      Export:
-        Name: ${self:provider.stage}-identity-pool
-    slicUserPoolArn:
-      Value: !Ref slicUserPoolArn
-      Export: 
-        Name: slicUserPoolArn
-
   Resources: ${file(./sls-resources.yml)}
