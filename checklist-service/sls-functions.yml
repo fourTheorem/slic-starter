@@ -112,6 +112,6 @@ addCollaborator:
     - cloudwatchEvent:
         event:
           source:
-            - 'sliclists.sharing'
+            - 'sharing-service'
           detail-type:
             - 'COLLABORATOR_ACCEPTED_EVENT'

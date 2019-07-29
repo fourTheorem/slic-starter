@@ -4,7 +4,8 @@ const { processEvent } = require('slic-tools/event-util')
 const { createResponse } = require('slic-tools/response')
 const { dispatchEvent } = require('slic-tools/event-dispatcher')
 const invitation = require('../../lib/invitation')
-const { middify } = require('../../lib/middy-util')
+const { middify } = require('slic-tools/middy-util')
+const log = require('slic-tools/log')
 
 async function main(event) {
   const { parseCode } = invitation(process.env.CODE_SECRET)
@@ -19,6 +20,7 @@ async function main(event) {
       collaboratorUserId: userId
     })
   )
+  log.info('event created')
 }
 
 module.exports = middify(

@@ -1,14 +1,15 @@
 'use strict'
-const uuid = require('uuid')
 const proxyquire = require('proxyquire')
 const { test } = require('tap')
 const { userId, userRequestContext } = require('../../fixtures')
+const Uuid = require('uuid')
 
 const received = {}
+
 const payload = {
   email: 'email@example.com',
-  listId: uuid.v4(),
-  listName: uuid.v4()
+  listId: Uuid.v4(),
+  listName: 'First Checklist'
 }
 
 const createHandler = proxyquire('../../../services/sharing/create', {
@@ -20,16 +21,16 @@ const createHandler = proxyquire('../../../services/sharing/create', {
   }
 })
 
-test('create handler creates new share request', async t => {
+test('A checklist can be shared with another user', async t => {
   const event = {
     requestContext: userRequestContext,
     body: JSON.stringify(payload)
   }
 
   const result = await createHandler.main(event)
-
   t.equal(received.createParams.userId, userId)
   t.equal(received.createParams.email, payload.email)
   t.equal(received.createParams.listId, payload.listId)
   t.equal(received.createParams.listName, payload.listName)
+  t.equal(result.statusCode, 201)
 })

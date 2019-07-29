@@ -1,9 +1,10 @@
-  'use strict'
+'use strict'
 
 const Uuid = require('uuid')
 
 const { dispatchEvent } = require('slic-tools/event-dispatcher')
 const { dynamoDocClient } = require('slic-tools/aws')
+const log = require('slic-tools/log')
 
 const tableName = 'checklists'
 
@@ -22,7 +23,6 @@ async function create({ userId, name, description }) {
     name,
     description,
     entries: {},
-    collaborators: {},
     listId: Uuid.v4(),
     createdAt: Date.now()
   }
@@ -105,7 +105,7 @@ async function list({ userId }) {
 
 async function addCollaborator({ userId, listId, collaboratorUserId }) {
   const docClient = await dynamoDocClient()
-  const result = await docClient
+  const result = await dynamoDocClient()
     .update({
       TableName: tableName,
       Key: { userId, listId },
@@ -116,6 +116,10 @@ async function addCollaborator({ userId, listId, collaboratorUserId }) {
       ReturnValues: 'UPDATED_NEW'
     })
     .promise()
-
-  return result.Attributes
+    .then(data => {
+      log.info({ data })
+    })
+    .catch(err => {
+      log.info({ err })
+    })
 }

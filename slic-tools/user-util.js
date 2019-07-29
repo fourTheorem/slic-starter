@@ -25,6 +25,8 @@ async function getUserIdFromEmail(email) {
   return result
 }
 
+console.log(getUser('93ba6ea2-3d4f-40c4-acd9-44a63ffc8c3a'))
+
 module.exports = {
   getUser,
   getUserIdFromEmail

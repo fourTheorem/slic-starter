@@ -11,28 +11,24 @@ import {
   DialogContentText
 } from '@material-ui/core'
 import { withStyles } from '@material-ui/core/styles'
-import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
+import PropTypes from 'prop-types'
 import { addCollaborator, loadCollaborators } from '../actions/share'
-import ErrorMessage from './ErrorMessage'
 
 const styles = {
-  collaboratorPanel: {
-    width: '45%'
-    //TODO: Fix spacing for this component
+  error: {
+    color: 'red'
   },
-  divider: {
-    margin: '5px',
-    padding: '1px'
-  },
-  textfield: {
-    width: '100%'
+
+  success: {
+    color: 'green'
   }
 }
 
 class ShareList extends Component {
   state = {
-    email: ''
+    email: '',
+    errorMessage: ''
   }
 
   handleChange = ({ target: { value } }) => {
@@ -41,17 +37,25 @@ class ShareList extends Component {
 
   handleSubmit = event => {
     event.preventDefault()
+    const { list } = this.props
     this.props.dispatch(
       addCollaborator({
         email: this.state.email,
-        listId: this.props.list.listId,
-        listName: this.props.list.name
+        listId: list.listId,
+        listName: list.name
       })
     )
     this.setState({ email: '' })
   }
 
-  conponentDidMount() {
+  componentDidUpdate() {
+    const { list } = this.props
+    if (list) {
+      this.props.dispatch(loadCollaborators({ listId: list.listId }))
+    }
+  }
+
+  componentDidMount() {
     const { list } = this.props
     if (list) {
       this.props.dispatch(loadCollaborators({ listId: list.listId }))
@@ -59,24 +63,28 @@ class ShareList extends Component {
   }
 
   render() {
-    const { classes } = this.props
+    const {
+      open,
+      onClose,
+      classes,
+      list,
+      createdCollaborator,
+      createCollaboratorError
+    } = this.props
 
-    const { createdCollaborator, createCollaboratorError } = this.props
-
-    const listShared = createdCollaborator ? (
-      <Grid item>
-        <Typography>List shared successfully</Typography>
-      </Grid>
-    ) : null
-
-    const errorItem =
-      !createdCollaborator && createCollaboratorError ? (
-        <Grid item>
-          <ErrorMessage messageId={createCollaboratorError.id} />
-        </Grid>
+    const shareFailure =
+      createCollaboratorError && !createdCollaborator ? (
+        <Typography className={classes.error}>
+          An error occured sharing {list.name}
+        </Typography>
       ) : null
 
-    const { open, list, onClose } = this.props
+    const shareSuccess = createdCollaborator ? (
+      <Typography className={classes.success}>
+        List shared successfully!
+      </Typography>
+    ) : null
+
     return (
       <Dialog
         open={open}
@@ -89,21 +97,27 @@ class ShareList extends Component {
         <DialogTitle id="alert-dialog-slide-title">Share List</DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-slide-description">
-            Share {list.name} with friends!
+            <Typography>Share {list.name} with friends!</Typography>
+            {shareFailure}
+            {shareSuccess}
           </DialogContentText>
-          <form onSubmit={this.handleSubmit}>
-            <TextField
-              className={classes.textfield}
-              placeholder="Add Collaborator Email"
-              onChange={this.handleChange}
-              value={this.state.email}
-            />
-          </form>
-          {listShared}
-          {errorItem}
+          <Grid container>
+            <Grid item>
+              <TextField
+                className={classes.textfield}
+                placeholder="Collaborator email"
+                onChange={this.handleChange}
+                value={this.state.email}
+              />
+            </Grid>
+          </Grid>
         </DialogContent>
         <DialogActions>
-          <Button onClick={this.handleSubmit} color="primary">
+          <Button
+            onClick={this.handleSubmit}
+            color="primary"
+            disabled={this.state.email.length < 1}
+          >
             Add
           </Button>
           <Button onClick={onClose}>Cancel</Button>
@@ -114,15 +128,18 @@ class ShareList extends Component {
 }
 
 ShareList.propTypes = {
+  auth: PropTypes.object,
+  list: PropTypes.object.isRequired,
   dispatch: PropTypes.func.isRequired,
-  classes: PropTypes.object.isRequired,
-  list: PropTypes.object,
-  createdCollaborator: PropTypes.string,
-  createCollaboratorError: PropTypes.string,
   open: PropTypes.bool.isRequired,
-  onClose: PropTypes.func.isRequired
+  onClose: PropTypes.func.isRequired,
+  classes: PropTypes.object.isRequired,
+  createdCollaborator: PropTypes.bool,
+  createCollaboratorError: PropTypes.object
 }
 
-const mapStateToProps = ({ auth }) => ({ auth })
+const mapStateToProps = ({
+  checklists: { createdCollaborator, createCollaboratorError }
+}) => ({ createdCollaborator, createCollaboratorError })
 
 export default connect(mapStateToProps)(withStyles(styles)(ShareList))

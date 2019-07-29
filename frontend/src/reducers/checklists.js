@@ -374,9 +374,8 @@ export default (state = defaultState, { type, meta, payload, error }) => {
         loadCollaboratorError: null,
         collaboratorsByListId: {
           ...state.collaboratorsByListId,
-          [meta.listId]: Object.collaborators(payload).map(pair => ({
-            email: pair[0],
-            ...pair[1]
+          [meta.listId]: Object.entries(payload).map(pair => ({
+            user: pair[0]
           }))
         }
       }
@@ -398,18 +397,7 @@ export default (state = defaultState, { type, meta, payload, error }) => {
       }
 
     case ACCEPT_SHARE_SUCCESS:
-      const oldCollabs = state.collaboratorsByListId[meta.listId]
-      const collabIndex = findIndex(oldCollabs, { userId: meta.userId })
-      const updatedCollaborators = [...oldCollabs]
-      if (collabIndex > -1) {
-        updatedCollaborators[index] = meta.email
-      }
       return {
-        ...state,
-        collaboratorsByListId: {
-          ...state.collaboratorsByListId,
-          [meta.listId]: updatedCollaborators
-        },
         ...state,
         acceptingShareRequest: false,
         shareRequestAccepted: true,

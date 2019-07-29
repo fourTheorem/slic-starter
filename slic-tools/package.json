@@ -35,6 +35,8 @@
     "aws-signed-axios": "^1.0.6",
     "aws-xray-sdk": "^2.3.3",
     "bourne": "^1.1.2",
+    "lambda-logger-middleware": "^1.0.3",
+    "middy": "^0.28.4",
     "pino": "^5.13.0"
   }
 }

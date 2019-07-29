@@ -88,7 +88,7 @@ export function acceptShareRequest(code) {
         code: code
       }
     })
-      .then(lt => {
+      .then(result => {
         dispatch({ type: ACCEPT_SHARE_SUCCESS })
       })
       .catch(err => {

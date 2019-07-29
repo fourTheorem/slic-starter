@@ -1,7 +1,9 @@
 const { getUser } = require('slic-tools/user-util')
+const { middify } = require('slic-tools/middy-util')
 const invitation = require('../../lib/invitation')
 const { sendEmail } = require('slic-tools/email-util')
 
+const { dynamoDocClient } = require('slic-tools/aws')
 const log = require('slic-tools/log')
 
 const stage = process.env.SLIC_STAGE
@@ -17,9 +19,11 @@ async function create({ email, listId, listName, userId }) {
   }
 
   const { email: sharerEmail } = await getUser(userId)
+  log.info({ email })
 
   const { createCode } = invitation(process.env.CODE_SECRET)
   const code = createCode({ listId, userId, email })
+  log.info({ code })
   const fullLink = baseLink + code
 
   const message = {
@@ -37,19 +41,25 @@ SLIC Lists
 }
 
 async function list({ listId, userId }) {
-  return (await dynamoDocClient()
-    .query({
-      TableName: tableName,
-      ProjectionExpression: 'collaborators',
-      KeyConditionExpression: 'listId = :listId',
-      ExpressionAttributeValues: {
-        ':listId': listId
-      }
-    })
-    .promise()).Items
+  const result = await dynamoDocClient().query({
+    TableName: tableName,
+    ProjectionExpression: 'collaborators',
+    KeyConditionExpression: 'listId = :listId AND userId = :userId',
+    ExpressionAttributeValues: {
+      ':listId': listId,
+      ':userId': userId
+    }
+  })
+
+  log.info({ result })
+  return result.Promise().collaborators
 }
 
-module.exports = {
-  create,
-  list
-}
+module.exports = middify(
+  { create, list },
+  {
+    ssmParameters: {
+      CODE_SECRET: 'CODE_SECRET'
+    }
+  }
+)

@@ -6,15 +6,19 @@ create:
     EMAIL_QUEUE_NAME: ${self:custom.emailQueueName}
   events:
     - http:
-        path: /{code}
+        path: /{listId}
         method: post
         cors: true
         authorizer:
           type: COGNITO_USER_POOLS
           authorizerId:
             Ref: cognitoAuthorizer
-load:
+list:
   handler: services/sharing/list.main
+  environment:
+    SLIC_NS_DOMAIN: ${self:custom.nsDomain}
+    SLIC_STAGE: ${self:custom.stage}
+    EMAIL_QUEUE_NAME: ${self:custom.emailQueueName}
   events:
     - http:
         path: /{listId}/collaborators
@@ -24,17 +28,17 @@ load:
           type: COGNITO_USER_POOLS
           authorizerId:
             Ref: cognitoAuthorizer
-remove:
-  handler: services/sharing/remove.main
-  events:
-    - http:
-        path: /{listId}/collaborators/{userId}
-        method: delete
-        cors: true
-        authorizer:
-          type: COGNITO_USER_POOLS
-          authorizerId:
-            Ref: cognitoAuthorizer
+#remove:
+#  handler: services/sharing/remove.main
+#  events:
+##    - http:
+#        path: /{listId}/collaborators/{userId}
+#        method: delete
+##        cors: true
+#        authorizer:
+#          type: COGNITO_USER_POOLS
+#          authorizerId:
+#            Ref: cognitoAuthorizer
 
 confirmInvite:
   handler: services/sharing/confirm.main
