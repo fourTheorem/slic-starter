@@ -13,34 +13,8 @@ create:
           type: COGNITO_USER_POOLS
           authorizerId:
             Ref: cognitoAuthorizer
-list:
-  handler: services/sharing/list.main
-  environment:
-    SLIC_NS_DOMAIN: ${self:custom.nsDomain}
-    SLIC_STAGE: ${self:custom.stage}
-    EMAIL_QUEUE_NAME: ${self:custom.emailQueueName}
-  events:
-    - http:
-        path: /{listId}/collaborators
-        method: get
-        cors: true
-        authorizer:
-          type: COGNITO_USER_POOLS
-          authorizerId:
-            Ref: cognitoAuthorizer
-#remove:
-#  handler: services/sharing/remove.main
-#  events:
-##    - http:
-#        path: /{listId}/collaborators/{userId}
-#        method: delete
-##        cors: true
-#        authorizer:
-#          type: COGNITO_USER_POOLS
-#          authorizerId:
-#            Ref: cognitoAuthorizer
 
-confirmInvite:
+confirm:
   handler: services/sharing/confirm.main
   events:
     - http:
