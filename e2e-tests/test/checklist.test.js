@@ -42,7 +42,8 @@ test('User can create a new List', async t => {
   await t.click(Selector('a').withText('First List'))
   await t.click(Selector('#expansion-summary'))
   await t.expect(Selector('#list-name').withText('First List')).exists
-  await t.expect(Selector('#list-description').withText('List Description')).exists
+  await t.expect(Selector('#list-description').withText('List Description'))
+    .exists
   const getLocation = ClientFunction(() => document.location.href)
   await t.expect(getLocation()).contains('/list/')
 })

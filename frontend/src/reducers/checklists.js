@@ -38,9 +38,9 @@ import {
   REMOVE_COLLABORATOR_REQUEST,
   REMOVE_COLLABORATOR_SUCCESS,
   REMOVE_COLLABORATOR_FAILURE,
-  LOAD_COLLABORATOR_REQUEST,
-  LOAD_COLLABORATOR_SUCCESS,
-  LOAD_COLLABORATOR_FAILURE,
+  LOAD_COLLABORATORS_REQUEST,
+  LOAD_COLLABORATORS_SUCCESS,
+  LOAD_COLLABORATORS_FAILURE,
   ACCEPT_SHARE_REQUEST,
   ACCEPT_SHARE_SUCCESS,
   ACCEPT_SHARE_FAILURE
@@ -358,7 +358,7 @@ export default (state = defaultState, { type, meta, payload, error }) => {
         collaboratorRemovalError: error
       }
 
-    case LOAD_COLLABORATOR_REQUEST:
+    case LOAD_COLLABORATORS_REQUEST:
       return {
         ...state,
         loadingCollaborators: true,
@@ -366,7 +366,7 @@ export default (state = defaultState, { type, meta, payload, error }) => {
         loadCollaboratorError: null
       }
 
-    case LOAD_COLLABORATOR_SUCCESS:
+    case LOAD_COLLABORATORS_SUCCESS:
       return {
         ...state,
         loadingCollaborators: false,
@@ -374,13 +374,11 @@ export default (state = defaultState, { type, meta, payload, error }) => {
         loadCollaboratorError: null,
         collaboratorsByListId: {
           ...state.collaboratorsByListId,
-          [meta.listId]: Object.entries(payload).map(pair => ({
-            user: pair[0]
-          }))
+          [meta.listId]: Object.assign({}, payload)
         }
       }
 
-    case LOAD_COLLABORATOR_FAILURE:
+    case LOAD_COLLABORATORS_FAILURE:
       return {
         ...state,
         loadingCollaborators: false,

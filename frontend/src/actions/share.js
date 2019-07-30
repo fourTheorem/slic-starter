@@ -31,21 +31,21 @@ export function addCollaborator({ email, listId, listName }) {
   }
 }
 
-export const LOAD_COLLABORATOR_REQUEST = 'LOAD_COLLABORATOR_REQUEST'
-export const LOAD_COLLABORATOR_SUCCESS = 'LOAD_COLLABORATOR_SUCCESS'
-export const LOAD_COLLABORATOR_FAILURE = 'LOAD_COLLABORATOR_FAILURE'
+export const LOAD_COLLABORATORS_REQUEST = 'LOAD_COLLABORATORS_REQUEST'
+export const LOAD_COLLABORATORS_SUCCESS = 'LOAD_COLLABORATORS_SUCCESS'
+export const LOAD_COLLABORATORS_FAILURE = 'LOAD_COLLABORATORS_FAILURE'
 
 export function loadCollaborators({ listId }) {
   return function(dispatch) {
     const meta = { listId }
-    dispatch({ type: LOAD_COLLABORATOR_REQUEST })
+    dispatch({ type: LOAD_COLLABORATORS_REQUEST })
     AmplifyApi.get('checklists', `${sharePath}/${listId}/collaborators`)
       .then(result => {
-        dispatch({ type: LOAD_COLLABORATOR_SUCCESS, payload: result, meta })
+        dispatch({ type: LOAD_COLLABORATORS_SUCCESS, payload: result, meta })
       })
       .catch(err => {
         dispatch({
-          type: LOAD_COLLABORATOR_FAILURE,
+          type: LOAD_COLLABORATORS_FAILURE,
           error: translateError(err)
         })
       })

@@ -104,6 +104,7 @@ class ShareList extends Component {
           <Grid container>
             <Grid item>
               <TextField
+                id="email-textfield"
                 className={classes.textfield}
                 placeholder="Collaborator email"
                 onChange={this.handleChange}
@@ -114,6 +115,7 @@ class ShareList extends Component {
         </DialogContent>
         <DialogActions>
           <Button
+            id="share-btn"
             onClick={this.handleSubmit}
             color="primary"
             disabled={this.state.email.length < 1}
