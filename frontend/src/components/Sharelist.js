@@ -93,26 +93,40 @@ class ShareList extends Component {
         onClose={onClose}
         aria-labelledby="alert-dialog-slide-title"
         aria-describedby="alert-dialog-slide-description"
+        fullWidth
       >
-        <DialogTitle id="alert-dialog-slide-title">Share List</DialogTitle>
-        <DialogContent>
-          <DialogContentText id="alert-dialog-slide-description">
-            <Typography>Share {list.name} with friends!</Typography>
-            {shareFailure}
-            {shareSuccess}
-          </DialogContentText>
-          <Grid container>
-            <Grid item>
-              <TextField
-                id="email-textfield"
-                className={classes.textfield}
-                placeholder="Collaborator email"
-                onChange={this.handleChange}
-                value={this.state.email}
-              />
-            </Grid>
+        <Grid
+          container
+          direction="column"
+          justify="space-evenly"
+          alignItems="center"
+        >
+          <Grid item>
+            <DialogTitle id="alert-dialog-slide-title">Share list</DialogTitle>
           </Grid>
-        </DialogContent>
+          <Grid item>
+            <DialogContent>
+              <DialogContentText id="alert-dialog-slide-description">
+                <Typography>
+                  Sharing a list allows other sliclists users to collaborate
+                  with you!
+                </Typography>
+              </DialogContentText>
+              <Grid item>
+                <TextField
+                  id="email-textfield"
+                  className={classes.textfield}
+                  placeholder="Collaborator email"
+                  onChange={this.handleChange}
+                  value={this.state.email}
+                  fullWidth
+                />
+              </Grid>
+              {shareFailure}
+              {shareSuccess}
+            </DialogContent>
+          </Grid>
+        </Grid>
         <DialogActions>
           <Button
             id="share-btn"
@@ -122,7 +136,9 @@ class ShareList extends Component {
           >
             Add
           </Button>
-          <Button onClick={onClose}>Cancel</Button>
+          <Button onClick={onClose} color="secondary">
+            Cancel
+          </Button>
         </DialogActions>
       </Dialog>
     )
