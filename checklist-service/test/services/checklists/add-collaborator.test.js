@@ -7,8 +7,8 @@ const { userId } = require('../../fixtures')
 
 const received = {}
 
-const collaboratorHandler = proxyquire(
-  '../../../services/checklists/collaboratorHandler.js',
+const addCollaboratorHandler = proxyquire(
+  '../../../services/checklists/add-collaborator.js',
   {
     './checklist': {
       addCollaborator: params => {
@@ -19,13 +19,13 @@ const collaboratorHandler = proxyquire(
   }
 )
 
-test('collaboratorHandler adds collaborators to existing lists', async t => {
+test('addCollaborator adds collaborators to existing lists', async t => {
   const collaboratorUserId = 'collaborator123'
   const event = {
     detail: { userId, listId: 'list123', collaboratorUserId }
   }
 
-  await collaboratorHandler.main(event)
+  await addCollaboratorHandler.main(event)
   t.equal(received.addCollaboratorParams.userId, userId)
   t.equal(received.addCollaboratorParams.collaboratorUserId, collaboratorUserId)
 

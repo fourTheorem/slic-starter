@@ -107,7 +107,7 @@ deleteEntry:
             Ref: cognitoAuthorizer
 
 addCollaborator:
-  handler: services/checklists/collaboratorHandler.main
+  handler: services/checklists/addCollaborator.main
   events:
     - cloudwatchEvent:
         event:
@@ -115,3 +115,17 @@ addCollaborator:
             - 'sharing-service'
           detail-type:
             - 'COLLABORATOR_ACCEPTED_EVENT'
+
+listCollaborators:
+  handler: services/checklists/listCollaborators.main
+  environment:
+    SLIC_STAGE: ${self:custom.stage}
+  events:
+    - http:
+        path: /{id}/collaborators
+        method: get
+        cors: true
+        authorizer:
+          type: COGNITO_USER_POOLS
+          authorizerId:
+            Ref: cognitoAuthorizer
