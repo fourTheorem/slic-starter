@@ -12,6 +12,7 @@
     "url": "https://github.com/fourTheorem/slic-starter"
   },
   "devDependencies": {
+    "serverless-plugin-tracing": "^2.0.0",
     "serverless-pseudo-parameters": "^2.4.0",
     "tap": "^14.2.0"
   },

@@ -7,7 +7,6 @@ domainPrefixes:
   dev: dev. 
   stg: stg. 
   prod: '' 
-apiConfig: ${file(./api-config.js)}
 cloudFrontHostedZoneId: Z2FDTNDATAQYW2
 apiDomainName: api.${self:custom.domainPrefixes.${self:provider.stage}}${self:custom.nsDomain}
 emailQueueName: dev-email-queue

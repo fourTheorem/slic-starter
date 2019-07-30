@@ -23,3 +23,9 @@
     - dynamodb:UpdateItem
     - dynamodb:DeleteItem
   Resource: 'arn:aws:dynamodb:${self:custom.region}:*:*'
+- Effect: Allow
+  Action:
+    - xray:PutTraceSegments
+    - xray:PutTelemetryRecords
+  Resource:
+    - '*'
