@@ -4,6 +4,7 @@ const path = require('path')
 const proxyquire = require('proxyquire')
 const awsMock = require('aws-sdk-mock')
 const { test } = require('tap')
+const uuid = require('uuid')
 
 const userId = 'my-test-user'
 awsMock.setSDK(path.resolve('./node_modules/slic-tools/node_modules/aws-sdk'))
@@ -22,6 +23,8 @@ const testLists = [
     entries: {}
   }
 ]
+
+const testCollaborators = [uuid.v4(), uuid.v4()]
 
 const received = {
   dynamoDb: {}
@@ -49,7 +52,12 @@ awsMock.mock('DynamoDB.DocumentClient', 'delete', function(params, callback) {
 
 awsMock.mock('DynamoDB.DocumentClient', 'query', function(params, callback) {
   received.dynamoDb.query = params
-  callback(null, { Items: testLists })
+  callback(null, {
+    Items:
+      params.ProjectionExpression === 'collaborators'
+        ? testCollaborators
+        : testLists
+  })
 })
 
 test('create puts a dynamodb item', async t => {
@@ -189,6 +197,21 @@ test('add a collaborator', async t => {
   t.ok(received.dynamoDb.update.ExpressionAttributeValues[':collaborators'])
   t.equal(received.dynamoDb.update.Key.userId, record.userId)
   t.equal(received.dynamoDb.update.Key.listId, record.listId)
+
+  t.end()
+})
+
+test('list collaborators', async t => {
+  const checklist = require('../../../services/checklists/checklist')
+
+  const listId = 'list123'
+
+  const response = await checklist.listCollaborators({ listId, userId })
+
+  t.same(response, testCollaborators)
+
+  t.equal(received.dynamoDb.query.ExpressionAttributeValues[':userId'], userId)
+  t.equal(received.dynamoDb.query.ExpressionAttributeValues[':listId'], listId)
 
   t.end()
 })

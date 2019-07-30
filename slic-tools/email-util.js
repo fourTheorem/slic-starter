@@ -17,7 +17,7 @@ if (!queueName) {
   log.info({ queueName }, 'Using queue')
 }
 
-async function sendEmail (message) {
+async function sendEmail(message) {
   const params = {
     MessageBody: JSON.stringify(message),
     QueueUrl: await fetchQueueUrl()
@@ -33,22 +33,23 @@ function fetchQueueUrl() {
   if (queueUrlPromise) {
     return queueUrlPromise
   }
-  
+
   queueUrlPromise = SQS.getQueueUrl({
     QueueName: queueName
-  }).promise().then(result => {
-    const queueUrl = result.QueueUrl
-    log.info({ queueUrl }, 'Using queue URL')
-    return queueUrl
   })
-  .catch(err => {
-    log.error({ err }, 'Failed to read queue URL')
-    queueUrlPromise = null 
-    throw err
-  })
+    .promise()
+    .then(result => {
+      const queueUrl = result.QueueUrl
+      log.info({ queueUrl }, 'Using queue URL')
+      return queueUrl
+    })
+    .catch(err => {
+      log.error({ err }, 'Failed to read queue URL')
+      queueUrlPromise = null
+      throw err
+    })
   return queueUrlPromise
 }
-
 
 module.exports = {
   sendEmail

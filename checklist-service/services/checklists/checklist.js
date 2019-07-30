@@ -1,6 +1,6 @@
 'use strict'
 
-const Uuid = require('uuid')
+const uuid = require('uuid')
 
 const { dispatchEvent } = require('slic-tools/event-dispatcher')
 const { dynamoDocClient } = require('slic-tools/aws')
@@ -14,7 +14,8 @@ module.exports = {
   remove,
   get,
   list,
-  addCollaborator
+  addCollaborator,
+  listCollaborators
 }
 
 async function create({ userId, name, description }) {
@@ -23,7 +24,7 @@ async function create({ userId, name, description }) {
     name,
     description,
     entries: {},
-    listId: Uuid.v4(),
+    listId: uuid.v4(),
     createdAt: Date.now()
   }
   await dynamoDocClient()
@@ -105,7 +106,7 @@ async function list({ userId }) {
 
 async function addCollaborator({ userId, listId, collaboratorUserId }) {
   const docClient = await dynamoDocClient()
-  const result = await dynamoDocClient()
+  await docClient
     .update({
       TableName: tableName,
       Key: { userId, listId },
@@ -116,10 +117,21 @@ async function addCollaborator({ userId, listId, collaboratorUserId }) {
       ReturnValues: 'UPDATED_NEW'
     })
     .promise()
-    .then(data => {
-      log.info({ data })
+}
+
+async function listCollaborators({ listId, userId }) {
+  const result = await dynamoDocClient()
+    .query({
+      TableName: tableName,
+      ProjectionExpression: 'collaborators',
+      KeyConditionExpression: 'listId = :listId AND userId = :userId',
+      ExpressionAttributeValues: {
+        ':listId': listId,
+        ':userId': userId
+      }
     })
-    .catch(err => {
-      log.info({ err })
-    })
+    .promise()
+
+  log.info({ result })
+  return result.Items
 }

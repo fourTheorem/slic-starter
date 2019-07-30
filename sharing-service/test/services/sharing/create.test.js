@@ -1,36 +1,38 @@
 'use strict'
+
 const proxyquire = require('proxyquire')
 const { test } = require('tap')
 const { userId, userRequestContext } = require('../../fixtures')
-const Uuid = require('uuid')
+const uuid = require('uuid')
 
 const received = {}
 
 const payload = {
   email: 'email@example.com',
-  listId: Uuid.v4(),
+  listId: uuid.v4(),
   listName: 'First Checklist'
 }
 
 const createHandler = proxyquire('../../../services/sharing/create', {
   './share': {
-    create: params => {
-      received.createParams = params
-      return received
-    }
+    create: (...args) => {
+      received.createParams = args
+      return Promise.resolve()
+    },
+    '@noCallThru': true
   }
 })
 
 test('A checklist can be shared with another user', async t => {
   const event = {
     requestContext: userRequestContext,
+    pathParameters: { listId: payload.listId },
     body: JSON.stringify(payload)
   }
 
-  const result = await createHandler.main(event)
-  t.equal(received.createParams.userId, userId)
-  t.equal(received.createParams.email, payload.email)
-  t.equal(received.createParams.listId, payload.listId)
-  t.equal(received.createParams.listName, payload.listName)
-  t.equal(result.statusCode, 201)
+  await createHandler.main(event, {}, () => {})
+  t.equal(received.createParams[0].userId, userId)
+  t.equal(received.createParams[0].email, payload.email)
+  t.equal(received.createParams[0].listId, payload.listId)
+  t.equal(received.createParams[0].listName, payload.listName)
 })

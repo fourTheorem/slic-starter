@@ -1,6 +1,8 @@
 'use strict'
 
-const userId = 'userId123'
+const uuid = require('uuid')
+
+const userId = uuid.v4()
 
 const userRequestContext = {
   authorizer: {

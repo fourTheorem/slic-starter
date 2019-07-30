@@ -27,7 +27,7 @@ function middify(exports, options = {}) {
       .use(autoProxyResponse())
       .use(httpErrorHandler())
 
-    if (options.ssmParameters) {
+    if (options.ssmParameters && process.env.SLIC_STAGE !== 'test') {
       handler.use(
         ssm({
           cache: true,

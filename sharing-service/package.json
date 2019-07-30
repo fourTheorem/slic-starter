@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Sharing Service",
   "scripts": {
-    "test": "tap \"test/**/*.test.js\" --branches=100 --statements=100 --functions=100 --lines=100"
+    "test": "SLIC_STAGE=test tap \"test/**/*.test.js\" --branches=100 --statements=100 --functions=100 --lines=100"
   },
   "author": "Paul Kevany <paul.kevany@fourtheorem.com>",
   "license": "MIT",

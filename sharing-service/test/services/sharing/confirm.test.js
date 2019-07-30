@@ -1,22 +1,19 @@
 'use strict'
+
 const proxyquire = require('proxyquire')
 const { test } = require('tap')
+const uuid = require('uuid')
+
 const { userId, userRequestContext } = require('../../fixtures')
-const Uuid = require('uuid')
 const { createCode } = require('../../../lib/invitation')('p@ssw0rd')
 
 const params = {
-  listId: Uuid.v4(),
-  userId: Uuid.v4(),
+  listId: uuid.v4(),
+  userId,
   email: 'email@example.com'
 }
 
 const received = {}
-
-const code = createCode(params)
-const payload = {
-  code: code
-}
 
 const confirmHandler = proxyquire('../../../services/sharing/confirm', {
   'slic-tools/event-dispatcher': {
@@ -24,17 +21,29 @@ const confirmHandler = proxyquire('../../../services/sharing/confirm', {
       received.eventArgs = args
       return Promise.resolve()
     }
+  },
+  './share': {
+    confirm: (...args) => {
+      received.confirmParams = args
+      return Promise.resolve()
+    },
+    '@noCallThru': true
   }
 })
 
-test('An event is dispatched when a code is confirmed', async t => {
+test('An invitation can be confirmed', async t => {
+  const code = createCode(params)
+  const payload = {
+    code: code
+  }
   const event = {
     requestContext: userRequestContext,
     body: JSON.stringify(payload)
   }
 
-  const result = await confirmHandler.main(event)
-  console.log({ result }, 'result info')
-  console.log({ received }, 'received info')
-  t.ok(received.eventArgs)
+  await confirmHandler.main(event, {}, () => {})
+
+  t.ok(received.confirmParams[0].userId, userId)
+  t.ok(received.confirmParams[0].code, code)
+  t.end()
 })

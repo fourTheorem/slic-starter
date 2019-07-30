@@ -1,8 +1,8 @@
 'use strict'
 
-const share = require('./share')
 const { processEvent } = require('slic-tools/event-util')
 const { middify } = require('slic-tools/middy-util')
+const share = require('./share')
 
 async function main(event) {
   const { pathParameters, body, userId } = processEvent(event)
