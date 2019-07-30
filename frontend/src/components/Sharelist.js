@@ -22,7 +22,9 @@ const styles = {
 
   success: {
     color: 'green'
-  }
+  },
+
+  textfield: {}
 }
 
 class ShareList extends Component {
