@@ -47,7 +47,7 @@ userServiceNameParameter:
         - ''
         - - 'https://'
           - !Ref ApiGatewayRestApi
-          - '.execute-api.${self:custom.region}.amazonaws.com/${self:custom.stage}/user/'
+          - '.execute-api.${self:provider.region}.amazonaws.com/${self:provider.stage}/user/'
 
 slicAuthenticatedIdentityPoolRole:
   Type: AWS::IAM::Role

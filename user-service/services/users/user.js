@@ -3,7 +3,8 @@
 const AWS = require('aws-sdk')
 const awsXray = require('aws-xray-sdk')
 
-const log = require('slic-tools/log.js')
+const log = require('slic-tools/log')
+
 const cognito = awsXray.captureAWSClient(
   new AWS.CognitoIdentityServiceProvider()
 )

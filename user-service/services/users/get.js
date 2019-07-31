@@ -2,7 +2,10 @@
 
 const { middify } = require('slic-tools/middy-util')
 
-const user = require('./user')
+const user = process.env.IS_OFFLINE
+  ? require('./user-offline')
+  : require('./user')
+
 const { processEvent } = require('slic-tools/event-util')
 const { createResponse } = require('slic-tools/response')
 
