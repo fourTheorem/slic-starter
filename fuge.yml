@@ -10,15 +10,19 @@ fuge_global:
     - '*.log'
     - '**/*.sw?'
   environment:
+    - 'AWS_PROFILE=local'
+    - 'SLIC_STAGE=local'
+    - 'SLIC_NS_DOMAIN=sliclists.com'
     - 'SQS_ENDPOINT_URL=http://localhost:4576'
     - 'SES_ENDPOINT_URL=http://localhost:4579'
     - 'CLOUDWATCH_ENDPOINT_URL=http://localhost:4582'
     - 'SSM_ENDPOINT_URL=http://localhost:4583'
+    - 'AWS_XRAY_CONTEXT_MISSING=LOG_ERROR'
 
-backend:
+checklist:
   type: process
   run: 'npm start'
-  path: backend
+  path: checklist-service
 
 welcome:
   type: process
@@ -31,9 +35,14 @@ email:
   path: email-service
 
 user:
-  type: process
-  run: 'npm start'
+  type: node
+  run: 'node /Users/eoin/.nvm/versions/node/v10.15.0/bin/sls offline start'
   path: user-service
+
+sharing:
+  type: node
+  run: 'node /Users/eoin/.nvm/versions/node/v10.15.0/bin/sls offline start'
+  path: sharing-service
 
 include:
   - docker-compose.yml

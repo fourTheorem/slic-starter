@@ -9,7 +9,7 @@
   Resource:
     - arn:aws:ssm:#{AWS::Region}:#{AWS::AccountId}:parameter/UserServiceUrl
     - arn:aws:ssm:#{AWS::Region}:#{AWS::AccountId}:parameter/UserServiceApiKey
-    - arn:aws:ssm:#{AWS::Region}:#{AWS::AccountId}:parameter/${self:custom.stage}/user-service/url
+    - arn:aws:ssm:#{AWS::Region}:#{AWS::AccountId}:parameter/${self:provider.stage}/user-service/url
 - Effect: Allow
   Action:
     - xray:PutTraceSegments

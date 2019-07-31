@@ -1,0 +1,14 @@
+{
+  "defaultRegions": {
+    "dev": "eu-west-1",
+    "stg": "eu-west-1",
+    "prod": "eu-west-1",
+    "local": "us-east-1"
+  },
+  "domainPrefixes": {
+    "dev": "dev.",
+    "stg": "stg.",
+    "prod": "",
+    "local": ""
+  }
+}

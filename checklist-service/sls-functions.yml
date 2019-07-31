@@ -117,9 +117,7 @@ addCollaborator:
             - 'COLLABORATOR_ACCEPTED_EVENT'
 
 listCollaborators:
-  handler: services/checklists/listCollaborators.main
-  environment:
-    SLIC_STAGE: ${self:custom.stage}
+  handler: services/checklists/list-collaborators.main
   events:
     - http:
         path: /{id}/collaborators

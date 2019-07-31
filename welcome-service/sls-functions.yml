@@ -1,7 +1,6 @@
 handleNewChecklist:
   handler: services/welcome/new-checklist-handler.handleNewChecklist
   environment:
-    SLIC_STAGE: ${self:provider.stage}
     EMAIL_QUEUE_NAME: ${self:custom.emailQueueName}
   events:
     - cloudwatchEvent:

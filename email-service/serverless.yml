@@ -5,17 +5,40 @@ plugins:
   - serverless-offline-sqs
   - serverless-prune-plugin
   - serverless-log-forwarding
-  - serverless-plugin-tracing
 
 provider:
   name: aws
-  runtime: ${self:custom.runtime}
-  stage: ${self:custom.stage}
-  region: ${self:custom.region}
-  tracing: true
+  runtime: nodejs8.10
+  stage: ${opt:stage, 'local'}
+  region: ${opt:region, '${self:custom.defaultRegions.${self:provider.stage}}'}
+  tracing:
+    lambda: true
   iamRoleStatements: ${file(./sls-iam-role-statements.yml)}
+  environment:
+    SLIC_STAGE: ${self:provider.stage}
 
-custom: ${file(./custom.yml)}
+custom:
+  emailQueueName: ${self:provider.stage}-email-queue
+  prune:
+    automatic: true
+  number: 3
+  nsDomain: ${env:SLIC_NS_DOMAIN}
+  domainPrefixes:
+    local: ''
+    dev: dev.
+    stg: stg.
+    prod: ''
+  emailDomainName: ${self:custom.domainPrefixes.${self:provider.stage}}${self:custom.nsDomain}
+  serverless-offline:
+    port: 4002
+    stage: local
+    region: ${self:custom.defaultRegions.${self:provider.stage}}
+  serverless-offline-sqs:
+    endpoint: ${env:SQS_ENDPOINT_URL,'http://0.0.0.0:4576'}
+    autoCreate: true
+    region: ${self:custom.defaultRegions.${self:provider.stage}}
+  logForwarding:
+    destinationARN: !ImportValue ${self:provider.stage}-log-forwarder-function-arn
 
 functions: ${file(./sls-functions.yml)}
 
