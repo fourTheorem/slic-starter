@@ -8,7 +8,7 @@ const {
   httpErrorHandler,
   ssm
 } = require('middy/middlewares')
-const { autoProxyResponse } = require('middy-autoproxyresponse')
+const { autoProxyResponse } = require('./middlewares/auto-proxy-response')
 const loggerMiddleware = require('lambda-logger-middleware')
 const log = require('./log')
 
@@ -31,7 +31,10 @@ function middify(exports, options = {}) {
       handler.use(
         ssm({
           cache: true,
-          names: options.ssmParameters
+          names: options.ssmParameters,
+          awsSdkOptions: {
+            endpoint: process.env.SSM_ENDPOINT_URL
+          }
         })
       )
     }
