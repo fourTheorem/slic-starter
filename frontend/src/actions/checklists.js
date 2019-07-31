@@ -1,10 +1,6 @@
 import { API as AmplifyApi } from 'aws-amplify'
 import { translateError } from '../errors'
 
-import { localMode } from '../mode'
-
-const checklistPath = localMode ? '' : '/checklist'
-
 export const LOAD_LISTS_REQUEST = 'LOAD_LISTS_REQUEST'
 export const LOAD_LISTS_SUCCESS = 'LOAD_LISTS_SUCCESS'
 export const LOAD_LISTS_FAILURE = 'LOAD_LISTS_FAILURE'
@@ -12,7 +8,7 @@ export const LOAD_LISTS_FAILURE = 'LOAD_LISTS_FAILURE'
 export function loadLists() {
   return function(dispatch) {
     dispatch({ type: LOAD_LISTS_REQUEST })
-    AmplifyApi.get('checklists', checklistPath)
+    AmplifyApi.get('slic-lists-api', '/checklist')
       .then(result => {
         dispatch({ type: LOAD_LISTS_SUCCESS, payload: result })
       })
@@ -29,7 +25,7 @@ export const CREATE_LIST_FAILURE = 'CREATE_LIST_FAILURE'
 export function createList({ name, description }) {
   return function(dispatch) {
     dispatch({ type: CREATE_LIST_REQUEST })
-    AmplifyApi.post('checklists', checklistPath, {
+    AmplifyApi.post('slic-lists-api', '/checklist', {
       body: {
         name,
         description
@@ -52,7 +48,7 @@ export function removeList({ listId }) {
   return function(dispatch) {
     const meta = { listId }
     dispatch({ type: REMOVE_LIST_REQUEST, meta })
-    AmplifyApi.del('checklists', `${checklistPath}/${listId}`)
+    AmplifyApi.del('slic-lists-api', `/checklist/${listId}`)
       .then(result => {
         dispatch({ type: REMOVE_LIST_SUCCESS, meta })
       })
@@ -70,7 +66,7 @@ export function updateList({ listId, name, description }) {
   return function(dispatch) {
     const meta = { listId }
     dispatch({ type: UPDATE_LIST_REQUEST })
-    AmplifyApi.put('checklists', `${checklistPath}/${listId}`, {
+    AmplifyApi.put('slic-lists-api', `/checklist/${listId}`, {
       body: {
         name,
         description
@@ -81,6 +77,27 @@ export function updateList({ listId, name, description }) {
       })
       .catch(err => {
         dispatch({ type: UPDATE_LIST_FAILURE, error: translateError(err) })
+      })
+  }
+}
+
+export const LOAD_COLLABORATORS_REQUEST = 'LOAD_COLLABORATORS_REQUEST'
+export const LOAD_COLLABORATORS_SUCCESS = 'LOAD_COLLABORATORS_SUCCESS'
+export const LOAD_COLLABORATORS_FAILURE = 'LOAD_COLLABORATORS_FAILURE'
+
+export function loadCollaborators({ listId }) {
+  return function(dispatch) {
+    const meta = { listId }
+    dispatch({ type: LOAD_COLLABORATORS_REQUEST })
+    AmplifyApi.get('slic-lists-api', `/checklist/${listId}/collaborators`)
+      .then(result => {
+        dispatch({ type: LOAD_COLLABORATORS_SUCCESS, payload: result, meta })
+      })
+      .catch(err => {
+        dispatch({
+          type: LOAD_COLLABORATORS_FAILURE,
+          error: translateError(err)
+        })
       })
   }
 }

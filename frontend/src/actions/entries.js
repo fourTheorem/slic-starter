@@ -1,10 +1,6 @@
 import { API as AmplifyApi } from 'aws-amplify'
 import { translateError } from '../errors'
 
-import { localMode } from '../mode'
-
-const checklistPath = localMode ? '' : '/checklist'
-
 export const ADD_ENTRY_REQUEST = 'ADD_ENTRY_REQUEST'
 export const ADD_ENTRY_SUCCESS = 'ADD_ENTRY_SUCCESS'
 export const ADD_ENTRY_FAILURE = 'ADD_ENTRY_FAILURE'
@@ -13,7 +9,7 @@ export function addEntry({ listId, title, value }) {
   const meta = { listId, title, value }
   return function(dispatch) {
     dispatch({ type: ADD_ENTRY_REQUEST })
-    AmplifyApi.post('checklists', `${checklistPath}/${listId}/entries`, {
+    AmplifyApi.post('slic-lists-api', `/checklist/${listId}/entries`, {
       body: {
         title,
         value
@@ -36,7 +32,7 @@ export function loadEntries({ listId }) {
   const meta = { listId }
   return function(dispatch) {
     dispatch({ type: LOAD_ENTRIES_REQUEST })
-    AmplifyApi.get('checklists', `${checklistPath}/${listId}/entries`)
+    AmplifyApi.get('slic-lists-api', `/checklist/${listId}/entries`)
       .then(result => {
         dispatch({ type: LOAD_ENTRIES_SUCCESS, payload: result, meta })
       })
@@ -54,8 +50,8 @@ export function setEntryValue({ listId, entry }) {
   return function(dispatch) {
     dispatch({ type: SET_ENTRY_VALUE_REQUEST })
     AmplifyApi.put(
-      'checklists',
-      `${checklistPath}/${listId}/entries/${entry.entId}`,
+      'slic-lists-api',
+      `/checklist/${listId}/entries/${entry.entId}`,
       { body: entry }
     )
       .then(result => {
@@ -74,7 +70,7 @@ export const REMOVE_ENTRY_FAILURE = 'REMOVE_ENTRY_FAILURE'
 export function removeEntry({ listId, entId }) {
   return function(dispatch) {
     dispatch({ type: REMOVE_ENTRY_REQUEST })
-    AmplifyApi.del('checklists', `${checklistPath}/${listId}/entries/${entId}`)
+    AmplifyApi.del('slic-lists-api', `/checklist/${listId}/entries/${entId}`)
       .then(result => {
         dispatch({ type: REMOVE_ENTRY_SUCCESS, meta: { listId, entId } })
       })

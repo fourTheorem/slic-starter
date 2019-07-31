@@ -13,7 +13,8 @@ import {
 import { withStyles } from '@material-ui/core/styles'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
-import { addCollaborator, loadCollaborators } from '../actions/share'
+import { loadCollaborators } from '../actions/checklists'
+import { createShare } from '../actions/share'
 
 const styles = {
   error: {
@@ -41,7 +42,7 @@ class ShareList extends Component {
     event.preventDefault()
     const { list } = this.props
     this.props.dispatch(
-      addCollaborator({
+      createShare({
         email: this.state.email,
         listId: list.listId,
         listName: list.name

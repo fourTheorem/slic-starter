@@ -5,6 +5,9 @@ import {
   LOAD_LISTS_REQUEST,
   LOAD_LISTS_SUCCESS,
   LOAD_LISTS_FAILURE,
+  LOAD_COLLABORATORS_REQUEST,
+  LOAD_COLLABORATORS_SUCCESS,
+  LOAD_COLLABORATORS_FAILURE,
   CREATE_LIST_REQUEST,
   CREATE_LIST_SUCCESS,
   CREATE_LIST_FAILURE,
@@ -32,15 +35,9 @@ import {
 } from '../actions/entries'
 
 import {
-  ADD_COLLABORATOR_REQUEST,
-  ADD_COLLABORATOR_SUCCESS,
-  ADD_COLLABORATOR_FAILURE,
-  REMOVE_COLLABORATOR_REQUEST,
-  REMOVE_COLLABORATOR_SUCCESS,
-  REMOVE_COLLABORATOR_FAILURE,
-  LOAD_COLLABORATORS_REQUEST,
-  LOAD_COLLABORATORS_SUCCESS,
-  LOAD_COLLABORATORS_FAILURE,
+  CREATE_SHARE_REQUEST,
+  CREATE_SHARE_SUCCESS,
+  CREATE_SHARE_FAILURE,
   ACCEPT_SHARE_REQUEST,
   ACCEPT_SHARE_SUCCESS,
   ACCEPT_SHARE_FAILURE
@@ -310,7 +307,7 @@ export default (state = defaultState, { type, meta, payload, error }) => {
         removeEntryError: error
       }
 
-    case ADD_COLLABORATOR_REQUEST:
+    case CREATE_SHARE_REQUEST:
       return {
         ...state,
         creatingCollaborator: true,
@@ -318,7 +315,7 @@ export default (state = defaultState, { type, meta, payload, error }) => {
         createCollaboratorError: null
       }
 
-    case ADD_COLLABORATOR_SUCCESS:
+    case CREATE_SHARE_SUCCESS:
       return {
         ...state,
         creatingCollaborator: false,
@@ -326,36 +323,12 @@ export default (state = defaultState, { type, meta, payload, error }) => {
         createCollaboratorError: null
       }
 
-    case ADD_COLLABORATOR_FAILURE:
+    case CREATE_SHARE_FAILURE:
       return {
         ...state,
         creatingCollaborator: false,
         createdCollaborator: false,
         createCollaboratorError: error
-      }
-
-    case REMOVE_COLLABORATOR_REQUEST:
-      return {
-        ...state,
-        removingCollaborator: true,
-        collaboratorRemoved: false,
-        collaboratorRemovalError: null
-      }
-
-    case REMOVE_COLLABORATOR_SUCCESS:
-      return {
-        ...state,
-        removingCollaborator: false,
-        collaboratorRemoved: true,
-        collaboratorRemovalError: null
-      }
-
-    case REMOVE_COLLABORATOR_FAILURE:
-      return {
-        ...state,
-        removingCollaborator: false,
-        collaboratorRemoved: false,
-        collaboratorRemovalError: error
       }
 
     case LOAD_COLLABORATORS_REQUEST:
