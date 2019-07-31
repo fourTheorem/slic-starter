@@ -32,6 +32,7 @@ Many thanks,
 SLIC Lists
 `
   }
+  log.debug({ message }, 'Dispatching email')
   await sendEmail(message)
 }
 

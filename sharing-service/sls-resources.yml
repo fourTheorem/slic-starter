@@ -13,7 +13,7 @@ cognitoAuthorizer:
 # See https://github.com/serverless/serverless/issues/4029
 resApiGatewayDeployment:
   Type: AWS::ApiGateway::Deployment
-  DependsOn: ApiGatewayMethodListidVarOptions
+  DependsOn: ApiGatewayMethodPost
   Properties:
     StageName: ${self:provider.stage}
     RestApiId:

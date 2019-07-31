@@ -20,7 +20,7 @@ test('A code can be created and parsed', t => {
 
 test('A code is different for a different email address', t => {
   const secret = 'passw0rd'
-  const { createCode, parseCode } = require('../../lib/invitation')(secret)
+  const { createCode } = require('../../lib/invitation')(secret)
 
   const userId = uuid.v4()
   const listId = uuid.v4()
@@ -51,5 +51,12 @@ test('A code will not be created if missing required data', t => {
   const secret = 'secret'
   const { createCode } = require('../../lib/invitation')(secret)
   t.throws(() => createCode({ userId, email }))
+  t.end()
+})
+
+test('An invalid code with throw an error', t => {
+  const secret = 'secret'
+  const { parseCode } = require('../../lib/invitation')(secret)
+  t.throws(() => parseCode('abcdefg'))
   t.end()
 })

@@ -1,12 +1,8 @@
 create:
   handler: services/sharing/create.main
-  environment:
-    SLIC_NS_DOMAIN: ${self:custom.nsDomain}
-    SLIC_STAGE: ${self:custom.stage}
-    EMAIL_QUEUE_NAME: ${self:custom.emailQueueName}
   events:
     - http:
-        path: /{listId}
+        path: /
         method: post
         cors: true
         authorizer:
@@ -16,14 +12,10 @@ create:
 
 confirm:
   handler: services/sharing/confirm.main
-  environment:
-    SLIC_NS_DOMAIN: ${self:custom.nsDomain}
-    SLIC_STAGE: ${self:custom.stage}
-    EMAIL_QUEUE_NAME: ${self:custom.emailQueueName}
   events:
     - http:
-        path: /confirm/{code}
-        method: post
+        path: /{code}
+        method: patch
         cors: true
         authorizer:
           type: COGNITO_USER_POOLS

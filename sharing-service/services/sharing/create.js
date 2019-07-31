@@ -5,9 +5,8 @@ const { middify } = require('slic-tools/middy-util')
 const share = require('./share')
 
 async function main(event) {
-  const { pathParameters, body, userId } = processEvent(event)
-  const { listId } = pathParameters
-  const { email, listName } = body
+  const { body, userId } = processEvent(event)
+  const { email, listId, listName } = body
 
   const result = await share.create({ email, listId, listName, userId })
   return {
@@ -16,11 +15,13 @@ async function main(event) {
   }
 }
 
+debugger
 module.exports = middify(
   { main },
   {
     ssmParameters: {
-      CODE_SECRET: 'CODE_SECRET'
+      CODE_SECRET: `/${process.env.SLIC_STAGE}/sharing-service/code-secret`,
+      USER_SERVICE_URL: `/${process.env.SLIC_STAGE}/user-service/url`
     }
   }
 )

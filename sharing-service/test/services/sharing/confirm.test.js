@@ -33,12 +33,12 @@ const confirmHandler = proxyquire('../../../services/sharing/confirm', {
 
 test('An invitation can be confirmed', async t => {
   const code = createCode(params)
-  const payload = {
+  const pathParameters = {
     code: code
   }
   const event = {
     requestContext: userRequestContext,
-    body: JSON.stringify(payload)
+    pathParameters
   }
 
   await confirmHandler.main(event, {}, () => {})

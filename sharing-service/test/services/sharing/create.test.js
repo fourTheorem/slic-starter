@@ -26,7 +26,6 @@ const createHandler = proxyquire('../../../services/sharing/create', {
 test('A checklist can be shared with another user', async t => {
   const event = {
     requestContext: userRequestContext,
-    pathParameters: { listId: payload.listId },
     body: JSON.stringify(payload)
   }
 

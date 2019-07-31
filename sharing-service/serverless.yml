@@ -1,18 +1,23 @@
 service: sharing-service
 
 plugins:
-  - '@dathuis/serverless-dynamodb-local'
   - serverless-offline
   - serverless-pseudo-parameters
-  - serverless-plugin-tracing
+  - serverless-log-forwarding
 
 provider:
   name: aws
-  runtime: ${self:custom.runtime}
-  stage: ${self:custom.stage}
-  region: ${self:custom.region}
-  tracing: true
+  runtime: nodejs8.10
+  stage: ${opt:stage, 'local'}
+  region: ${opt:region, '${self:custom.defaultRegions.${self:provider.stage}}'}
+  tracing:
+    apiGateway: true
+    lambda: true
   iamRoleStatements: ${file(./sls-iam-role-statements.yml)}
+  environment:
+    SLIC_NS_DOMAIN: ${self:custom.nsDomain}
+    SLIC_STAGE: ${self:provider.stage}
+    EMAIL_QUEUE_NAME: ${self:custom.emailQueueName}
   resourcePolicy:
     - Effect: Allow
       Principal: '*'
@@ -20,7 +25,22 @@ provider:
       Resource:
         - execute-api:/*/*/*
 
-custom: ${file(./custom.yml)}
+custom:
+  nsDomain: ${env:SLIC_NS_DOMAIN, 'sliclists.com'}
+  domainPrefixes: ${file(../common-config.json):domainPrefixes}
+  defaultRegions: ${file(../common-config.json):defaultRegions}
+  cloudFrontHostedZoneId: Z2FDTNDATAQYW2
+  apiDomainName: api.${self:custom.domainPrefixes.${self:provider.stage}}${self:custom.nsDomain}
+  serverless-offline:
+    port: 4004
+    stage: local
+    region: ${self:custom.defaultRegions.${self:provider.stage}}
+  emailQueueName: ${self:provider.stage}-email-queue
+  prune:
+    automatic: true
+    number: 3
+  logForwarding:
+    destinationARN: !ImportValue ${self:provider.stage}-log-forwarder-function-arn
 
 functions: ${file(./sls-functions.yml)}
 
