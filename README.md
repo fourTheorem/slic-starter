@@ -169,10 +169,10 @@ To set up deployment to your own accounts, first run through these steps.
 
  * `test/mailosaur/serverId`
  * `test/mailosaur/apiKey`
-
 These are picked up by the integration and end-to-end test CodeBuild projects.
 
-8. Give permissions for your CICD account to deploy to staging and production accounts.
+8. Create a secret string in System Manager Parameter store with a value used to sign and verify verification codes - the parameter name should be `/STAGE/sharing-service/code-secret` where STAGE is the stage you are deploying to (dev, stg or prod).
+9. Give permissions for your CICD account to deploy to staging and production accounts.
 
 ```
 npm install -g serverless
@@ -181,7 +181,7 @@ AWS_PROFILE=your-staging-account serverless deploy
 AWS_PROFILE=your-production-account serverless deploy
 ```
 
-9. Deploy the CI/CD pipeline to your CICD account.
+10. Deploy the CI/CD pipeline to your CICD account.
 
 ```
 cd cicd
@@ -190,9 +190,9 @@ npm run cdk -- bootstrap <<AWS_ACCOUNT_ID>>/eu-west-1
 AWS_PROFILE=your-cicd-account npm run deploy
 ```
 
-10. Trigger your pipeline by commiting your changes to the repository
-11. Monitor your deployment by viewing the orchestrator pipeline in the AWS Console CodePipeline page.
-12. Wait for your deployment to fail! _Wait, what?_ Yes, your first deployment will fail. This is expected and all part of the process. Read on to find out more!
+11. Trigger your pipeline by commiting your changes to the repository
+12. Monitor your deployment by viewing the orchestrator pipeline in the AWS Console CodePipeline page.
+13. Wait for your deployment to fail! _Wait, what?_ Yes, your first deployment will fail. This is expected and all part of the process. Read on to find out more!
 
 ## Getting to your First Successful Deployment
 
