@@ -38,7 +38,14 @@ SLIC Lists
 
 async function confirm({ code, userId }) {
   const { parseCode } = invitation(process.env.CODE_SECRET)
-  const parsedCode = parseCode(code)
+  let parsedCode
+  try {
+    parsedCode = parseCode(code)
+  } catch (err) {
+    const error = new Error('Invalid code')
+    error.statusCode = 400
+    throw error
+  }
   await dispatchEvent('COLLABORATOR_ACCEPTED_EVENT', {
     ...parsedCode,
     collaboratorUserId: userId

@@ -24,6 +24,9 @@ const confirmHandler = proxyquire('../../../services/sharing/confirm', {
   },
   './share': {
     confirm: (...args) => {
+      if (args[0].code === 'error') {
+        throw new Error('test error')
+      }
       received.confirmParams = args
       return Promise.resolve()
     },

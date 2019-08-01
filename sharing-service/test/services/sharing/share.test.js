@@ -76,3 +76,15 @@ test('An event is dispatched when a code is confirmed', async t => {
     }
   ])
 })
+
+test('An error is thrown when an invalid code is provided', async t => {
+  const code = 'blah'
+
+  try {
+    await shareService.confirm({ code, userId: uuid.v4() })
+    t.fail('Error excepted for invalid code')
+  } catch (err) {
+    t.equal(err.statusCode, 400)
+  }
+  t.end()
+})

@@ -2,8 +2,8 @@
   Action:
     - ssm:GetParameter*
   Resource:
-    - arn:aws:ssm:#{AWS::Region}:#{AWS::AccountId}:parameter/CODE_SECRET
     - arn:aws:ssm:#{AWS::Region}:#{AWS::AccountId}:parameter/${self:provider.stage}/user-service/url
+    - arn:aws:ssm:#{AWS::Region}:#{AWS::AccountId}:parameter/${self:provider.stage}/sharing-service/code-secret
 - Effect: Allow
   Action:
     - sqs:GetQueueUrl
