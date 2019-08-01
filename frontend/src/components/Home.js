@@ -12,19 +12,28 @@ import EditChecklist from './EditChecklist'
 import AcceptShare from './AcceptShare'
 
 import { loadLists } from '../actions/checklists'
+import { setPreAuthenticatedPath } from '../actions/auth'
 
 class Home extends Component {
   componentDidMount() {
-    this.props.dispatch(loadLists())
+    if (this.props.auth.authenticated) {
+      this.props.dispatch(loadLists())
+    }
   }
 
   render() {
     const {
-      auth: { authenticated },
+      auth: { authenticated, preAuthenticatedPath },
+      dispatch,
       loading
     } = this.props
 
-    const authCheck = !authenticated ? <Redirect to="/login" /> : null
+    let authCheck = null
+    const { pathname } = this.props.location
+    if (!authenticated && preAuthenticatedPath !== pathname) {
+      dispatch(setPreAuthenticatedPath(pathname))
+      authCheck = <Redirect to="/login" />
+    }
 
     const body = loading ? (
       <Loading />
@@ -49,9 +58,10 @@ class Home extends Component {
 }
 
 Home.propTypes = {
+  auth: PropTypes.object.isRequired,
   dispatch: PropTypes.func.isRequired,
   loading: PropTypes.bool.isRequired,
-  auth: PropTypes.object.isRequired
+  location: PropTypes.object.isRequired
 }
 
 const mapStateToProps = ({ checklists: { loading }, auth }) => ({

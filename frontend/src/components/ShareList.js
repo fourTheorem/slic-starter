@@ -118,7 +118,7 @@ ShareList.propTypes = {
   auth: PropTypes.object,
   list: PropTypes.object.isRequired,
   dispatch: PropTypes.func.isRequired,
-  open: PropTypes.bool.isRequired,
+  open: PropTypes.bool,
   onClose: PropTypes.func.isRequired,
   classes: PropTypes.object.isRequired,
   createdShare: PropTypes.bool,
