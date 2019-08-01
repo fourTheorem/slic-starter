@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Checklist Service",
   "scripts": {
-    "start": "SLIC_STAGE=local sls offline start",
+    "start": "AWS_XRAY_CONTEXT_MISSING=LOG_ERROR SLIC_NS_DOMAIN=sliclists.com SLIC_STAGE=local sls offline start",
     "lint": "eslint --ignore-pattern \"scripts/**\" .",
     "coverage": "npm run test -- --cov --coverage-report=html",
     "format": "prettier --write \"**/*.js\"",

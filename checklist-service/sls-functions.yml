@@ -106,6 +106,18 @@ deleteEntry:
           authorizerId:
             Ref: cognitoAuthorizer
 
+addCollaboratorTemp:
+  handler: services/checklists/addCollaborator.httpMain
+  events:
+    - http:
+        path: /{id}/collaborator
+        method: post
+        cors: true
+        authorizer:
+          type: COGNITO_USER_POOLS
+          authorizerId:
+            Ref: cognitoAuthorizer
+
 addCollaborator:
   handler: services/checklists/addCollaborator.main
   events:

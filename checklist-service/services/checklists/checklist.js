@@ -88,10 +88,11 @@ async function get({ listId, userId }) {
 }
 
 async function list({ userId }) {
-  return (await dynamoDocClient()
+  const lists = (await dynamoDocClient()
     .query({
       TableName: tableName,
-      ProjectionExpression: 'listId, #nm, #description, createdAt',
+      ProjectionExpression:
+        'listId, #nm, #description, createdAt, sharedListOwner',
       KeyConditionExpression: 'userId = :userId',
       ExpressionAttributeNames: {
         '#nm': 'name',
@@ -102,6 +103,27 @@ async function list({ userId }) {
       }
     })
     .promise()).Items
+
+  const sharedListKeys = lists
+    .filter(list => list.sharedListOwner)
+    .map(list => ({}))
+
+  if (sharedListKeys.length) {
+    const sharedLists = (await dynamoDocClient()
+      .batchGet({
+        RequestItems: {
+          [tableName]: {
+            Keys: sharedListKeys,
+            ProjectionExpression: 'listId, name, description, createdAt'
+          }
+        }
+      })
+      .promise()).Items
+
+    console.log('SHARED LISTS', sharedLists)
+  }
+
+  return lists
 }
 
 async function addCollaborator({ userId, listId, collaboratorUserId }) {
@@ -110,9 +132,11 @@ async function addCollaborator({ userId, listId, collaboratorUserId }) {
     .update({
       TableName: tableName,
       Key: { userId, listId },
-      UpdateExpression: 'ADD collaborators :collaborators',
+      UpdateExpression:
+        'ADD collaborators :collaborators, sharedListOwner :owner',
       ExpressionAttributeValues: {
-        ':collaborators': docClient.createSet([collaboratorUserId])
+        ':collaborators': docClient.createSet([collaboratorUserId]),
+        ':owner': userId
       },
       ReturnValues: 'UPDATED_NEW'
     })

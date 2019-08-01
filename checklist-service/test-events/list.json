@@ -1,0 +1,16 @@
+{
+  "level": 20,
+  "time": 1564652484483,
+  "pid": 1,
+  "hostname": "169.254.40.141",
+  "name": "checklist-service",
+  "resourceId": "c0t97f0jjc",
+  "resourcePath": "/",
+  "requestId": "8633f84d-b440-11e9-aa91-4fb87ad6e49d",
+  "requestContext": {
+    "httpMethod": "GET"
+  },
+  "userId": "db87c2f9-8d29-48fb-b307-04ba348fbaba",
+  "msg": "Request received",
+  "v": 1
+}
