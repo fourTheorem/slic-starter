@@ -5,6 +5,21 @@ export const CREATE_SHARE_REQUEST = 'CREATE_SHARE_REQUEST'
 export const CREATE_SHARE_SUCCESS = 'CREATE_SHARE_SUCCESS'
 export const CREATE_SHARE_FAILURE = 'CREATE_SHARE_FAILURE'
 
+export const EDIT_SHARE = 'EDIT_SHARE'
+export const CANCEL_SHARE = 'CANCEL_SHARE'
+
+export function cancelShare() {
+  return function(dispatch) {
+    dispatch({ type: CANCEL_SHARE })
+  }
+}
+
+export function editShare() {
+  return function(dispatch) {
+    dispatch({ type: EDIT_SHARE })
+  }
+}
+
 export function createShare({ email, listId, listName }) {
   return function(dispatch) {
     dispatch({ type: CREATE_SHARE_REQUEST })

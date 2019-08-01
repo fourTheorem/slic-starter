@@ -35,6 +35,8 @@ import {
 } from '../actions/entries'
 
 import {
+  CANCEL_SHARE,
+  EDIT_SHARE,
   CREATE_SHARE_REQUEST,
   CREATE_SHARE_SUCCESS,
   CREATE_SHARE_FAILURE,
@@ -307,28 +309,40 @@ export default (state = defaultState, { type, meta, payload, error }) => {
         removeEntryError: error
       }
 
+    case EDIT_SHARE: {
+      return {
+        ...state,
+        editingShare: true
+      }
+    }
+
+    case CANCEL_SHARE: {
+      return {
+        ...state,
+        editingShare: false
+      }
+    }
+
     case CREATE_SHARE_REQUEST:
       return {
         ...state,
-        creatingCollaborator: true,
-        createdCollaborator: false,
-        createCollaboratorError: null
+        creatingShare: true,
+        createShareError: null
       }
 
     case CREATE_SHARE_SUCCESS:
       return {
         ...state,
-        creatingCollaborator: false,
-        createdCollaborator: true,
-        createCollaboratorError: null
+        editingShare: false,
+        creatingShare: false,
+        createShareError: null
       }
 
     case CREATE_SHARE_FAILURE:
       return {
         ...state,
-        creatingCollaborator: false,
-        createdCollaborator: false,
-        createCollaboratorError: error
+        creatingShare: false,
+        createShareError: error
       }
 
     case LOAD_COLLABORATORS_REQUEST:

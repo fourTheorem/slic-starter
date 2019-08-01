@@ -20,7 +20,8 @@ import {
 import { withStyles } from '@material-ui/core/styles'
 import Loading from './Loading'
 import Entries from './Entries'
-import ShareList from './Sharelist.js'
+import ShareList from './ShareList'
+import { editShare, cancelShare } from '../actions/share'
 
 const dateFns = require('date-fns')
 
@@ -65,8 +66,7 @@ class Checklist extends Component {
     description: '',
     isPanelExpanded: false,
     editingId: null,
-    updatedTitle: '',
-    isDialogOpen: false
+    updatedTitle: ''
   }
 
   handlePanelExpansion = () => {
@@ -74,11 +74,11 @@ class Checklist extends Component {
   }
 
   handleOpen = () => {
-    this.setState({ isDialogOpen: true })
+    this.props.dispatch(editShare())
   }
 
-  handleClose = () => {
-    this.setState({ isDialogOpen: false })
+  handleShareClose = () => {
+    this.props.dispatch(cancelShare())
   }
 
   render() {
@@ -155,8 +155,8 @@ class Checklist extends Component {
           </Card>
           <ShareList
             list={list}
-            open={this.state.isDialogOpen}
-            onClose={this.handleClose}
+            open={this.props.editingShare}
+            onClose={this.handleShareClose}
           />
         </Grid>
       </Grid>
@@ -174,6 +174,7 @@ Checklist.propTypes = {
   error: PropTypes.object,
   updatingList: PropTypes.bool,
   listUpdated: PropTypes.bool,
+  editingShare: PropTypes.bool,
   updatedAt: PropTypes.any
 }
 
@@ -184,9 +185,12 @@ const makeMapStateToProps = (initialState, ownProps) => {
     }
   } = ownProps
 
-  return ({ checklists: { listsById, removing, removalError } }) => {
+  return ({
+    checklists: { editingShare, listsById, removing, removalError }
+  }) => {
     const list = listId ? listsById[listId] : {}
     return {
+      editingShare,
       list,
       listsById,
       removing,
