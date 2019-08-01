@@ -18,7 +18,7 @@ provider:
     SLIC_STAGE: ${self:provider.stage}
 
 custom:
-  emailQueueName: ${self:custom.stage}-email-queue
+  emailQueueName: ${self:provider.stage}-email-queue
   prune:
     automatic: true
     number: 3
@@ -26,6 +26,7 @@ custom:
     port: 4001
     stage: local
     region: ${self:custom.defaultRegions.${self:provider.stage}}
+  defaultRegions: ${file(../common-config.json):defaultRegions}
   logForwarding:
     destinationARN: !ImportValue ${self:provider.stage}-log-forwarder-function-arn
 
