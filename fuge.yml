@@ -15,7 +15,7 @@ fuge_global:
     - 'SLIC_NS_DOMAIN=sliclists.com'
     - 'SQS_ENDPOINT_URL=http://localhost:4576'
     - 'SES_ENDPOINT_URL=http://localhost:4579'
-    - 'CLOUDWATCH_ENDPOINT_URL=http://localhost:4582'
+    - 'EVENTS_ENDPOINT_URL=http://localhost:4587'
     - 'SSM_ENDPOINT_URL=http://localhost:4583'
     - 'AWS_XRAY_CONTEXT_MISSING=LOG_ERROR'
 
