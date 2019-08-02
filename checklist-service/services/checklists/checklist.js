@@ -88,11 +88,15 @@ async function get({ listId, userId }) {
 }
 
 async function list({ userId }) {
+  console.log('USER ID', userId)
+  // Find all lists accessible by the user, including
+  // shared lists which have sharedListOwner set but no values
+  // for name, description or createdAt
   const lists = (await dynamoDocClient()
     .query({
       TableName: tableName,
       ProjectionExpression:
-        'listId, #nm, #description, createdAt, sharedListOwner',
+        'listId, #nm, #description, createdAt, sharedListOwner, userId',
       KeyConditionExpression: 'userId = :userId',
       ExpressionAttributeNames: {
         '#nm': 'name',
@@ -104,43 +108,57 @@ async function list({ userId }) {
     })
     .promise()).Items
 
+  console.log({ lists })
   const sharedListKeys = lists
     .filter(list => list.sharedListOwner)
-    .map(list => ({}))
+    .map(list => ({ userId: list.sharedListOwner, listId: list.listId }))
 
+  // Next, find the actual records for shared lists with name, description and createdAt values
   if (sharedListKeys.length) {
     const sharedLists = (await dynamoDocClient()
       .batchGet({
         RequestItems: {
           [tableName]: {
             Keys: sharedListKeys,
-            ProjectionExpression: 'listId, name, description, createdAt'
+            ProjectionExpression: '#nm',
+            ExpressionAttributeNames: {
+              '#nm': 'name'
+            }
           }
         }
       })
-      .promise()).Items
-
-    console.log('SHARED LISTS', sharedLists)
+      .promise()).Responses[tableName]
+    debugger
+    // Merge values from actual records into shared list records
+    console.log('sharedlists***', { sharedLists })
+    sharedLists.forEach(sharedList => {
+      console.log('INDIVIDUAL_SHARED_LIST', sharedList)
+      const record = lists.find(list => list.listId === sharedList.listId)
+      console.log('record', record)
+      Object.assign(record, {
+        name: sharedList.name,
+        description: sharedList.description,
+        createdAt: sharedList.createdAt
+      })
+    })
   }
-
   return lists
 }
 
-async function addCollaborator({ userId, listId, collaboratorUserId }) {
-  const docClient = await dynamoDocClient()
-  await docClient
-    .update({
-      TableName: tableName,
-      Key: { userId, listId },
-      UpdateExpression:
-        'ADD collaborators :collaborators, sharedListOwner :owner',
-      ExpressionAttributeValues: {
-        ':collaborators': docClient.createSet([collaboratorUserId]),
-        ':owner': userId
-      },
-      ReturnValues: 'UPDATED_NEW'
-    })
+async function addCollaborator({ userId, listId, sharedListOwner }) {
+  const item = {
+    userId,
+    sharedListOwner,
+    listId
+  }
+
+  console.log({ item })
+
+  await dynamoDocClient()
+    .put({ TableName: tableName, Item: item })
     .promise()
+
+  return item
 }
 
 async function listCollaborators({ listId, userId }) {
