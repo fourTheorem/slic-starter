@@ -8,12 +8,12 @@ const docClient = new AWS.DynamoDB.DocumentClient({
 const tableName = 'checklists'
 
 /*
-testaccount1@example.com UserId: mock-auth-0d695c2089a71529bd14321f66ff709b
-testaccount2@example.com mock-auth-f42fee8185ab2222cd625d7f5bc7f49f
+testaccount1@example.com UserId: mock-auth-dGVzdGFjY291bnQxQGV4YW1wbGUuY29t
+testaccount2@example.com mock-auth-dGVzdGFjY291bnQyQGV4YW1wbGUuY29t
 */
 async function run() {
   console.log('Querying records')
-  const userId = 'mock-auth-f42fee8185ab2222cd625d7f5bc7f49f' // testaccount2
+  const userId = 'mock-auth-dGVzdGFjY291bnQyQGV4YW1wbGUuY29t' // testaccount2
   const lists = (await docClient
     .query({
       TableName: tableName,
@@ -42,9 +42,11 @@ async function run() {
         RequestItems: {
           [tableName]: {
             Keys: sharedListKeys,
-            ProjectionExpression: '#nm',
+            ProjectionExpression:
+              'listId, #nm, #description, createdAt, userId',
             ExpressionAttributeNames: {
-              '#nm': 'name'
+              '#nm': 'name',
+              '#description': 'description'
             }
           }
         }
@@ -62,8 +64,8 @@ async function run() {
         createdAt: sharedList.createdAt
       })
     })
-    console.log('Finished querying records', sharedLists)
   }
+  console.log('Finished querying records', lists)
 }
 
 run()
