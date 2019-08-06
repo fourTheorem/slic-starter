@@ -6,23 +6,43 @@ const awsMock = require('aws-sdk-mock')
 const { test } = require('tap')
 const uuid = require('uuid')
 
-const userId = 'my-test-user'
+const userId = 'ownerA'
 awsMock.setSDK(path.resolve('./node_modules/slic-tools/node_modules/aws-sdk'))
 
-const testLists = [
-  {
-    listId: 'list1',
-    name: 'List One',
-    description: 'List One Description',
-    entries: {}
-  },
-  {
-    listId: 'list2',
-    name: 'List Two',
-    description: 'List Two Description',
-    entries: {}
-  }
-]
+const list1 = {
+  userId: 'ownerA',
+  listId: 'list1',
+  name: 'List One',
+  description: 'List One Description',
+  entries: {}
+}
+const testLists = {
+  ownerA: [
+    list1,
+    {
+      userId: 'ownerA',
+      listId: 'list2',
+      name: 'List Two',
+      description: 'List Two Description',
+      entries: {}
+    }
+  ],
+  ownerB: [
+    {
+      userId: 'ownerB',
+      listId: 'list3',
+      name: 'List Three',
+      description: 'List three Description',
+      entries: {}
+    },
+
+    {
+      userId: 'ownerB',
+      listId: 'list1',
+      sharedListOwner: 'ownerA'
+    }
+  ]
+}
 
 const testCollaborators = [uuid.v4(), uuid.v4()]
 
@@ -42,7 +62,16 @@ awsMock.mock('DynamoDB.DocumentClient', 'update', function(params, callback) {
 
 awsMock.mock('DynamoDB.DocumentClient', 'get', function(params, callback) {
   received.dynamoDb.get = params
-  callback(null, { Item: { ...testLists[0] } })
+  const userId = params.Key.userId
+  const listId = params.Key.listId
+  callback(null, {
+    Item: testLists[userId].find(list => list.listId === listId)
+  })
+})
+
+awsMock.mock('DynamoDB.DocumentClient', 'batchGet', function(params, callback) {
+  const keys = params.RequestItems['checklists'].Keys
+  callback(null, { Responses: { checklists: [list1] } })
 })
 
 awsMock.mock('DynamoDB.DocumentClient', 'delete', function(params, callback) {
@@ -52,11 +81,9 @@ awsMock.mock('DynamoDB.DocumentClient', 'delete', function(params, callback) {
 
 awsMock.mock('DynamoDB.DocumentClient', 'query', function(params, callback) {
   received.dynamoDb.query = params
+  const userId = params.ExpressionAttributeValues[':userId']
   callback(null, {
-    Items:
-      params.ProjectionExpression === 'collaborators'
-        ? testCollaborators
-        : testLists
+    Items: testLists[userId]
   })
 })
 
@@ -133,14 +160,14 @@ test('update function updates current checklists when name not specified', async
 
 test('Get a checklist based on a listId and userId', async t => {
   const record = {
-    listId: '1234',
-    userId
+    listId: list1.listId,
+    userId: list1.userId
   }
 
   const checklist = require('../../../services/checklists/checklist')
 
   const response = await checklist.get(record)
-  t.same(response, testLists[0])
+  t.same(response, list1)
   t.equal(received.dynamoDb.get.Key.listId, record.listId)
   t.equal(received.dynamoDb.get.Key.userId, record.userId)
 
@@ -171,7 +198,7 @@ test('list all checklists', async t => {
 
   const response = await checklist.list(record)
 
-  t.same(response, testLists)
+  t.same(response, testLists[userId])
   t.equal(
     received.dynamoDb.query.ExpressionAttributeValues[':userId'],
     record.userId
@@ -180,38 +207,32 @@ test('list all checklists', async t => {
   t.end()
 })
 
-test('add a collaborator', async t => {
+test('list all checklists including shared lists', async t => {
   const checklist = require('../../../services/checklists/checklist')
 
-  const collaboratorUserId = 'collaborator123'
-  const listId = 'list123'
-
   const record = {
-    userId,
-    listId,
-    collaboratorUserId
+    userId: 'ownerB'
   }
 
-  await checklist.addCollaborator(record)
+  const response = await checklist.list(record)
 
-  t.ok(received.dynamoDb.update.ExpressionAttributeValues[':collaborators'])
-  t.equal(received.dynamoDb.update.Key.userId, record.userId)
-  t.equal(received.dynamoDb.update.Key.listId, record.listId)
+  t.match(response, testLists['ownerB'])
 
   t.end()
 })
-
-test('list collaborators', async t => {
+test('add a collaborator', async t => {
   const checklist = require('../../../services/checklists/checklist')
 
-  const listId = 'list123'
+  const record = {
+    sharedListOwner: 'list-owner',
+    listId: 'list-shared',
+    userId
+  }
 
-  const response = await checklist.listCollaborators({ listId, userId })
-
-  t.same(response, testCollaborators)
-
-  t.equal(received.dynamoDb.query.ExpressionAttributeValues[':userId'], userId)
-  t.equal(received.dynamoDb.query.ExpressionAttributeValues[':listId'], listId)
+  const response = await checklist.addCollaborator(record)
+  t.equal(received.dynamoDb.put.Item.listId, record.listId)
+  t.equal(received.dynamoDb.put.Item.userId, record.userId)
+  t.equal(received.dynamoDb.put.Item.sharedListOwner, record.sharedListOwner)
 
   t.end()
 })

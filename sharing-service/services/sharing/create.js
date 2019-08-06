@@ -15,7 +15,6 @@ async function main(event) {
   }
 }
 
-debugger
 module.exports = middify(
   { main },
   {

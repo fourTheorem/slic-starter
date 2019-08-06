@@ -121,7 +121,7 @@ async function list({ userId }) {
           [tableName]: {
             Keys: sharedListKeys,
             ProjectionExpression:
-              'listId, #nm, #description, createdAt, userId',
+              'listId, #nm, #description, createdAt, userId, sharedListOwner',
             ExpressionAttributeNames: {
               '#nm': 'name',
               '#description': 'description'
@@ -131,11 +131,8 @@ async function list({ userId }) {
       })
       .promise()).Responses[tableName]
     // Merge values from actual records into shared list records
-    console.log('sharedlists***', { sharedLists })
     sharedLists.forEach(sharedList => {
-      console.log('INDIVIDUAL_SHARED_LIST', sharedList)
       const record = lists.find(list => list.listId === sharedList.listId)
-      console.log('record', record)
       Object.assign(record, {
         name: sharedList.name,
         description: sharedList.description,
@@ -146,11 +143,11 @@ async function list({ userId }) {
   return lists
 }
 
-async function addCollaborator({ userId, listId, sharedListOwner }) {
+async function addCollaborator({ sharedListOwner, listId, userId }) {
   const item = {
-    userId,
     sharedListOwner,
-    listId
+    listId,
+    userId
   }
 
   console.log({ item })

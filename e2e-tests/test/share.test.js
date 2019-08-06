@@ -93,8 +93,11 @@ test('User can accept a share request', async t => {
   await t.wait(6500)
   const content = await retrieveEmail(email)
   const link = content.text.links[0]
+
   await t.navigateTo(link.href)
   await t.click('#accept')
   await t.expect(Selector('p').withText('You were added as a collaborator!'))
     .exists
+  await t.navigateTo('/Home')
+  await t.expect(Selector('a').withText('Sharing List')).exists
 })

@@ -35,6 +35,7 @@
     "tap": "^14.2.0"
   },
   "dependencies": {
+    "aws-sdk-mock": "^4.5.0",
     "serverless-log-forwarding": "^1.4.0",
     "slic-tools": "file:../slic-tools"
   },
