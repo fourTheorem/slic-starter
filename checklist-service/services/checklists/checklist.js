@@ -120,15 +120,16 @@ async function list({ userId }) {
         RequestItems: {
           [tableName]: {
             Keys: sharedListKeys,
-            ProjectionExpression: '#nm',
+            ProjectionExpression:
+              'listId, #nm, #description, createdAt, userId',
             ExpressionAttributeNames: {
-              '#nm': 'name'
+              '#nm': 'name',
+              '#description': 'description'
             }
           }
         }
       })
       .promise()).Responses[tableName]
-    debugger
     // Merge values from actual records into shared list records
     console.log('sharedlists***', { sharedLists })
     sharedLists.forEach(sharedList => {
