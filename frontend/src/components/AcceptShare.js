@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
+import { Buffer } from 'buffer/'
 import { Button, Grid, Paper, Typography } from '@material-ui/core'
 import { connect } from 'react-redux'
 import { withStyles } from '@material-ui/core/styles'
@@ -60,6 +61,14 @@ class AcceptShare extends Component {
         <Typography className={classes.failure}>An error occured</Typography>
       ) : null
 
+    const code = params.id
+    const normalized = code.replace(/-/g, '+').replace(/_/g, '/')
+    const codeBuffer = Buffer.from(normalized, 'base64')
+    //const listNameLength = codeBuffer.readUInt8(32)
+    //const listName = codeBuffer.toString('utf8', 32, listNameLength + 33)
+    const listNameLength = codeBuffer.readUInt8(32)
+    debugger
+    const listName = codeBuffer.toString('utf8', 32, listNameLength + 33)
     return (
       <div className={classes.root}>
         <Paper className={classes.paper}>
@@ -75,7 +84,7 @@ class AcceptShare extends Component {
               <Typography variant="h4">
                 Accept invitation to collaborate
               </Typography>
-              <Typography>Your code is: {params.id} </Typography>
+              <Typography>list name {listName}</Typography>
             </Grid>
 
             <Grid

@@ -12,7 +12,6 @@ module.exports = function invitation(secret) {
     if (!listName || !listId || !userId || !email) {
       throw new Error('Invalid parameters for invitation code')
     }
-    debugger
     const lenBuf = Buffer.allocUnsafe(1)
     lenBuf.writeUInt8(listName.length)
     const bufferConcat = Buffer.concat([
@@ -52,8 +51,12 @@ module.exports = function invitation(secret) {
 
     const listNameLength = dataBuffer.readUInt8()
     const listName = dataBuffer.subarray(1, listNameLength + 1).toString()
-    const listId = bufferToUuid(dataBuffer.subarray(listNameLength + 1, listNameLength + 17))
-    const userId = bufferToUuid(dataBuffer.subarray(listNameLength + 17, listNameLength + 33))
+    const listId = bufferToUuid(
+      dataBuffer.subarray(listNameLength + 1, listNameLength + 17)
+    )
+    const userId = bufferToUuid(
+      dataBuffer.subarray(listNameLength + 17, listNameLength + 33)
+    )
     const email = dataBuffer.subarray(listNameLength + 33).toString('utf8')
 
     return { listName, listId, userId, email }

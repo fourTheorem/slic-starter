@@ -229,8 +229,8 @@ test('list all checklists including shared lists', async t => {
 
   const shared = response.find(share => share.sharedListOwner)
 
-    list => list.listId === shared.listId
-  )
+  list => list.listId === shared.listId
+
   t.equal(shared.name, originalList.name)
   t.equal(shared.description, originalList.description)
 
