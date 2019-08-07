@@ -42,7 +42,7 @@ class Home extends Component {
         <Route exact path="/new-list" component={EditChecklist} />
         <Route exact path="/list/:id" component={Checklist} />
         <Route path="/list/:id/edit" component={EditChecklist} />
-        <Route path="/invitation/:id" component={AcceptShare} />
+        <Route path="/invitation/:code" component={AcceptShare} />
         <Route path="/" component={Lists} />
       </Switch>
     )

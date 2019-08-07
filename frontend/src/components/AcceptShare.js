@@ -42,7 +42,7 @@ class AcceptShare extends Component {
     event.preventDefault()
     const { params } = this.props.match
     const { dispatch } = this.props
-    dispatch(acceptShareRequest(params.id))
+    dispatch(acceptShareRequest(params.code))
   }
 
   render() {
@@ -61,14 +61,8 @@ class AcceptShare extends Component {
         <Typography className={classes.failure}>An error occured</Typography>
       ) : null
 
-    const code = params.id
-    const normalized = code.replace(/-/g, '+').replace(/_/g, '/')
-    const codeBuffer = Buffer.from(normalized, 'base64')
-    //const listNameLength = codeBuffer.readUInt8(32)
-    //const listName = codeBuffer.toString('utf8', 32, listNameLength + 33)
-    const listNameLength = codeBuffer.readUInt8(32)
-    debugger
-    const listName = codeBuffer.toString('utf8', 32, listNameLength + 33)
+    const listName = extractCodeListName(params.code)
+
     return (
       <div className={classes.root}>
         <Paper className={classes.paper}>
@@ -81,12 +75,11 @@ class AcceptShare extends Component {
             spacing={8}
           >
             <Grid item>
-              <Typography variant="h4">
-                Accept invitation to collaborate
+              <Typography variant="h4">Accept invitation</Typography>
+              <Typography>
+                You have been invited to view and edit the list '{listName}'
               </Typography>
-              <Typography>list name {listName}</Typography>
             </Grid>
-
             <Grid
               item
               container
@@ -111,6 +104,13 @@ class AcceptShare extends Component {
       </div>
     )
   }
+}
+
+function extractCodeListName(code) {
+  const normalized = code.replace(/-/g, '+').replace(/_/g, '/')
+  const codeBuffer = Buffer.from(normalized, 'base64')
+  const listNameLength = codeBuffer.readUInt8(32)
+  return codeBuffer.toString('utf8', 33, listNameLength + 33)
 }
 
 AcceptShare.propTypes = {
