@@ -50,9 +50,11 @@ class AcceptShare extends Component {
 
     const { params } = this.props.match
 
+    const listName = extractCodeListName(params.code)
+
     const shareAccepted = shareRequestAccepted ? (
       <Typography className={classes.success}>
-        You were added as a collaborator!
+        You now have access to {listName}
       </Typography>
     ) : null
 
@@ -60,8 +62,6 @@ class AcceptShare extends Component {
       !shareRequestAccepted && shareRequestError ? (
         <Typography className={classes.failure}>An error occured</Typography>
       ) : null
-
-    const listName = extractCodeListName(params.code)
 
     return (
       <div className={classes.root}>
