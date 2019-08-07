@@ -1,12 +1,7 @@
 module.exports = serverless => {
-  const stage =
-    process.env.SLIC_STAGE ||
-    (() => {
-      throw new Error('SLIC_STAGE is not set')
-    })()
-
+  const { stage } = serverless.providers.aws.options
   const region = 'us-east-1'
-  const stackName = `baseline-${stage}`
+  const stackName = `certs-${stage}`
   const exports = {
     [`${stage}-site-cert`]: 'siteCert',
     [`${stage}-public-hosted-zone`]: 'publicHostedZone'

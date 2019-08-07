@@ -5,6 +5,14 @@ export const SIGNUP_REQUEST = 'SIGNUP_REQUEST'
 export const SIGNUP_SUCCESS = 'SIGNUP_SUCCESS'
 export const SIGNUP_FAILURE = 'SIGNUP_FAILURE'
 
+export const SET_PRE_AUTHENTICATED_PATH = 'SET_PRE_AUTHENTICATED_PATH'
+
+export function setPreAuthenticatedPath(path) {
+  return function(dispatch) {
+    dispatch({ type: SET_PRE_AUTHENTICATED_PATH, payload: path })
+  }
+}
+
 export function signUp({ email, password }) {
   return function(dispatch) {
     dispatch({ type: SIGNUP_REQUEST })

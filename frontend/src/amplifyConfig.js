@@ -29,7 +29,7 @@ const amplifyConfig = {
   API: {
     endpoints: [
       {
-        name: 'checklists',
+        name: 'slic-lists-api',
         endpoint: apiEndpoint,
         region: config.region,
         custom_header: async () => {

@@ -3,42 +3,27 @@
 const AWS = require('aws-sdk')
 const awsXray = require('aws-xray-sdk')
 
-const log = require('../../lib/log')
+const log = require('slic-tools/log')
 
 const cognito = awsXray.captureAWSClient(
   new AWS.CognitoIdentityServiceProvider()
 )
-const SSM = awsXray.captureAWSClient(
-  new AWS.SSM({ endpoint: process.env.SSM_ENDPOINT_URL })
-)
-
-module.exports = {
-  get
-}
 
 async function get({ userId }) {
   const params = {
-    UserPoolId: await getUserPoolId(),
+    UserPoolId: process.env.USER_POOL_ID,
     Username: userId
   }
+  log.info({ params }, 'User Pool Parameters')
 
   const cognitoUser = await cognito.adminGetUser(params).promise()
-  log.info('Got user', cognitoUser)
+  log.info({ cognitoUser }, 'Got user')
   const result = {}
   cognitoUser.UserAttributes.forEach(({ Name, Value }) => {
     result[Name] = Value
   })
-  log.info({ result }, 'Got user')
+  log.info({ result }, 'Got user attributes')
   return result
 }
 
-let userPoolIdPromise
-
-function getUserPoolId() {
-  if (!userPoolIdPromise) {
-    userPoolIdPromise = SSM.getParameter({ Name: 'UserPoolId' })
-      .promise()
-      .then(result => result.Parameter.Value)
-  }
-  return userPoolIdPromise
-}
+module.exports = { get }

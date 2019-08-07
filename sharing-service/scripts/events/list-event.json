@@ -1,0 +1,9 @@
+{
+  "body": "{\"listId\":\"93ba6ea2-3d4f-40c4-acd9-44a63ffc8c3a\"}",
+
+  "requestContext": {
+    "identity": {
+      "cognitoIdentityId": "USER-SUB-1234"
+    }
+  }
+}

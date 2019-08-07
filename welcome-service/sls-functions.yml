@@ -6,6 +6,6 @@ handleNewChecklist:
     - cloudwatchEvent:
         event:
           source:
-            - 'sliclists.checklist'
+            - 'checklist-service'
           detail-type:
             - 'LIST_CREATED_EVENT'

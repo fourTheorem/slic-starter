@@ -1,0 +1,14 @@
+{
+  "body": "{\"email\":\"paul.kevany@fourtheorem.com\",\"listId\":\"2bdbaedb-8fa8-4a50-bf89-8541180b3620\",\"listName\":\"My Checklist\"}",
+  "pathParameters": {
+    "listId": "1234"
+  },
+
+  "requestContext": {
+    "authorizer": {
+      "claims": {
+        "cognito:username": "93ba6ea2-3d4f-40c4-acd9-44a63ffc8c3a"
+      }
+    }
+  }
+}

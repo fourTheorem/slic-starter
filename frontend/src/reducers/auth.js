@@ -13,17 +13,24 @@ import {
   SIGNUP_CONFIRM_FAILURE,
   RESEND_CODE_REQUEST,
   RESEND_CODE_SUCCESS,
+  SET_PRE_AUTHENTICATED_PATH,
   RESEND_CODE_FAILURE
 } from '../actions/auth'
 import * as errors from '../errors'
 
 const defaultState = {
+  preAuthenticatedPath: null,
   loggingIn: false,
   loginFailed: false
 }
 
 export default (state = defaultState, { type, meta, payload, error }) => {
   switch (type) {
+    case SET_PRE_AUTHENTICATED_PATH:
+      return {
+        ...state,
+        preAuthenticatedPath: payload
+      }
     case LOGIN_REQUEST:
       return {
         ...state,
@@ -55,6 +62,7 @@ export default (state = defaultState, { type, meta, payload, error }) => {
       }
     case LOGOUT_SUCCESS:
       return {
+        preAuthenticatedPath: null,
         authenticated: false
       }
     case SIGNUP_REQUEST:

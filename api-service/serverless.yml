@@ -1,0 +1,47 @@
+service: api-service
+
+provider:
+  name: aws
+  runtime: nodejs8.10
+  stage: ${opt:stage, 'local'}
+  region: ${opt:region, '${self:custom.defaultRegions.${self:provider.stage}}'}
+
+custom:
+  apiConfig: ${file(./api-config.js)}
+  nsDomain: ${env:SLIC_NS_DOMAIN}
+  domainPrefixes: ${file(../common-config.json):domainPrefixes}
+  defaultRegions: ${file(../common-config.json):defaultRegions}
+  apiDomainName: api.${self:custom.domainPrefixes.${self:provider.stage}}${self:custom.nsDomain}
+  # The HostedZoneId for CloudFront distributions is always this value.
+  # See http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-route53-aliastarget.html
+  # AND http://docs.aws.amazon.com/general/latest/gr/rande.html
+  cloudFrontHostedZoneId: Z2FDTNDATAQYW2
+
+resources:
+  Resources:
+    apiCustomDomain:
+      Type: AWS::ApiGateway::DomainName
+      Properties:
+        CertificateArn: ${self:custom.apiConfig.apiCert}
+        DomainName: ${self:custom.apiDomainName}
+
+    apiDomainDns:
+      Type: AWS::Route53::RecordSetGroup
+      Properties:
+        HostedZoneId: ${self:custom.apiConfig.publicHostedZone}
+        RecordSets:
+          - Name: ${self:custom.apiDomainName}
+            Type: A
+            AliasTarget:
+              DNSName: !GetAtt apiCustomDomain.DistributionDomainName
+              HostedZoneId: ${self:custom.cloudFrontHostedZoneId}
+          - Name: ${self:custom.apiDomainName}
+            Type: AAAA
+            AliasTarget:
+              DNSName: !GetAtt apiCustomDomain.DistributionDomainName
+              HostedZoneId: ${self:custom.cloudFrontHostedZoneId}
+  Outputs:
+    ApiDistributionDomainName:
+      Value: !GetAtt apiCustomDomain.DistributionDomainName
+      Export:
+        Name: ${self:provider.stage}-api-distribution-domain-name

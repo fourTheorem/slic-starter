@@ -1,3 +1,14 @@
+cognitoAuthorizer:
+  Type: AWS::ApiGateway::Authorizer
+  Properties:
+    IdentitySource: method.request.header.Authorization
+    Name: slic-user-pool-authorizer-checklist-service
+    RestApiId:
+      Ref: ApiGatewayRestApi
+    Type: COGNITO_USER_POOLS
+    ProviderARNs:
+      - ${ssm:/${self:provider.stage}/user-service/user-pool-arn}
+
 slicTable:
   Type: AWS::DynamoDB::Table
   Properties:
@@ -16,127 +27,22 @@ slicTable:
       ReadCapacityUnits: 2
       WriteCapacityUnits: 2
 
-slicUserPool:
-  Type: AWS::Cognito::UserPool
+# Workaround for "Invalid stage identifier specified"
+# See https://github.com/serverless/serverless/issues/4029
+resApiGatewayDeployment:
+  Type: AWS::ApiGateway::Deployment
+  DependsOn: ApiGatewayMethodPost
   Properties:
-    UserPoolName: ${self:custom.stage}-slic-user-pool
-    UsernameAttributes: [email]
-    AutoVerifiedAttributes: [email]
-
-slicUserPoolClient:
-  Type: AWS::Cognito::UserPoolClient
-  Properties:
-    ClientName: ${self:custom.stage}-slic-user-pool-client
-    ExplicitAuthFlows: [ADMIN_NO_SRP_AUTH]
-    RefreshTokenValidity: 30
-    UserPoolId:
-      Ref: slicUserPool
-
-slicIdentityPool:
-  Type: AWS::Cognito::IdentityPool
-  Properties:
-    AllowUnauthenticatedIdentities: false
-    CognitoIdentityProviders:
-      - ClientId:
-          Ref: slicUserPoolClient
-        ProviderName: { Fn::GetAtt: [slicUserPool, ProviderName] }
-
-slicAuthenticatedIdentityPoolRole:
-  Type: AWS::IAM::Role
-  Properties:
-    AssumeRolePolicyDocument:
-      Version: '2012-10-17'
-      Statement:
-        - Effect: 'Allow'
-          Principal:
-            Federated: 'cognito-identity.amazonaws.com'
-          Action:
-            - 'sts:AssumeRoleWithWebIdentity'
-          Condition:
-            StringEquals:
-              'cognito-identity.amazonaws.com:aud':
-                Ref: slicIdentityPool
-            ForAnyValue:StringLike:
-              'cognito-identity.amazonaws.com:amr': authenticated
-    Policies:
-      - PolicyName: ${self:custom.stage}-slic-cognito-authenticated-policy
-        PolicyDocument:
-          Version: '2012-10-17'
-          Statement:
-            - Effect: Allow
-              Action:
-                - cognito-identity:*
-                - cognito-sync:*
-              Resource: '*'
-            - Effect: Allow
-              Action: execute-api:Invoke
-              Resource:
-                {
-                  'Fn::Join':
-                    [
-                      '',
-                      [
-                        'arn:aws:execute-api:${self:provider.region}:*:',
-                        { 'Ref': 'ApiGatewayRestApi' },
-                        '/*/*/*',
-                      ],
-                    ],
-                }
-
-slicIdentityPoolRoleAttachment:
-  Type: AWS::Cognito::IdentityPoolRoleAttachment
-  Properties:
-    IdentityPoolId:
-      Ref: slicIdentityPool
-    Roles:
-      authenticated: { Fn::GetAtt: [slicAuthenticatedIdentityPoolRole, Arn] }
-
-apiCustomDomain:
-  Type: AWS::ApiGateway::DomainName
-  Properties:
-    CertificateArn: ${self:custom.apiConfig.apiCert}
-    DomainName: ${self:custom.apiDomainName}
+    StageName: ${self:provider.stage}
+    RestApiId:
+      Ref: ApiGatewayRestApi
 
 apiCustomDomainPathMappings:
   Type: AWS::ApiGateway::BasePathMapping
   Properties:
-    BasePath: ''
+    BasePath: 'checklist'
     RestApiId:
       Ref: ApiGatewayRestApi
-    DomainName:
-      Ref: apiCustomDomain
+    DomainName: ${self:custom.apiDomainName}
     Stage: ${self:provider.stage}
-
-apiDomainDns:
-  Type: AWS::Route53::RecordSetGroup
-  Properties:
-    HostedZoneId: ${self:custom.apiConfig.publicHostedZone}
-    RecordSets:
-      - Name: ${self:resources.Resources.apiCustomDomain.Properties.DomainName}
-        Type: A
-        AliasTarget:
-          DNSName: { Fn::GetAtt: [apiCustomDomain, DistributionDomainName] }
-          HostedZoneId: ${self:custom.cloudFrontHostedZoneId}
-      - Name: ${self:resources.Resources.apiCustomDomain.Properties.DomainName}
-        Type: AAAA
-        AliasTarget:
-          DNSName: { Fn::GetAtt: [apiCustomDomain, DistributionDomainName] }
-          HostedZoneId: ${self:custom.cloudFrontHostedZoneId}
-
-userPoolIdParameter:
-  Type: AWS::SSM::Parameter
-  Properties:
-    Name: UserPoolId
-    Type: String
-    Value: !Ref slicUserPool
-
-cognitoAuthorizer:
-  Type: AWS::ApiGateway::Authorizer
-  Properties:
-    IdentitySource: method.request.header.Authorization
-    Name: slic-user-pool-authorizer
-    RestApiId:
-      Ref: ApiGatewayRestApi
-    Type: COGNITO_USER_POOLS
-    ProviderARNs:
-      - !GetAtt slicUserPool.Arn
+  DependsOn: resApiGatewayDeployment

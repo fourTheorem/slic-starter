@@ -1,0 +1,154 @@
+{
+	"resource": "/confirm/{code}",
+	"path": "/share/confirm/nXn9RvHdKMD8ubgXNNm7LnfJdT3JXgs1i6GDHyudEaWcL4Uw4444444444444444444444444444444444444444444",
+	"httpMethod": "POST",
+	"headers": {
+		"Accept": "application/json, text/plain, */*",
+		"Accept-Encoding": "gzip, deflate, br",
+		"Accept-Language": "en-US,en;q=0.9",
+		"Authorization": "eyJraWQiOiJlWjlrTnZTcEVDSWVDejFuN2FScjV6dWNYeDAzUlNWSlhHSzgrS3I0N3VFPSIsImFsZyI6IlJTMjU2In0.eyJzdWIiOiI3MmQ2OWJmOC0xNjIyLTRlMTItODcxZS0yOTEwM2QxZGJlNTQiLCJhdWQiOiIzcDNydWxkamEzdmU5bTBrN3FuZm9oYW85OSIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJldmVudF9pZCI6IjI0OWY2MDIxLWNiNTMtNDZmZS05YTMxLTkyZWZhMzI2MTQzMCIsInRva2VuX3VzZSI6ImlkIiwiYXV0aF90aW1lIjoxNTY0NDEyMDY3LCJpc3MiOiJodHRwczpcL1wvY29nbml0by1pZHAuZXUtd2VzdC0xLmFtYXpvbmF3cy5jb21cL2V1LXdlc3QtMV9WMk9xVndlZ1MiLCJjb2duaXRvOnVzZXJuYW1lIjoiNzJkNjliZjgtMTYyMi00ZTEyLTg3MWUtMjkxMDNkMWRiZTU0IiwiZXhwIjoxNTY0NDk3MjczLCJpYXQiOjE1NjQ0OTM2NzMsImVtYWlsIjoicGF1bC5rZXZhbnkrdGVzdHNoYXJlQGZvdXJ0aGVvcmVtLmNvbSJ9.SfJtmyUMZZbSWC4TZlTnyH7AUpApgTKDVVHDCcJ7gFUjSSfEjeq3b4Wy7z0MLYif4KPlLdDmuhA3ij8lvBUPNJkXPCEnMcYfOEZhY5Pf9GNfhx2Y8_lHxliD1I9dM3VQpAEOUcX7FfVfaGmLfYUkgDlWtoP2ruPANfQYjwtCruvSLJWFT2BxLwYp5X-tH3PQMKp2m_dgyvvRlpVQy0SqPTeIDhpw4xShGgR7qmwxVYJl727UHjO78W0oMD8dIM4ezuhAo5C8eAq1hSUbzVXazFVI8d-qcbBrH0muNV0MDXSt2P7q0eN0K2ZVfsdOE03OFtlWsxKBFGqtMoD6XtIa7A",
+		"cache-control": "no-cache",
+		"CloudFront-Forwarded-Proto": "https",
+		"CloudFront-Is-Desktop-Viewer": "true",
+		"CloudFront-Is-Mobile-Viewer": "false",
+		"CloudFront-Is-SmartTV-Viewer": "false",
+		"CloudFront-Is-Tablet-Viewer": "false",
+		"CloudFront-Viewer-Country": "IE",
+		"content-type": "application/json; charset=UTF-8",
+		"Host": "api.dev.sliclists.com",
+		"origin": "https://dev.sliclists.com",
+		"pragma": "no-cache",
+		"Referer": "https://dev.sliclists.com/invitation/nXn9RvHdKMD8ubgXNNm7LnfJdT3JXgs1i6GDHyudEaWcL4Uw4444444444444444444444444444444444444444444",
+		"User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36",
+		"Via": "2.0 5515890e7ce0a4b8eaa000066bc1c8f7.cloudfront.net (CloudFront)",
+		"X-Amz-Cf-Id": "D6FQara1SP-ihedTwzN2T3p4UKySpuUBCkl7_2LdN13YqzjF9Y_8ng==",
+		"X-Amzn-Trace-Id": "Root=1-5d404e85-34f6a53c2c00ce64ce740904",
+		"X-Forwarded-For": "91.123.228.33, 216.137.58.89",
+		"X-Forwarded-Port": "443",
+		"X-Forwarded-Proto": "https"
+	},
+	"multiValueHeaders": {
+		"Accept": [
+			"application/json, text/plain, */*"
+		],
+		"Accept-Encoding": [
+			"gzip, deflate, br"
+		],
+		"Accept-Language": [
+			"en-US,en;q=0.9"
+		],
+		"Authorization": [
+			"eyJraWQiOiJlWjlrTnZTcEVDSWVDejFuN2FScjV6dWNYeDAzUlNWSlhHSzgrS3I0N3VFPSIsImFsZyI6IlJTMjU2In0.eyJzdWIiOiI3MmQ2OWJmOC0xNjIyLTRlMTItODcxZS0yOTEwM2QxZGJlNTQiLCJhdWQiOiIzcDNydWxkamEzdmU5bTBrN3FuZm9oYW85OSIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJldmVudF9pZCI6IjI0OWY2MDIxLWNiNTMtNDZmZS05YTMxLTkyZWZhMzI2MTQzMCIsInRva2VuX3VzZSI6ImlkIiwiYXV0aF90aW1lIjoxNTY0NDEyMDY3LCJpc3MiOiJodHRwczpcL1wvY29nbml0by1pZHAuZXUtd2VzdC0xLmFtYXpvbmF3cy5jb21cL2V1LXdlc3QtMV9WMk9xVndlZ1MiLCJjb2duaXRvOnVzZXJuYW1lIjoiNzJkNjliZjgtMTYyMi00ZTEyLTg3MWUtMjkxMDNkMWRiZTU0IiwiZXhwIjoxNTY0NDk3MjczLCJpYXQiOjE1NjQ0OTM2NzMsImVtYWlsIjoicGF1bC5rZXZhbnkrdGVzdHNoYXJlQGZvdXJ0aGVvcmVtLmNvbSJ9.SfJtmyUMZZbSWC4TZlTnyH7AUpApgTKDVVHDCcJ7gFUjSSfEjeq3b4Wy7z0MLYif4KPlLdDmuhA3ij8lvBUPNJkXPCEnMcYfOEZhY5Pf9GNfhx2Y8_lHxliD1I9dM3VQpAEOUcX7FfVfaGmLfYUkgDlWtoP2ruPANfQYjwtCruvSLJWFT2BxLwYp5X-tH3PQMKp2m_dgyvvRlpVQy0SqPTeIDhpw4xShGgR7qmwxVYJl727UHjO78W0oMD8dIM4ezuhAo5C8eAq1hSUbzVXazFVI8d-qcbBrH0muNV0MDXSt2P7q0eN0K2ZVfsdOE03OFtlWsxKBFGqtMoD6XtIa7A"
+		],
+		"cache-control": [
+			"no-cache"
+		],
+		"CloudFront-Forwarded-Proto": [
+			"https"
+		],
+		"CloudFront-Is-Desktop-Viewer": [
+			"true"
+		],
+		"CloudFront-Is-Mobile-Viewer": [
+			"false"
+		],
+		"CloudFront-Is-SmartTV-Viewer": [
+			"false"
+		],
+		"CloudFront-Is-Tablet-Viewer": [
+			"false"
+		],
+		"CloudFront-Viewer-Country": [
+			"IE"
+		],
+		"content-type": [
+			"application/json; charset=UTF-8"
+		],
+		"Host": [
+			"api.dev.sliclists.com"
+		],
+		"origin": [
+			"https://dev.sliclists.com"
+		],
+		"pragma": [
+			"no-cache"
+		],
+		"Referer": [
+			"https://dev.sliclists.com/invitation/nXn9RvHdKMD8ubgXNNm7LnfJdT3JXgs1i6GDHyudEaWcL4Uw4444444444444444444444444444444444444444444"
+		],
+		"User-Agent": [
+			"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36"
+		],
+		"Via": [
+			"2.0 5515890e7ce0a4b8eaa000066bc1c8f7.cloudfront.net (CloudFront)"
+		],
+		"X-Amz-Cf-Id": [
+			"D6FQara1SP-ihedTwzN2T3p4UKySpuUBCkl7_2LdN13YqzjF9Y_8ng=="
+		],
+		"X-Amzn-Trace-Id": [
+			"Root=1-5d404e85-34f6a53c2c00ce64ce740904"
+		],
+		"X-Forwarded-For": [
+			"91.123.228.33, 216.137.58.89"
+		],
+		"X-Forwarded-Port": [
+			"443"
+		],
+		"X-Forwarded-Proto": [
+			"https"
+		]
+	},
+	"queryStringParameters": null,
+	"multiValueQueryStringParameters": null,
+	"pathParameters": {
+		"code": "nXn9RvHdKMD8ubgXNNm7LnfJdT3JXgs1i6GDHyudEaWcL4Uw4444444444444444444444444444444444444444444"
+	},
+	"stageVariables": null,
+	"requestContext": {
+		"resourceId": "dpk4ar",
+		"authorizer": {
+			"claims": {
+				"sub": "72d69bf8-1622-4e12-871e-29103d1dbe54",
+				"aud": "3p3ruldja3ve9m0k7qnfohao99",
+				"email_verified": "true",
+				"event_id": "249f6021-cb53-46fe-9a31-92efa3261430",
+				"token_use": "id",
+				"auth_time": "1564412067",
+				"iss": "https://cognito-idp.eu-west-1.amazonaws.com/eu-west-1_V2OqVwegS",
+				"cognito:username": "72d69bf8-1622-4e12-871e-29103d1dbe54",
+				"exp": "Tue Jul 30 14:34:33 UTC 2019",
+				"iat": "Tue Jul 30 13:34:33 UTC 2019",
+				"email": "paul.kevany+testshare@fourtheorem.com"
+			}
+		},
+		"resourcePath": "/confirm/{code}",
+		"httpMethod": "POST",
+		"extendedRequestId": "dpE03EIFDoEFUwA=",
+		"requestTime": "30/Jul/2019:14:04:53 +0000",
+		"path": "/share/confirm/nXn9RvHdKMD8ubgXNNm7LnfJdT3JXgs1i6GDHyudEaWcL4Uw4444444444444444444444444444444444444444444",
+		"accountId": "935672627075",
+		"protocol": "HTTP/1.1",
+		"stage": "dev",
+		"domainPrefix": "api",
+		"requestTimeEpoch": 1564495493505,
+		"requestId": "00ef7fae-b2d3-11e9-9e01-272e706ffc17",
+		"identity": {
+			"cognitoIdentityPoolId": null,
+			"accountId": null,
+			"cognitoIdentityId": null,
+			"caller": null,
+			"sourceIp": "91.123.228.33",
+			"principalOrgId": null,
+			"accessKey": null,
+			"cognitoAuthenticationType": null,
+			"cognitoAuthenticationProvider": null,
+			"userArn": null,
+			"userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36",
+			"user": null
+		},
+		"domainName": "api.dev.sliclists.com",
+		"apiId": "s470ffscyl"
+	},
+	"body": "{\"code\":\"nXn9RvHdKMD8ubgXNNm7LnfJdT3JXgs1i6GDHyudEaWcL4Uw4444444444444444444444444444444444444444444\"}",
+	"isBase64Encoded": false
+}

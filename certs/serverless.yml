@@ -1,0 +1,52 @@
+service: certs
+
+provider:
+  name: aws
+  runtime: nodejs8.10
+  stage: ${opt:stage, 'dev'}
+  region: us-east-1
+
+custom:
+  nsDomain: ${env:SLIC_NS_DOMAIN}
+  domainPrefixes: ${file(../common-config.json):domainPrefixes}
+  apiDomainName: api.${self:custom.domainPrefixes.${self:provider.stage}}${self:custom.nsDomain}
+  siteDomainName: ${self:custom.domainPrefixes.${self:provider.stage}}${self:custom.nsDomain}
+
+resources:
+  Outputs:
+    publicHostedZone:
+      Value: !Ref publicHostedZone
+      Export:
+        Name: ${self:provider.stage}-public-hosted-zone
+    siteCert:
+      Value: !Ref siteCert
+      Export:
+        Name: ${self:provider.stage}-site-cert
+    apiCert:
+      Value: !Ref apiCert
+      Export:
+        Name: ${self:provider.stage}-api-cert
+
+  Resources:
+    publicHostedZone:
+      Type: AWS::Route53::HostedZone
+      Properties:
+        Name: ${self:custom.nsDomain}
+
+    siteCert:
+      Type: AWS::CertificateManager::Certificate
+      Properties:
+        DomainName: ${self:custom.siteDomainName}
+        DomainValidationOptions:
+          - DomainName: ${self:custom.siteDomainName}
+            ValidationDomain: ${self:custom.nsDomain}
+        ValidationMethod: EMAIL
+
+    apiCert:
+      Type: AWS::CertificateManager::Certificate
+      Properties:
+        DomainName: ${self:custom.apiDomainName}
+        DomainValidationOptions:
+          - DomainName: ${self:custom.apiDomainName}
+            ValidationDomain: ${self:custom.nsDomain}
+        ValidationMethod: EMAIL

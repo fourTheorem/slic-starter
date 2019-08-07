@@ -12,7 +12,7 @@ if (!stage) {
 }
 
 const domainSuffix = stage === 'prod' ? '' : `${stage}.`
-const stackName = `checklist-service-${stage}`
+const stackName = `user-service-${stage}`
 const awsRegion = awscred.loadRegionSync()
 
 if (!awsRegion) {
@@ -54,8 +54,8 @@ sts
             })
             .join('\n')
           const envContents = `REACT_APP_API_ENDPOINT=https://api.${domainSuffix}${nsDomain}
-  REACT_APP_AWS_REGION=${process.env.AWS_REGION}
-  ${stageEnvContents}`
+REACT_APP_AWS_REGION=${awsRegion}
+${stageEnvContents}`
 
           const envFilename = `.env.production`
           console.log('Writing', envFilename)

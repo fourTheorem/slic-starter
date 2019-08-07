@@ -31,12 +31,24 @@ import {
   REMOVE_ENTRY_FAILURE
 } from '../actions/entries'
 
+import {
+  CANCEL_SHARE,
+  EDIT_SHARE,
+  CREATE_SHARE_REQUEST,
+  CREATE_SHARE_SUCCESS,
+  CREATE_SHARE_FAILURE,
+  ACCEPT_SHARE_REQUEST,
+  ACCEPT_SHARE_SUCCESS,
+  ACCEPT_SHARE_FAILURE
+} from '../actions/share.js'
+
 const defaultState = {
   creating: false,
   updating: false,
   loading: false,
   removing: false,
   entriesByListId: {},
+  collaboratorsByListId: {},
   listIds: [],
   listsById: {},
   updatingEntryValue: false,
@@ -292,6 +304,65 @@ export default (state = defaultState, { type, meta, payload, error }) => {
         ...state,
         removingEntry: false,
         removeEntryError: error
+      }
+
+    case EDIT_SHARE: {
+      return {
+        ...state,
+        editingShare: true
+      }
+    }
+
+    case CANCEL_SHARE: {
+      return {
+        ...state,
+        editingShare: false
+      }
+    }
+
+    case CREATE_SHARE_REQUEST:
+      return {
+        ...state,
+        creatingShare: true,
+        createShareError: null
+      }
+
+    case CREATE_SHARE_SUCCESS:
+      return {
+        ...state,
+        editingShare: false,
+        creatingShare: false,
+        createShareError: null
+      }
+
+    case CREATE_SHARE_FAILURE:
+      return {
+        ...state,
+        creatingShare: false,
+        createShareError: error
+      }
+
+    case ACCEPT_SHARE_REQUEST:
+      return {
+        ...state,
+        acceptingShareRequest: true,
+        shareRequestAccepted: false,
+        shareRequestError: null
+      }
+
+    case ACCEPT_SHARE_SUCCESS:
+      return {
+        ...state,
+        acceptingShareRequest: false,
+        shareRequestAccepted: true,
+        shareRequestError: null
+      }
+    case ACCEPT_SHARE_FAILURE:
+      return {
+        ...state,
+        acceptShareRequest: false,
+        shareRequestAccepted: false,
+        shareRequestError: error
       }
 
     default:

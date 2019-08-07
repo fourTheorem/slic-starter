@@ -1,8 +1,8 @@
 'use strict'
 
-const { createResponse } = require('../../lib/response')
+const { createResponse } = require('slic-tools/response')
 const checklist = require('./checklist')
-const { processEvent } = require('../../lib/event-util')
+const { processEvent } = require('slic-tools/event-util')
 
 async function main(event) {
   const { pathParameters, userId } = processEvent(event)

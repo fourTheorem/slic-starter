@@ -1,6 +1,17 @@
 {
+  "version": "0",
+  "id": "bbfbc65f-8536-ee88-dc6a-45b85079b7d7",
+  "detail-type": "LIST_CREATED_EVENT",
+  "source": "checklist-service",
+  "account": "935672627075",
+  "time": "2019-07-29T10:43:01Z",
+  "region": "eu-west-1",
+  "resources": [],
   "detail": {
-    "userId": "00c39c41-596d-4b12-aa31-d3344cc3be0f",
-    "name": "my new list"
+    "userId": "607e1594-e340-4e97-b8f7-79e04a639b1d",
+    "name": "New list",
+    "entries": {},
+    "listId": "5e3988ce-db01-4eef-8475-ef635cdcfe74",
+    "createdAt": 1564396981726
   }
 }

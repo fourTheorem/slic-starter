@@ -1,0 +1,32 @@
+{
+  "name": "sharing-service",
+  "version": "1.0.0",
+  "description": "Sharing Service",
+  "scripts": {
+    "start": "sls offline start",
+    "test": "SLIC_STAGE=test tap \"test/**/*.test.js\" --branches=100 --statements=100 --functions=100 --lines=100"
+  },
+  "author": "Paul Kevany <paul.kevany@fourtheorem.com>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/fourTheorem/slic-starter"
+  },
+  "devDependencies": {
+    "serverless-offline": "^5.8.0",
+    "serverless-pseudo-parameters": "^2.4.0",
+    "tap": "^14.2.0"
+  },
+  "dependencies": {
+    "aws-signed-axios": "^1.0.6",
+    "aws-xray-sdk": "^2.3.3",
+    "bourne": "^1.1.2",
+    "lambda-logger-middleware": "^1.0.3",
+    "middy": "^0.28.4",
+    "pino": "^5.12.6",
+    "proxyquire": "^2.1.1",
+    "serverless-log-forwarding": "^1.4.0",
+    "signed-objectid": "^1.0.1",
+    "slic-tools": "file:../slic-tools"
+  }
+}

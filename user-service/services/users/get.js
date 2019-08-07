@@ -1,8 +1,13 @@
 'use strict'
 
-const user = require('./user')
-const { processEvent } = require('../../lib/event-util')
-const { createResponse } = require('../../lib/response')
+const { middify } = require('slic-tools/middy-util')
+
+const user = process.env.IS_OFFLINE
+  ? require('./user-offline')
+  : require('./user')
+
+const { processEvent } = require('slic-tools/event-util')
+const { createResponse } = require('slic-tools/response')
 
 async function main(event) {
   const { pathParameters } = processEvent(event)
@@ -10,4 +15,4 @@ async function main(event) {
   return createResponse(user.get({ userId }))
 }
 
-module.exports = { main }
+module.exports = middify({ main })

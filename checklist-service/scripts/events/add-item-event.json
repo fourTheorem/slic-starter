@@ -1,5 +1,5 @@
 {
-  "body": "{\"title\":\"new list\",\"value\":\"list item\"}",
+  "body": "{\"emailAddress\":\"email@example.com\"}",
   "pathParameters": {
     "listId": "1234"
   },

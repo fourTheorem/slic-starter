@@ -1,0 +1,23 @@
+create:
+  handler: services/sharing/create.main
+  events:
+    - http:
+        path: /
+        method: post
+        cors: true
+        authorizer:
+          type: COGNITO_USER_POOLS
+          authorizerId:
+            Ref: cognitoAuthorizer
+
+confirm:
+  handler: services/sharing/confirm.main
+  events:
+    - http:
+        path: /{code}
+        method: patch
+        cors: true
+        authorizer:
+          type: COGNITO_USER_POOLS
+          authorizerId:
+            Ref: cognitoAuthorizer

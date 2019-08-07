@@ -44,7 +44,7 @@ coverage
 build/Release
 
 **/.idea
-.serverless
+.serverless/
 *.sw?
 vim-markdown-preview.html
 .vscode/
@@ -57,4 +57,5 @@ _GIT_REPO/
 pipeline-state.env\
 aws-accounts.json
 slic-config.json
+
 

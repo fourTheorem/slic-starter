@@ -52,7 +52,12 @@ class Login extends Component {
       auth: { userUnconfirmed }
     } = this.props
 
-    const { loggingIn, loginError, authenticated } = this.props.auth
+    const {
+      loggingIn,
+      loginError,
+      authenticated,
+      preAuthenticatedPath
+    } = this.props.auth
 
     const errorItem =
       !loggingIn && loginError ? (
@@ -61,7 +66,9 @@ class Login extends Component {
         </Grid>
       ) : null
 
-    const signedIn = authenticated ? <Redirect to="/Home" /> : null
+    const signedIn = authenticated ? (
+      <Redirect to={preAuthenticatedPath || '/'} />
+    ) : null
 
     const unconfirmed = userUnconfirmed ? (
       <Redirect to="/confirm-signup" />

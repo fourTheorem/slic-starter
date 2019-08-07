@@ -9,8 +9,8 @@ process.env.USER_POOL_ID = 'User_pool123'
 
 const testEmail = 'email@example.com'
 
-const uid = {
-  userId: 'userId'
+const user = {
+  Users: [{ Username: '123' }]
 }
 
 awsMock.mock('SSM', 'getParameter', function(params, callback) {
@@ -25,15 +25,26 @@ awsMock.mock('CognitoIdentityServiceProvider', 'adminGetUser', function(
   callback(null, { UserAttributes })
 })
 
+awsMock.mock('CognitoIdentityServiceProvider', 'listUsers', function(
+  params,
+  callback
+) {
+  callback(null, user)
+})
+
 test('user service retrieves cognito user information', async t => {
   const userService = require('../../../services/users/user')
-  const response = await userService.get(uid)
+  const response = await userService.get({
+    userId: 'userId'
+  })
   t.match(response, {
     email: testEmail
   })
 
   // Run again to test pre-cached user ID
-  const responser2 = await userService.get(uid)
+  const responser2 = await userService.get({
+    userId: 'userId'
+  })
   t.match(responser2, {
     email: testEmail
   })

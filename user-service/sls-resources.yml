@@ -1,11 +1,86 @@
+slicUserPool:
+  Type: AWS::Cognito::UserPool
+  Properties:
+    UserPoolName: ${self:custom.stage}-user-pool
+    UsernameAttributes: [email]
+    AutoVerifiedAttributes: [email]
+
+slicUserPoolClient:
+  Type: AWS::Cognito::UserPoolClient
+  Properties:
+    ClientName: ${self:custom.stage}-user-pool-client
+    ExplicitAuthFlows: [ADMIN_NO_SRP_AUTH]
+    RefreshTokenValidity: 30
+    UserPoolId:
+      Ref: slicUserPool
+
+slicIdentityPool:
+  Type: AWS::Cognito::IdentityPool
+  Properties:
+    AllowUnauthenticatedIdentities: false
+    CognitoIdentityProviders:
+      - ClientId:
+          Ref: slicUserPoolClient
+        ProviderName: { Fn::GetAtt: [slicUserPool, ProviderName] }
+
+slicUserPoolArn:
+  Type: AWS::SSM::Parameter
+  Properties:
+    Name: /${self:provider.stage}/user-service/user-pool-arn
+    Type: String
+    Value: !GetAtt slicUserPool.Arn
+
+userPoolIdParameter:
+  Type: AWS::SSM::Parameter
+  Properties:
+    Name: /${self:provider.stage}/user-service/user-pool-id
+    Type: String
+    Value: !Ref slicUserPool
+
 userServiceNameParameter:
   Type: AWS::SSM::Parameter
   Properties:
-    Name: UserServiceUrl
+    Name: /${self:provider.stage}/user-service/url
     Type: String
     Value:
       Fn::Join:
         - ''
         - - 'https://'
           - !Ref ApiGatewayRestApi
-          - '.execute-api.${self:custom.region}.amazonaws.com/${self:custom.stage}/user/'
+          - '.execute-api.${self:provider.region}.amazonaws.com/${self:provider.stage}/user/'
+
+slicAuthenticatedIdentityPoolRole:
+  Type: AWS::IAM::Role
+  Properties:
+    AssumeRolePolicyDocument:
+      Version: '2012-10-17'
+      Statement:
+        - Effect: 'Allow'
+          Principal:
+            Federated: 'cognito-identity.amazonaws.com'
+          Action:
+            - 'sts:AssumeRoleWithWebIdentity'
+          Condition:
+            StringEquals:
+              'cognito-identity.amazonaws.com:aud':
+                Ref: slicIdentityPool
+            ForAnyValue:StringLike:
+              'cognito-identity.amazonaws.com:amr': authenticated
+    Policies:
+      - PolicyName: ${self:custom.stage}-cognito-authenticated-policy
+        PolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+            - Effect: Allow
+              Action:
+                - cognito-identity:*
+                - cognito-sync:*
+              Resource: '*'
+
+slicIdentityPoolRoleAttachment:
+  Type: AWS::Cognito::IdentityPoolRoleAttachment
+  Properties:
+    IdentityPoolId:
+      Ref: slicIdentityPool
+    Roles:
+      authenticated: { Fn::GetAtt: [slicAuthenticatedIdentityPoolRole, Arn] }

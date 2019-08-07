@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { Redirect, Link } from 'react-router-dom'
-import { ExpandMore, Edit } from '@material-ui/icons'
+import { ExpandMore, Edit, Share } from '@material-ui/icons'
 import {
   Card,
   CardActions,
@@ -20,6 +20,8 @@ import {
 import { withStyles } from '@material-ui/core/styles'
 import Loading from './Loading'
 import Entries from './Entries'
+import ShareList from './ShareList'
+import { editShare, cancelShare } from '../actions/share'
 
 const dateFns = require('date-fns')
 
@@ -69,6 +71,14 @@ class Checklist extends Component {
 
   handlePanelExpansion = () => {
     this.setState({ isPanelExpanded: !this.state.isPanelExpanded })
+  }
+
+  handleOpen = () => {
+    this.props.dispatch(editShare())
+  }
+
+  handleShareClose = () => {
+    this.props.dispatch(cancelShare())
   }
 
   render() {
@@ -122,6 +132,13 @@ class Checklist extends Component {
               <Grid container direction="row" justify="flex-end">
                 <Grid item>
                   <IconButton
+                    id="share-list-btn"
+                    aria-label="Share"
+                    onClick={this.handleOpen}
+                  >
+                    <Share />
+                  </IconButton>
+                  <IconButton
                     id="edit-list-btn"
                     aria-label="Edit"
                     component={Link}
@@ -136,6 +153,11 @@ class Checklist extends Component {
             </CardContent>
             <CardActions>{removing ? <CircularProgress /> : null}</CardActions>
           </Card>
+          <ShareList
+            list={list}
+            open={this.props.editingShare}
+            onClose={this.handleShareClose}
+          />
         </Grid>
       </Grid>
     ) : (
@@ -152,6 +174,7 @@ Checklist.propTypes = {
   error: PropTypes.object,
   updatingList: PropTypes.bool,
   listUpdated: PropTypes.bool,
+  editingShare: PropTypes.bool,
   updatedAt: PropTypes.any
 }
 
@@ -162,9 +185,12 @@ const makeMapStateToProps = (initialState, ownProps) => {
     }
   } = ownProps
 
-  return ({ checklists: { listsById, removing, removalError } }) => {
+  return ({
+    checklists: { editingShare, listsById, removing, removalError }
+  }) => {
     const list = listId ? listsById[listId] : {}
     return {
+      editingShare,
       list,
       listsById,
       removing,

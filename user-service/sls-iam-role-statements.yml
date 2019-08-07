@@ -1,12 +1,9 @@
 - Effect: Allow
   Action:
     - cognito-idp:AdminGetUser
+    - cognito-idp:ListUsers
   Resource:
-    - arn:aws:cognito-idp:*:*:userpool/${ssm:UserPoolId}
-- Effect: Allow
-  Action:
-    - ssm:GetParameter
-  Resource: arn:aws:ssm:#{AWS::Region}:#{AWS::AccountId}:parameter/UserPoolId
+    - !GetAtt slicUserPool.Arn
 - Effect: Allow
   Action:
     - xray:PutTraceSegments

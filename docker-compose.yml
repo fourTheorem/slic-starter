@@ -7,11 +7,11 @@ services:
       - '18080:8080'
       - '4576:4576' # SQS
       - '4579:4579' # SES
-      - '4582:4582' # CloudWatch
+      - '4587:4587' # Events
       - '4583:4583' # SSM
     environment:
       - DEFAULT_REGION=us-east-1
-      - SERVICES=sqs,sns,cloudwatch,ssm
+      - SERVICES=sqs,sns,events,ssm
 
   create_localstack_resources:
     image: anigeo/awscli

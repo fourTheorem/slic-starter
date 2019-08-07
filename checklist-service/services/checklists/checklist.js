@@ -1,9 +1,9 @@
 'use strict'
 
-const { createNewListEvent } = require('../../lib/event-dispatcher')
+const uuid = require('uuid')
 
-const Uuid = require('uuid')
-const { dynamoDocClient } = require('../../lib/aws')
+const { dispatchEvent } = require('slic-tools/event-dispatcher')
+const { dynamoDocClient } = require('slic-tools/aws')
 
 const tableName = 'checklists'
 
@@ -12,7 +12,8 @@ module.exports = {
   update,
   remove,
   get,
-  list
+  list,
+  addCollaborator
 }
 
 async function create({ userId, name, description }) {
@@ -21,7 +22,7 @@ async function create({ userId, name, description }) {
     name,
     description,
     entries: {},
-    listId: Uuid.v4(),
+    listId: uuid.v4(),
     createdAt: Date.now()
   }
   await dynamoDocClient()
@@ -30,7 +31,8 @@ async function create({ userId, name, description }) {
       Item: item
     })
     .promise()
-  await createNewListEvent(item)
+
+  await dispatchEvent('LIST_CREATED_EVENT', item)
 
   return item
 }
@@ -84,10 +86,14 @@ async function get({ listId, userId }) {
 }
 
 async function list({ userId }) {
-  return (await dynamoDocClient()
+  // Find all lists accessible by the user, including
+  // shared lists which have sharedListOwner set but no values
+  // for name, description or createdAt
+  const lists = (await dynamoDocClient()
     .query({
       TableName: tableName,
-      ProjectionExpression: 'listId, #nm, #description, createdAt',
+      ProjectionExpression:
+        'listId, #nm, #description, createdAt, sharedListOwner, userId',
       KeyConditionExpression: 'userId = :userId',
       ExpressionAttributeNames: {
         '#nm': 'name',
@@ -98,4 +104,51 @@ async function list({ userId }) {
       }
     })
     .promise()).Items
+
+  const sharedListKeys = lists
+    .filter(list => list.sharedListOwner)
+    .map(list => ({ userId: list.sharedListOwner, listId: list.listId }))
+
+  // Next, find the actual records for shared lists with name, description and createdAt values
+  if (sharedListKeys.length) {
+    const sharedLists = (await dynamoDocClient()
+      .batchGet({
+        RequestItems: {
+          [tableName]: {
+            Keys: sharedListKeys,
+            ProjectionExpression:
+              'listId, #nm, #description, createdAt, userId, sharedListOwner',
+            ExpressionAttributeNames: {
+              '#nm': 'name',
+              '#description': 'description'
+            }
+          }
+        }
+      })
+      .promise()).Responses[tableName]
+    // Merge values from actual records into shared list records
+    sharedLists.forEach(sharedList => {
+      const record = lists.find(list => list.listId === sharedList.listId)
+      Object.assign(record, {
+        name: sharedList.name,
+        description: sharedList.description,
+        createdAt: sharedList.createdAt
+      })
+    })
+  }
+  return lists
+}
+
+async function addCollaborator({ sharedListOwner, listId, userId }) {
+  const item = {
+    sharedListOwner,
+    listId,
+    userId
+  }
+
+  await dynamoDocClient()
+    .put({ TableName: tableName, Item: item })
+    .promise()
+
+  return item
 }
