@@ -89,6 +89,7 @@ Authentication is a difficult problem with constantly-evolving security requirem
 ### Data Access with a RESTful API
 
 SLIC Starter includes useful, working examples of typical CRUD (create, read, update and delete) actions with a REST API. Currently, these APIs are implemented with DynamoDB and the `DocumentClient` API. For an example of this, look at the implementation of the [Checklist](./checklist-service) service.
+Upon first deploying slic-starter, the API Service will create Record Sets and an API Domain Name for your API. APIGateway and Route53 handles the creation of these resources for us.
 
 ### Messaging
 
