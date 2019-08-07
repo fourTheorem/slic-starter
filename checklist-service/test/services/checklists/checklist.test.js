@@ -4,7 +4,6 @@ const path = require('path')
 const proxyquire = require('proxyquire')
 const awsMock = require('aws-sdk-mock')
 const { test } = require('tap')
-const uuid = require('uuid')
 
 const userId = 'ownerA'
 awsMock.setSDK(path.resolve('./node_modules/slic-tools/node_modules/aws-sdk'))
@@ -44,8 +43,6 @@ const testLists = {
   ]
 }
 
-const testCollaborators = [uuid.v4(), uuid.v4()]
-
 const received = {
   dynamoDb: {}
 }
@@ -70,7 +67,6 @@ awsMock.mock('DynamoDB.DocumentClient', 'get', function(params, callback) {
 })
 
 awsMock.mock('DynamoDB.DocumentClient', 'batchGet', function(params, callback) {
-  const keys = params.RequestItems['checklists'].Keys
   callback(null, { Responses: { checklists: [list1] } })
 })
 
@@ -229,7 +225,7 @@ test('add a collaborator', async t => {
     userId
   }
 
-  const response = await checklist.addCollaborator(record)
+  await checklist.addCollaborator(record)
   t.equal(received.dynamoDb.put.Item.listId, record.listId)
   t.equal(received.dynamoDb.put.Item.userId, record.userId)
   t.equal(received.dynamoDb.put.Item.sharedListOwner, record.sharedListOwner)
