@@ -2,11 +2,15 @@ service: certs
 
 provider:
   name: aws
-  runtime: ${self:custom.runtime}
-  stage: ${self:custom.stage}
+  runtime: nodejs8.10
+  stage: ${opt:stage, 'dev'}
   region: us-east-1
 
-custom: ${file(./custom.yml)}
+custom:
+  nsDomain: ${env:SLIC_NS_DOMAIN}
+  domainPrefixes: ${file(../common-config.json):domainPrefixes}
+  apiDomainName: api.${self:custom.domainPrefixes.${self:provider.stage}}${self:custom.nsDomain}
+  siteDomainName: ${self:custom.domainPrefixes.${self:provider.stage}}${self:custom.nsDomain}
 
 resources:
   Outputs:
