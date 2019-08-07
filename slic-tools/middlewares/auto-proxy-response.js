@@ -2,7 +2,7 @@
 
 /**
  * Modified based on https://www.npmjs.com/package/middy-autoproxyresponse
- * MIT Licsense.
+ * MIT License.
  * Copyright (C) Clouden 2018
  * Author Kenneth Falck kennu@clouden.net 2018
  *
