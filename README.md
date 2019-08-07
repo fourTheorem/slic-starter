@@ -40,7 +40,6 @@
 
 <!-- /TOC -->
 
-
 ## How does SLIC starter help you?
 
 1. Serverless development involves a lot of decisions around which approach to take for a multitude of issues. It aims to remove 80% of this decision making and let you focus on building valuable features.
@@ -51,11 +50,13 @@
 This project is free to use by enterprise, startups, students, educators, enthusiasts and skeptics alike. We actively encourage contributions, suggestions and questions from _anyone_.
 
 ## Application Architecture
+
 ![SLIC Starter Architecture](./architecture.png)
 
 For the CICD pipeline architecture, see [CI/CD](#cicd)
 
 ## What does it provide?
+
 SLIC Starter is a complete, working application. By including all the aspects of a real application, SLIC Starter goes beyond a typical demo project. You are encouraged to:
 
 - Take SLIC Starter and copy it
@@ -130,11 +131,12 @@ All tests can be run in local development mode as well as against a fully-deploy
 For details on integration (API) tests, see the [README.md in integration-tests](./integration-tests/README.md)
 
 ### Monitoring
+
 _Work in progress_
 
 ### Logging
 
-As a default log centralization solution, SLIC Starter publishes logs to [logz.io](https://logz.io). The [logging](./logging) module handles this using the logz.io forwarder. This is integrated into each service's Lambda function using  the [serverless-log-forwarding](https://github.com/amplify-education/serverless-log-forwarding) plugin.
+As a default log centralization solution, SLIC Starter publishes logs to [logz.io](https://logz.io). The [logging](./logging) module handles this using the logz.io forwarder. This is integrated into each service's Lambda function using the [serverless-log-forwarding](https://github.com/amplify-education/serverless-log-forwarding) plugin.
 
 For further details, see the [logging README](./logging/README.md)
 
@@ -148,7 +150,7 @@ _Coming soon_. SLIC Starter will include support for roles and Role-Based Access
 
 ## Before you Begin!
 
-SLIC Starter is designed to get you up in running with a real-world application as quickly as possible.  The fact that we go beyond the average sample application, there is a bit more involved in getting to production.  For example:
+SLIC Starter is designed to get you up in running with a real-world application as quickly as possible. The fact that we go beyond the average sample application, there is a bit more involved in getting to production. For example:
 
 1. We assume that you want to keep the CICD, staging and production accounts separate. These can be set up under one root account using [AWS Organizations](https://aws.amazon.com/organizations/).
 2. SLIC Starter assumes you are using a registered domain (like `sliclists.com`) and will set up DNS entries for use in production (like `api.sliclists.com`) and staging (`stg.sliclists.com`, `api.stg.sliclists.com`).
@@ -165,13 +167,13 @@ To set up deployment to your own accounts, first run through these steps.
 3. Fork the repository into your own account or organization on GitHub. If you don't use GitHub, you will have to tweak the source project in the CICD module ([source-project.ts](./cicd/lib/project/source-project.ts))
 4. Enable CodeBuild to access your GitHub repo. The only way to do this is to create a temporary CodeBuild project in your CICD account and set up your GitHub repostitory as a source. Grant access to your GitHub repo. Your account now has access to the repo and the SLIC Starter CodeBuild will be able to monitor and clone your repo. The temporary CodeBuild project can already be deleted. You will need to have **admin** priveleges for the repository or **owner** permissions for the GitHub organization in order for WebHooks to be create automatically by [the CodeBuild project](./cicd/lib/project/source-project.ts).
 5. (Optional - this will be required for repo tagging). Set up GitHub authentication for your repo. Create a GitHub Personal Access Token and add it as an secret with the name `GitHubPersonalAccessToken` in Secrets Manager _in the CICD account_. See [this post](https://medium.com/@eoins/securing-github-tokens-in-a-serverless-codepipeline-dc3a24ddc356) for more detail on this approach.
-6. Under the parent directory, open the file common-config.json. Here you can specify multiple Default Regions and Domain Prefixes for your application.
+6. Under the parent directory, open the file `common-config.json`. If desired, you can configure the default regions and domain prefixes by account. If you have no reason to change them, leave the default values as they are.
 7. Edit the account IDs in `cicd/cross-account/serverless.yml` and `cicd/config.ts`.
 8. Create a [Mailosaur](https://mailosaur.com) account. Take the server ID and API key and add them in your CICD account to the Parameter Store as `SecretString` values with the following names
 
- * `test/mailosaur/serverId`
- * `test/mailosaur/apiKey`
-These are picked up by the integration and end-to-end test CodeBuild projects.
+- `test/mailosaur/serverId`
+- `test/mailosaur/apiKey`
+  These are picked up by the integration and end-to-end test CodeBuild projects.
 
 9. Create a secret string in System Manager Parameter store with a value used to sign and verify verification codes - the parameter name should be `/STAGE/sharing-service/code-secret` where STAGE is the stage you are deploying to (dev, stg or prod).
 10. Give permissions for your CICD account to deploy to staging and production accounts.
@@ -200,7 +202,7 @@ AWS_PROFILE=your-cicd-account npm run deploy
 
 The CICD process attempts to build and deploy each service in parallel. This is done so you get quick feedback and to improve the overall deployment speed. It also means that deployment can fail if there are dependencies between services. Out of the box, SLIC Starter has a `certs` module that sets up a Route 53 Hosted Zone and some certificates. These are required by the `frontend` and `checklist-service` services, so those builds will fail if the cerificates aren't ready yet. This is just one example. There are other services that depend on common resources so it will require a few retries in both staging and production before everything is deployed.
 
-*Note* that deployment of some services can take quite some time! In particular, `frontend` deployment will wait until the CloudFront distribution has been created. This can take _at least_ 15 minutes.
+_Note_ that deployment of some services can take quite some time! In particular, `frontend` deployment will wait until the CloudFront distribution has been created. This can take _at least_ 15 minutes.
 
 You can inspect the failures in the Orchestrator Pipeline view in the CodePipeline console of your CICD account. You can retry the `stgDeploy` phase by clicking the _Retry_ button in the pipeline.
 
@@ -220,7 +222,6 @@ By default, SLIC Lists will send emails from `no-reply@[stage].sliclists.com`. I
 Because we use Route 53 for our DNS records, the verification process is quite straightforward. See [here](https://docs.aws.amazon.com/ses/latest/DeveloperGuide/receiving-email-getting-started-verify.html) for documentation on how to achieve domain verification throught the AWS Management Console.
 
 By default, SES will require validation of each email address to which emails are being sent. To avoid this, you can [request a sending limit increase](https://docs.aws.amazon.com/ses/latest/DeveloperGuide/request-production-access.html), which will remove your account/region from the SES Sandbox.
-
 
 ## Local Development
 
@@ -260,12 +261,13 @@ SLIC Starter is open source and contributions are welcome from everyone. It was 
 ## Troubleshooting
 
 1. I get this error in the CodeBuild source project:
- ```
- 87/101 | 1:05:21 PM | CREATE_FAILED | AWS::CodeBuild::Project |
- sourceProject (sourceProjectBCA86C81) Failed to call CreateWebhook, reason: Repository not found or permission denied.
- ```
 
- - This is because your CodeBuild configuration does not have access to your GitHub account. To grant access, create a CodeBuild project manually in the AWS Console and grant access to your repository. This project can be safely deleted afterwards once CodeBuild has been granted access.
+```
+87/101 | 1:05:21 PM | CREATE_FAILED | AWS::CodeBuild::Project |
+sourceProject (sourceProjectBCA86C81) Failed to call CreateWebhook, reason: Repository not found or permission denied.
+```
+
+- This is because your CodeBuild configuration does not have access to your GitHub account. To grant access, create a CodeBuild project manually in the AWS Console and grant access to your repository. This project can be safely deleted afterwards once CodeBuild has been granted access.
 
 ## Contributing
 
