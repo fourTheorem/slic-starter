@@ -164,15 +164,16 @@ To set up deployment to your own accounts, first run through these steps.
 3. Fork the repository into your own account or organization on GitHub. If you don't use GitHub, you will have to tweak the source project in the CICD module ([source-project.ts](./cicd/lib/project/source-project.ts))
 4. Enable CodeBuild to access your GitHub repo. The only way to do this is to create a temporary CodeBuild project in your CICD account and set up your GitHub repostitory as a source. Grant access to your GitHub repo. Your account now has access to the repo and the SLIC Starter CodeBuild will be able to monitor and clone your repo. The temporary CodeBuild project can already be deleted. You will need to have **admin** priveleges for the repository or **owner** permissions for the GitHub organization in order for WebHooks to be create automatically by [the CodeBuild project](./cicd/lib/project/source-project.ts).
 5. (Optional - this will be required for repo tagging). Set up GitHub authentication for your repo. Create a GitHub Personal Access Token and add it as an secret with the name `GitHubPersonalAccessToken` in Secrets Manager _in the CICD account_. See [this post](https://medium.com/@eoins/securing-github-tokens-in-a-serverless-codepipeline-dc3a24ddc356) for more detail on this approach.
-6. Edit the account IDs in `cicd/cross-account/serverless.yml` and `cicd/config.ts`.
-7. Create a [Mailosaur](https://mailosaur.com) account. Take the server ID and API key and add them in your CICD account to the Parameter Store as `SecretString` values with the following names
+6. Under the parent directory, open the file common-config.json. Here you can specify multiple Default Regions and Domain Prefixes for your application.
+7. Edit the account IDs in `cicd/cross-account/serverless.yml` and `cicd/config.ts`.
+8. Create a [Mailosaur](https://mailosaur.com) account. Take the server ID and API key and add them in your CICD account to the Parameter Store as `SecretString` values with the following names
 
  * `test/mailosaur/serverId`
  * `test/mailosaur/apiKey`
 These are picked up by the integration and end-to-end test CodeBuild projects.
 
-8. Create a secret string in System Manager Parameter store with a value used to sign and verify verification codes - the parameter name should be `/STAGE/sharing-service/code-secret` where STAGE is the stage you are deploying to (dev, stg or prod).
-9. Give permissions for your CICD account to deploy to staging and production accounts.
+9. Create a secret string in System Manager Parameter store with a value used to sign and verify verification codes - the parameter name should be `/STAGE/sharing-service/code-secret` where STAGE is the stage you are deploying to (dev, stg or prod).
+10. Give permissions for your CICD account to deploy to staging and production accounts.
 
 ```
 npm install -g serverless
@@ -181,7 +182,7 @@ AWS_PROFILE=your-staging-account serverless deploy
 AWS_PROFILE=your-production-account serverless deploy
 ```
 
-10. Deploy the CI/CD pipeline to your CICD account.
+11. Deploy the CI/CD pipeline to your CICD account.
 
 ```
 cd cicd
@@ -190,13 +191,13 @@ npm run cdk -- bootstrap <<AWS_ACCOUNT_ID>>/eu-west-1
 AWS_PROFILE=your-cicd-account npm run deploy
 ```
 
-11. Trigger your pipeline by commiting your changes to the repository
-12. Monitor your deployment by viewing the orchestrator pipeline in the AWS Console CodePipeline page.
-13. Wait for your deployment to fail! _Wait, what?_ Yes, your first deployment will fail. This is expected and all part of the process. Read on to find out more!
+12. Trigger your pipeline by commiting your changes to the repository
+13. Monitor your deployment by viewing the orchestrator pipeline in the AWS Console CodePipeline page.
+14. Wait for your deployment to fail! _Wait, what?_ Yes, your first deployment will fail. This is expected and all part of the process. Read on to find out more!
 
 ## Getting to your First Successful Deployment
 
-The CICD process attempts to build and deploy each service in parallel. This is done so you get quick feedback and to improve the overall deployment speed. It also means that deployment can fail if there are dependencies between services. Out of the box, SLIC Starter has a `baseline` module that sets up a Route 53 Hosted Zone and some certificates. These are required by the `frontend` and `checklist-service` services, so those builds will fail if the cerificates aren't ready yet. This is just one example. There are other services that depend on common resources so it will require a few retries in both staging and production before everything is deployed.
+The CICD process attempts to build and deploy each service in parallel. This is done so you get quick feedback and to improve the overall deployment speed. It also means that deployment can fail if there are dependencies between services. Out of the box, SLIC Starter has a `certs` module that sets up a Route 53 Hosted Zone and some certificates. These are required by the `frontend` and `checklist-service` services, so those builds will fail if the cerificates aren't ready yet. This is just one example. There are other services that depend on common resources so it will require a few retries in both staging and production before everything is deployed.
 
 *Note* that deployment of some services can take quite some time! In particular, `frontend` deployment will wait until the CloudFront distribution has been created. This can take _at least_ 15 minutes.
 
