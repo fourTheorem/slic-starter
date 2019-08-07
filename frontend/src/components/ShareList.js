@@ -14,7 +14,6 @@ import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 
 import ErrorMessage from './ErrorMessage'
-import { loadCollaborators } from '../actions/checklists'
 import { createShare } from '../actions/share'
 
 const styles = theme => ({
@@ -44,13 +43,6 @@ class ShareList extends Component {
       })
     )
     this.setState({ email: '' })
-  }
-
-  componentDidMount() {
-    const { list } = this.props
-    if (list) {
-      this.props.dispatch(loadCollaborators({ listId: list.listId }))
-    }
   }
 
   render() {

@@ -214,8 +214,29 @@ test('list all checklists including shared lists', async t => {
 
   t.match(response, testLists['ownerB'])
 
+  /*  [ { userId: 'ownerB',
+    listId: 'list3',
+    name: 'List Three',
+    description: 'List three Description',
+    entries: {} },
+  { userId: 'ownerB',
+    listId: 'list1',
+    sharedListOwner: 'ownerA',
+    name: 'List One',
+    description: 'List One Description',
+    createdAt: undefined } ] 'response is here'
+*/
+
+  const shared = response.find(share => share.sharedListOwner)
+
+    list => list.listId === shared.listId
+  )
+  t.equal(shared.name, originalList.name)
+  t.equal(shared.description, originalList.description)
+
   t.end()
 })
+
 test('add a collaborator', async t => {
   const checklist = require('../../../services/checklists/checklist')
 
@@ -226,6 +247,7 @@ test('add a collaborator', async t => {
   }
 
   await checklist.addCollaborator(record)
+
   t.equal(received.dynamoDb.put.Item.listId, record.listId)
   t.equal(received.dynamoDb.put.Item.userId, record.userId)
   t.equal(received.dynamoDb.put.Item.sharedListOwner, record.sharedListOwner)

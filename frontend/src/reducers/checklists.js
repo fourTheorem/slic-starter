@@ -5,9 +5,6 @@ import {
   LOAD_LISTS_REQUEST,
   LOAD_LISTS_SUCCESS,
   LOAD_LISTS_FAILURE,
-  LOAD_COLLABORATORS_REQUEST,
-  LOAD_COLLABORATORS_SUCCESS,
-  LOAD_COLLABORATORS_FAILURE,
   CREATE_LIST_REQUEST,
   CREATE_LIST_SUCCESS,
   CREATE_LIST_FAILURE,
@@ -343,34 +340,6 @@ export default (state = defaultState, { type, meta, payload, error }) => {
         ...state,
         creatingShare: false,
         createShareError: error
-      }
-
-    case LOAD_COLLABORATORS_REQUEST:
-      return {
-        ...state,
-        loadingCollaborators: true,
-        collaboratorsLoaded: false,
-        loadCollaboratorError: null
-      }
-
-    case LOAD_COLLABORATORS_SUCCESS:
-      return {
-        ...state,
-        loadingCollaborators: false,
-        collaboratorsLoaded: true,
-        loadCollaboratorError: null,
-        collaboratorsByListId: {
-          ...state.collaboratorsByListId,
-          [meta.listId]: Object.assign({}, payload)
-        }
-      }
-
-    case LOAD_COLLABORATORS_FAILURE:
-      return {
-        ...state,
-        loadingCollaborators: false,
-        collaboratorsLoaded: false,
-        loadCollaboratorError: error
       }
 
     case ACCEPT_SHARE_REQUEST:

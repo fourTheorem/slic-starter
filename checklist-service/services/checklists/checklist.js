@@ -4,7 +4,6 @@ const uuid = require('uuid')
 
 const { dispatchEvent } = require('slic-tools/event-dispatcher')
 const { dynamoDocClient } = require('slic-tools/aws')
-const log = require('slic-tools/log')
 
 const tableName = 'checklists'
 
@@ -14,8 +13,7 @@ module.exports = {
   remove,
   get,
   list,
-  addCollaborator,
-  listCollaborators
+  addCollaborator
 }
 
 async function create({ userId, name, description }) {
@@ -88,7 +86,6 @@ async function get({ listId, userId }) {
 }
 
 async function list({ userId }) {
-  console.log('USER ID', userId)
   // Find all lists accessible by the user, including
   // shared lists which have sharedListOwner set but no values
   // for name, description or createdAt
@@ -108,7 +105,6 @@ async function list({ userId }) {
     })
     .promise()).Items
 
-  console.log({ lists })
   const sharedListKeys = lists
     .filter(list => list.sharedListOwner)
     .map(list => ({ userId: list.sharedListOwner, listId: list.listId }))
@@ -150,28 +146,9 @@ async function addCollaborator({ sharedListOwner, listId, userId }) {
     userId
   }
 
-  console.log({ item })
-
   await dynamoDocClient()
     .put({ TableName: tableName, Item: item })
     .promise()
 
   return item
-}
-
-async function listCollaborators({ listId, userId }) {
-  const result = await dynamoDocClient()
-    .query({
-      TableName: tableName,
-      ProjectionExpression: 'collaborators',
-      KeyConditionExpression: 'listId = :listId AND userId = :userId',
-      ExpressionAttributeValues: {
-        ':listId': listId,
-        ':userId': userId
-      }
-    })
-    .promise()
-
-  log.info({ result })
-  return result.Items
 }
