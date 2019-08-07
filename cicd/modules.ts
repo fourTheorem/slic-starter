@@ -4,13 +4,15 @@ export interface Modules {
 
 const modules: Modules = {
   moduleNames: [
+    'api-service',
     'frontend',
-    'baseline',
+    'certs',
     'logging',
     'checklist-service',
     'user-service',
     'email-service',
-    'welcome-service'
+    'welcome-service',
+    'sharing-service'
   ]
 }
 
