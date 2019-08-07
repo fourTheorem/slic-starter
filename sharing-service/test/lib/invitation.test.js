@@ -2,6 +2,7 @@
 const uuid = require('uuid')
 const { test } = require('tap')
 
+const listName = 'The quick fox jumps over the lazy dog'
 const userId = uuid.v4()
 const listId = uuid.v4()
 const email = 'example@example.com'
@@ -10,11 +11,11 @@ test('A code can be created and parsed', t => {
   const secret = 'passw0rd'
   const { createCode, parseCode } = require('../../lib/invitation')(secret)
 
-  const code = createCode({ userId, listId, email })
+  const code = createCode({ userId, listId, listName, email })
   t.equal(typeof code, 'string')
   const parsedCode = parseCode(code)
 
-  t.same(parsedCode, { userId, listId, email })
+  t.same(parsedCode, { userId, listId, listName, email })
   t.end()
 })
 
@@ -26,11 +27,34 @@ test('A code is different for a different email address', t => {
   const listId = uuid.v4()
   const email = 'example@example.com'
 
-  const code = createCode({ userId, listId, email })
+  const code = createCode({ userId, listId, listName, email })
 
   const newEmail = 'different-user@example.com'
-  const differentCode = createCode({ userId, listId, email: newEmail })
+  const differentCode = createCode({ userId, listId, listName, email: newEmail })
   t.notEqual(code, differentCode)
+
+  t.end()
+})
+
+test('A listname can be extracted from the code', t => {
+  const secret = 'passw0rd'
+  const { createCode } = require('../../lib/invitation')(secret)
+
+  const userId = uuid.v4()
+  const listId = uuid.v4()
+  const email = 'example@example.com'
+
+  const code = createCode({ userId, listId, listName, email })
+
+  // Front end code for extracting list name starts here
+  const normalized = code.replace(/-/g, '+').replace(/_/g, '/')
+  const codeBuffer = Buffer.from(normalized, 'base64')
+  const dataBuffer = codeBuffer.subarray(32)
+  const nameLength = dataBuffer.readUInt8()
+  const name = dataBuffer.subarray(1, nameLength + 1).toString()
+  // ...ends here
+
+  t.equal(name, listName)
 
   t.end()
 })
@@ -38,7 +62,7 @@ test('A code is different for a different email address', t => {
 test('A code does not match with a different secret', t => {
   const invitation1 = require('../../lib/invitation')('passw0rd')
 
-  const code = invitation1.createCode({ userId, listId, email })
+  const code = invitation1.createCode({ userId, listId, listName, email })
   t.equal(typeof code, 'string')
   invitation1.parseCode(code)
 

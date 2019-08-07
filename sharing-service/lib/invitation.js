@@ -8,11 +8,16 @@ module.exports = function invitation(secret) {
     parseCode
   }
 
-  function createCode({ listId, userId, email }) {
-    if (!listId || !userId || !email) {
-      throw new Error('Failed to retrieve required valued for code signing')
+  function createCode({ listName, listId, userId, email }) {
+    if (!listName || !listId || !userId || !email) {
+      throw new Error('Invalid parameters for invitation code')
     }
+    debugger
+    const lenBuf = Buffer.allocUnsafe(1)
+    lenBuf.writeUInt8(listName.length)
     const bufferConcat = Buffer.concat([
+      lenBuf,
+      Buffer.from(listName),
       Buffer.from(listId.replace(/-/g, ''), 'hex'),
       Buffer.from(userId.replace(/-/g, ''), 'hex'),
       Buffer.from(email)
@@ -32,26 +37,29 @@ module.exports = function invitation(secret) {
   }
 
   function parseCode(code) {
+    debugger
     const normalized = code.replace(/-/g, '+').replace(/_/g, '/')
     const codeBuffer = Buffer.from(normalized, 'base64')
     const digestBuffer = codeBuffer.subarray(0, 32)
-
     const dataBuffer = codeBuffer.subarray(32)
+
     const hmac = crypto.createHmac('sha256', secret)
     hmac.update(dataBuffer)
-
     const digest = hmac.digest()
     if (!digest.equals(digestBuffer)) {
       throw new Error('Digest Mismatch Error')
     }
-    const listId = bufferToValue(dataBuffer.subarray(0, 16))
-    const userId = bufferToValue(dataBuffer.subarray(16, 32))
-    const email = dataBuffer.subarray(32).toString('utf8')
 
-    return { listId, userId, email }
+    const listNameLength = dataBuffer.readUInt8()
+    const listName = dataBuffer.subarray(1, listNameLength + 1).toString()
+    const listId = bufferToUuid(dataBuffer.subarray(listNameLength + 1, listNameLength + 17))
+    const userId = bufferToUuid(dataBuffer.subarray(listNameLength + 17, listNameLength + 33))
+    const email = dataBuffer.subarray(listNameLength + 33).toString('utf8')
+
+    return { listName, listId, userId, email }
   }
 
-  function bufferToValue(buffer) {
+  function bufferToUuid(buffer) {
     return [
       buffer.subarray(0, 4).toString('hex'),
       buffer.subarray(4, 6).toString('hex'),
