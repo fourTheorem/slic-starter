@@ -191,7 +191,8 @@ AWS_PROFILE=your-production-account serverless deploy
 ```
 cd cicd
 npm install
-npm run cdk -- bootstrap <<AWS_ACCOUNT_ID>>/eu-west-1
+npm run build
+AWS_PROFILE=your-cicd-account npm run cdk -- bootstrap
 AWS_PROFILE=your-cicd-account npm run deploy
 ```
 
