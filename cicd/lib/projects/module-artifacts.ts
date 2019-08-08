@@ -4,6 +4,7 @@
 export default (moduleName: string) => ({
   files: [
     '*.yml',
+    '*.json',
     '*.js',
     'build-scripts/**/*',
     `${moduleName}/*.yml`,
