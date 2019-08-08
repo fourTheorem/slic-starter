@@ -7,6 +7,13 @@ export default (moduleName: string) => ({
     '*.json',
     '*.js',
     'build-scripts/**/*',
+    moduleArtefacts(moduleName),
+    moduleArtefacts('slic-tools')
+  ]
+})
+
+function moduleArtefacts(moduleName: string) {
+  return [
     `${moduleName}/*.yml`,
     `${moduleName}/*.js`,
     `${moduleName}/node_modules/**/*`,
@@ -15,4 +22,4 @@ export default (moduleName: string) => ({
     `${moduleName}/build-artifacts/**/*`,
     `${moduleName}/build/**/*`
   ]
-})
+}
