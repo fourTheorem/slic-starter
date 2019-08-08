@@ -36,6 +36,7 @@ module.exports = function invitation(secret) {
   }
 }
 
+<<<<<<< HEAD
 function parseCode(code, secret) {
   const normalized = code.replace(/-/g, '+').replace(/_/g, '/')
   const codeBuffer = Buffer.from(normalized, 'base64')
