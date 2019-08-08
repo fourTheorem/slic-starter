@@ -7,8 +7,8 @@ export default (moduleName: string) => ({
     '*.json',
     '*.js',
     'build-scripts/**/*',
-    moduleArtefacts(moduleName),
-    moduleArtefacts('slic-tools')
+    ...moduleArtefacts(moduleName),
+    ...moduleArtefacts('slic-tools')
   ]
 })
 
