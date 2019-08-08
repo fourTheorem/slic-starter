@@ -30,7 +30,12 @@ test('A code is different for a different email address', t => {
   const code = createCode({ userId, listId, listName, email })
 
   const newEmail = 'different-user@example.com'
-  const differentCode = createCode({ userId, listId, listName, email: newEmail })
+  const differentCode = createCode({
+    userId,
+    listId,
+    listName,
+    email: newEmail
+  })
   t.notEqual(code, differentCode)
 
   t.end()
