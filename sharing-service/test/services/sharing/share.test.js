@@ -73,8 +73,9 @@ test('An event is dispatched when a code is confirmed', async t => {
   t.same(received.dispatchEventParams, [
     'COLLABORATOR_ACCEPTED_EVENT',
     {
-      ...params,
-      collaboratorUserId
+      listId: params.listId,
+      sharedListOwner: userId,
+      userId: collaboratorUserId
     }
   ])
 })

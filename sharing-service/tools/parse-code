@@ -1,0 +1,16 @@
+#!/usr/bin/env node
+
+const invitation = require('../lib/invitation')
+
+const code = process.argv[2]
+
+if (!code) {
+  throw new Error('Specify a code as an argument')
+}
+
+console.error('Parsing code', code)
+
+const parsed = invitation.parseCode(code)
+
+console.log(JSON.stringify(parsed, null, ' '))
+

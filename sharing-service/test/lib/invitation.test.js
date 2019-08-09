@@ -2,6 +2,8 @@
 const uuid = require('uuid')
 const { test } = require('tap')
 
+const invitation = require('../../lib/invitation')
+
 const listName = 'The quick fox jumps over the lazy dog'
 const userId = uuid.v4()
 const listId = uuid.v4()
@@ -15,6 +17,16 @@ test('A code can be created and parsed', t => {
   t.equal(typeof code, 'string')
   const parsedCode = parseCode(code)
 
+  t.same(parsedCode, { userId, listId, listName, email })
+  t.end()
+})
+
+test('A code can be created and parsed without a secret', t => {
+  const basicParseCode = invitation.parseCode
+  const secret = 'passw0rd'
+  const { createCode } = invitation(secret)
+  const code = createCode({ userId, listId, listName, email })
+  const parsedCode = basicParseCode(code)
   t.same(parsedCode, { userId, listId, listName, email })
   t.end()
 })

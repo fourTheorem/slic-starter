@@ -47,8 +47,9 @@ async function confirm({ code, userId }) {
     throw error
   }
   await dispatchEvent('COLLABORATOR_ACCEPTED_EVENT', {
-    ...parsedCode,
-    collaboratorUserId: userId
+    listId: parsedCode.listId,
+    sharedListOwner: parsedCode.userId,
+    userId
   })
 }
 
