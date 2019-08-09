@@ -26,7 +26,13 @@ async function retrieveCode(emailAddress) {
 }
 
 function retrieveEmail(emailAddress) {
-  return client.messages.waitFor(process.env.MAILOSAUR_SERVER_ID, {
-    sentTo: emailAddress
-  })
+  return client.messages.get(
+    process.env.MAILOSAUR_SERVER_ID,
+    {
+      sentTo: emailAddress
+    },
+    {
+      timeout: 30000
+    }
+  )
 }

@@ -37,7 +37,7 @@
   },
   "dependencies": {
     "dotenv": "^8.0.0",
-    "mailosaur": "^5.0.8",
+    "mailosaur": "^6.0.2",
     "random-words": "^1.1.0"
   }
 }

@@ -22,6 +22,7 @@ test('Creating an email result in a welcome email being received', async t => {
 
     const message = await retrieveEmail(email)
 
+    console.log(message)
     t.equal(
       message.text.body,
       `Congratulations! You created the list ${testList.name}`
