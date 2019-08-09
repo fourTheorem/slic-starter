@@ -1,5 +1,5 @@
 stage: ${opt:stage, 'dev'}
-region: eu-west-1
+region: us-east-2
 runtime: python3.6
 pythonRequirements:
   slim: true
