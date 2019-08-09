@@ -1,8 +1,0 @@
-stage: ${opt:stage, 'dev'}
-region: ${opt:region, 'us-east-2'}
-runtime: python3.6
-pythonRequirements:
-  slim: true
-  useDownloadCache: true
-  useStaticCache: true
-  dockerizePip: non-linux
