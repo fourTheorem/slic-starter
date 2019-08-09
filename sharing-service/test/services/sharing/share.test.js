@@ -19,6 +19,7 @@ const testUser = {
   userId,
   email: 'userId@example.com'
 }
+const listName = 'A Test List'
 
 const received = {}
 
@@ -49,7 +50,7 @@ test('An email is sent when a list is shared', async t => {
   const payload = {
     ...testUser,
     listId: uuid.v4(),
-    listName: 'First Checklist'
+    listName
   }
 
   await shareService.create(payload)
@@ -60,6 +61,7 @@ test('An email is sent when a list is shared', async t => {
 
 test('An event is dispatched when a code is confirmed', async t => {
   const params = {
+    listName,
     userId,
     email: 'invitee@example.com',
     listId: uuid.v4()

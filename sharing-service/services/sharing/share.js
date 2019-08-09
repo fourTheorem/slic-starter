@@ -17,7 +17,7 @@ async function create({ email, listId, listName, userId }) {
   log.info({ email, userId, listId })
 
   const { createCode } = invitation(process.env.CODE_SECRET)
-  const code = createCode({ listId, userId, email })
+  const code = createCode({ listId, listName, userId, email })
   log.info({ code })
   const fullLink = baseLink + code
 

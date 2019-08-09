@@ -36,7 +36,6 @@ module.exports = function invitation(secret) {
   }
 
   function parseCode(code) {
-    debugger
     const normalized = code.replace(/-/g, '+').replace(/_/g, '/')
     const codeBuffer = Buffer.from(normalized, 'base64')
     const digestBuffer = codeBuffer.subarray(0, 32)
