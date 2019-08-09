@@ -1,5 +1,5 @@
 stage: ${opt:stage, 'dev'}
-region: ${opt:region, 'us-east-2'}
+region: ${opt:region, '${self:custom.defaultRegions.${self:provider.stage}}'}
 runtime: python3.6
 pythonRequirements:
   slim: true
