@@ -2,7 +2,8 @@ import {
   PipelineProject,
   PipelineProjectProps,
   BuildEnvironmentVariableType,
-  BuildSpec
+  BuildSpec,
+  LinuxBuildImage
 } from '@aws-cdk/aws-codebuild'
 import StageName from '../stage-name'
 import { Construct } from '@aws-cdk/core'
@@ -36,6 +37,9 @@ export class E2ETestProject extends PipelineProject {
 
     super(scope, id, {
       projectName: `${props.stageName}E2ETest`,
+      environment: {
+        buildImage: LinuxBuildImage.STANDARD_2_0
+      },
       environmentVariables: {
         SLIC_STAGE: {
           type: BuildEnvironmentVariableType.PLAINTEXT,
