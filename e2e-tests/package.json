@@ -4,6 +4,7 @@
   "description": "",
   "main": "*.test.js",
   "scripts": {
+    "testcafe": " testcafe chrome",
     "test": " testcafe chrome \"test/**/*.test.js\"",
     "headless": " testcafe chrome:headless \"test/**/*.test.js\""
   },
@@ -13,10 +14,11 @@
     "dotenv": "^7.0.0",
     "eslint-plugin-testcafe": "^0.2.1",
     "test-common": "file:../test-common",
-    "testcafe": "^1.2.0",
+    "testcafe": "^1.4.0",
     "testcafe-react-selectors": "^3.1.0"
   },
   "devDependencies": {
+    "nid": "^0.3.2",
     "serverless-dotenv-plugin": "^2.0.1"
   }
 }

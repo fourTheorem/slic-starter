@@ -25,14 +25,17 @@ async function retrieveCode(emailAddress) {
   return confirmationCode
 }
 
-function retrieveEmail(emailAddress) {
-  return client.messages.get(
+async function retrieveEmail(emailAddress, subject) {
+  const message = await client.messages.get(
     process.env.MAILOSAUR_SERVER_ID,
     {
-      sentTo: emailAddress
+      sentTo: emailAddress,
+      subject
     },
     {
       timeout: 30000
     }
   )
+  await client.messages.del(message.id)
+  return message
 }

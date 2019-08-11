@@ -33,7 +33,6 @@ test('User can Log in after signing up', async t => {
 
   const getLocation = ClientFunction(() => document.location.href)
   const h6 = Selector('h6')
-  await t.expect(getLocation()).contains(baseUrl + '/Home')
   await t.expect(
     h6.withText("You don't have any lists. Click the button to create one!")
   ).exists
