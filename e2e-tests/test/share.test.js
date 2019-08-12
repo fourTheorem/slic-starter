@@ -2,9 +2,9 @@ import { ClientFunction, Role, Selector } from 'testcafe'
 import { retrieveEmail } from 'test-common/real-email-config'
 import { waitForReact } from 'testcafe-react-selectors'
 import Page from './PageModels/page-model'
-import nid from 'nid'
 
 const config = require('../lib/config')
+const { generateUser } = require('../lib/user')
 
 let link
 const page = new Page()
@@ -16,10 +16,7 @@ const getLocation = ClientFunction(() => document.location.href)
 
 for (const index in users) {
   const user = users[index]
-  user.email = config.getEmail() // Generate a unique address for each user
-  user.password = `${nid(4).toUpperCase()}${nid(6)}${Math.floor(
-    Math.random() * 100
-  )}!$`
+  Object.assign(user, generateUser())
   user.role = Role(
     `${baseUrl}/login`,
     async t => {
@@ -47,7 +44,7 @@ for (const index in users) {
 }
 
 fixture('Login')
-  .page(`${baseUrl}`)
+  .page(baseUrl)
   .beforeEach(() => waitForReact())
 
 let invitationCodeLink

@@ -1,8 +1,9 @@
-import { ClientFunction, Selector } from 'testcafe'
+import { ClientFunction, Role, Selector } from 'testcafe'
 import { waitForReact } from 'testcafe-react-selectors'
 import Page from './PageModels/page-model'
 
-const config = require('../lib/config.js')
+const config = require('../lib/config')
+const { generateUser } = require('../lib/user')
 
 const page = new Page()
 const baseUrl = config.getBaseURL()
@@ -10,47 +11,61 @@ const baseUrl = config.getBaseURL()
 const getLocation = ClientFunction(() => document.location.href)
 
 const email = config.getEmail()
+
+const user = generateUser()
+
+const role = Role(
+  `${baseUrl}/login`,
+  async t => {
+    await waitForReact()
+    await t
+      .click(Selector('a'))
+      .typeText(page.emailInput, user.email)
+      .typeText(page.passInput, user.password)
+      .click('#signup-btn')
+
+    const code = await config.getCode(user.email)
+    await t
+      .typeText(Selector('#confirmationCode'), code)
+      .click(Selector('#confirm-signup-btn'))
+
+    await t
+      .typeText(page.emailInput, user.email)
+      .typeText(page.passInput, user.password)
+      .click(page.loginBtn)
+
+    await t.wait(1000)
+    await t.expect(Selector('#new-list-button', { timeout: 155000 })).exists
+  },
+  { preserveUrl: true }
+)
+
 fixture(`Checklist test`)
-  .page(baseUrl + '/login')
+  .page(baseUrl)
   .beforeEach(() => waitForReact())
 
-test('Checklist Tests', async t => {
-  await t.click(Selector('a'))
-
-  await t.typeText(page.emailInput, email)
-  await t.typeText(page.passInput, 'Slic123@')
-  await t.click(Selector('#signup-btn'))
-
-  const code = await config.getCode(email)
-  await t.typeText(Selector('#confirmationCode'), code)
-  await t.click(Selector('#confirm-signup-btn')).wait(5000)
-})
-
 test('User can create a new List', async t => {
-  await t.typeText(page.emailInput, email)
-  await t.typeText(page.passInput, 'Slic123@')
-  await t.click(page.loginBtn)
-
-  await t.click(Selector('#new-list-button', { timeout: 5000 }))
+  await t.useRole(role).click(Selector('#new-list-button', { timeout: 15000 }))
 
   const listNameInput = Selector('#name')
   await t
+    .maximizeWindow()
     .typeText(listNameInput, 'First List', { timeout: 1000 })
     .typeText(Selector('#description'), 'List Description', { timeout: 1000 })
     .click('#save-btn', { timeout: 2000 })
     .click(Selector('a').withText('First List'))
     .click(Selector('#expansion-summary'))
-    .expect(Selector('#list-name').withText('First List')).exists
-  await t.expect(Selector('#list-description').withText('List Description'))
-    .exists
-  await t.expect(getLocation()).contains('/list/')
+    .expect(Selector('#list-name').withText('First List').exists)
+    .ok()
+    .expect(Selector('#list-description').withText('List Description').exists)
+    .ok()
+    .expect(getLocation())
+    .contains('/list/')
 })
 
 test('Can add entries to newly created list', async t => {
   await t
-    .typeText(page.emailInput, email)
-    .typeText(page.passInput, 'Slic123@')
-    .click(page.loginBtn, { timeout: 5000 })
+    .useRole(role)
     .click(Selector('a').withText('First List'))
     .typeText('#newEntryTitle', 'New Item 1', { replace: true })
     .pressKey('enter')
@@ -74,9 +89,7 @@ test('Can add entries to newly created list', async t => {
 
 test('Can mark Entries as Completed', async t => {
   await t
-    .typeText(page.emailInput, email)
-    .typeText(page.passInput, 'Slic123@')
-    .click(page.loginBtn, { timeout: 5000 })
+    .useRole(role)
     .click(Selector('a', { timeout: 5000 }).withText('First List'))
     .expect(Selector('h2').withText('First List')).exists
 
@@ -89,9 +102,7 @@ test('Can mark Entries as Completed', async t => {
 
 test('Can update existing entries', async t => {
   await t
-    .typeText(page.emailInput, email)
-    .typeText(page.passInput, 'Slic123@')
-    .click(page.loginBtn, { timeout: 5000 })
+    .useRole(role)
     .click(Selector('a', { timeout: 5000 }).withText('First List'))
     .expect(Selector('h2').withText('First List')).exists
 
@@ -108,9 +119,7 @@ test('Can update existing entries', async t => {
 
 test('Can delete an entry from an existing list', async t => {
   await t
-    .typeText(page.emailInput, email)
-    .typeText(page.passInput, 'Slic123@')
-    .click(page.loginBtn, { timeout: 500 })
+    .useRole(role)
     .click(Selector('a', { timeout: 5000 }).withText('First List'))
     .expect(Selector('h2').withText('First List')).exists
 
@@ -132,9 +141,7 @@ test('User can update an already existing list', async t => {
   const descriptionTextField = Selector('#description')
 
   await t
-    .typeText(page.emailInput, email)
-    .typeText(page.passInput, 'Slic123@')
-    .click(page.loginBtn)
+    .useRole(role)
     .click(Selector('a', { timeout: 5000 }).withText('First List'))
     .expect(Selector('h2').withText('First List'))
     .exists.click(Selector('#edit-list-btn'))
@@ -159,9 +166,7 @@ test('User can update an already existing list', async t => {
 
 test('Can remove a full list, including entries', async t => {
   await t
-    .typeText(page.emailInput, email)
-    .typeText(page.passInput, 'Slic123@')
-    .click(page.loginBtn, { timeout: 500 })
+    .useRole(role)
     .click(Selector('a', { timeout: 5000 }).withText('Updated List Title'))
     .click(Selector('#edit-list-btn'))
     .click(Selector('#delete-list-btn'))
@@ -179,9 +184,7 @@ test('Can remove a full list, including entries', async t => {
 
 test('Can log out from the current session', async t => {
   await t
-    .typeText(page.emailInput, email)
-    .typeText(page.passInput, 'Slic123@')
-    .click(page.loginBtn)
+    .useRole(role)
     .click(Selector('#logout-btn', { timeout: 1000 }))
     .expect(getLocation())
     .contains('/login')
