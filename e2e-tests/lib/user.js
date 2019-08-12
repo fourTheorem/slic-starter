@@ -1,7 +1,8 @@
 'use strict'
 
-const config = require('../lib/config')
 import nid from 'nid'
+
+const config = require('../lib/config')
 
 module.exports = {
   generateUser
