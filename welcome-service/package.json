@@ -7,7 +7,7 @@
     "lint": "eslint --ignore-pattern \"scripts/**\" .",
     "coverage": "npm run test -- --cov --coverage-report=html",
     "format": "prettier --write \"**/*.js\"",
-    "test": "tap \"test/**/*.test.js\" --branches=100 --statements=100 --functions=100 --lines=100"
+    "test": "SLIC_STAGE=test tap \"test/**/*.test.js\" --branches=100 --statements=100 --functions=100 --lines=100"
   },
   "author": "Eoin Shanaghy <eoin.shanaghy@fourtheorem.com>",
   "license": "MIT",
