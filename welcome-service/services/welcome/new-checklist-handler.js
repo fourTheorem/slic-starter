@@ -1,5 +1,6 @@
 'use strict'
 
+const { middify } = require('slic-tools/middy-util')
 const { getUser } = require('slic-tools/user-util')
 const { sendEmail } = require('slic-tools/email-util')
 
@@ -17,6 +18,11 @@ async function handleNewChecklist(event) {
   await sendEmail(message)
 }
 
-module.exports = {
-  handleNewChecklist
-}
+module.exports = middify(
+  { handleNewChecklist },
+  {
+    ssmParameters: {
+      USER_SERVICE_URL: `/${process.env.SLIC_STAGE}/user-service/url`
+    }
+  }
+)
