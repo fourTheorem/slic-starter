@@ -6,7 +6,6 @@ import Page from './PageModels/page-model'
 const config = require('../lib/config')
 const { generateUser } = require('../lib/user')
 
-let link
 const page = new Page()
 const baseUrl = config.getBaseURL()
 
@@ -66,6 +65,7 @@ test('User can share a list after creation', async t => {
     .typeText(Selector('#email-textfield'), users[1].email)
     .click('#share-btn')
     .expect(Selector('p').withText('List shared successfully!')).exists
+  await t.wait(15000)
   const content = await retrieveEmail(users[1].email, 'Invitation to join')
   invitationCodeLink = content.text.links[0].href
   await t.expect(invitationCodeLink).ok()
