@@ -22,4 +22,4 @@
     - execute-api:Invoke
     - execute-api:GET
   Resource:
-    - arn:aws:execute-api:#{AWS::Region}:#{AWS::AccountId}:*/${self:provider.stage}/*/user/*
+    - arn:aws:execute-api:#{AWS::Region}:*:*/${self:provider.stage}/*/user/*
