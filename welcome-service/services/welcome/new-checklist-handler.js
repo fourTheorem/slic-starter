@@ -5,7 +5,6 @@ const { getUser } = require('slic-tools/user-util')
 const { sendEmail } = require('slic-tools/email-util')
 
 async function handleNewChecklist(event) {
-debugger
   const checklist = event.detail
   const { userId, name } = checklist
 
@@ -16,9 +15,7 @@ debugger
     body: `Congratulations! You created the list ${name}`
   }
 
-debugger
   await sendEmail(message)
-  return {}
 }
 
 module.exports = middify(

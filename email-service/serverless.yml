@@ -10,12 +10,14 @@ provider:
   name: aws
   runtime: nodejs8.10
   stage: ${opt:stage, 'local'}
+  SESEndpointUrl: 'email.us-east-1.amazonaws.com'
   region: ${opt:region, '${self:custom.defaultRegions.${self:provider.stage}}'}
   tracing:
     lambda: true
   iamRoleStatements: ${file(./sls-iam-role-statements.yml)}
   environment:
     SLIC_STAGE: ${self:provider.stage}
+    SES_ENDPOINT_URL: ${self:provider.SESEndpointUrl}
 
 custom:
   emailQueueName: ${self:provider.stage}-email-queue
