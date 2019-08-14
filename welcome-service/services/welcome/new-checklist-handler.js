@@ -9,7 +9,7 @@ async function handleNewChecklist(event) {
   const checklist = event.detail
   const { userId, name } = checklist
 
-  const { email } = await getUser(userId).catch((err) => log.info(err))
+  const { email } = await getUser(userId)
   const message = {
     to: email,
     subject: 'Your SLIC List',
