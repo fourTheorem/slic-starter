@@ -11,11 +11,13 @@ provider:
   runtime: nodejs8.10
   stage: ${opt:stage, 'local'}
   region: ${opt:region, '${self:custom.defaultRegions.${self:provider.stage}}'}
+  sesRegion: ${self:custom.sesRegions.${self:provider.region}, 'us-east-1'}
   tracing:
     lambda: true
   iamRoleStatements: ${file(./sls-iam-role-statements.yml)}
   environment:
     SLIC_STAGE: ${self:provider.stage}
+    SES_REGION: ${self:provider.sesRegion}
 
 custom:
   emailQueueName: ${self:provider.stage}-email-queue
@@ -28,6 +30,10 @@ custom:
     dev: dev.
     stg: stg.
     prod: ''
+  sesRegions:
+    us-east-1: us-east-1
+    us-west-2: us-west-2
+    eu-west-1: eu-west-1
   emailDomainName: ${self:custom.domainPrefixes.${self:provider.stage}}${self:custom.nsDomain}
   serverless-offline:
     port: 4002
