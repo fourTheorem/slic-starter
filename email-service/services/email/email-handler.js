@@ -11,7 +11,7 @@ if (!fromAddress) {
 }
 
 const ses = awsXray.captureAWSClient(
-  new AWS.SES({ endpoint: process.env.SES_ENDPOINT_URL })
+  new AWS.SES({ endpoint: process.env.SES_ENDPOINT_URL, region: 'us-east-1' })
 )
 
 async function sendEmail(message) {
