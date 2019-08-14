@@ -6,7 +6,6 @@ import Page from './PageModels/page-model'
 const config = require('../lib/config')
 const { generateUser } = require('../lib/user')
 
-let link
 const page = new Page()
 const baseUrl = config.getBaseURL()
 
