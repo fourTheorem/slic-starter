@@ -10,6 +10,8 @@ const testList = {
   description: 'New Checklist description'
 }
 
+const subject = 'Your SLIC List'
+
 test('Creating an email result in a welcome email being received', async t => {
   const { email } = await getUser()
 
@@ -20,7 +22,7 @@ test('Creating an email result in a welcome email being received', async t => {
     t.ok(data.createdAt)
     t.ok(data.listId)
 
-    const message = await retrieveEmail(email)
+    const message = await retrieveEmail(email, subject)
 
     console.log(message)
     t.equal(
