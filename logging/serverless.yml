@@ -35,20 +35,20 @@ resources:
     logzioFormatParameter:
       Type: AWS::SSM::Parameter
       Properties:
-        Name: /logging/logzio/format
+        Name: /${self:provider.stage}/logging/logzio/format
         Type: String
         Value: json
 
     logzioUrlParameter:
       Type: AWS::SSM::Parameter
       Properties:
-        Name: /logging/logzio/url
+        Name: /${self:provider.stage}/logging/logzio/url
         Type: String
         Value: https://listener.logz.io:8071
 
     logzioTypeParameter:
       Type: AWS::SSM::Parameter
       Properties:
-        Name: /logging/logzio/type
+        Name: /${self:provider.stage}/logging/logzio/type
         Type: String
         Value: cloudwatch-logs
