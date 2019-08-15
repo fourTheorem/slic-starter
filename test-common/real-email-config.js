@@ -36,7 +36,6 @@ async function retrieveEmail(emailAddress, subject) {
       timeout: 30000
     }
   )
-  console.dir({message}, 'message')
   await client.messages.del(message.id)
   return message
 }

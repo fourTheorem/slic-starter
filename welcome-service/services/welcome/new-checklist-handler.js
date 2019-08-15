@@ -3,7 +3,6 @@
 const { middify } = require('slic-tools/middy-util')
 const { getUser } = require('slic-tools/user-util')
 const { sendEmail } = require('slic-tools/email-util')
-const log = require('slic-tools/log')
 
 async function handleNewChecklist(event) {
   const checklist = event.detail

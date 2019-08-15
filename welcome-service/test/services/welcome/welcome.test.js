@@ -30,7 +30,6 @@ test('handleNewChecklist sends an email message', t => {
       },
       'slic-tools/email-util': {
         sendEmail: (...args) => {
-          debugger
           received.sendEmailArgs = args
           return Promise.resolve()
         },
@@ -51,5 +50,4 @@ test('handleNewChecklist sends an email message', t => {
       t.end()
     }
   })
-
 })
