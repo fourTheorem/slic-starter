@@ -11,8 +11,9 @@ cognitoAuthorizer:
 
 slicTable:
   Type: AWS::DynamoDB::Table
+  DeletionPolicy: Retain
   Properties:
-    TableName: checklists
+    TableName: ${self:custom.checklistTableName}
     AttributeDefinitions:
       - AttributeName: userId
         AttributeType: S

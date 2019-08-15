@@ -5,7 +5,7 @@ const uuid = require('uuid')
 const { dispatchEvent } = require('slic-tools/event-dispatcher')
 const { dynamoDocClient } = require('slic-tools/aws')
 
-const tableName = 'checklists'
+const tableName = process.env.CHECKLIST_TABLE_NAME
 
 module.exports = {
   create,
