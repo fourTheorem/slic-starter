@@ -13,7 +13,7 @@ const testUser = {
 
 const received = {}
 
-test('handleNewChecklist sends an email message', async t => {
+test('handleNewChecklist sends an email message', t => {
   const event = {
     detail: {
       userId,
@@ -30,19 +30,26 @@ test('handleNewChecklist sends an email message', async t => {
       },
       'slic-tools/email-util': {
         sendEmail: (...args) => {
+          debugger
           received.sendEmailArgs = args
+          return Promise.resolve()
         },
         '@noCallThru': true
       }
     }
   )
 
-  await checklistHandler.handleNewChecklist(event)
-
-  t.match(received.sendEmailArgs[0], {
-    to: testUser.email,
-    subject: 'Your SLIC List'
+  checklistHandler.handleNewChecklist(event, {}, err => {
+    if (err) {
+      t.fail(err)
+    } else {
+      t.match(received.sendEmailArgs[0], {
+        to: testUser.email,
+        subject: 'Your SLIC List'
+      })
+      t.ok(received.sendEmailArgs[0].body)
+      t.end()
+    }
   })
-  t.ok(received.sendEmailArgs[0].body)
-  t.end()
+
 })

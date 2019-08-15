@@ -6,13 +6,19 @@ plugins:
 
 provider:
   name: aws
-  runtime: ${self:custom.runtime}
+  stage: ${opt:stage, 'local'}
+  region: ${opt:region, '${self:custom.defaultRegions.${self:provider.stage}}'}
+  runtime: python3.6
   tracing: true
-  stage: ${self:custom.stage}
-  region: ${self:custom.region}
   iamRoleStatements: ${file(./sls-iam-role-statements.yml)}
 
-custom: ${file(./custom.yml)}
+custom:
+  defaultRegions: ${file(../common-config.json):defaultRegions}
+  pythonRequirements:
+    slim: true
+    useDownloadCache: true
+    useStaticCache: true
+    dockerizePip: non-linux
 
 functions: ${file(./sls-functions.yml)}
 
@@ -23,7 +29,7 @@ resources:
       Export:
         Name: ${self:provider.stage}-log-forwarder-function-arn
 
-# NOTE: /logging/logzio/token must be added manually as a SecretString
+  # NOTE: /logging/logzio/token must be added manually as a SecretString
 
   Resources:
     logzioFormatParameter:
@@ -46,4 +52,3 @@ resources:
         Name: /logging/logzio/type
         Type: String
         Value: cloudwatch-logs
-

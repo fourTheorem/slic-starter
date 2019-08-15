@@ -6,6 +6,7 @@
 - Effect: Allow
   Action:
     - ssm:GetParameter
+    - ssm:GetParameters
   Resource:
     - arn:aws:ssm:#{AWS::Region}:#{AWS::AccountId}:parameter/UserServiceUrl
     - arn:aws:ssm:#{AWS::Region}:#{AWS::AccountId}:parameter/UserServiceApiKey
@@ -21,4 +22,4 @@
     - execute-api:Invoke
     - execute-api:GET
   Resource:
-    - arn:aws:execute-api:#{AWS::Region}:#{AWS::AccountId}:*/${self:provider.stage}/*/user/*
+    - arn:aws:execute-api:*:*:*/${self:provider.stage}/*/user/*

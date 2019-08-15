@@ -1,5 +1,6 @@
 {
   "defaultRegions": {
+    "cicd": "eu-west-1",
     "dev": "eu-west-1",
     "stg": "eu-west-1",
     "prod": "eu-west-1",
