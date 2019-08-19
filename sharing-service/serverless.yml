@@ -26,11 +26,11 @@ provider:
         - execute-api:/*/*/*
 
 custom:
-  nsDomain: ${env:SLIC_NS_DOMAIN, 'sliclists.com'}
-  domainPrefixes: ${file(../common-config.json):domainPrefixes}
-  defaultRegions: ${file(../common-config.json):defaultRegions}
+  domainPrefixes: ${file(../slic-config.json):domainConfig:domainPrefixes}
+  defaultRegions: ${file(../slic-config.json):defaultRegions}
+  apiDomainName: ${file(../slic-config.json):domainConfig:apiDomainName}
+  nsDomain: ${env:SLIC_NS_DOMAIN}
   cloudFrontHostedZoneId: Z2FDTNDATAQYW2
-  apiDomainName: api.${self:custom.domainPrefixes.${self:provider.stage}}${self:custom.nsDomain}
   serverless-offline:
     port: 4004
     stage: local

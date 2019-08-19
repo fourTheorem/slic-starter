@@ -28,7 +28,7 @@ provider:
 
 custom:
   stage: ${opt:stage, 'dev'}
-  defaultRegions: ${file(../common-config.json):defaultRegions}
+  defaultRegions: ${file(../slic-config.json):defaultRegions}
   serverless-offline:
     port: 4003
     stage: local
