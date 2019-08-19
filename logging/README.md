@@ -12,7 +12,7 @@ We need to add this token to AWS Systems Manager Parameter Store. Ths should be 
 
 To do this, log into the AWS Management Console and navigate to Systems Manager (SSM). Under Shared Resources, navigate to Parameter Store.
 
-Create a Secure String Parameter with the name `/logging/logzio/token`. Enter the value retrieved from your Logz.io account.
+Create a Secure String Parameter with the name `/<STAGE>/logging/logzio/token` (Replace `<STAGE>` with the stage you are configuring (stg, prod, etc.). Enter the value retrieved from your Logz.io account.
 
 SLIC Starter Lambdas use [pino](https://github.com/pinojs/pino) as the logger, outputing structured JSON.
 

@@ -1,4 +1,4 @@
-service: checklist-service
+rervice: checklist-service
 
 plugins:
   # Order of plugins is important for dynamodb-local
@@ -23,10 +23,10 @@ provider:
     CHECKLIST_TABLE_NAME: ${self:custom.checklistTableName}
 
 custom:
+<<<<<<< HEAD
   checklistTableName: ${self:provider.stage}Checklists
   nsDomain: ${env:SLIC_NS_DOMAIN}
   domainPrefixes: ${file(../common-config.json):domainPrefixes}
-  defaultRegions: ${file(../common-config.json):defaultRegions}
   apiDomainName: api.${self:custom.domainPrefixes.${self:provider.stage}}${self:custom.nsDomain}
   serverless-offline:
     port: 4000
