@@ -1,10 +1,10 @@
 {
   "defaultRegions": {
-    "cicd": "us-east-2",
-    "dev": "us-east-2",
-    "stg": "us-east-2",
-    "prod": "us-east-2",
-    "local": "us-east-2"
+    "cicd": "eu-west-1",
+    "dev": "eu-west-1",
+    "stg": "eu-west-1",
+    "prod": "eu-west-1",
+    "local": "eu-west-1"
   },
   "domainPrefixes": {
     "dev": "dev.",
