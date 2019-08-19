@@ -8,6 +8,8 @@ const { test } = require('tap')
 const userId = 'ownerA'
 awsMock.setSDK(path.resolve('./node_modules/slic-tools/node_modules/aws-sdk'))
 
+process.env.CHECKLIST_TABLE_NAME = 'checklists'
+
 const list1 = {
   userId: 'ownerA',
   listId: 'list1',

@@ -3,7 +3,7 @@
 const Uuid = require('uuid')
 const { dynamoDocClient } = require('slic-tools/aws')
 
-const tableName = 'checklists'
+const tableName = process.env.CHECKLIST_TABLE_NAME
 
 module.exports = {
   addEntry,

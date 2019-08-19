@@ -8,7 +8,7 @@
     - dynamodb:UpdateItem
     - dynamodb:DeleteItem
     - dynamodb:BatchGetItem
-  Resource: 'arn:aws:dynamodb:#{AWS::Region}:*:*'
+  Resource: 'arn:aws:dynamodb:#{AWS::Region}:#{AWS::AccountId}:table/${self:custom.checklistTableName}'
 - Effect: Allow
   Action:
     - events:PutEvents

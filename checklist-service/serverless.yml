@@ -20,8 +20,10 @@ provider:
   iamRoleStatements: ${file(./sls-iam-role-statements.yml)}
   environment:
     SLIC_STAGE: ${self:provider.stage}
+    CHECKLIST_TABLE_NAME: ${self:custom.checklistTableName}
 
 custom:
+  checklistTableName: ${self:provider.stage}Checklists
   nsDomain: ${env:SLIC_NS_DOMAIN}
   domainPrefixes: ${file(../common-config.json):domainPrefixes}
   defaultRegions: ${file(../common-config.json):defaultRegions}
