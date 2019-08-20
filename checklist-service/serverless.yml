@@ -26,7 +26,6 @@ custom:
   checklistTableName: ${self:provider.stage}Checklists
   nsDomain: ${env:SLIC_NS_DOMAIN}
   domainPrefixes: ${file(../common-config.json):domainPrefixes}
-  apiDomainName: ${file(../slic-config.json):domainConfig.apiDomainName}
   checklistApiUrl:
     Fn::Join:
       - ''
