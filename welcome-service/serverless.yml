@@ -10,7 +10,7 @@ provider:
   name: aws
   runtime: nodejs8.10
   stage: ${opt:stage, 'local'}
-  region: ${opt:region, '${self:custom.defaultRegions.${self:provider.stage}}'}
+  region: ${opt:region, ${self:custom.defaultRegions.${self:provider.stage}}}
   tracing:
     lambda: true
   iamRoleStatements: ${file(./sls-iam-role-statements.yml)}

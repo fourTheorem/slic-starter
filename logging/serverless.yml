@@ -13,7 +13,7 @@ provider:
   iamRoleStatements: ${file(./sls-iam-role-statements.yml)}
 
 custom:
-  defaultRegions: ${file(../common-config.json):defaultRegions}
+  defaultRegions: ${file(../slic-config.json):defaultRegions}
   pythonRequirements:
     slim: true
     useDownloadCache: true
