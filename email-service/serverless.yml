@@ -43,7 +43,7 @@ custom:
     endpoint: ${env:SQS_ENDPOINT_URL,'http://0.0.0.0:4576'}
     autoCreate: true
     region: ${self:custom.defaultRegions.${self:provider.stage}}
-  defaultRegions: ${file(../common-config.json):defaultRegions}
+  defaultRegions: ${file(../slic-config.json):defaultRegions}
   logForwarding:
     destinationARN: !ImportValue ${self:provider.stage}-log-forwarder-function-arn
 

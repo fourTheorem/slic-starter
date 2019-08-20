@@ -40,8 +40,3 @@ resources:
             AliasTarget:
               DNSName: !GetAtt apiCustomDomain.DistributionDomainName
               HostedZoneId: ${self:custom.cloudFrontHostedZoneId}
-  Outputs:
-    ApiDistributionDomainName:
-      Value: !GetAtt apiCustomDomain.DistributionDomainName
-      Export:
-        Name: ${self:provider.stage}-api-distribution-domain-name
