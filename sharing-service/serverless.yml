@@ -27,7 +27,6 @@ provider:
 
 custom:
   domainPrefixes: ${file(../common-config.json):domainPrefixes}
-  apiDomainName: ${file(../slic-config.json):domainConfig.apiDomainName}
   shareApiUrl:
     Fn::Join:
       - ''

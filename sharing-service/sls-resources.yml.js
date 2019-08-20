@@ -9,6 +9,14 @@ cognitoAuthorizer:
     Type: COGNITO_USER_POOLS
     ProviderARNs:
       - $\{ssm:/$\{self:provider.stage}/user-service/user-pool-arn}
+
+# The service's generated API Gateway URL is only used when no domain is defined
+sharingServiceUrlParameter:
+  Type: AWS::SSM::Parameter
+  Properties:
+    Name: $\{self:provider.stage}/sharing-service/url
+    Type: String
+    Value: $\{self:custom.shareApiUrl}
 ${
   process.env.SLIC_NS_DOMAIN
     ? `
@@ -32,13 +40,6 @@ apiCustomDomainPathMappings:
     Stage: $\{self:provider.stage}
   DependsOn: resApiGatewayDeployment
 
-# The service's generated API Gateway URL is only used when no domain is defined
-sharingServiceUrlParameter:
-  Type: AWS::SSM::Parameter
-  Properties:
-    Name: $\{self:provider.stage}/sharing-service/url
-    Type: String
-    Value: $\{self:custom.shareApiUrl}
 `
     : ''
 }`
