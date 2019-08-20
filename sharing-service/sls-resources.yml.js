@@ -1,4 +1,5 @@
-module.exports = () => `
+'use strict'
+module.exports = () => require('yamljs').parse(`
 cognitoAuthorizer:
   Type: AWS::ApiGateway::Authorizer
   Properties:
@@ -14,9 +15,12 @@ cognitoAuthorizer:
 sharingServiceUrlParameter:
   Type: AWS::SSM::Parameter
   Properties:
-    Name: $\{self:provider.stage}/sharing-service/url
+    Name: /$\{self:provider.stage}/sharing-service/url
     Type: String
-    Value: $\{self:custom.shareApiUrl}
+    Value: 
+      Fn::Join:
+        - ''
+        - ['https://', '!Ref ApiGatewayRestApi', '.execute-api.$\{self:provider.region}.amazonaws.com/$\{self:provider.stage}']
 ${
   process.env.SLIC_NS_DOMAIN
     ? `
@@ -36,10 +40,10 @@ apiCustomDomainPathMappings:
     BasePath: 'share'
     RestApiId:
       Ref: ApiGatewayRestApi
-    DomainName: $\{self:custom.apiDomainName}
+    DomainName: api.$\{self:custom.domainPrefixes.$\{self:provider.stage}}$\{env:SLIC_NS_DOMAIN}
     Stage: $\{self:provider.stage}
   DependsOn: resApiGatewayDeployment
 
 `
     : ''
-}`
+}`)
