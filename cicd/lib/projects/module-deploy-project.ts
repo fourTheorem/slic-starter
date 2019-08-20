@@ -8,7 +8,7 @@ import { Construct } from '@aws-cdk/core'
 import config from '../../config'
 import { defaultEnvironment } from '../code-build-environments'
 import moduleArtifacts from './module-artifacts'
-import { Role } from '@aws-cdk/aws-iam';
+import { Role } from '@aws-cdk/aws-iam'
 
 export interface ModuleDeployProjectProps {
   moduleName: string
@@ -43,6 +43,10 @@ export class ModuleDeployProject extends PipelineProject {
         TARGET_REGION: {
           type: BuildEnvironmentVariableType.PLAINTEXT,
           value: `${config.defaultRegions[stageName]}`
+        },
+        FRONTEND_BUCKET_NAME: {
+          type: BuildEnvironmentVariableType.PLAINTEXT,
+          value: `${config.frontendBucketName}`
         }
       },
       buildSpec: BuildSpec.fromObject({

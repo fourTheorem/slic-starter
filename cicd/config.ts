@@ -13,5 +13,6 @@ export default {
   sourceRepoName: config.sourceRepo.name,
   sourceBranch: config.sourceRepo.branch,
   accountIds: config.accountIds,
-  defaultRegions: config.defaultRegions
+  defaultRegions: config.defaultRegions,
+  frontendBucketName: config.domainConfig.frontendBucketName
 }
