@@ -28,3 +28,15 @@ apiCustomDomainPathMappings:
     DomainName: ${self:custom.apiDomainName}
     Stage: ${self:provider.stage}
   DependsOn: resApiGatewayDeployment
+
+sharingServiceNameParameter:
+  Type: AWS::SSM::Parameter
+  Properties:
+    Name: /${self:provider.stage}/sharing-service/url
+    Type: String
+    Value:
+      Fn::Join:
+        - ''
+        - - 'https://'
+          - !Ref ApiGatewayRestApi
+          - '.execute-api.${self:provider.region}.amazonaws.com/${self:provider.stage}/'

@@ -28,7 +28,13 @@ provider:
 custom:
   domainPrefixes: ${file(../slic-config.json):domainConfig:domainPrefixes}
   defaultRegions: ${file(../slic-config.json):defaultRegions}
-  apiDomainName: ${file(../slic-config.json):domainConfig:apiDomainName}
+  apiDomainName: ${file(../slic-config.json):domainConfig:apiDomainName, ${self:custom.ApiInvokeUrl}}
+  ApiInvokeUrl:
+    Fn::Join:
+      - ''
+      - - 'https://'
+        - Ref: 'ApiGatewayRestApi'
+        - '.execute-api.${self:custom.region}.amazonaws.com/${self:provider.stage}'
   nsDomain: ${env:SLIC_NS_DOMAIN}
   cloudFrontHostedZoneId: Z2FDTNDATAQYW2
   serverless-offline:
@@ -46,4 +52,3 @@ functions: ${file(./sls-functions.yml)}
 
 resources:
   Resources: ${file(./sls-resources.yml)}
-

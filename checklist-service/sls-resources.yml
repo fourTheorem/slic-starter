@@ -47,3 +47,16 @@ apiCustomDomainPathMappings:
     DomainName: ${self:custom.apiDomainName}
     Stage: ${self:provider.stage}
   DependsOn: resApiGatewayDeployment
+
+
+checklistServiceNameParameter:
+  Type: AWS::SSM::Parameter
+  Properties:
+    Name: /${self:provider.stage}/checklist-service/url
+    Type: String
+    Value:
+      Fn::Join:
+        - ''
+        - - 'https://'
+          - !Ref ApiGatewayRestApi
+          - '.execute-api.${self:provider.region}.amazonaws.com/${self:provider.stage}/'

@@ -23,11 +23,16 @@ provider:
     CHECKLIST_TABLE_NAME: ${self:custom.checklistTableName}
 
 custom:
-<<<<<<< HEAD
   checklistTableName: ${self:provider.stage}Checklists
   nsDomain: ${env:SLIC_NS_DOMAIN}
   domainPrefixes: ${file(../common-config.json):domainPrefixes}
   apiDomainName: api.${self:custom.domainPrefixes.${self:provider.stage}}${self:custom.nsDomain}
+  ApiInvokeUrl:
+    Fn::Join:
+      - ''
+      - - 'https://'
+        - Ref: 'ApiGatewayRestApi'
+        - '.execute-api.${self:custom.region}.amazonaws.com/${self:provider.stage}'
   serverless-offline:
     port: 4000
     stage: local
