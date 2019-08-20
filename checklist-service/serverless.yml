@@ -13,7 +13,7 @@ provider:
   name: aws
   runtime: nodejs8.10
   stage: ${opt:stage, 'local'}
-  region: ${opt:region, '${self:custom.defaultRegions.${self:provider.stage}}'}
+  region: ${opt:region, ${env:TARGET_REGION}}
   tracing:
     apiGateway: true
     lambda: true
@@ -26,8 +26,8 @@ custom:
   checklistTableName: ${self:provider.stage}Checklists
   nsDomain: ${env:SLIC_NS_DOMAIN}
   domainPrefixes: ${file(../common-config.json):domainPrefixes}
-  apiDomainName: api.${self:custom.domainPrefixes.${self:provider.stage}}${self:custom.nsDomain}
-  ApiInvokeUrl:
+  apiDomainName: ${file(../slic-config.json):domainConfig.apiDomainName}
+  checklistApiUrl:
     Fn::Join:
       - ''
       - - 'https://'
@@ -36,7 +36,7 @@ custom:
   serverless-offline:
     port: 4000
     stage: local
-    region: ${self:custom.defaultRegions.${self:provider.stage}}
+    region: ${self:provider.region}
   dynamodb:
     start:
       migrate: true

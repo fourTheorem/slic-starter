@@ -1,0 +1,8 @@
+{
+  "domainPrefixes": {
+    "dev": "dev.",
+    "stg": "stg.",
+    "prod": "",
+    "local": ""
+  }
+}

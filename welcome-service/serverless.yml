@@ -10,7 +10,7 @@ provider:
   name: aws
   runtime: nodejs8.10
   stage: ${opt:stage, 'local'}
-  region: ${opt:region, ${self:custom.defaultRegions.${self:provider.stage}}}
+  region: ${{opt:region}, ${env:TARGET_REGION}}
   tracing:
     lambda: true
   iamRoleStatements: ${file(./sls-iam-role-statements.yml)}
@@ -25,8 +25,7 @@ custom:
   serverless-offline:
     port: 4001
     stage: local
-    region: ${self:custom.defaultRegions.${self:provider.stage}}
-  defaultRegions: ${file(../common-config.json):defaultRegions}
+    region: ${self:provider.region}
   logForwarding:
     destinationARN: !ImportValue ${self:provider.stage}-log-forwarder-function-arn
 

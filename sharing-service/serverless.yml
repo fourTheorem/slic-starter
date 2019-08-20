@@ -9,7 +9,7 @@ provider:
   name: aws
   runtime: nodejs8.10
   stage: ${opt:stage, 'local'}
-  region: ${opt:region, '${self:custom.defaultRegions.${self:provider.stage}}'}
+  region: ${opt:region, ${env:TARGET_REGION}} 
   tracing:
     apiGateway: true
     lambda: true
@@ -26,8 +26,7 @@ provider:
         - execute-api:/*/*/*
 
 custom:
-  domainPrefixes: ${file(../slic-config.json):domainConfig.domainPrefixes}
-  defaultRegions: ${file(../slic-config.json):defaultRegions}
+  domainPrefixes: ${file(../common-config.json):domainPrefixes}
   apiDomainName: ${file(../slic-config.json):domainConfig.apiDomainName}
   shareApiUrl:
     Fn::Join:
@@ -40,7 +39,7 @@ custom:
   serverless-offline:
     port: 4004
     stage: local
-    region: ${self:custom.defaultRegions.${self:provider.stage}}
+    region: ${self:provider.region} 
   emailQueueName: ${self:provider.stage}-email-queue
   prune:
     automatic: true

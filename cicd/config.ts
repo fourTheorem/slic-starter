@@ -12,5 +12,6 @@ export default {
   sourceRepoOwner: config.sourceRepo.owner,
   sourceRepoName: config.sourceRepo.name,
   sourceBranch: config.sourceRepo.branch,
-  accountIds: config.accountIds
+  accountIds: config.accountIds,
+  defaultRegions: config.defaultRegions
 }
