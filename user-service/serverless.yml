@@ -10,7 +10,7 @@ provider:
   name: aws
   runtime: nodejs8.10
   stage: ${opt:stage, 'local'}
-  region: ${{opt:region}, ${env:TARGET_REGION}}
+  region: ${opt:region, ${env:TARGET_REGION}}
   tracing:
     apiGateway: true
     lambda: true
