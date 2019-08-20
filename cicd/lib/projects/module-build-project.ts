@@ -42,6 +42,10 @@ export class ModuleBuildProject extends PipelineProject {
         TARGET_REGION: {
           type: BuildEnvironmentVariableType.PLAINTEXT,
           value: `${config.defaultRegions[stageName]}`
+        },
+        FRONTEND_BUCKET_NAME: {
+          type: BuildEnvironmentVariableType.PLAINTEXT,
+          value: `${config.frontendBucketName}`
         }
       },
       buildSpec: BuildSpec.fromObject({
