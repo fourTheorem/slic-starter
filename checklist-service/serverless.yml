@@ -31,7 +31,7 @@ custom:
       - ''
       - - 'https://'
         - Ref: 'ApiGatewayRestApi'
-        - '.execute-api.${self:custom.region}.amazonaws.com/${self:provider.stage}'
+        - '.execute-api.${self:provider.region}.amazonaws.com/${self:provider.stage}'
   serverless-offline:
     port: 4000
     stage: local
