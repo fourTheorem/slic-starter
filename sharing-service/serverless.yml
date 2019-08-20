@@ -26,9 +26,9 @@ provider:
         - execute-api:/*/*/*
 
 custom:
-  domainPrefixes: ${file(../slic-config.json):domainConfig:domainPrefixes}
+  domainPrefixes: ${file(../slic-config.json):domainConfig.domainPrefixes}
   defaultRegions: ${file(../slic-config.json):defaultRegions}
-  apiDomainName: ${file(../slic-config.json):domainConfig:apiDomainName, ${self:custom.ApiInvokeUrl}}
+  apiDomainName: ${file(../slic-config.json):domainConfig.apiDomainName, ${self:custom.ApiInvokeUrl}}
   ApiInvokeUrl:
     Fn::Join:
       - ''
