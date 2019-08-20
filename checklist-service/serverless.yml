@@ -1,4 +1,4 @@
-rervice: checklist-service
+service: checklist-service
 
 plugins:
   # Order of plugins is important for dynamodb-local
