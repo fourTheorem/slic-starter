@@ -7,13 +7,12 @@ plugins:
 provider:
   name: aws
   stage: ${opt:stage, 'local'}
-  region: ${opt:region, '${self:custom.defaultRegions.${self:provider.stage}}'}
+  region: ${{opt:region, ${env:TARGET_REGION}}
   runtime: python3.6
   tracing: true
   iamRoleStatements: ${file(./sls-iam-role-statements.yml)}
 
 custom:
-  defaultRegions: ${file(../slic-config.json):defaultRegions}
   pythonRequirements:
     slim: true
     useDownloadCache: true
