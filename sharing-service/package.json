@@ -15,7 +15,8 @@
   "devDependencies": {
     "serverless-offline": "^5.8.0",
     "serverless-pseudo-parameters": "^2.4.0",
-    "tap": "^14.2.0"
+    "tap": "^14.2.0",
+    "yamljs": "^0.3.0"
   },
   "dependencies": {
     "aws-signed-axios": "^1.0.6",
