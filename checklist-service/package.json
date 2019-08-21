@@ -37,7 +37,8 @@
   "dependencies": {
     "aws-sdk-mock": "^4.5.0",
     "serverless-log-forwarding": "^1.4.0",
-    "slic-tools": "file:../slic-tools"
+    "slic-tools": "file:../slic-tools",
+    "yamljs": "^0.3.0"
   },
   "husky": {
     "hooks": {

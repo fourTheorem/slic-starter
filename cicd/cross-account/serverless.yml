@@ -2,7 +2,7 @@ service: cicd-deployment-target
 
 custom:
   stage: ${opt:stage, 'cicd'}
-  region: eu-west-1
+  region: ${opt:region, '${file(../../slic-config.json):defaultRegions.cicd}'}
   runtime: nodejs8.10
   accountIds: ${file(../../slic-config.json):accountIds}
 
