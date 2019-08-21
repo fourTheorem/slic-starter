@@ -48,4 +48,4 @@ custom:
 functions: ${file(./sls-functions.yml)}
 
 resources:
-  Resources: ${file(./sls-resources.yml)}
+  Resources: ${file(./sls-resources.yml.js)}
