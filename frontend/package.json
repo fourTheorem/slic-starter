@@ -29,7 +29,8 @@
     "redux-logger": "^3.0.6",
     "redux-thunk": "^2.3.0",
     "serverless-s3-sync": "^1.7.1",
-    "string-to-color": "^2.0.1"
+    "string-to-color": "^2.0.1",
+    "yamljs": "^0.3.0"
   },
   "scripts": {
     "lint": "eslint src",

@@ -14,5 +14,5 @@ export default {
   sourceBranch: config.sourceRepo.branch,
   accountIds: config.accountIds,
   defaultRegions: config.defaultRegions,
-  frontendBucketName: config.domainConfig.frontendBucketName
+  siteBucketPrefix: config.domainConfig.siteBucketPrefix
 }
