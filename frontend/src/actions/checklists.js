@@ -8,7 +8,7 @@ export const LOAD_LISTS_FAILURE = 'LOAD_LISTS_FAILURE'
 export function loadLists() {
   return function(dispatch) {
     dispatch({ type: LOAD_LISTS_REQUEST })
-    AmplifyApi.get('checklist-api', '/checklist')
+    AmplifyApi.get('checklist-api', '')
       .then(result => {
         dispatch({ type: LOAD_LISTS_SUCCESS, payload: result })
       })
@@ -25,7 +25,7 @@ export const CREATE_LIST_FAILURE = 'CREATE_LIST_FAILURE'
 export function createList({ name, description }) {
   return function(dispatch) {
     dispatch({ type: CREATE_LIST_REQUEST })
-    AmplifyApi.post('checklist-api', '/checklist', {
+    AmplifyApi.post('checklist-api', '', {
       body: {
         name,
         description
@@ -48,7 +48,7 @@ export function removeList({ listId }) {
   return function(dispatch) {
     const meta = { listId }
     dispatch({ type: REMOVE_LIST_REQUEST, meta })
-    AmplifyApi.del('checklist-api', `/checklist/${listId}`)
+    AmplifyApi.del('checklist-api', `/${listId}`)
       .then(result => {
         dispatch({ type: REMOVE_LIST_SUCCESS, meta })
       })
@@ -66,7 +66,7 @@ export function updateList({ listId, name, description }) {
   return function(dispatch) {
     const meta = { listId }
     dispatch({ type: UPDATE_LIST_REQUEST })
-    AmplifyApi.put('checklist-api', `/checklist/${listId}`, {
+    AmplifyApi.put('checklist-api', `/${listId}`, {
       body: {
         name,
         description

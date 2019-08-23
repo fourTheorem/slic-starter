@@ -23,7 +23,7 @@ export function editShare() {
 export function createShare({ email, listId, listName }) {
   return function(dispatch) {
     dispatch({ type: CREATE_SHARE_REQUEST })
-    AmplifyApi.post('sharing-api', '/share', {
+    AmplifyApi.post('sharing-api', '', {
       body: {
         email,
         listId,
@@ -50,7 +50,7 @@ export const ACCEPT_SHARE_FAILURE = 'ACCEPT_SHARE_FAILURE'
 export function acceptShareRequest(code) {
   return function(dispatch) {
     dispatch({ type: ACCEPT_SHARE_REQUEST })
-    AmplifyApi.patch('sharing-api', `/share/${code}`, {
+    AmplifyApi.patch('sharing-api', `/${code}`, {
       body: {
         code: code
       }
