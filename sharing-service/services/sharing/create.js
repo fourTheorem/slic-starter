@@ -20,7 +20,8 @@ module.exports = middify(
   {
     ssmParameters: {
       CODE_SECRET: `/${process.env.SLIC_STAGE}/sharing-service/code-secret`,
-      USER_SERVICE_URL: `/${process.env.SLIC_STAGE}/user-service/url`
+      USER_SERVICE_URL: `/${process.env.SLIC_STAGE}/user-service/url`,
+      FRONTEND_URL: `/${process.env.SLIC_STAGE}/frontend/url`
     }
   }
 )

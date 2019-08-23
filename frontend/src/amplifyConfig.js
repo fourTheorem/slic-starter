@@ -7,7 +7,8 @@ const envVars = {
   userPoolId: 'REACT_APP_USER_POOL_ID',
   userPoolWebClientId: 'REACT_APP_USER_POOL_CLIENT_ID',
   identityPoolId: 'REACT_APP_IDENTITY_POOL',
-  apiEndpoint: 'REACT_APP_API_ENDPOINT'
+  checklistServiceApiEndpoint: 'REACT_APP_CHECKLIST_SERVICE_URL',
+  sharingServiceApiEndpoint: 'REACT_APP_SHARING_SERVICE_URL'
 }
 
 const config = {}
@@ -23,21 +24,33 @@ Object.entries(envVars).forEach(([key, env]) => {
   config[key] = value
 })
 
-const { apiEndpoint, ...authConfig } = config
+const {
+  checklistServiceApiEndpoint,
+  sharingServiceApiEndpoint,
+  ...authConfig
+} = config
 
+const commonEndpointConfig = {
+  region: config.region,
+  custom_header: async () => {
+    const session = await Auth.currentSession()
+    return {
+      Authorization: get(session, 'idToken.jwtToken')
+    }
+  }
+}
 const amplifyConfig = {
   API: {
     endpoints: [
       {
-        name: 'slic-lists-api',
-        endpoint: apiEndpoint,
-        region: config.region,
-        custom_header: async () => {
-          const session = await Auth.currentSession()
-          return {
-            Authorization: get(session, 'idToken.jwtToken')
-          }
-        }
+        name: 'checklist-api',
+        endpoint: checklistServiceApiEndpoint,
+        ...commonEndpointConfig
+      },
+      {
+        name: 'sharing-api',
+        endpoint: sharingServiceApiEndpoint,
+        ...commonEndpointConfig
       }
     ]
   }

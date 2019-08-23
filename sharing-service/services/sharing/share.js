@@ -9,9 +9,10 @@ const invitation = require('../../lib/invitation')
 
 const stage = process.env.SLIC_STAGE
 const nsDomain = process.env.SLIC_NS_DOMAIN
+const siteBucketUrl = process.env.SITE_BUCKET_URL
 
 async function create({ email, listId, listName, userId }) {
-  const baseLink = `https://${stage}.${nsDomain}/invitation/`
+  const baseLink = `https://${process.env.FRONTEND_URL}/invitation/`
 
   const { email: sharerEmail } = await getUser(userId)
   log.info({ email, userId, listId })

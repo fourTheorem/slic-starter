@@ -1,3 +1,7 @@
+const frontendUrl = process.env.SLIC_NS_DOMAIN
+  ? `$\{self:custom.siteDomainName}`
+  : '!GetAtt siteBucket.WebsiteURL'
+
 module.exports = () =>
   require('yamljs').parse(`
 siteBucket:
@@ -18,13 +22,16 @@ siteBucketPolicy:
         - Action:
             - 's3:GetObject'
           Effect: 'Allow'
-          Resource:
-            Fn::Join:
-              - ''
-              - - 'arn:aws:s3:::'
-                - !Ref siteBucket
-                - '/*'
           Principal: '*'
+          Resource: 'arn:aws:s3:::$\{self:custom.bucketName}/*'
+
+frontendUrl: 
+  Type: AWS::SSM::Parameter
+  Properties: 
+    Name: /$\{self:provider.stage}/frontend/url
+    Type: String
+    Value: ${frontendUrl}
+
 ${
   process.env.SLIC_NS_DOMAIN
     ? `
@@ -63,8 +70,7 @@ siteDistribution:
       CustomErrorResponses:
         - ErrorCode: 403
           ResponseCode: 200
-          ResponsePagePath: /
-        - ErrorCode: 404
+          ResponsePagePath: / - ErrorCode: 404
           ResponseCode: 200
           ResponsePagePath: /
 
