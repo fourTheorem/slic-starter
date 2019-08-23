@@ -19,7 +19,14 @@ s3Sync:
 # The HostedZoneId for CloudFront distributions is always this value.
 # See http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-route53-aliastarget.html
 # AND http://docs.aws.amazon.com/general/latest/gr/rande.html
+${
+  process.env.SLIC_NS_DOMAIN
+    ? ` 
 cloudFrontHostedZoneId: Z2FDTNDATAQYW2
 siteConfig: $\{file(./site-config.js)}
+
+`
+    : ''
+}
 
 `)
