@@ -6,9 +6,6 @@ const awsXray = require('aws-xray-sdk')
 const log = require('slic-tools/log')
 
 const fromAddress = process.env.EMAIL_FROM_ADDRESS
-if (!fromAddress) {
-  throw new Error('EMAIL_FROM_ADDRESS must be specified')
-}
 
 const ses = awsXray.captureAWSClient(
   new AWS.SES({
@@ -38,7 +35,7 @@ async function sendEmail(message) {
         Data: subject
       }
     },
-    Source: fromAddress
+    Source: fromAddress && fromAddress.length ? fromAddress : null
   }
 
   const result = await ses.sendEmail(params).promise()

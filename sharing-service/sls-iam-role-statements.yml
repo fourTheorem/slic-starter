@@ -4,7 +4,7 @@
   Resource:
     - arn:aws:ssm:#{AWS::Region}:#{AWS::AccountId}:parameter/${self:provider.stage}/user-service/url
     - arn:aws:ssm:#{AWS::Region}:#{AWS::AccountId}:parameter/${self:provider.stage}/sharing-service/code-secret
-    - arn:aws:ssm:#{AWS::Region}:#{AWS::AccountId}:parameter/${self:provider.stage}/frontend/bucketUrl
+    - arn:aws:ssm:#{AWS::Region}:#{AWS::AccountId}:parameter/${self:provider.stage}/frontend/url
 - Effect: Allow
   Action:
     - sqs:GetQueueUrl
