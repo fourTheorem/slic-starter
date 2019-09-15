@@ -30,11 +30,10 @@ custom:
     us-east-1: us-east-1
     us-west-2: us-west-2
     eu-west-1: eu-west-1
-  emailDomainName: ${self:custom.domainPrefixes.${self:provider.stage}}${self:custom.nsDomain}
   serverless-offline:
     port: 4002
     stage: local
-    region: ${self:custom.defaultRegions.${self:provider.stage}}
+    region: ${opt:region, '${env:TARGET_REGION}'}
   serverless-offline-sqs:
     endpoint: ${env:SQS_ENDPOINT_URL,'http://0.0.0.0:4576'}
     autoCreate: true
