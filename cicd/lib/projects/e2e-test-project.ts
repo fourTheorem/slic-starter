@@ -16,11 +16,7 @@ export interface E2ETestProjectProps extends PipelineProjectProps {
 }
 
 export class E2ETestProject extends PipelineProject {
-  constructor(
-    scope: Construct,
-    id: string,
-    props: E2ETestProjectProps
-  ) {
+  constructor(scope: Construct, id: string, props: E2ETestProjectProps) {
     const { stageName, ...rest } = props
 
     const role = new CodeBuildRole(scope, `${props.stageName}E2ETestRole`, {
@@ -31,7 +27,9 @@ export class E2ETestProject extends PipelineProject {
     role.addToPolicy(
       new iam.PolicyStatement({
         actions: ['ssm:GetParameters'],
-        resources: [`arn:aws:ssm:${config.region}:${config.accountIds.cicd}:parameter/test/*`]
+        resources: [
+          `arn:aws:ssm:${config.region}:${config.accountIds.cicd}:parameter/test/*`
+        ]
       })
     )
 
@@ -44,10 +42,6 @@ export class E2ETestProject extends PipelineProject {
         SLIC_STAGE: {
           type: BuildEnvironmentVariableType.PLAINTEXT,
           value: props.stageName
-        },
-        SLIC_NS_DOMAIN: {
-          type: BuildEnvironmentVariableType.PLAINTEXT,
-          value: config.nsDomain
         },
         CROSS_ACCOUNT_ID: {
           type: BuildEnvironmentVariableType.PLAINTEXT,

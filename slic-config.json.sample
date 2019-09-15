@@ -13,14 +13,14 @@
     "branch": "master"
   },
   "domainConfig": {
+    "siteBucketPrefix": "define-this-if-not-using-nsDomain",
     "nsDomain": "your-apex.domain",
-    "apiDomainName": "api.your-apex.domain",
     "domainPrefixes": {
       "dev": "dev.",
       "stg": "stg.",
       "prod": "",
       "local": ""
-    } 
+    }
   },
   "defaultRegions": {
     "cicd": "eu-west- 1",

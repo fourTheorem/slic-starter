@@ -43,10 +43,8 @@ checklistServiceNameParameter:
         - ['https://', '!Ref ApiGatewayRestApi', '.execute-api.$\{self:provider.region}.amazonaws.com/$\{self:provider.stage}']
 
 ${
-    process.env.SLIC_NS_DOMAIN
-      ? `
-
-
+  process.env.SLIC_NS_DOMAIN
+    ? `
 # Workaround for "Invalid stage identifier specified"
 # See https://github.com/serverless/serverless/issues/4029
 resApiGatewayDeployment:
@@ -63,10 +61,10 @@ apiCustomDomainPathMappings:
     BasePath: 'checklist'
     RestApiId:
       Ref: ApiGatewayRestApi
-    DomainName: $\{self:custom.apiDomainName}
+    DomainName: api.$\{self:custom.domainPrefixes.$\{self:provider.stage}}$\{env:SLIC_NS_DOMAIN}
     Stage: $\{self:provider.stage}
   DependsOn: resApiGatewayDeployment
 
 `
-      : ''
-  }`)
+    : ''
+}`)
