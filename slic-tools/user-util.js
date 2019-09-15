@@ -17,10 +17,21 @@ async function getUser(userId) {
       url: userUrl
     })
     return result
-  } catch(err) {
-    const { data, status, headers } = err.response || {}
+  } catch (err) {
+    const response = err.response || {}
+    const request = err.request || {}
     if (status) {
-      log.error({ data, status, headers }, 'Error retrieving user')
+      log.error(
+        {
+          request: { url: request.url, headers: request.headers },
+          response: {
+            data: response.data,
+            status: response.status,
+            headers: response.headers
+          }
+        },
+        'Error retrieving user'
+      )
     }
     throw err
   }

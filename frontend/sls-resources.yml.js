@@ -25,12 +25,12 @@ siteBucketPolicy:
           Principal: '*'
           Resource: 'arn:aws:s3:::$\{self:custom.bucketName}/*'
 
-frontendUrl: 
+frontendUrl:
   Type: AWS::SSM::Parameter
-  Properties: 
+  Properties:
     Name: /$\{self:provider.stage}/frontend/url
     Type: String
-    Value: ${frontendUrl}
+    Value: '${frontendUrl}'
 
 ${
   process.env.SLIC_NS_DOMAIN

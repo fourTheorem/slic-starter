@@ -1,17 +1,19 @@
 /* eslint-disable no-template-curly-in-string */
-const siteDomainName = process.env.SLIC_NS_DOMAIN
-  ? '${self:custom.domainPrefixes.${self:provider.stage}}${env:SLIC_NS_DOMAIN}'
-  : ''
-const bucketName = `slic-starter-site-assets-${
-  siteDomainName
-    ? siteDomainName
-    : process.env.SITE_BUCKET_PREFIX + '-${self:provider.stage}'
-}`
+if (!process.env.SLIC_NS_DOMAIN && !process.env.SITE_BUCKET_PREFIX) {
+  throw new Error(
+    'Either SLIC_NS_DOMAIN or SITE_BUCKET_PREFIX must be specified'
+  )
+}
+const siteDomainName =
+  process.env.SLIC_NS_DOMAIN &&
+  '${self:custom.domainPrefixes.${self:provider.stage}}${env:SLIC_NS_DOMAIN}'
+const bucketName = siteDomainName
+  ? `slic-starter-site-assets-${siteDomainName}`
+  : `${process.env.SITE_BUCKET_PREFIX}-$\{self:provider.stage}`
 
 module.exports = () =>
   require('yamljs').parse(`
-
-bucketName: ${bucketName}
+bucketName: '${bucketName}'
 domainPrefixes: $\{file(../common-config.json):domainPrefixes}
 s3Sync:
   - bucketName: $\{self:custom.bucketName}
@@ -21,12 +23,10 @@ s3Sync:
 # AND http://docs.aws.amazon.com/general/latest/gr/rande.html
 ${
   process.env.SLIC_NS_DOMAIN
-    ? ` 
+    ? `
 cloudFrontHostedZoneId: Z2FDTNDATAQYW2
 siteConfig: $\{file(./site-config.js)}
-
 `
     : ''
 }
-
 `)

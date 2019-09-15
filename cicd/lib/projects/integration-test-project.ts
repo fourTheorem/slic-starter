@@ -23,16 +23,22 @@ export class IntegrationTestProject extends PipelineProject {
   ) {
     const { stageName, ...rest } = props
 
-    const role = new CodeBuildRole(scope, `${props.stageName}IntegrationTestRole`, {
-      stageName
-    })
+    const role = new CodeBuildRole(
+      scope,
+      `${props.stageName}IntegrationTestRole`,
+      {
+        stageName
+      }
+    )
     // Allow access to secret environment variables in Parameter Store required for tests
     role.addToPolicy(
       new iam.PolicyStatement({
         actions: ['ssm:GetParameters'],
-        resources: [`arn:aws:ssm:${config.region}:${config.accountIds.cicd}:parameter/test/*`]
+        resources: [
+          `arn:aws:ssm:${config.region}:${config.accountIds.cicd}:parameter/test/*`
+        ]
       })
-)
+    )
     super(scope, id, {
       projectName: `${props.stageName}IntegrationTest`,
       environment: {
@@ -42,10 +48,6 @@ export class IntegrationTestProject extends PipelineProject {
         SLIC_STAGE: {
           type: BuildEnvironmentVariableType.PLAINTEXT,
           value: props.stageName
-        },
-        SLIC_NS_DOMAIN: {
-          type: BuildEnvironmentVariableType.PLAINTEXT,
-          value: config.nsDomain
         },
         CROSS_ACCOUNT_ID: {
           type: BuildEnvironmentVariableType.PLAINTEXT,
@@ -60,7 +62,9 @@ export class IntegrationTestProject extends PipelineProject {
           value: '/test/mailosaur/serverId'
         }
       },
-      buildSpec: BuildSpec.fromSourceFilename('integration-tests/buildspec.yml'),
+      buildSpec: BuildSpec.fromSourceFilename(
+        'integration-tests/buildspec.yml'
+      ),
       role,
       ...rest
     })

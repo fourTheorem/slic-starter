@@ -57,5 +57,5 @@ _GIT_REPO/
 pipeline-state.env\
 aws-accounts.json
 slic-config.json
-
+*.gitignored
 
