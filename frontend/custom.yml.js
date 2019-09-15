@@ -12,7 +12,7 @@ const bucketName = siteDomainName
   : `${process.env.SITE_BUCKET_PREFIX}-$\{self:provider.stage}`
 
 module.exports = () =>
-  require('yamljs').parse(`
+  require('yaml').parse(`
 bucketName: '${bucketName}'
 domainPrefixes: $\{file(../common-config.json):domainPrefixes}
 s3Sync:
