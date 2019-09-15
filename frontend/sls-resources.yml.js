@@ -1,9 +1,5 @@
-const frontendUrl = process.env.SLIC_NS_DOMAIN
-  ? `$\{self:custom.siteDomainName}`
-  : '!GetAtt siteBucket.WebsiteURL'
-
 module.exports = () =>
-  require('yamljs').parse(`
+  require('yaml').parse(`
 siteBucket:
   Type: AWS::S3::Bucket
   Properties:
@@ -30,25 +26,38 @@ frontendUrl:
   Properties:
     Name: /$\{self:provider.stage}/frontend/url
     Type: String
-    Value: '${frontendUrl}'
-
-${
-  process.env.SLIC_NS_DOMAIN
-    ? `
+    Value: ${
+      process.env.SLIC_NS_DOMAIN
+        ? `$\{self:custom.siteDomainName}`
+        : `
+      Fn::Join:
+        - ""
+        - - https://
+          - Fn::GetAtt:
+            - siteDistribution
+            - DomainName`
+    }
 siteDistribution:
   Type: AWS::CloudFront::Distribution
   Properties:
     DistributionConfig:
       Origins:
-        - DomainName: !GetAtt siteBucket.DomainName
+        - DomainName:
+            Fn::GetAtt:
+              - siteBucket
+              - DomainName
           Id: $\{self:custom.bucketName}-origin
           S3OriginConfig:
             OriginAccessIdentity: ''
       Enabled: true
       DefaultRootObject: index.html
-      HttpVersion: http2
+      HttpVersion: http2${
+        process.env.SLIC_NS_DOMAIN
+          ? `
       Aliases:
-        - $\{self:custom.siteDomainName}
+        - $\{self:custom.siteDomainName}`
+          : ''
+      }
       DefaultCacheBehavior:
         AllowedMethods:
           - DELETE
@@ -63,17 +72,24 @@ siteDistribution:
           QueryString: 'false'
           Cookies:
             Forward: none
-        ViewerProtocolPolicy: redirect-to-https
+        ViewerProtocolPolicy: redirect-to-https${
+          process.env.SLIC_NS_DOMAIN
+            ? `
       ViewerCertificate:
         AcmCertificateArn: $\{self:custom.siteConfig.siteCert}
-        SslSupportMethod: sni-only
+        SslSupportMethod: sni-only`
+            : ''
+        }
       CustomErrorResponses:
         - ErrorCode: 403
           ResponseCode: 200
-          ResponsePagePath: / - ErrorCode: 404
+          ResponsePagePath: /
+        - ErrorCode: 404
           ResponseCode: 200
           ResponsePagePath: /
-
+${
+  process.env.SLIC_NS_DOMAIN
+    ? `
 webRecordSets:
   Type: AWS::Route53::RecordSetGroup
   Properties:
@@ -87,3 +103,6 @@ webRecordSets:
 `
     : ''
 }`)
+
+const val = module.exports()
+console.log(JSON.stringify(val, null, ' '))

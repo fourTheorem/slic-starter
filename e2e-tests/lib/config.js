@@ -1,13 +1,24 @@
 const localConfig = require('./local-email-config.js')
 const realConfig = require('test-common/real-email-config')
 
+const AWS = require('aws-sdk')
+const ssm = new AWS.SSM()
+
 const stage = process.env.SLIC_STAGE
-export function getBaseURL() {
+
+const frontendUrlPromise =
+  stage === 'local'
+    ? Promise.resolve('http://localhost:3000')
+    : ssm
+        .getParameter({ Name: `/${stage}/frontend/url` })
+        .promise()
+        .then(data => data.Parameter.Value)
+
+export async function getBaseURL() {
   let url
   const domainSuffix = stage === 'prod' ? '' : `${stage}.`
 
   if (stage === 'local') {
-    url = 'http://localhost:3000'
   } else {
     const nsDomain = process.env.SLIC_NS_DOMAIN
     if (!nsDomain) {
