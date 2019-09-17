@@ -40,7 +40,7 @@ checklistServiceNameParameter:
     Value:
       Fn::Join:
         - ''
-        - ['https://', '!Ref ApiGatewayRestApi', '.execute-api.$\{self:provider.region}.amazonaws.com/$\{self:provider.stage}']
+        - ['https://', {'Ref': 'ApiGatewayRestApi'}, '.execute-api.$\{self:provider.region}.amazonaws.com/$\{self:provider.stage}']
 
 ${
   process.env.SLIC_NS_DOMAIN

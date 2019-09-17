@@ -1,5 +1,6 @@
 'use strict'
-module.exports = () => require('yamljs').parse(`
+module.exports = () =>
+  require('yamljs').parse(`
 cognitoAuthorizer:
   Type: AWS::ApiGateway::Authorizer
   Properties:
@@ -20,7 +21,7 @@ sharingServiceUrlParameter:
     Value: 
       Fn::Join:
         - ''
-        - ['https://', '!Ref ApiGatewayRestApi', '.execute-api.$\{self:provider.region}.amazonaws.com/$\{self:provider.stage}']
+        - ['https://', {'Ref': 'ApiGatewayRestApi'}, '.execute-api.$\{self:provider.region}.amazonaws.com/$\{self:provider.stage}']
 ${
   process.env.SLIC_NS_DOMAIN
     ? `
