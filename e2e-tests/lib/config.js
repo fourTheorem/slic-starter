@@ -1,7 +1,7 @@
 const localConfig = require('./local-email-config.js')
 const realConfig = require('test-common/real-email-config')
-
 const AWS = require('aws-sdk')
+const sp = require('synchronized-promise')
 const ssm = new AWS.SSM()
 
 const stage = process.env.SLIC_STAGE
@@ -13,21 +13,10 @@ const frontendUrlPromise =
         .getParameter({ Name: `/${stage}/frontend/url` })
         .promise()
         .then(data => data.Parameter.Value)
+const synchronousBaseUrl = sp(() => frontendUrlPromise)
 
-export async function getBaseURL() {
-  let url
-  const domainSuffix = stage === 'prod' ? '' : `${stage}.`
-
-  if (stage === 'local') {
-  } else {
-    const nsDomain = process.env.SLIC_NS_DOMAIN
-    if (!nsDomain) {
-      throw new Error('SLIC_NS_DOMAIN must be set')
-    }
-    url = `https://${domainSuffix}${nsDomain}`
-  }
-
-  return url
+export function getBaseURL() {
+  return synchronousBaseUrl()
 }
 
 export function getEmail() {
