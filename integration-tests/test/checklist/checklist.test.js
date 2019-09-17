@@ -18,14 +18,14 @@ test('checklist tests', async t => {
   const { userId } = await getUser()
 
   test('empty checklist set can be read', async t => {
-    const response = await httpClient.get('/checklist')
+    const response = await httpClient.get('')
     t.equal(response.status, 200)
     t.same(response.data, [])
   })
 
   let listId1, listId2
   test('checklists can be added', async t => {
-    const response = await httpClient.post('/checklist', testLists[0])
+    const response = await httpClient.post('', testLists[0])
 
     const { data, status } = response
     t.equal(status, 201)
@@ -35,15 +35,15 @@ test('checklist tests', async t => {
     t.ok(listId)
     listId1 = data.listId
 
-    const { data: data2 } = await httpClient.post('/checklist', testLists[1])
+    const { data: data2 } = await httpClient.post('', testLists[1])
     listId2 = data2.listId
 
-    const { data: lists } = await httpClient.get('/checklist')
+    const { data: lists } = await httpClient.get('')
     t.match(lists.sort((a, b) => (a.name > b.name ? 1 : -1)), testLists)
   })
 
   test('checklists can be read by ID', async t => {
-    const response = await httpClient.get(`/checklist/${listId2}`)
+    const response = await httpClient.get(`/${listId2}`)
     const { data, status } = response
     t.equal(status, 200)
     t.match(data, testLists[1])
@@ -54,19 +54,19 @@ test('checklist tests', async t => {
     const newName = 'New List Name'
     const newDescription = 'New Description'
 
-    await httpClient.put(`/checklist/${listId1}`, {
+    await httpClient.put(`/${listId1}`, {
       name: newName,
       description: newDescription
     })
-    const { data } = await httpClient.get(`/checklist/${listId1}`)
+    const { data } = await httpClient.get(`/${listId1}`)
     t.equal(data.name, newName)
     t.equal(data.description, newDescription)
   })
 
   test('checklist can be deleted', async t => {
-    const { status } = await httpClient.delete(`/checklist/${listId1}`)
+    const { status } = await httpClient.delete(`/${listId1}`)
     t.equal(status, 200)
-    const { data } = await httpClient.get('/checklist')
+    const { data } = await httpClient.get('')
     t.match(data, testLists.slice(1))
   })
 
@@ -76,7 +76,7 @@ test('checklist tests', async t => {
 
   test('entries can be added', async t => {
     const results = await Promise.map(entries, entry =>
-      httpClient.post(`/checklist/${listId2}/entries`, entry)
+      httpClient.post(`/${listId2}/entries`, entry)
     )
     results.forEach(({ status, data: { entId } }) => {
       t.equal(status, 201)
@@ -86,24 +86,22 @@ test('checklist tests', async t => {
 
   let sortedEntries
   test('entries can be read back', async t => {
-    const { status, data } = await httpClient.get(
-      `/checklist/${listId2}/entries`
-    )
+    const { status, data } = await httpClient.get(`/${listId2}/entries`)
     t.equal(status, 200)
     t.equal(Object.keys(data).length, entries.length)
-    sortedEntries = entriesToArray(data).sort(
-      (a, b) => (a.title > b.title ? 1 : -1)
+    sortedEntries = entriesToArray(data).sort((a, b) =>
+      a.title > b.title ? 1 : -1
     )
     t.match(sortedEntries, entries)
   })
 
   test('entry can be removed', async t => {
     const { status } = await httpClient.delete(
-      `/checklist/${listId2}/entries/${sortedEntries[0].entId}`
+      `/${listId2}/entries/${sortedEntries[0].entId}`
     )
     t.equal(status, 200)
 
-    const { data } = await httpClient.get(`/checklist/${listId2}/entries`)
+    const { data } = await httpClient.get(`/${listId2}/entries`)
     t.match(
       Object.values(data).sort((a, b) => (a.title > b.title ? 1 : -1)),
       entries.splice(1)
@@ -113,12 +111,12 @@ test('checklist tests', async t => {
   test('entry can be updated', async t => {
     const newTitle = 'A changed title'
     const { status } = await httpClient.put(
-      `/checklist/${listId2}/entries/${sortedEntries[1].entId}`,
+      `/${listId2}/entries/${sortedEntries[1].entId}`,
       { title: newTitle, value: 'YES' }
     )
     t.equal(status, 200)
 
-    const { data } = await httpClient.get(`/checklist/${listId2}/entries`)
+    const { data } = await httpClient.get(`/${listId2}/entries`)
     t.match(entriesToArray(data).sort((a, b) => (a.title > b.title ? 1 : -1)), [
       { ...sortedEntries[1], value: 'YES', title: newTitle },
       ...sortedEntries.splice(2)
@@ -126,10 +124,8 @@ test('checklist tests', async t => {
   })
 
   test('tear down - delete checklist', async t => {
-    const lists = (await httpClient.get('/checklist')).data
-    await Promise.each(lists, list =>
-      httpClient.delete(`/checklist/${list.listId}`)
-    )
+    const lists = (await httpClient.get('')).data
+    await Promise.each(lists, list => httpClient.delete(`/${list.listId}`))
   })
 
   test('tear down - delete user', async () => {

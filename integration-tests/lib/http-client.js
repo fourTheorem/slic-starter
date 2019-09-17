@@ -5,14 +5,14 @@ const { toneAxiosError } = require('./axios-util')
 const { loadBackendConfig } = require('./backend-config')
 const { getUser } = require('./user-util')
 
-async function getHttpClient() {
-  const { apiEndpoint } = await loadBackendConfig()
+async function getHttpClient(apiName = 'checklist-service') {
+  const { apiEndpoints } = await loadBackendConfig()
   const { idToken } = await getUser()
 
   const headers = { Authorization: idToken }
 
   const axiosClient = axios.create({
-    baseURL: apiEndpoint,
+    baseURL: apiEndpoints[apiName],
     headers
   })
 
