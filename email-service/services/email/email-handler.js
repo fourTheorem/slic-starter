@@ -39,7 +39,6 @@ async function sendEmail(message) {
   }
 
   const result = await ses.sendEmail(params).promise()
-
   log.info({ result }, 'Sent email')
 }
 

@@ -5,6 +5,9 @@ const path = require('path')
 const awsMock = require('aws-sdk-mock')
 const { test } = require('tap')
 
+const fromAddress = 'noreply@example.com'
+process.env.EMAIL_FROM_ADDRESS = fromAddress
+
 awsMock.setSDK(path.resolve('./node_modules/aws-sdk'))
 const received = {
   SES: {}
@@ -15,13 +18,8 @@ awsMock.mock('SES', 'sendEmail', function(params, callback) {
   callback(null, { ...params })
 })
 
-test('email service requires from email address to be set', t => {
-  t.throws(() => require('../../../services/email/email-handler'))
-  t.end()
-})
-
 test('email sends an email', async t => {
-  process.env.EMAIL_FROM_ADDRESS = 'no-reply@example.com'
+  process.env.EMAIL_FROM_ADDRESS = 'noreply@example.com'
   const emailHandler = require('../../../services/email/email-handler')
 
   const message = {
@@ -51,8 +49,9 @@ test('email sends an email', async t => {
         Charset: 'UTF-8'
       }
     },
-    Source: 'no-reply@example.com'
+    Source: fromAddress
   }
+
   t.match(received.SES.sendEmail, expected)
   t.end()
 })
