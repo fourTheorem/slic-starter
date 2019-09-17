@@ -14,3 +14,9 @@
     - xray:PutTelemetryRecords
   Resource:
     - '*'
+- Effect: Allow
+  Action:
+    - ssm:GetParameter
+    - ssm:GetParameters
+  Resource:
+    - arn:aws:ssm:#{AWS::Region}:#{AWS::AccountId}:parameter/${self:provider.stage}/email-service/from-address

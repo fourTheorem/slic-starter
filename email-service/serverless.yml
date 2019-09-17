@@ -4,6 +4,7 @@ plugins:
   - serverless-offline
   - serverless-offline-sqs
   - serverless-prune-plugin
+  - serverless-pseudo-parameters
   - serverless-log-forwarding
 
 provider:

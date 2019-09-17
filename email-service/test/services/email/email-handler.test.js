@@ -31,7 +31,7 @@ test('email sends an email', async t => {
     ]
   }
 
-  await emailHandler.sendEmail(message)
+  await emailHandler.sendEmail(message, {}, () => {})
 
   const expected = {
     Destination: {
