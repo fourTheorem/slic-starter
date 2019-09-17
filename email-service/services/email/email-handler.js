@@ -35,7 +35,7 @@ async function sendEmail(message) {
         Data: subject
       }
     },
-    Source: fromAddress && fromAddress.length ? fromAddress : null
+    Source: fromAddress
   }
 
   const result = await ses.sendEmail(params).promise()

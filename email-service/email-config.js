@@ -7,7 +7,7 @@ module.exports = {
     return (
       (process.env.SLIC_NS_DOMAIN &&
         `noreply@${domainPrefix}${process.env.SLIC_NS_DOMAIN}`) ||
-      ''
+      'noreply@example.com'
     )
   }
 }
