@@ -11,7 +11,7 @@ const stage = process.env.SLIC_STAGE
 const nsDomain = process.env.SLIC_NS_DOMAIN
 
 async function create({ email, listId, listName, userId }) {
-  const baseLink = `https://${process.env.FRONTEND_URL}/invitation/`
+  const baseLink = `${process.env.FRONTEND_URL}/invitation/`
 
   const { email: sharerEmail } = await getUser(userId)
   log.info({ email, userId, listId })
