@@ -10,6 +10,7 @@
   },
   "license": "MIT",
   "dependencies": {
+    "aws-sdk": "^2.530.0",
     "chance": "^1.0.18",
     "dotenv": "^7.0.0",
     "eslint-plugin-testcafe": "^0.2.1",
