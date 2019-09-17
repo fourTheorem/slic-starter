@@ -9,6 +9,8 @@ const { generateUser } = require('../lib/user')
 const page = new Page()
 const baseUrl = config.getBaseURL()
 
+console.log('Base URL', baseUrl)
+
 const users = [{}, {}]
 
 const getLocation = ClientFunction(() => document.location.href)

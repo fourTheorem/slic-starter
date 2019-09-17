@@ -13,6 +13,7 @@
     "chance": "^1.0.18",
     "dotenv": "^7.0.0",
     "eslint-plugin-testcafe": "^0.2.1",
+    "synchronized-promise": "^0.1.0",
     "test-common": "file:../test-common",
     "testcafe-react-selectors": "^3.1.0"
   },
