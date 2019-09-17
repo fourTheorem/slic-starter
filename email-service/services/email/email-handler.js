@@ -1,11 +1,11 @@
 'use strict'
 
+const { middify } = require('slic-tools/middy-util')
+
 const AWS = require('aws-sdk')
 const awsXray = require('aws-xray-sdk')
 
 const log = require('slic-tools/log')
-
-const fromAddress = process.env.EMAIL_FROM_ADDRESS
 
 const ses = awsXray.captureAWSClient(
   new AWS.SES({
@@ -35,13 +35,18 @@ async function sendEmail(message) {
         Data: subject
       }
     },
-    Source: fromAddress
+    Source: process.env.EMAIL_FROM_ADDRESS
   }
 
   const result = await ses.sendEmail(params).promise()
   log.info({ result }, 'Sent email')
 }
 
-module.exports = {
-  sendEmail
-}
+module.exports = middify(
+  { sendEmail },
+  {
+    ssmParameters: {
+      EMAIL_FROM_ADDRESS: `/${process.env.SLIC_STAGE}/email-service/from-address`
+    }
+  }
+)
