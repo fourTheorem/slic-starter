@@ -7,6 +7,14 @@ const stage = process.env.SLIC_STAGE || 'local'
 const domainSuffix = stage === 'prod' ? '' : `${stage}.`
 const stackName = `user-service-${stage}`
 
+const apiStackPaths = {
+  'checklist-service': '/checklist',
+  'sharing-service': '/share'
+}
+
+const nsDomain = process.env.SLIC_NS_DOMAIN
+const cf = new CloudFormation()
+
 let backendConfig
 
 const propertyMappings = {
@@ -19,28 +27,24 @@ async function loadBackendConfig() {
   if (!backendConfig) {
     if (stage === 'local') {
       return {
-        apiEndpoint: 'http://localhost:4000',
+        apiEndpoints: {
+          'checklist-service': 'http://localhost:4000/checklist',
+          'sharing-service': 'http://localhost:4000/share'
+        },
         identityPool: 'test-identity-pool',
         userPoolClientId: 'test-user-pool-client-id',
         userPoolId: 'test-user-pool-id'
       }
     }
 
-    const nsDomain = process.env.SLIC_NS_DOMAIN
-    if (!nsDomain) {
-      throw new Error('SLIC_NS_DOMAIN must be set')
-    }
-    const apiEndpoint = `https://api.${domainSuffix}${nsDomain}`
-
     const awsRegion = awscred.loadRegionSync()
-
     if (!awsRegion) {
       throw new Error(
         'The region must be set using any of the AWS-SDK-supported methods to the region of the deployed backend'
       )
     }
 
-    const cf = new CloudFormation()
+    const apiEndpoints = await getApiEndpoints()
 
     backendConfig = await cf
       .describeStacks({ StackName: stackName })
@@ -59,7 +63,7 @@ async function loadBackendConfig() {
             }
           })
           const backendConfig = {
-            apiEndpoint
+            apiEndpoints
           }
           exportBackendPairs.forEach(pair => Object.assign(backendConfig, pair))
           return backendConfig
@@ -67,6 +71,29 @@ async function loadBackendConfig() {
       })
   }
   return backendConfig
+}
+
+function getApiEndpoints() {
+  /* If process.env.SLIC_NS_DOMAIN is not set use describe stacks and
+     get API Endpoint URLs from cloudformation outputs */
+  return Promise.all(
+    Object.keys(apiStackPaths).map(apiName => {
+      const apiUrlPromise = nsDomain
+        ? Promise.resolve(
+            `https://api.${domainSuffix}${nsDomain}${apiStackPaths[apiName]}`
+          )
+        : cf
+            .describeStacks({ StackName: `${apiName}-${stage}` })
+            .promise()
+            .then(
+              data =>
+                data.Stacks[0].Outputs.find(
+                  output => output.OutputKey === 'ServiceEndpoint'
+                ).OutputValue
+            )
+      return apiUrlPromise.then(url => ({ [apiName]: url }))
+    })
+  ).then(results => Object.assign({}, ...results))
 }
 
 module.exports = {

@@ -16,7 +16,7 @@ test('Creating an email result in a welcome email being received', async t => {
   const { email } = await getUser()
 
   test('When a checklist is created, an email is sent to the user', async t => {
-    const response = await httpClient.post('/checklist', testList)
+    const response = await httpClient.post('', testList)
     const { status, data } = response
     t.equal(status, 201)
     t.ok(data.createdAt)
