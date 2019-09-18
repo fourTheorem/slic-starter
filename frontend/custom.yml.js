@@ -24,6 +24,7 @@ s3Sync:
 ${
   process.env.SLIC_NS_DOMAIN
     ? `
+siteDomainName: ${siteDomainName}
 cloudFrontHostedZoneId: Z2FDTNDATAQYW2
 siteConfig: $\{file(./site-config.js)}
 `

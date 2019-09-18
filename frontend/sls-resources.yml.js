@@ -28,7 +28,7 @@ frontendUrl:
     Type: String
     Value: ${
       process.env.SLIC_NS_DOMAIN
-        ? `$\{self:custom.siteDomainName}`
+        ? `https://$\{self:custom.siteDomainName}`
         : `
       Fn::Join:
         - ""
