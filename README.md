@@ -169,8 +169,7 @@ To set up deployment to your own accounts, first run through these steps.
 4. Enable CodeBuild to access your GitHub repo. The most reliable way to do this is to use a Personal Access Token with access to create webhooks on your repository. The guide from AWS on how to do this is [here](https://docs.aws.amazon.com/codebuild/latest/userguide/sample-access-tokens.html).
 5. (Optional - this will be required for repo tagging). Set up GitHub authentication for your repo. Create a GitHub Personal Access Token and add it as an secret with the name `GitHubPersonalAccessToken` in Secrets Manager _in the CICD account_. See [this post](https://medium.com/@eoins/securing-github-tokens-in-a-serverless-codepipeline-dc3a24ddc356) for more detail on this approach.
 6. Under the parent directory, open the file `common-config.json`. If desired, you can configure the default regions and domain prefixes by account. If you have no reason to change them, leave the default values as they are.
-7. Edit the account IDs in `cicd/cross-account/serverless.yml` and `cicd/config.ts`.
-8. Create a [Mailosaur](https://mailosaur.com) account. Take the server ID and API key and add them in your CICD account to the Parameter Store as `SecretString` values with the following names
+7. Create a [Mailosaur](https://mailosaur.com) account. Take the server ID and API key and add them in your CICD account to the Parameter Store as `SecretString` values with the following names
 
 - `test/mailosaur/serverId`
 - `test/mailosaur/apiKey`
