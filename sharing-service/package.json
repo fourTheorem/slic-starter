@@ -13,9 +13,9 @@
     "url": "https://github.com/fourTheorem/slic-starter"
   },
   "devDependencies": {
-    "serverless-offline": "^5.8.0",
+    "serverless-offline": "^5.12.0",
     "serverless-pseudo-parameters": "^2.4.0",
-    "tap": "^14.2.0",
+    "tap": "^14.7.0",
     "yamljs": "^0.3.0"
   },
   "dependencies": {

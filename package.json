@@ -21,9 +21,5 @@
     "url": "https://github.com/fourTheorem/slic-starter/issues"
   },
   "homepage": "https://github.com/fourTheorem/slic-starter#readme",
-  "dependencies": {
-    "bourne": "^1.1.2",
-    "pino": "^5.12.6",
-    "serverless-dynamodb-local": "^0.2.38"
-  }
+  "dependencies": {}
 }
