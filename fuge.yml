@@ -10,6 +10,7 @@ fuge_global:
     - '*.log'
     - '**/*.sw?'
   environment:
+    - 'TARGET_REGION=us-east-1'
     - 'AWS_PROFILE=local'
     - 'SLIC_STAGE=local'
     - 'SLIC_NS_DOMAIN=sliclists.com'
