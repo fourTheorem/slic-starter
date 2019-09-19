@@ -2,7 +2,7 @@
 
 const AWS = require('aws-sdk')
 
-const ssm = new AWS.SSM()
+const ssm = new AWS.SSM({ endpoint: process.env.SSM_ENDPOINT_URL })
 
 ssm
   .describeParameters()

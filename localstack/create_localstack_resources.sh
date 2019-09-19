@@ -12,7 +12,9 @@ export AWS_SECRET_ACCESS_KEY=DUMMY_KEY
 BASEDIR=$(dirname $0)
 source $BASEDIR/../localstack.env
 
+aws --endpoint-url=$SSM_ENDPOINT_URL ssm put-parameter --cli-input-json '{"Type": "String", "Name": "/local/frontend/url", "Value": "http://localhost:3000"}'
 aws --endpoint-url=$SSM_ENDPOINT_URL ssm put-parameter --cli-input-json '{"Type": "String", "Name": "/local/user-service/url", "Value": "http://localhost:4003/user/"}'
+aws --endpoint-url=$SSM_ENDPOINT_URL ssm put-parameter --cli-input-json '{"Type": "String", "Name": "/local/user-service/user-pool-arn", "Value": "local-user-pool"}'
 aws --endpoint-url=$SSM_ENDPOINT_URL ssm put-parameter --cli-input-json '{"Type": "String", "Name": "/local/sharing-service/code-secret", "Value": "password"}'
 aws --endpoint-url=$SQS_ENDPOINT_URL sqs create-queue --queue-name local-email-queue
 echo Done
