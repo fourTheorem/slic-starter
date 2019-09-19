@@ -1,1 +1,1 @@
-# SLIC STARTER - Serverless Backend
+# SLIC STARTER - Checklist service
