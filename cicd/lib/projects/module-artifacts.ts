@@ -7,6 +7,7 @@ export default (moduleName: string) => ({
     '*.json',
     '*.js',
     'build-scripts/**/*',
+    `node_modules/**/*`,
     ...moduleArtefacts(moduleName),
     ...moduleArtefacts('slic-tools')
   ]

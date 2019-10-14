@@ -6,4 +6,4 @@ source build-scripts/assume-cross-account-role.env
 cd ${MODULE_NAME}
 echo "Packaging for SLIC_STAGE ${SLIC_STAGE}"
 mkdir -p build-artifacts/${SLIC_STAGE}
-SLIC_STAGE=${SLIC_STAGE} serverless package --package build-artifacts/${SLIC_STAGE} --stage ${SLIC_STAGE} -v
+SLIC_STAGE=${SLIC_STAGE} ../node_modules/serverless/bin/serverless package --package build-artifacts/${SLIC_STAGE} --stage ${SLIC_STAGE} -v
