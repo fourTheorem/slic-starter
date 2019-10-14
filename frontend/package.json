@@ -6,7 +6,7 @@
     "@clampy-js/clampy": "github:clampy-js/clampy",
     "@material-ui/core": "^3.9.0",
     "@material-ui/icons": "^3.0.2",
-    "aws-amplify": "^1.1.9",
+    "aws-amplify": "^1.2.2",
     "awscred": "^1.4.2",
     "buffer": "^5.2.1",
     "clamp-js": "^0.7.0",
