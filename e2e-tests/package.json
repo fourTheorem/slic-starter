@@ -21,6 +21,6 @@
   "devDependencies": {
     "nid": "^0.3.2",
     "serverless-dotenv-plugin": "^2.0.1",
-    "testcafe": "^1.2.0"
+    "testcafe": "^1.5.0"
   }
 }
