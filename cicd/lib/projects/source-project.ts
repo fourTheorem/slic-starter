@@ -9,7 +9,7 @@ import {
   Source
 } from '@aws-cdk/aws-codebuild'
 import config from '../../config'
-import { defaultEnvironment } from '../code-build-environments'
+import { defaultEnvironment, defaultRuntimes } from '../code-build-environments'
 import { IBucket } from '@aws-cdk/aws-s3'
 
 export const SLIC_PIPELINE_SOURCE_ARTIFACT = 'orchestrator-pipeline-source.zip'
@@ -43,11 +43,13 @@ export class SourceProject extends Project {
       buildSpec: BuildSpec.fromObject({
         version: '0.2',
         phases: {
+          install: {
+            ...defaultRuntimes,
+            commands: ['npm install']
+          },
           build: {
             commands: [
-              `bash ./build-scripts/source-kickoff.sh https://github.com/${
-              config.sourceRepoOwner
-              }/${config.sourceRepoName}.git $CODEBUILD_RESOLVED_SOURCE_VERSION`
+              `bash ./build-scripts/source-kickoff.sh https://github.com/${config.sourceRepoOwner}/${config.sourceRepoName}.git $CODEBUILD_RESOLVED_SOURCE_VERSION`
             ]
           }
         },
