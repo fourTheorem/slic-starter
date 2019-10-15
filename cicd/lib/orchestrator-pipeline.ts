@@ -18,11 +18,12 @@ import { UpdateDeploymentStateProject } from './projects/update-deployment-state
 
 export interface OrchestratorPipelineProps extends PipelineProps {
   artifactsBucket: Bucket
+  sourceCodeBuildRole: Role
 }
 
 export class OrchestratorPipeline extends Pipeline {
   constructor(scope: Construct, id: string, props: OrchestratorPipelineProps) {
-    const { artifactsBucket, ...rest } = props
+    const { artifactsBucket, sourceCodeBuildRole, ...rest } = props
     super(scope, id, {
       pipelineName: 'OrchestratorPipeline',
       artifactBucket: artifactsBucket,
@@ -96,7 +97,8 @@ export class OrchestratorPipeline extends Pipeline {
             this,
             'updateDeploymentStateProject',
             {
-              bucketName: this.artifactBucket.bucketName
+              bucketName: this.artifactBucket.bucketName,
+              role: sourceCodeBuildRole
             }
           )
         })
