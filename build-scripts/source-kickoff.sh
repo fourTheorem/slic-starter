@@ -31,11 +31,11 @@ fi
 
 declare -A changedModules
 
-find . -maxdepth 1 -type d -not -path "./.*" | awk -F '/' '{print $2}' | grep -ve "^$" > /tmp/changed-paths
+find . -maxdepth 1 -type d -not -path "./.*" | awk -F '/' '{print $2}' | grep -ve "^$" > /tmp/all-paths
 while read -r module
 do
   changedModules[${module}]=false
-done < /tmp/changed-paths
+done < /tmp/all-paths
 
 if [ "$DEPLOYED_RELEASE" = "" ]; then
   >&2 echo "No previous tagged release found. Changed folder assumed to be everything (.)"
@@ -43,20 +43,12 @@ if [ "$DEPLOYED_RELEASE" = "" ]; then
     changedModules[${key}]=true
   done
 else
-  >&2 git checkout -b base                                     # Create a branch for our base state
-  >&2 git fetch origin $DEPLOYED_RELEASE                       # Fetch the commit for the base of our comparison
-  >&2 git reset --hard FETCH_HEAD                              # Point the local master to the commit we just fetched
-
-  >&2 git checkout -b target                                   # Create a branch for our target state
-
-  >&2 git fetch origin $TARGET_VERSION                         # Fetch the single commit for the target of our comparison
-  >&2 git reset --hard FETCH_HEAD                              # Point the local target to the commit we just fetched
-
   # Determine modules with files changed between the two commits
-  git diff --name-only base target | grep / | awk 'BEGIN {FS="/"} {print $1}' | uniq | while read -r module
-    do
-      changedModules[${module}]=true
-    done
+  git diff --name-only $DEPLOYED_RELEASE $TARGET_VERSION | grep / | awk 'BEGIN {FS="/"} {print $1}' | uniq > /tmp/changed-paths
+  while read -r module
+  do
+    changedModules[${module}]=true
+  done < /tmp/changed-paths
 fi
 
 export ORIGINAL_CODEBUILD_SOURCE_VERSION=${CODEBUILD_SOURCE_VERSION}
