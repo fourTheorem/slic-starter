@@ -36,6 +36,7 @@
     "aws-xray-sdk": "^2.3.3",
     "bourne": "^1.1.2",
     "lambda-logger-middleware": "^1.0.3",
+    "lodash": "^4.17.15",
     "middy": "^0.28.4",
     "middy-autoproxyresponse": "^0.1.0",
     "pino": "^5.13.0"
