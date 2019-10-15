@@ -44,12 +44,12 @@ if [ "$DEPLOYED_RELEASE" = "" ]; then
   done
 else
   >&2 git checkout -b base                                     # Create a branch for our base state
-  >&2 git fetch origin --depth 1 $DEPLOYED_RELEASE             # Fetch the single commit for the base of our comparison
+  >&2 git fetch origin $DEPLOYED_RELEASE                       # Fetch the commit for the base of our comparison
   >&2 git reset --hard FETCH_HEAD                              # Point the local master to the commit we just fetched
 
   >&2 git checkout -b target                                   # Create a branch for our target state
 
-  >&2 git fetch origin --depth 1 $TARGET_VERSION               # Fetch the single commit for the target of our comparison
+  >&2 git fetch origin $TARGET_VERSION                         # Fetch the single commit for the target of our comparison
   >&2 git reset --hard FETCH_HEAD                              # Point the local target to the commit we just fetched
 
   # Determine modules with files changed between the two commits
