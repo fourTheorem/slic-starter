@@ -20,7 +20,7 @@ async function getUser(userId) {
   } catch (err) {
     const response = err.response || {}
     const request = err.request || {}
-    if (status) {
+    if (response.status) {
       log.error(
         {
           request: { url: request.url, headers: request.headers },
