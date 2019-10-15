@@ -4,7 +4,7 @@
 [![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square)](https://github.com/prettier/prettier)
 [![license](https://img.shields.io/npm/l/slic-starter.svg)](./LICENSE)
 
-**Jump to:** [Getting Started](#getting-started) | [Quick Start](./QUICK_START.md) | [CI/CD](#cicd) | [Architecture](#application-architecture)
+**Jump to:** [Getting Started](#getting-started) | [Quick Start](./QUICK_START.md) | [CI/CD](#cicd) | [Architecture](#application-architecture) | [Contributing](./CONTRIBUTING.md)
 
 ---
 
@@ -114,7 +114,7 @@ SLIC Starter has a front-end web application. It uses React, Redux and [Material
 
 Getting continuous integration and deployment (CI/CD) right is one of the most important things in your microservice or serverless project. Having a good foundation here allows you to keep making changes fast. It's also fairly difficult to get right. SLIC Starter has made key choices to help you here.
 
-1. SLIC Starter uses multiple AWS accounts for secure isolation of environments. By default, we assume a production, test(staging) and cicd account exist.
+1. SLIC Starter uses multiple AWS accounts for secure isolation of environments. We assume a production, test(staging) and cicd account exist. We have made sure that you can use the same account ID for each of these in case you are restricted to one account and a multi-account setup is not feasible.
 1. CodePipeline and CodeBuild are used, so the CI/CD process is deployed using Infrastructure-as-Code, just like the serverless application itself. For this, we use the [CDK](https://github.com/awslabs/aws-cdk).
 1. The process dynamically creates a pipeline for _each module_(service) in the application. An **orchestrator pipeline** detects which modules need to be built, monitors their pipelines and triggers deployment to the staging account.
 1. Integration (API) and end-to-end UI tests are run before deployment to production. A manual approval step before deployment to production is included too.
@@ -137,7 +137,7 @@ For details on integration (API) tests, see the [README.md in integration-tests]
 
 ### Monitoring
 
-_Work in progress_
+X-Ray is enabled for all services and centralized logging is supported. This is pretty basic in terms of monitoring support so much more is planned and [contributions](./CONTRIBUTING.md) are welcomed.
 
 ### Logging
 
@@ -157,13 +157,15 @@ _Coming soon_. SLIC Starter will include support for roles and Role-Based Access
 
 SLIC Starter is designed to get you up in running with a real-world application as quickly as possible. The fact that we go beyond the average sample application, there is a bit more involved in getting to production. For example:
 
-1. We assume that you want to keep the CICD, staging and production accounts separate in most cases. These can be set up under one root account using [AWS Organizations](https://aws.amazon.com/organizations/). SLIC Starter now supports single account deployment, so CICD, staging and production environments can be configured to live under the one account.
-2. SLIC Starter assumes you are using a registered domain (like `sliclists.com`) and will set up DNS entries for use in production (like `api.sliclists.com`) and staging (`stg.sliclists.com`, `api.stg.sliclists.com`).
-3. This means you will have to take some steps to set up DNS records and allow these to propagate.
+1. We assume that you want to keep the CICD, staging and production accounts separate in most cases. These can be set up under one root account using [AWS Organizations](https://aws.amazon.com/organizations/). SLIC Starter also now supports single account deployment, so CICD, staging and production environments can be configured to live under the one account.
+2. SLIC Starter assumes you are using a registered domain (like `sliclists.com`) and will set up DNS entries for use in production (like `api.sliclists.com`) and staging (`stg.sliclists.com`, `api.stg.sliclists.com`). If you want to get up and running with a system quickly, you can skip domains by following the [QUICK_START.md](./QUICK_START.md) guide.
+3. By using domains, you will have to take some steps to set up DNS records and allow these to propagate.
 4. When your application is automatically deploying as part of the CICD process and HTTPS certificates are being created, you (the domain owner) will be sent an email by Amazon Route53 to verify that you are the domain owner.
 5. You will also have to validate your domains with SES in order to have permissions for emails to be sent.
 
 ## Getting Started
+
+This section covers a full deployment using multiple accounts with domain names and HTTPS certificates. It takes quite a bit longer than your average sample app since there is DNS and certificate approval involved. If you want to try SLIC Starter out in a single account without domains, go to the [QUICK_START.md](./QUICK_START.md)]
 
 To set up deployment to your own accounts, first run through these steps.
 
