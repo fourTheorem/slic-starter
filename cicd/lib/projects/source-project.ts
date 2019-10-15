@@ -25,7 +25,6 @@ export class SourceProject extends Project {
     const { bucket, ...rest } = props
 
     const buildSource = Source.gitHub({
-      cloneDepth: 2,
       owner: config.sourceRepoOwner,
       repo: config.sourceRepoName,
       webhook: true,
