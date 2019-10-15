@@ -7,7 +7,7 @@ plugins:
 
 provider:
   name: aws
-  runtime: nodejs8.10
+  runtime: nodejs10.x
   stage: ${opt:stage, 'local'}
   region: ${opt:region, '${env:TARGET_REGION}'}
   tracing:
@@ -30,7 +30,7 @@ custom:
   serverless-offline:
     port: 4004
     stage: local
-    region: ${self:provider.region} 
+    region: ${self:provider.region}
   emailQueueName: ${self:provider.stage}-email-queue
   prune:
     automatic: true

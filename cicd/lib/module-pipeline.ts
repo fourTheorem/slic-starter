@@ -9,14 +9,14 @@ import {
 import StageName from './stage-name'
 import { ModuleDeployProject } from './projects/module-deploy-project'
 import { ModuleBuildProject } from './projects/module-build-project'
-import { Role } from '@aws-cdk/aws-iam';
+import { Role } from '@aws-cdk/aws-iam'
 
 export interface ModulePipelineProps {
   artifactsBucket: Bucket
   stageName: StageName
   moduleName: string
-  buildRole: Role,
-  deployRole: Role,
+  buildRole: Role
+  deployRole: Role
   pipelineRole: Role
 }
 
@@ -45,7 +45,7 @@ export class ModulePipeline extends Pipeline {
       bucket: artifactsBucket,
       bucketKey: `${stageName}_module_pipelines/module_source/${moduleName}.zip`,
       output: sourceOutputArtifact,
-      trigger: S3Trigger.POLL,
+      trigger: S3Trigger.EVENTS, // Use EVENTS instead of POLL to avoid triggering. We won't set up CloudTrail for S3.
       actionName: `${moduleName}_${stageName}_src`,
       role: pipelineRole
     })

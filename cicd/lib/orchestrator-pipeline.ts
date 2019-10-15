@@ -14,14 +14,16 @@ import { IntegrationTestProject } from './projects/integration-test-project'
 import { E2ETestProject } from './projects/e2e-test-project'
 
 import { SLIC_PIPELINE_SOURCE_ARTIFACT } from './projects/source-project'
+import { UpdateDeploymentStateProject } from './projects/update-deployment-state-project'
 
 export interface OrchestratorPipelineProps extends PipelineProps {
   artifactsBucket: Bucket
+  sourceCodeBuildRole: Role
 }
 
 export class OrchestratorPipeline extends Pipeline {
   constructor(scope: Construct, id: string, props: OrchestratorPipelineProps) {
-    const { artifactsBucket, ...rest } = props
+    const { artifactsBucket, sourceCodeBuildRole, ...rest } = props
     super(scope, id, {
       pipelineName: 'OrchestratorPipeline',
       artifactBucket: artifactsBucket,
@@ -62,18 +64,46 @@ export class OrchestratorPipeline extends Pipeline {
       actions: [sourceAction]
     })
 
-    this.addDeployStage(StageName.stg, orchestratorCodeBuildRole, sourceOutputArtifact)
+    this.addDeployStage(
+      StageName.stg,
+      orchestratorCodeBuildRole,
+      sourceOutputArtifact
+    )
 
     this.addTestStage(sourceOutputArtifact)
 
     this.addStage({
       stageName: 'Approval',
-      actions: [new ManualApprovalAction({
-        actionName: 'MoveToProduction'
-      })]
+      actions: [
+        new ManualApprovalAction({
+          actionName: 'MoveToProduction'
+        })
+      ]
     })
 
-    this.addDeployStage(StageName.prod, orchestratorCodeBuildRole, sourceOutputArtifact)
+    this.addDeployStage(
+      StageName.prod,
+      orchestratorCodeBuildRole,
+      sourceOutputArtifact
+    )
+
+    this.addStage({
+      stageName: 'UpdateDeploymentState',
+      actions: [
+        new CodeBuildAction({
+          actionName: 'UpdateState',
+          input: sourceOutputArtifact,
+          project: new UpdateDeploymentStateProject(
+            this,
+            'updateDeploymentStateProject',
+            {
+              bucketName: this.artifactBucket.bucketName,
+              role: sourceCodeBuildRole
+            }
+          )
+        })
+      ]
+    })
   }
 
   addTestStage(sourceOutputArtifact: Artifact) {
@@ -93,13 +123,9 @@ export class OrchestratorPipeline extends Pipeline {
       project: integrationTestProject
     })
 
-    const e2eTestProject = new E2ETestProject(
-      this,
-      `e2eTests`,
-      {
-        stageName: StageName.stg
-      }
-    )
+    const e2eTestProject = new E2ETestProject(this, `e2eTests`, {
+      stageName: StageName.stg
+    })
 
     const e2eTestOutputArtifact = new Artifact()
     const e2eTestAction = new CodeBuildAction({
@@ -115,7 +141,11 @@ export class OrchestratorPipeline extends Pipeline {
     })
   }
 
-  addDeployStage(stageName: StageName, orchestratorCodeBuildRole: Role, sourceOutputArtifact: Artifact) {
+  addDeployStage(
+    stageName: StageName,
+    orchestratorCodeBuildRole: Role,
+    sourceOutputArtifact: Artifact
+  ) {
     const orchestratorDeployStagingProject = new OrchestratorDeployProject(
       this,
       `${stageName}OrchestratorDeploy`,
