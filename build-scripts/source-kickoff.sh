@@ -4,6 +4,10 @@
 # compares this with a target commit.
 
 STATE_FILE=${PWD}/pipeline-state.env
+LOCAL_DEPLOYMENT_STATE=/tmp/deployment-state.env
+
+aws s3 cp s3://${DEPLOYMENT_STATE_BUCKET}/${DEPLOYMENT_STATE_KEY} ${LOCAL_DEPLOYMENT_STATE}
+
 set -e
 
 REPO_URL=$1
@@ -18,11 +22,12 @@ $0 repository_url target_version \n\
   exit 1
 fi
 
-# Find the latest release using the format NUM.NUM.NUM. Anything else, like "1.2.3-pre" is assumed to not be a relase tag and is excluded
-# Redirect STDERR to /dev/null as it will print out the Git remote URL including the access token
-LATEST_RELEASE=`git ls-remote --tags 2>/dev/null | awk -F '/' '{print $3}' | grep -e '^[0-9]\+\.[0-9]\+.[0-9]\+$' | sort --version-sort | tail -1`
-
-COMMIT_LOG=`git log -1`
+if [ -e ${LOCAL_DEPLOYMENT_STATE} ]; then
+  source ${LOCAL_DEPLOYMENT_STATE}
+  echo Deployment state found. Deployed version is ${DEPLOYED_RELEASE}
+else
+  echo No deployment state found
+fi
 
 declare -A changedModules
 
@@ -32,14 +37,14 @@ do
   changedModules[${module}]=false
 done < /tmp/changed-paths
 
-if [ "$LATEST_RELEASE" = "" ]; then
+if [ "$DEPLOYED_RELEASE" = "" ]; then
   >&2 echo "No previous tagged release found. Changed folder assumed to be everything (.)"
   for key in "${!changedModules[@]}"; do
     changedModules[${key}]=true
   done
 else
   >&2 git checkout -b base                                     # Create a branch for our base state
-  >&2 git fetch origin --depth 1 $LATEST_RELEASE               # Fetch the single commit for the base of our comparison
+  >&2 git fetch origin --depth 1 $DEPLOYED_RELEASE             # Fetch the single commit for the base of our comparison
   >&2 git reset --hard FETCH_HEAD                              # Point the local master to the commit we just fetched
 
   >&2 git checkout -b target                                   # Create a branch for our target state

@@ -6,13 +6,15 @@ import {
   FilterGroup,
   EventAction,
   BuildSpec,
-  Source
+  Source,
+  BuildEnvironmentVariableType
 } from '@aws-cdk/aws-codebuild'
 import config from '../../config'
 import { defaultEnvironment, defaultRuntimes } from '../code-build-environments'
 import { IBucket } from '@aws-cdk/aws-s3'
 
 export const SLIC_PIPELINE_SOURCE_ARTIFACT = 'orchestrator-pipeline-source.zip'
+export const DEPLOYMENT_STATE_KEY = 'deployment-state.env'
 
 export interface SourceProjectProps extends ProjectProps {
   readonly bucket: IBucket
@@ -60,7 +62,18 @@ export class SourceProject extends Project {
       source: buildSource,
       environment: defaultEnvironment,
       artifacts,
-      ...rest
+      ...rest,
+      environmentVariables: {
+        ...rest.environmentVariables,
+        DEPLOYMENT_STATE_BUCKET: {
+          type: BuildEnvironmentVariableType.PLAINTEXT,
+          value: props.bucket.bucketName
+        },
+        DEPLOYMENT_STATE_KEY: {
+          type: BuildEnvironmentVariableType.PLAINTEXT,
+          value: DEPLOYMENT_STATE_KEY
+        }
+      }
     })
   }
 }
