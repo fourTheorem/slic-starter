@@ -2,7 +2,7 @@ service: api-service
 
 provider:
   name: aws
-  runtime: nodejs8.10
+  runtime: nodejs10.x
   stage: ${opt:stage, 'local'}
   region: ${opt:region, '${self:custom.defaultRegions.${self:provider.stage}}'}
 
