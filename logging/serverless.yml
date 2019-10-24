@@ -3,6 +3,7 @@ service: logging-service
 plugins:
   - serverless-python-requirements
   - serverless-pseudo-parameters
+  - serverless-iam-roles-per-function
 
 provider:
   name: aws
@@ -10,7 +11,6 @@ provider:
   region: ${opt:region, '${env:TARGET_REGION}'}
   runtime: python3.6
   tracing: true
-  iamRoleStatements: ${file(./sls-iam-role-statements.yml)}
 
 custom:
   pythonRequirements:

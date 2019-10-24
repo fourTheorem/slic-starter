@@ -6,3 +6,25 @@ sendEmail:
     - sqs:
         arn: !GetAtt emailQueue.Arn
         batchSize: 1
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - sqs:ReceiveMessage
+      Resource: arn:aws:sqs:*:#{AWS::AccountId}:${self:custom.emailQueueName}
+    - Effect: Allow
+      Action:
+        - ses:SendEmail
+      Resource:
+        - arn:aws:ses:*:*:identity/*
+    - Effect: Allow
+      Action:
+        - xray:PutTraceSegments
+        - xray:PutTelemetryRecords
+      Resource:
+        - '*'
+    - Effect: Allow
+      Action:
+        - ssm:GetParameters
+        - ssm:GetParametersByPath
+      Resource:
+        - arn:aws:ssm:#{AWS::Region}:#{AWS::AccountId}:parameter/${self:provider.stage}/email-service/from-address

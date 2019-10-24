@@ -9,6 +9,26 @@ create:
           type: COGNITO_USER_POOLS
           authorizerId:
             Ref: cognitoAuthorizer
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - xray:PutTraceSegments
+        - xray:PutTelemetryRecords
+      Resource:
+        - '*'
+    - Effect: Allow
+      Action:
+        - sqs:GetQueueUrl
+        - sqs:SendMessage
+      Resource: arn:aws:sqs:*:#{AWS::AccountId}:${self:custom.emailQueueName}
+    - Effect: Allow
+      Action:
+        - ssm:GetParameters
+        - ssm:GetParametersByPath
+      Resource:
+        - arn:aws:ssm:#{AWS::Region}:#{AWS::AccountId}:parameter/${self:provider.stage}/frontend/url
+        - arn:aws:ssm:#{AWS::Region}:#{AWS::AccountId}:parameter/${self:provider.stage}/user-service/url
+        - arn:aws:ssm:#{AWS::Region}:#{AWS::AccountId}:parameter/${self:provider.stage}/sharing-service/code-secret
 
 confirm:
   handler: services/sharing/confirm.main
@@ -21,3 +41,20 @@ confirm:
           type: COGNITO_USER_POOLS
           authorizerId:
             Ref: cognitoAuthorizer
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - events:PutEvents
+      Resource: '*'
+    - Effect: Allow
+      Action:
+        - xray:PutTraceSegments
+        - xray:PutTelemetryRecords
+      Resource:
+        - '*'
+    - Effect: Allow
+      Action:
+        - ssm:GetParameters
+        - ssm:GetParametersByPath
+      Resource:
+        - arn:aws:ssm:#{AWS::Region}:#{AWS::AccountId}:parameter/${self:provider.stage}/sharing-service/code-secret

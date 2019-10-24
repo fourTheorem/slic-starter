@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "Checklist Service",
   "scripts": {
+    "sls": "../node_modules/serverless/bin/serverless",
     "start": "AWS_XRAY_CONTEXT_MISSING=LOG_ERROR SLIC_NS_DOMAIN=sliclists.com SLIC_STAGE=local sls offline start",
     "lint": "eslint --ignore-pattern \"scripts/**\" .",
     "coverage": "npm run test -- --cov --coverage-report=html",
@@ -29,6 +30,7 @@
     "prettier": "1.14.3",
     "pretty-quick": "^1.8.0",
     "proxyquire": "^2.1.0",
+    "serverless-iam-roles-per-function": "^2.0.2",
     "serverless-offline": "^5.8.0",
     "serverless-prune-plugin": "^1.3.2",
     "serverless-pseudo-parameters": "^2.4.0",
