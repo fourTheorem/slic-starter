@@ -8,3 +8,15 @@ get:
         method: get
         cors: false
         authorizer: aws_iam
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - cognito-idp:AdminGetUser
+      Resource:
+        - !GetAtt slicUserPool.Arn
+    - Effect: Allow
+      Action:
+        - xray:PutTraceSegments
+        - xray:PutTelemetryRecords
+      Resource:
+        - '*'

@@ -4,6 +4,7 @@ plugins:
   - serverless-offline
   - serverless-pseudo-parameters
   - serverless-log-forwarding
+  - serverless-iam-roles-per-function
 
 provider:
   name: aws
@@ -13,7 +14,6 @@ provider:
   tracing:
     apiGateway: true
     lambda: true
-  iamRoleStatements: ${file(./sls-iam-role-statements.yml)}
   environment:
     SLIC_STAGE: ${self:provider.stage}
     EMAIL_QUEUE_NAME: ${self:custom.emailQueueName}

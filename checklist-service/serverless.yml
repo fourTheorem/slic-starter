@@ -8,6 +8,7 @@ plugins:
   - serverless-prune-plugin
   - serverless-log-forwarding
   - serverless-pseudo-parameters
+  - serverless-iam-roles-per-function
 
 provider:
   name: aws
@@ -17,7 +18,13 @@ provider:
   tracing:
     apiGateway: true
     lambda: true
-  iamRoleStatements: ${file(./sls-iam-role-statements.yml)}
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - xray:PutTraceSegments
+        - xray:PutTelemetryRecords
+      Resource:
+        - '*'
   environment:
     SLIC_STAGE: ${self:provider.stage}
     CHECKLIST_TABLE_NAME: ${self:custom.checklistTableName}

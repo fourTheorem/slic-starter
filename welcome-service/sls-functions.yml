@@ -9,3 +9,27 @@ handleNewChecklist:
             - 'checklist-service'
           detail-type:
             - 'LIST_CREATED_EVENT'
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - sqs:GetQueueUrl
+        - sqs:SendMessage
+      Resource: arn:aws:sqs:*:#{AWS::AccountId}:${self:custom.emailQueueName}
+    - Effect: Allow
+      Action:
+        - ssm:GetParameters
+        - ssm:GetParametersByPath
+      Resource:
+        - arn:aws:ssm:#{AWS::Region}:#{AWS::AccountId}:parameter/${self:provider.stage}/user-service/url
+    - Effect: Allow
+      Action:
+        - xray:PutTraceSegments
+        - xray:PutTelemetryRecords
+      Resource:
+        - '*'
+    - Effect: Allow
+      Action:
+        - execute-api:Invoke
+        - execute-api:GET
+      Resource:
+        - arn:aws:execute-api:#{AWS::Region}:#{AWS::AccountId}:*/${self:provider.stage}/GET/user/*

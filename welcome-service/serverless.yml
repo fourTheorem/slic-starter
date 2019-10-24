@@ -5,6 +5,7 @@ plugins:
   - serverless-prune-plugin
   - serverless-pseudo-parameters
   - serverless-log-forwarding
+  - serverless-iam-roles-per-function
 
 provider:
   name: aws
@@ -13,7 +14,6 @@ provider:
   region: ${opt:region, '${env:TARGET_REGION}'}
   tracing:
     lambda: true
-  iamRoleStatements: ${file(./sls-iam-role-statements.yml)}
   environment:
     SLIC_STAGE: ${self:provider.stage}
 

@@ -9,6 +9,16 @@ create:
           type: COGNITO_USER_POOLS
           authorizerId:
             Ref: cognitoAuthorizer
+  iamRoleStatementsInherit: true
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:PutItem
+      Resource: 'arn:aws:dynamodb:#{AWS::Region}:#{AWS::AccountId}:table/${self:custom.checklistTableName}'
+    - Effect: Allow
+      Action:
+        - events:PutEvents
+      Resource: '*'
 
 get:
   handler: services/checklists/get.main
@@ -21,6 +31,12 @@ get:
           type: COGNITO_USER_POOLS
           authorizerId:
             Ref: cognitoAuthorizer
+  iamRoleStatementsInherit: true
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:GetItem
+      Resource: 'arn:aws:dynamodb:#{AWS::Region}:#{AWS::AccountId}:table/${self:custom.checklistTableName}'
 
 list:
   handler: services/checklists/list.main
@@ -33,6 +49,13 @@ list:
           type: COGNITO_USER_POOLS
           authorizerId:
             Ref: cognitoAuthorizer
+  iamRoleStatementsInherit: true
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:Query
+        - dynamodb:BatchGetItem
+      Resource: 'arn:aws:dynamodb:#{AWS::Region}:#{AWS::AccountId}:table/${self:custom.checklistTableName}'
 
 update:
   handler: services/checklists/update.main
@@ -45,6 +68,12 @@ update:
           type: COGNITO_USER_POOLS
           authorizerId:
             Ref: cognitoAuthorizer
+  iamRoleStatementsInherit: true
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:UpdateItem
+      Resource: 'arn:aws:dynamodb:#{AWS::Region}:#{AWS::AccountId}:table/${self:custom.checklistTableName}'
 
 delete:
   handler: services/checklists/delete.main
@@ -57,6 +86,12 @@ delete:
           type: COGNITO_USER_POOLS
           authorizerId:
             Ref: cognitoAuthorizer
+  iamRoleStatementsInherit: true
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:DeleteItem
+      Resource: 'arn:aws:dynamodb:#{AWS::Region}:#{AWS::AccountId}:table/${self:custom.checklistTableName}'
 
 addEntry:
   handler: services/checklists/entries/add.main
@@ -69,6 +104,12 @@ addEntry:
           type: COGNITO_USER_POOLS
           authorizerId:
             Ref: cognitoAuthorizer
+  iamRoleStatementsInherit: true
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:UpdateItem
+      Resource: 'arn:aws:dynamodb:#{AWS::Region}:#{AWS::AccountId}:table/${self:custom.checklistTableName}'
 
 listEntries:
   handler: services/checklists/entries/list.main
@@ -81,6 +122,12 @@ listEntries:
           type: COGNITO_USER_POOLS
           authorizerId:
             Ref: cognitoAuthorizer
+  iamRoleStatementsInherit: true
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:GetItem
+      Resource: 'arn:aws:dynamodb:#{AWS::Region}:#{AWS::AccountId}:table/${self:custom.checklistTableName}'
 
 updateEntry:
   handler: services/checklists/entries/update.main
@@ -93,6 +140,12 @@ updateEntry:
           type: COGNITO_USER_POOLS
           authorizerId:
             Ref: cognitoAuthorizer
+  iamRoleStatementsInherit: true
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:UpdateItem
+      Resource: 'arn:aws:dynamodb:#{AWS::Region}:#{AWS::AccountId}:table/${self:custom.checklistTableName}'
 
 deleteEntry:
   handler: services/checklists/entries/delete.main
@@ -105,6 +158,12 @@ deleteEntry:
           type: COGNITO_USER_POOLS
           authorizerId:
             Ref: cognitoAuthorizer
+  iamRoleStatementsInherit: true
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:UpdateItem
+      Resource: 'arn:aws:dynamodb:#{AWS::Region}:#{AWS::AccountId}:table/${self:custom.checklistTableName}'
 
 addCollaborator:
   handler: services/checklists/add-collaborator.main
@@ -115,15 +174,9 @@ addCollaborator:
             - 'sharing-service'
           detail-type:
             - 'COLLABORATOR_ACCEPTED_EVENT'
-
-listCollaborators:
-  handler: services/checklists/list-collaborators.main
-  events:
-    - http:
-        path: /{id}/collaborators
-        method: get
-        cors: true
-        authorizer:
-          type: COGNITO_USER_POOLS
-          authorizerId:
-            Ref: cognitoAuthorizer
+  iamRoleStatementsInherit: true
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:PutItem
+      Resource: 'arn:aws:dynamodb:#{AWS::Region}:#{AWS::AccountId}:table/${self:custom.checklistTableName}'
