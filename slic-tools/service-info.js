@@ -2,7 +2,10 @@
 
 const path = require('path')
 
-const { name, version } = require(path.join(process.cwd(), 'package.json'))
+const {
+  SERVICE_NAME: name = 'default-service',
+  SERVICE_VERSION: version = '0.0.0'
+} = process.env
 
 module.exports = {
   name,

@@ -1,6 +1,7 @@
 service: sharing-service
 
 plugins:
+  - serverless-webpack
   - serverless-offline
   - serverless-pseudo-parameters
   - serverless-log-forwarding
@@ -25,6 +26,8 @@ provider:
         - execute-api:/*/*/*
 
 custom:
+  webpack:
+    keepOutputDirectory: true
   domainPrefixes: ${file(../common-config.json):domainPrefixes}
   cloudFrontHostedZoneId: Z2FDTNDATAQYW2
   serverless-offline:

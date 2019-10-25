@@ -17,7 +17,12 @@
     "url": "https://github.com/fourTheorem/slic-starter"
   },
   "devDependencies": {
+    "@babel/core": "^7.6.4",
+    "@babel/preset-env": "^7.6.3",
     "@dathuis/serverless-dynamodb-local": "github:eoinsha/serverless-dynamodb-local#eoinsha",
+    "aws-sdk-mock": "^4.5.0",
+    "babel-loader": "^8.0.6",
+    "babel-plugin-source-map-support": "^2.1.1",
     "eslint": "^5.13.0",
     "eslint-config-prettier": "^4.0.0",
     "eslint-config-standard": "^12.0.0",
@@ -34,14 +39,16 @@
     "serverless-offline": "^5.8.0",
     "serverless-prune-plugin": "^1.3.2",
     "serverless-pseudo-parameters": "^2.4.0",
-    "tap": "^14.7.0"
+    "serverless-webpack": "^5.3.1",
+    "tap": "^14.7.0",
+    "webpack": "^4.41.2",
+    "yamljs": "^0.3.0"
   },
   "dependencies": {
-    "aws-sdk-mock": "^4.5.0",
     "serverless-log-forwarding": "^1.4.0",
     "slic-tools": "file:../slic-tools",
-    "uuid": "^3.3.3",
-    "yamljs": "^0.3.0"
+    "source-map-support": "^0.5.13",
+    "uuid": "^3.3.3"
   },
   "husky": {
     "hooks": {

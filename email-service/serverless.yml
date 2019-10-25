@@ -1,6 +1,7 @@
 service: email-service
 
 plugins:
+  - serverless-webpack
   - serverless-offline
   - serverless-offline-sqs
   - serverless-prune-plugin
@@ -21,6 +22,8 @@ provider:
     SES_REGION: ${self:provider.sesRegion}
 
 custom:
+  webpack:
+    keepOutputDirectory: true
   emailQueueName: ${self:provider.stage}-email-queue
   prune:
     automatic: true
