@@ -1,6 +1,7 @@
 service: user-service
 
 plugins:
+  - serverless-webpack
   - serverless-offline
   - serverless-prune-plugin
   - serverless-pseudo-parameters
@@ -27,6 +28,8 @@ provider:
     restApi: true
 
 custom:
+  webpack:
+    keepOutputDirectory: true
   stage: ${opt:stage, 'dev'}
   serverless-offline:
     port: 4003

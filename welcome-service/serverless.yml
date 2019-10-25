@@ -1,6 +1,7 @@
 service: welcome-service
 
 plugins:
+  - serverless-webpack
   - serverless-offline
   - serverless-prune-plugin
   - serverless-pseudo-parameters
@@ -18,6 +19,8 @@ provider:
     SLIC_STAGE: ${self:provider.stage}
 
 custom:
+  webpack:
+    keepOutputDirectory: true
   emailQueueName: ${self:provider.stage}-email-queue
   prune:
     automatic: true
