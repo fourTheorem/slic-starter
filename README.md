@@ -38,6 +38,7 @@
 - [Demo](#demo)
 - [Code Style and Syntax](#code-style-and-syntax)
 - [Who is behind it?](#who-is-behind-it)
+- [Other Resources](#other-resources)
 - [Troubleshooting](#troubleshooting)
 - [Contributing](#contributing)
 - [License](#license)
@@ -266,6 +267,13 @@ SLIC Starter uses [Prettier](https://github.com/prettier/prettier) for code form
 ## Who is behind it?
 
 SLIC Starter is open source and contributions are welcome from everyone. It was started by the team at [fourTheorem](https://fourtheorem.com), also the authors of the book, [AI as a Service](https://www.aiasaservicebook.com/), a [Manning publication](https://www.manning.com/books/ai-as-a-service) on Serverless, AI-enabled applications.
+
+## Other Resources
+
+There are many other amazing resources to help you get started, learn and evolve your Serverless practice. Here are a few recommendations!
+
+- [Serverless Stack Tutorial](https://serverless-stack.com/) - A really well-crafted, step-by-step tutorial covering many best practices
+- [AWS Serverless Airline Booking](https://github.com/aws-samples/aws-serverless-airline-booking) - A complete web application built on Serverless AWS with Amplify and GraphQL. The Twitch videos covering the architecture and build of this project are available [here on YouTube](https://www.youtube.com/watch?v=qBN98Co_0aw&list=PLhr1KZpdzukcYWC1xD-vidMZf2uilGkor&index=7)
 
 ## Troubleshooting
 
