@@ -10,13 +10,16 @@ import StageName from './stage-name'
 import { ModuleDeployProject } from './projects/module-deploy-project'
 import { ModuleBuildProject } from './projects/module-build-project'
 import { Role } from '@aws-cdk/aws-iam'
+import { BuildEnvironmentVariableType } from '@aws-cdk/aws-codebuild'
+import { projectEnvironmentVars } from './projects/project-environment'
+import config from '../config'
 
 export interface ModulePipelineProps {
   artifactsBucket: Bucket
   stageName: StageName
   moduleName: string
-  buildRole: Role
-  deployRole: Role
+  moduleBuildProject: ModuleBuildProject
+  moduleDeployProject: ModuleDeployProject
   pipelineRole: Role
 }
 
@@ -26,8 +29,8 @@ export class ModulePipeline extends Pipeline {
       artifactsBucket,
       moduleName,
       stageName,
-      buildRole,
-      deployRole,
+      moduleBuildProject,
+      moduleDeployProject,
       pipelineRole,
       ...rest
     } = props
@@ -46,7 +49,7 @@ export class ModulePipeline extends Pipeline {
       bucketKey: `${stageName}_module_pipelines/module_source/${moduleName}.zip`,
       output: sourceOutputArtifact,
       trigger: S3Trigger.EVENTS, // Use EVENTS instead of POLL to avoid triggering. We won't set up CloudTrail for S3.
-      actionName: `${moduleName}_${stageName}_src`,
+      actionName: `${moduleName}_src`,
       role: pipelineRole
     })
 
@@ -54,17 +57,25 @@ export class ModulePipeline extends Pipeline {
       stageName: 'Source',
       actions: [sourceAction]
     })
-
-    // Build
-    const moduleBuildProject = new ModuleBuildProject(
-      this,
-      `${moduleName}_${stageName}_build`,
-      {
-        moduleName,
-        stageName,
-        role: buildRole
-      }
-    )
+    const environmentVars = {
+      CROSS_ACCOUNT_ID: {
+        type: BuildEnvironmentVariableType.PLAINTEXT,
+        value: `${config.accountIds[stageName]}`
+      },
+      TARGET_REGION: {
+        type: BuildEnvironmentVariableType.PLAINTEXT,
+        value: `${config.defaultRegions[stageName]}`
+      },
+      SLIC_STAGE: {
+        type: BuildEnvironmentVariableType.PLAINTEXT,
+        value: stageName
+      },
+      MODULE_NAME: {
+        type: BuildEnvironmentVariableType.PLAINTEXT,
+        value: moduleName
+      },
+      ...projectEnvironmentVars
+    }
 
     const moduleBuildOutputArtifact = new Artifact()
     const moduleBuildAction = new CodeBuildAction({
@@ -72,7 +83,8 @@ export class ModulePipeline extends Pipeline {
       input: sourceOutputArtifact,
       outputs: [moduleBuildOutputArtifact],
       project: moduleBuildProject,
-      role: pipelineRole
+      role: pipelineRole,
+      environmentVariables: environmentVars
     })
 
     this.addStage({
@@ -80,24 +92,14 @@ export class ModulePipeline extends Pipeline {
       actions: [moduleBuildAction]
     })
 
-    // Deploy
-    const moduleDeployProject = new ModuleDeployProject(
-      this,
-      `${moduleName}_${stageName}_deploy`,
-      {
-        moduleName,
-        stageName,
-        role: deployRole
-      }
-    )
-
     const moduleDeployOutputArtifact = new Artifact()
     const moduleDeployAction = new CodeBuildAction({
       actionName: 'Deploy',
       input: moduleBuildOutputArtifact,
       outputs: [moduleDeployOutputArtifact],
       project: moduleDeployProject,
-      role: pipelineRole
+      role: pipelineRole,
+      environmentVariables: environmentVars
     })
 
     this.addStage({
