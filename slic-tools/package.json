@@ -28,7 +28,7 @@
     "prettier": "1.14.3",
     "pretty-quick": "^1.8.0",
     "proxyquire": "^2.1.0",
-    "tap": "^14.7.0"
+    "tap": "^14.10.2"
   },
   "dependencies": {
     "aws-sdk": "^2.339.0",
