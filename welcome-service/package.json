@@ -48,7 +48,6 @@
     "babel-plugin-source-map-support": "^2.1.1",
     "bourne": "^1.1.2",
     "pino": "^5.13.5",
-    "serverless-log-forwarding": "^1.4.0",
     "serverless-pseudo-parameters": "^2.5.0",
     "slic-tools": "file:../slic-tools"
   },

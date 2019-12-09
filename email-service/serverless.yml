@@ -6,7 +6,6 @@ plugins:
   - serverless-offline-sqs
   - serverless-prune-plugin
   - serverless-pseudo-parameters
-  - serverless-log-forwarding
   - serverless-iam-roles-per-function
 
 provider:
@@ -42,8 +41,6 @@ custom:
     endpoint: ${env:SQS_ENDPOINT_URL,'http://0.0.0.0:4576'}
     autoCreate: true
     region: ${self:provider.region}
-  logForwarding:
-    destinationARN: !ImportValue ${self:provider.stage}-log-forwarder-function-arn
 
 functions: ${file(./sls-functions.yml)}
 

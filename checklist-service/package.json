@@ -45,7 +45,6 @@
     "yamljs": "^0.3.0"
   },
   "dependencies": {
-    "serverless-log-forwarding": "^1.4.0",
     "slic-tools": "file:../slic-tools",
     "source-map-support": "^0.5.13",
     "uuid": "^3.3.3"
