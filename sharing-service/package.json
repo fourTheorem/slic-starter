@@ -20,7 +20,7 @@
     "serverless-offline": "^5.12.0",
     "serverless-pseudo-parameters": "^2.4.0",
     "serverless-webpack": "^5.3.1",
-    "tap": "^14.7.0",
+    "tap": "^14.10.2",
     "webpack": "^4.41.2",
     "yamljs": "^0.3.0"
   },
@@ -33,7 +33,6 @@
     "middy": "^0.28.4",
     "pino": "^5.12.6",
     "proxyquire": "^2.1.1",
-    "serverless-log-forwarding": "^1.4.0",
     "signed-objectid": "^1.0.1",
     "slic-tools": "file:../slic-tools"
   }

@@ -1,6 +1,0 @@
-- Effect: Allow
-  Action:
-    - ssm:GetParameter
-    - ssm:GetParametersByPath
-  Resource:
-    - arn:aws:ssm:#{AWS::Region}:#{AWS::AccountId}:parameter/logging/*

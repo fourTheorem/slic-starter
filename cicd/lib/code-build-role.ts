@@ -1,54 +1,60 @@
 import iam = require('@aws-cdk/aws-iam')
 import { Construct } from '@aws-cdk/core'
 import config from '../config'
-import StageName from './stage-name';
-
-export interface CodeBuildRoleProps {
-  stageName?: StageName
-}
+import StageName from './stage-name'
 
 export default class CodeBuildRole extends iam.Role {
-  constructor(scope: Construct, name: string, props: CodeBuildRoleProps = {}) {
-    const { stageName, ...rest } = props
+  constructor(scope: Construct, name: string) {
     super(scope, name, {
-      ...rest,
       assumedBy: new iam.ServicePrincipal('codebuild.amazonaws.com')
     })
 
-    if (stageName) {
-      this.addToPolicy(new iam.PolicyStatement({
-        effect: iam.Effect.ALLOW,
-        actions: ['sts:AssumeRole'],
-        resources: [`arn:aws:iam::${config.accountIds[stageName]}:role/slic-cicd-deployment-role`]
-      }))
+    ;[StageName.stg, StageName.prod].forEach(stageName => {
+      this.addToPolicy(
+        new iam.PolicyStatement({
+          effect: iam.Effect.ALLOW,
+          actions: ['sts:AssumeRole'],
+          resources: [
+            `arn:aws:iam::${
+              config.accountIds[stageName]
+            }:role/slic-cicd-deployment-role`
+          ]
+        })
+      )
 
-      this.addToPolicy(new iam.PolicyStatement({
-        effect: iam.Effect.ALLOW,
-        actions: ['cloudformation:Describe*'],
-        resources: [`arn:aws:cloudformation:eu-west-1:${config.accountIds[stageName]}:stack/*/*`]
-      }))
-    }
-
-    this.addToPolicy(new iam.PolicyStatement({
-      effect: iam.Effect.ALLOW,
-      actions: ['secretsmanager:GetSecretValue'],
-      resources: [`arn:aws:secretsmanager:${config.region}:${
-        config.accountIds.cicd
-        }:secret:CICD*`]
-    }))
+      this.addToPolicy(
+        new iam.PolicyStatement({
+          effect: iam.Effect.ALLOW,
+          actions: ['cloudformation:Describe*'],
+          resources: [
+            `arn:aws:cloudformation:eu-west-1:${
+              config.accountIds[stageName]
+            }:stack/*/*`
+          ]
+        })
+      )
+    })
 
     this.addToPolicy(
       new iam.PolicyStatement({
         effect: iam.Effect.ALLOW,
-        actions: [
-          'lambda:Get*',
-          'lambda:List*',
-          'lambda:CreateFunction'
-        ],
+        actions: ['secretsmanager:GetSecretValue'],
+        resources: [
+          `arn:aws:secretsmanager:${config.region}:${
+            config.accountIds.cicd
+          }:secret:CICD*`
+        ]
+      })
+    )
+
+    this.addToPolicy(
+      new iam.PolicyStatement({
+        effect: iam.Effect.ALLOW,
+        actions: ['lambda:Get*', 'lambda:List*', 'lambda:CreateFunction'],
         resources: ['*']
       })
     )
-  
+
     this.addToPolicy(
       new iam.PolicyStatement({
         effect: iam.Effect.ALLOW,
@@ -87,7 +93,7 @@ export default class CodeBuildRole extends iam.Role {
     this.addToPolicy(
       new iam.PolicyStatement({
         effect: iam.Effect.ALLOW,
-        actions:[
+        actions: [
           'apigateway:GET',
           'apigateway:POST',
           'apigateway:PUT',
@@ -100,7 +106,7 @@ export default class CodeBuildRole extends iam.Role {
     this.addToPolicy(
       new iam.PolicyStatement({
         effect: iam.Effect.ALLOW,
-        actions:[
+        actions: [
           'iam:PassRole',
           'iam:GetRole',
           'iam:CreateRole',
@@ -123,7 +129,7 @@ export default class CodeBuildRole extends iam.Role {
     this.addToPolicy(
       new iam.PolicyStatement({
         effect: iam.Effect.ALLOW,
-        actions:[
+        actions: [
           'logs:CreateLogGroup',
           'logs:CreateLogStream',
           'logs:DeleteLogGroup',
@@ -136,11 +142,7 @@ export default class CodeBuildRole extends iam.Role {
     this.addToPolicy(
       new iam.PolicyStatement({
         effect: iam.Effect.ALLOW,
-        actions: [
-          'events:Put*',
-          'events:Remove*',
-          'events:Delete*'
-        ],
+        actions: ['events:Put*', 'events:Remove*', 'events:Delete*'],
         resources: [`arn:aws:events:${config.region}:*:rule/*`]
       })
     ) // TODO - specific events

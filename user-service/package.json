@@ -40,14 +40,13 @@
     "serverless-prune-plugin": "^1.4.1",
     "serverless-pseudo-parameters": "^2.5.0",
     "serverless-webpack": "^5.3.1",
-    "tap": "^12.5.2",
+    "tap": "^14.10.2",
     "webpack": "^4.41.2"
   },
   "dependencies": {
     "aws-xray-sdk": "^2.4.0",
     "babel-plugin-source-map-support": "^2.1.1",
     "pino": "^5.13.5",
-    "serverless-log-forwarding": "^1.4.0",
     "slic-tools": "file:../slic-tools"
   },
   "husky": {

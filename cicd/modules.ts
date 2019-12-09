@@ -4,7 +4,6 @@ export interface Modules {
 
 const moduleNames = [
   'frontend',
-  'logging',
   'checklist-service',
   'user-service',
   'email-service',

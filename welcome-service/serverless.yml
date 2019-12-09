@@ -5,7 +5,6 @@ plugins:
   - serverless-offline
   - serverless-prune-plugin
   - serverless-pseudo-parameters
-  - serverless-log-forwarding
   - serverless-iam-roles-per-function
 
 provider:
@@ -29,7 +28,5 @@ custom:
     port: 4001
     stage: local
     region: ${self:provider.region}
-  logForwarding:
-    destinationARN: !ImportValue ${self:provider.stage}-log-forwarder-function-arn
 
 functions: ${file(./sls-functions.yml)}

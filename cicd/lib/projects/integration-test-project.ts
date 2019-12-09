@@ -25,17 +25,16 @@ export class IntegrationTestProject extends PipelineProject {
 
     const role = new CodeBuildRole(
       scope,
-      `${props.stageName}IntegrationTestRole`,
-      {
-        stageName
-      }
+      `${props.stageName}IntegrationTestRole`
     )
     // Allow access to secret environment variables in Parameter Store required for tests
     role.addToPolicy(
       new iam.PolicyStatement({
         actions: ['ssm:GetParameters'],
         resources: [
-          `arn:aws:ssm:${config.region}:${config.accountIds.cicd}:parameter/test/*`
+          `arn:aws:ssm:${config.region}:${
+            config.accountIds.cicd
+          }:parameter/test/*`
         ]
       })
     )

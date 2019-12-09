@@ -1,9 +1,0 @@
-logForwarder:
-  handler: lambda_function.lambda_handler
-  iamRoleStatements:
-    - Effect: Allow
-      Action:
-        - ssm:GetParameter
-        - ssm:GetParametersByPath
-      Resource:
-        - arn:aws:ssm:#{AWS::Region}:#{AWS::AccountId}:parameter/logging/*
