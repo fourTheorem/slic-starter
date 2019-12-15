@@ -45,6 +45,7 @@
     "yamljs": "^0.3.0"
   },
   "dependencies": {
+    "aws-embedded-metrics": "^1.0.1",
     "slic-tools": "file:../slic-tools",
     "source-map-support": "^0.5.13",
     "uuid": "^3.3.3"

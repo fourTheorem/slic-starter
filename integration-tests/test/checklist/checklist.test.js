@@ -1,8 +1,13 @@
 'use strict'
 
 const Promise = require('bluebird')
+const faker = require('faker')
+const random = require('random')
 const { test } = require('tap')
 const { getUser, removeUser } = require('../../lib/user-util')
+
+const numEntriesPoisson = random.poisson(7)
+const numWordsPoisson = random.poisson(4)
 
 const httpClient = require('../../lib/http-client')
 
@@ -121,6 +126,20 @@ test('checklist tests', async t => {
       { ...sortedEntries[1], value: 'YES', title: newTitle },
       ...sortedEntries.splice(2)
     ])
+  })
+
+  test('many entries can be added with varying title lengths', async t => {
+    const numEntries = numEntriesPoisson()
+
+    const entries = [...new Array(numEntries)].map(() => ({
+      title: [...new Array(numWordsPoisson())]
+        .map(() => faker.random.word())
+        .join(' ')
+    }))
+    console.log('Adding entries', JSON.stringify(entries, null, '  '))
+    await Promise.map(entries, entry =>
+      httpClient.post(`/${listId2}/entries`, entry)
+    )
   })
 
   test('tear down - delete checklist', async t => {

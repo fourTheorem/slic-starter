@@ -17,14 +17,9 @@ provider:
     lambda: true
   environment:
     SLIC_STAGE: ${self:provider.stage}
-  #  resourcePolicy:
-  #    - Effect: Allow
-  #      Principal: '*'
-  #      Action: 'execute-api:Invoke'
-  #      Resource:
-  #        - execute-api:/*/*/*
   logs:
     restApi: true
+  logRetentionInDays: 7
 
 custom:
   webpack:

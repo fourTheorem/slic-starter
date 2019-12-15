@@ -23,6 +23,7 @@ provider:
       Action: 'execute-api:Invoke'
       Resource:
         - execute-api:/*/*/*
+  logRetentionInDays: 7
 
 custom:
   webpack:
