@@ -16,6 +16,7 @@ provider:
     lambda: true
   environment:
     SLIC_STAGE: ${self:provider.stage}
+  logRetentionInDays: 7
 
 custom:
   webpack:

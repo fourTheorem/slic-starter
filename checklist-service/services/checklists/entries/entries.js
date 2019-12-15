@@ -2,6 +2,9 @@
 
 const Uuid = require('uuid')
 const { dynamoDocClient } = require('slic-tools/aws')
+const log = require('slic-tools/log')
+
+const { createMetricsLogger, Unit } = require('aws-embedded-metrics')
 
 const tableName = process.env.CHECKLIST_TABLE_NAME
 
@@ -37,10 +40,16 @@ async function addEntry({ userId, listId, title, value }) {
 
     ReturnValues: 'ALL_NEW'
   }
-
-  await dynamoDocClient()
+  const {
+    Attributes: { entries }
+  } = await dynamoDocClient()
     .update(params)
     .promise()
+
+  const metrics = createMetricsLogger()
+  metrics.putMetric('NumEntries', Object.keys(entries).length, Unit.Count)
+  metrics.putMetric('EntryWords', title.trim().split(/s/).length, Unit.Count)
+  await metrics.flush()
 
   return {
     entId,
@@ -68,13 +77,16 @@ async function updateEntry({ userId, listId, entId, title, value }) {
       ':title': title,
       ':value': value
     },
-
-    ReturnValues: 'ALL_NEW'
+    ReturnValues: 'NONE'
   }
 
   await dynamoDocClient()
     .update(params)
     .promise()
+
+  const metrics = createMetricsLogger()
+  metrics.putMetric('EntryWords', title.trim().split(/s/).length, Unit.Count)
+  await metrics.flush()
 
   return {
     entId,

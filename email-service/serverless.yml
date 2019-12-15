@@ -19,6 +19,7 @@ provider:
   environment:
     SLIC_STAGE: ${self:provider.stage}
     SES_REGION: ${self:provider.sesRegion}
+  logRetentionInDays: 7
 
 custom:
   webpack:
