@@ -2,7 +2,16 @@
 
 This package contains API integration tests. These tests exercise the external endpoints of the system and test integration with real, external dependencies like DynamoDB. The tests can be run against a remote, deployed environment in AWS or a local development version of the system running in offline mode.
 
-<script id="asciicast-s1QZfAfZiwXa9ZS0F9JFhYuEt" src="https://asciinema.org/a/s1QZfAfZiwXa9ZS0F9JFhYuEt.js" async></script>
+[![asciicast](https://asciinema.org/a/s1QZfAfZiwXa9ZS0F9JFhYuEt.svg)](https://asciinema.org/a/s1QZfAfZiwXa9ZS0F9JFhYuEt)
+
+## Preparing Integration tests
+
+Ensure you have created a Mailosaur account as documented in the [README](../README.md). This allows the integratin tests to receive signup and verification emails. Once you have done that, set the following environment variables in your shell. The values can be retrieved from your mailosaur account.
+
+```
+export MAILOSAUR_API_KEY=<api_key_value>
+export MAILOSAUR_SERVER_ID=<server_id>
+```
 
 ## Running Integration Tests
 
@@ -14,7 +23,7 @@ To run against the _local offline_ system, simply execute:
 SLIC_STAGE=local npm test
 ```
 
-To run against the _remote_ system, simply execute the following, substituting `stg` with the value of the stage you wish to target and specfiying the root domain your deployment uses.
+To run against the _remote_ system, simply execute the following, substituting `stg` with the value of the stage you wish to target and specfiying the root domain your deployment uses. If you have configured your deployment without a domain (according to the QUICK START guide), this environment variable is not required.
 
 ```
 SLIC_NS_DOMAIN=sliclists.com SLIC_STAGE=stg npm test
