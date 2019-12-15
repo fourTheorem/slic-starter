@@ -20,7 +20,7 @@
     "react-redux": "^5.1.0",
     "react-router": "^4.3.1",
     "react-router-dom": "^4.3.1",
-    "react-scripts": "^3.2.0",
+    "react-scripts": "^3.3.0",
     "react-text-truncate": "^0.14.0",
     "react-truncate-markup": "^3.0.1",
     "redux": "^4.0.1",
