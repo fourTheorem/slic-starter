@@ -21,7 +21,7 @@ import { createList, removeList, updateList } from '../actions/checklists'
 
 const styles = theme => ({
   main: {
-    padding: theme.spacing.unit * 4
+    padding: theme.spacing(4)
   },
   deleteBtn: {
     color: theme.palette.error.main,
@@ -133,7 +133,7 @@ class EditChecklist extends Component {
       <ConfirmationDialog
         id="list-confirmation"
         title="Delete List?"
-        open={this.state.confirmDeleteListOpen}
+        open={!!this.state.confirmDeleteListOpen}
         message={`Are you sure you want to remove the list '${list &&
           list.name}' permanently?`}
         onConfirm={this.handleRemoveList}
@@ -157,7 +157,7 @@ class EditChecklist extends Component {
               <Grid
                 container
                 direction="column"
-                spacing={16}
+                spacing={2}
                 className={classes.main}
               >
                 <Grid item>

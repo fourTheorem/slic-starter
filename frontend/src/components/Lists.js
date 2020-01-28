@@ -10,12 +10,12 @@ import ListSummary from './ListSummary'
 
 const styles = theme => ({
   padded: {
-    padding: theme.spacing.unit * 2
+    padding: theme.spacing(2)
   },
   fab: {
     position: 'absolute',
-    bottom: theme.spacing.unit * 4,
-    right: theme.spacing.unit * 4
+    bottom: theme.spacing(4),
+    right: theme.spacing(4)
   }
 })
 
@@ -40,7 +40,6 @@ class Lists extends Component {
         <Grid
           container
           layout="row"
-          spacing={16}
           className={classes.padded}
           justify="flex-start"
           alignItems="flex-start"
