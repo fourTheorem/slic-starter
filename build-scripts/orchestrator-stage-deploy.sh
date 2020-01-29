@@ -51,6 +51,7 @@ checkExecutions() {
   done
 }
 
+sleep 10
 checkExecutions
 while [[ $anyInProgress = true ]]; do
   echo "In progres: allSucceeded ? $allSucceeded, anyFailed? $anyFailed"
