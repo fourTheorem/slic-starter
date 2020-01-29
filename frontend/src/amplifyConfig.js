@@ -16,9 +16,7 @@ Object.entries(envVars).forEach(([key, env]) => {
   const value = process.env[env]
   if (!value || value.length === 0) {
     console.error(
-      `${
-        envVars[key]
-      } must be defined at UI build time for AWS Amplify to be configured correctly`
+      `${envVars[key]} must be defined at UI build time for AWS Amplify to be configured correctly`
     )
   }
   config[key] = value
