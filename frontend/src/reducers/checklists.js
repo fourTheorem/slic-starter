@@ -249,27 +249,26 @@ export default (state = defaultState, { type, meta, payload, error }) => {
         fetchedListEntries: false
       }
     case SET_ENTRY_VALUE_REQUEST:
-      return {
-        ...state,
-        updatingEntryValue: true,
-        entryValueUpdateError: null
-      }
-    case SET_ENTRY_VALUE_SUCCESS:
       const oldEntries = state.entriesByListId[meta.listId]
       const index = findIndex(oldEntries, { entId: meta.entry.entId })
       const updatedEntries = [...oldEntries]
       if (index > -1) {
         updatedEntries[index] = meta.entry
       }
-
       return {
         ...state,
-        updatingEntryValue: false,
+        updatingEntryValue: true,
         entryValueUpdateError: null,
         entriesByListId: {
           ...state.entriesByListId,
           [meta.listId]: updatedEntries
         }
+      }
+    case SET_ENTRY_VALUE_SUCCESS:
+      return {
+        ...state,
+        updatingEntryValue: false,
+        entryValueUpdateError: null
       }
     case SET_ENTRY_VALUE_FAILURE:
       return {

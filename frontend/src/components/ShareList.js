@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import {
-  Typography,
   TextField,
   Dialog,
   DialogActions,
@@ -62,7 +61,7 @@ class ShareList extends Component {
 
     return (
       <Dialog
-        open={open}
+        open={!!open}
         list={list}
         keepMounted
         onClose={onClose}
@@ -73,10 +72,8 @@ class ShareList extends Component {
         <DialogTitle id="alert-dialog-slide-title">Share List</DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-slide-description">
-            <Typography>
-              Sharing a list will send an invitation by email to view and edit
-              your list
-            </Typography>
+            Sharing a list will send an invitation by email to view and edit
+            your list
           </DialogContentText>
           <TextField
             id="email-textfield"

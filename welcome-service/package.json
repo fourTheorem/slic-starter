@@ -43,7 +43,6 @@
   },
   "dependencies": {
     "aws-signed-axios": "^1.0.6",
-    "aws-xray-sdk": "^2.4.0",
     "aws4": "^1.8.0",
     "babel-plugin-source-map-support": "^2.1.1",
     "bourne": "^1.1.2",

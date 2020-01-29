@@ -144,6 +144,7 @@ resources:
                 - logs:DescribeLogStreams
                 - logs:DescribeLogGroups
                 - logs:FilterLogEvents
+                - logs:PutRetentionPolicy
               Resource:
                 - '*'
             - Effect: Allow

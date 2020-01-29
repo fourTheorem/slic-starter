@@ -97,14 +97,16 @@ class Entries extends Component {
   }
 
   handleEntryValueChange = ({ target: { id, checked } }) => {
-    const { dispatch, list, entries } = this.props
-    const entry = entries.find(ent => ent.entId === id)
-    dispatch(
-      setEntryValue({
-        listId: list.listId,
-        entry: { ...entry, value: checked }
-      })
-    )
+    const { dispatch, list, entries, updatingEntryValue } = this.props
+    if (!updatingEntryValue) {
+      const entry = entries.find(ent => ent.entId === id)
+      dispatch(
+        setEntryValue({
+          listId: list.listId,
+          entry: { ...entry, value: checked }
+        })
+      )
+    }
   }
 
   handleEntryRemovalRequest = event => {
@@ -120,7 +122,6 @@ class Entries extends Component {
     const entry = entries.find(ent => ent.entId === this.state.menuEntryId)
 
     this.setState({
-      isUpdatingEntry: true,
       editingId: this.state.menuEntryId,
       menuEntryId: null,
       anchorPosition: null,

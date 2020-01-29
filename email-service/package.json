@@ -44,7 +44,7 @@
     "webpack": "^4.41.2"
   },
   "dependencies": {
-    "aws-xray-sdk": "^2.3.3",
+    "aws-xray-sdk": "^2.5.0",
     "babel-plugin-source-map-support": "^2.1.1",
     "bourne": "^1.1.2",
     "pino": "^5.8.1",

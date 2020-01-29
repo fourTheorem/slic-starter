@@ -44,7 +44,7 @@
     "webpack": "^4.41.2"
   },
   "dependencies": {
-    "aws-xray-sdk": "^2.4.0",
+    "aws-xray-sdk": "^2.5.0",
     "babel-plugin-source-map-support": "^2.1.1",
     "pino": "^5.13.5",
     "slic-tools": "file:../slic-tools"

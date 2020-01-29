@@ -1,7 +1,7 @@
 import React from 'react'
 import { render } from 'react-dom'
 import Amplify from 'aws-amplify'
-import createHistory from 'history/createBrowserHistory'
+import { createBrowserHistory } from 'history'
 
 import './index.css'
 import App from './components/App'
@@ -11,7 +11,7 @@ import amplifyConfig from './amplifyConfig'
 
 Amplify.configure(amplifyConfig)
 
-const history = createHistory()
+const history = createBrowserHistory()
 const store = configureStore(history)
 
 render(<App store={store} history={history} />, document.getElementById('root'))

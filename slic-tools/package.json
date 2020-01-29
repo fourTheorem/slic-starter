@@ -31,9 +31,9 @@
     "tap": "^14.10.2"
   },
   "dependencies": {
-    "aws-sdk": "^2.339.0",
+    "aws-sdk": "^2.590.0",
     "aws-signed-axios": "^1.0.6",
-    "aws-xray-sdk": "^2.3.3",
+    "aws-xray-sdk": "^2.5.0",
     "bourne": "^1.1.2",
     "lambda-logger-middleware": "^1.0.3",
     "lodash": "^4.17.15",

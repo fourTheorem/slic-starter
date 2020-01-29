@@ -110,7 +110,7 @@ class Checklist extends Component {
           </Typography>
         </ExtExpansionPanelSummary>
         <ExpansionPanelDetails>
-          <Grid container direction="column" spacing={16}>
+          <Grid container direction="column" spacing={2}>
             <Grid item>
               <Typography variant="caption">{date}</Typography>
             </Grid>
