@@ -1,4 +1,5 @@
 {
+  "root": true,
   "extends": ["react-app", "prettier", "prettier/react"],
   "plugins": ["prettier", "react-app"],
   "parserOptions": {

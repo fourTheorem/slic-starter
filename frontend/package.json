@@ -63,6 +63,7 @@
     "http-proxy-middleware": "^0.19.1",
     "prettier": "^1.19.1",
     "serverless-pseudo-parameters": "^2.5.0",
+    "typescript": "^3.7.5",
     "yaml": "^1.7.2"
   }
 }

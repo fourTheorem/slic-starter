@@ -12,7 +12,7 @@ import {
   ListItemText,
   TextField,
   ListItemSecondaryAction,
-  Switch,
+  Checkbox,
   ClickAwayListener,
   List
 } from '@material-ui/core'
@@ -267,7 +267,8 @@ class Entries extends Component {
                   <ListItemText>{entry.title}</ListItemText>
                 )}
                 <ListItemSecondaryAction>
-                  <Switch
+                  <Checkbox
+                    color="primary"
                     onChange={this.handleEntryValueChange}
                     id={entry.entId}
                     name={'checkbox-entry-'.concat(index)}
