@@ -103,6 +103,3 @@ webRecordSets:
 `
     : ''
 }`)
-
-const val = module.exports()
-console.log(JSON.stringify(val, null, ' '))

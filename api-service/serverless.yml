@@ -7,11 +7,13 @@ provider:
   region: ${opt:region, '${self:custom.defaultRegions.${self:provider.stage}}'}
 
 custom:
-  apiConfig: ${file(./api-config.js)}
   nsDomain: ${env:SLIC_NS_DOMAIN}
-  domainPrefixes: ${file(../slic-config.json):domainConfig:domainPrefixes}
-  defaultRegions: ${file(../slic-config.json):defaultRegions}
-  apiDomainName: ${file:./domain-config.js):apiDomainName}
+  apiConfig: ${file(./api-config.js)}
+  slicConfig: ${file(../slic-config.json)}
+  apiDomainConfig: ${file(../domain-config.js)}
+  domainPrefixes: ${self:custom.slicConfig.domainConfig.domainPrefixes}
+  defaultRegions: ${self:custom.slicConfig.defaultRegions}
+  apiDomainName: ${self:custom.apiDomainConfig.apiDomainName}
   # The HostedZoneId for CloudFront distributions is always this value.
   # See http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-route53-aliastarget.html
   # AND http://docs.aws.amazon.com/general/latest/gr/rande.html
