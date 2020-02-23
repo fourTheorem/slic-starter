@@ -199,7 +199,7 @@ cd cicd
 npm install
 npm run build
 AWS_PROFILE=your-cicd-account npm run cdk -- bootstrap
-AWS_PROFILE=your-cicd-account npm run deploy
+SLIC_NS_DOMAIN=your_domain AWS_PROFILE=your-cicd-account npm run deploy
 ```
 
 12. Trigger your pipeline by commiting your changes to the repository

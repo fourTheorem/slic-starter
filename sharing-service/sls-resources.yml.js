@@ -18,7 +18,7 @@ sharingServiceUrlParameter:
   Properties:
     Name: /$\{self:provider.stage}/sharing-service/url
     Type: String
-    Value: 
+    Value:
       Fn::Join:
         - ''
         - ['https://', {'Ref': 'ApiGatewayRestApi'}, '.execute-api.$\{self:provider.region}.amazonaws.com/$\{self:provider.stage}']
