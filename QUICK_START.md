@@ -39,7 +39,7 @@ Set up CodeBuild GitHub access. There are a couple of ways to do this. The most 
 aws codebuild import-source-credentials --generate-cli-skeleton > /tmp/skeleton.json
 ```
 
-2. Create a GitHub personal access token. Go to GitHub -> Settings -> Personal access tokens -> Select 'repo'.
+2. Create a GitHub personal access token. Go to GitHub -> Settings -> Developer Settings -> Personal access tokens -> Select 'repo'.
 3. Paste the token into `token` in `/tmp/skeleton.json`
 4. Change `serverType` to `GITHUB`
 5. Change `authType` to `PERSONAL_ACCESS_TOKEN`
