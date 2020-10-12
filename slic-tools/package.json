@@ -28,7 +28,7 @@
     "prettier": "1.14.3",
     "pretty-quick": "^1.8.0",
     "proxyquire": "^2.1.0",
-    "tap": "^14.10.2"
+    "tap": "^14.10.8"
   },
   "dependencies": {
     "aws-sdk": "^2.590.0",
@@ -36,7 +36,7 @@
     "aws-xray-sdk": "^2.5.0",
     "bourne": "^1.1.2",
     "lambda-logger-middleware": "^1.0.3",
-    "lodash": "^4.17.15",
+    "lodash": "^4.17.20",
     "middy": "^0.28.4",
     "middy-autoproxyresponse": "^0.1.0",
     "pino": "^5.13.0"
