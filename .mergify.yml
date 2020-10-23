@@ -1,0 +1,11 @@
+pull_request_rules:
+  - name: automatic merge of bot 🤖 (low priority)
+    conditions:
+      - author~=^dependabot(|-preview)\[bot\]$
+      # - check-success=Travis CI - Pull Request
+      - base=master
+    actions:
+      merge:
+        method: merge
+        strict: smart
+        priority: low
