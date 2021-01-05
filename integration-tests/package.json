@@ -18,7 +18,7 @@
   "devDependencies": {
     "aws-sdk": "^2.409.0",
     "awscred": "^1.4.2",
-    "axios": "^0.18.1",
+    "axios": "^0.21.1",
     "bluebird": "^3.5.3",
     "chance": "^1.0.18",
     "eslint": "^5.13.0",
