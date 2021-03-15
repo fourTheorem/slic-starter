@@ -45,7 +45,9 @@ custom:
         - Ref: 'ApiGatewayRestApi'
         - '.execute-api.${self:provider.region}.amazonaws.com/${self:provider.stage}'
   serverless-offline:
-    port: 4000
+    httpPort: 4000
+    lambdaPort: 4002
+    websocketPort: 4001
     stage: local
     region: ${self:provider.region}
   dynamodb:
