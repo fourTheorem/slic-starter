@@ -1,4 +1,4 @@
-import { API as AmplifyApi } from 'aws-amplify'
+import { API as AmplifyApi } from '@aws-amplify/api'
 import { translateError } from '../errors'
 
 export const LOAD_LISTS_REQUEST = 'LOAD_LISTS_REQUEST'
@@ -6,7 +6,7 @@ export const LOAD_LISTS_SUCCESS = 'LOAD_LISTS_SUCCESS'
 export const LOAD_LISTS_FAILURE = 'LOAD_LISTS_FAILURE'
 
 export function loadLists() {
-  return function(dispatch) {
+  return function (dispatch) {
     dispatch({ type: LOAD_LISTS_REQUEST })
     AmplifyApi.get('checklist-api', '')
       .then(result => {
@@ -23,7 +23,7 @@ export const CREATE_LIST_SUCCESS = 'CREATE_LIST_SUCCESS'
 export const CREATE_LIST_FAILURE = 'CREATE_LIST_FAILURE'
 
 export function createList({ name, description }) {
-  return function(dispatch) {
+  return function (dispatch) {
     dispatch({ type: CREATE_LIST_REQUEST })
     AmplifyApi.post('checklist-api', '', {
       body: {
@@ -45,7 +45,7 @@ export const REMOVE_LIST_SUCCESS = 'REMOVE_LIST_SUCCESS'
 export const REMOVE_LIST_FAILURE = 'REMOVE_LIST_FAILURE'
 
 export function removeList({ listId }) {
-  return function(dispatch) {
+  return function (dispatch) {
     const meta = { listId }
     dispatch({ type: REMOVE_LIST_REQUEST, meta })
     AmplifyApi.del('checklist-api', `/${listId}`)
@@ -63,7 +63,7 @@ export const UPDATE_LIST_SUCCESS = 'UPDATE_LIST_SUCCESS'
 export const UPDATE_LIST_FAILURE = 'UPDATE_LIST_FAILURE'
 
 export function updateList({ listId, name, description }) {
-  return function(dispatch) {
+  return function (dispatch) {
     const meta = { listId }
     dispatch({ type: UPDATE_LIST_REQUEST })
     AmplifyApi.put('checklist-api', `/${listId}`, {

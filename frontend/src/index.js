@@ -1,6 +1,6 @@
 import React from 'react'
 import { render } from 'react-dom'
-import Amplify from 'aws-amplify'
+import { Amplify } from '@aws-amplify/core'
 import { createBrowserHistory } from 'history'
 
 import './index.css'

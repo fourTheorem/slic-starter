@@ -1,7 +1,7 @@
 {
   "root": true,
-  "extends": ["react-app", "prettier", "prettier/react"],
-  "plugins": ["prettier", "react-app"],
+  "extends": ["prettier", "react-app"],
+  "plugins": ["prettier"],
   "parserOptions": {
     "ecmaVersion": 2018,
     "sourceType": "module",
@@ -11,15 +11,6 @@
   },
   "rules": {
     "prettier/prettier": "error",
-    "react/jsx-filename-extension": [
-      1,
-      {
-        "extensions": [".js", ".jsx"]
-      }
-    ],
-    "react/prop-types": 1,
-    "no-underscore-dangle": 0,
-    "import/imports-first": ["error", "absolute-first"],
-    "import/newline-after-import": "error"
+    "no-underscore-dangle": 0
   }
 }
