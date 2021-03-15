@@ -16,7 +16,7 @@ const logger = createLogger({
     action.type.endsWith('FAILURE') || action.error
 })
 
-export default history =>
+const store = history =>
   createStore(
     reducers(history),
     composeEnhancers(
@@ -28,3 +28,5 @@ export default history =>
       )
     )
   )
+
+export default store

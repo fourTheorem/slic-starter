@@ -1,6 +1,6 @@
 const proxy = require('http-proxy-middleware')
 
-module.exports = function(app) {
+module.exports = function (app) {
   app.use(
     proxy('/checklist', {
       target: 'http://localhost:4000',

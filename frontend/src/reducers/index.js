@@ -5,10 +5,12 @@ import app from './app'
 import auth from './auth'
 import checklists from './checklists'
 
-export default history =>
+const reducer = history =>
   combineReducers({
     app,
     auth,
     checklists,
     router: connectRouter(history)
   })
+
+export default reducer

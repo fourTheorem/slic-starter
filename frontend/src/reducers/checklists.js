@@ -56,7 +56,7 @@ const defaultState = {
   gettingListEntries: false
 }
 
-export default (state = defaultState, { type, meta, payload, error }) => {
+const reducer = (state = defaultState, { type, meta, payload, error }) => {
   switch (type) {
     case LOCATION_CHANGE:
       const { path } = payload.location
@@ -368,3 +368,5 @@ export default (state = defaultState, { type, meta, payload, error }) => {
       return state
   }
 }
+
+export default reducer

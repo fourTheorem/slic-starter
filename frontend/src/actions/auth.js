@@ -8,13 +8,13 @@ export const SIGNUP_FAILURE = 'SIGNUP_FAILURE'
 export const SET_PRE_AUTHENTICATED_PATH = 'SET_PRE_AUTHENTICATED_PATH'
 
 export function setPreAuthenticatedPath(path) {
-  return function(dispatch) {
+  return function (dispatch) {
     dispatch({ type: SET_PRE_AUTHENTICATED_PATH, payload: path })
   }
 }
 
 export function signUp({ email, password }) {
-  return function(dispatch) {
+  return function (dispatch) {
     dispatch({ type: SIGNUP_REQUEST })
     Auth.signUp(email, password).then(
       () => dispatch({ type: SIGNUP_SUCCESS, payload: { email } }),
@@ -29,7 +29,7 @@ export const LOGIN_SUCCESS = 'LOGIN_SUCCESS'
 export const LOGIN_FAILURE = 'LOGIN_FAILURE'
 
 export function logIn({ email, password }) {
-  return function(dispatch) {
+  return function (dispatch) {
     dispatch({ type: LOGIN_REQUEST, payload: { email } })
     Auth.signIn(email, password).then(
       () => dispatch({ type: LOGIN_SUCCESS }),
@@ -43,7 +43,7 @@ export const LOGIN_VALIDATED = 'LOGIN_VALIDATED'
 export const LOGIN_INVALIDATED = 'LOGIN_INVALIDATED'
 
 export function checkAuthentication() {
-  return function(dispatch) {
+  return function (dispatch) {
     Auth.currentSession().then(
       () => dispatch({ type: LOGIN_VALIDATED }),
       err => dispatch({ type: LOGIN_INVALIDATED })
@@ -56,7 +56,7 @@ export const LOGOUT_SUCCESS = 'LOGOUT_SUCCESS'
 export const LOGOUT_FAILURE = 'LOGOUT_FAILURE'
 
 export function logOut() {
-  return function(dispatch) {
+  return function (dispatch) {
     dispatch({ type: LOGOUT_REQUEST })
     Auth.signOut().then(
       () => dispatch({ type: LOGOUT_SUCCESS }),
@@ -70,7 +70,7 @@ export const SIGNUP_CONFIRM_SUCCESS = 'SIGNUP_CONFIRM_SUCCESS'
 export const SIGNUP_CONFIRM_FAILURE = 'SIGNUP_CONFIRM_FAILURE'
 
 export function confirmSignup(email, confirmationCode) {
-  return function(dispatch) {
+  return function (dispatch) {
     dispatch({ type: SIGNUP_CONFIRM_REQUEST })
     Auth.confirmSignUp(email, confirmationCode).then(
       () => dispatch({ type: SIGNUP_CONFIRM_SUCCESS, payload: { email } }),
@@ -88,7 +88,7 @@ export const RESEND_CODE_SUCCESS = 'RESEND_CODE_SUCCESS'
 export const RESEND_CODE_FAILURE = 'RESEND_CODE_FAILURE'
 
 export function resendConfirmationCode(email) {
-  return function(dispatch) {
+  return function (dispatch) {
     dispatch({ type: RESEND_CODE_REQUEST })
     Auth.resendSignUp(email).then(
       () => dispatch({ type: RESEND_CODE_SUCCESS }),
