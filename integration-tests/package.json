@@ -4,8 +4,8 @@
   "description": "Integration tests",
   "main": "index.js",
   "scripts": {
-    "lint": "eslint .",
-    "format": "prettier --write \"**/*.js\"",
+    "lint": "prettier-standard --lint --ignore-pattern \"scripts/**\" .",
+    "format": "prettier-standard --format \"**/*.js\"",
     "test": "tap --no-coverage \"test/**/*.test.js\""
   },
   "author": "Eoin Shanaghy <eoin.shanaghy@fourtheorem.com>",
@@ -21,21 +21,12 @@
     "axios": "^0.21.1",
     "bluebird": "^3.5.3",
     "chance": "^1.0.18",
-    "eslint": "^5.13.0",
-    "eslint-config-prettier": "^4.0.0",
-    "eslint-config-standard": "^12.0.0",
-    "eslint-plugin-import": "^2.16.0",
-    "eslint-plugin-node": "^8.0.1",
-    "eslint-plugin-prettier": "^3.0.1",
-    "eslint-plugin-promise": "^4.0.1",
-    "eslint-plugin-standard": "^4.0.0",
     "faker": "^4.1.0",
     "husky": "^1.1.3",
     "jsonwebtoken": "^8.5.0",
     "lodash": "^4.17.20",
     "mailosaur": "^5.0.8",
-    "prettier": "1.14.3",
-    "pretty-quick": "^1.8.0",
+    "prettier-standard": "^16.4.1",
     "random": "^2.1.1",
     "random-words": "^1.1.0",
     "rword": "^3.0.0",
@@ -44,7 +35,7 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "pretty-quick --staged"
+      "pre-commit": "prettier-standard --staged"
     }
   },
   "dependencies": {

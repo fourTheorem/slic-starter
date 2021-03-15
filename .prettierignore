@@ -1,2 +1,7 @@
 # Ignore YAML files as we uses partials with indentation for CICD
 cicd/*.yml
+node_modules
+.nyc_output
+coverage
+.serverless
+.webpack
