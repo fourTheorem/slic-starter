@@ -27,7 +27,9 @@ custom:
     keepOutputDirectory: true
   stage: ${opt:stage, 'dev'}
   serverless-offline:
-    port: 4003
+    httpPort: 4009
+    lambdaPort: 4011
+    websocketPort: 4010
     stage: local
     region: ${self:provider.region}
     noAuth: true

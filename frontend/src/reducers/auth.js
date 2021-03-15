@@ -24,7 +24,7 @@ const defaultState = {
   loginFailed: false
 }
 
-export default (state = defaultState, { type, meta, payload, error }) => {
+const reducer = (state = defaultState, { type, meta, payload, error }) => {
   switch (type) {
     case SET_PRE_AUTHENTICATED_PATH:
       return {
@@ -141,3 +141,5 @@ export default (state = defaultState, { type, meta, payload, error }) => {
       return state
   }
 }
+
+export default reducer

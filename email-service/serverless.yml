@@ -35,7 +35,9 @@ custom:
     us-west-2: us-west-2
     eu-west-1: eu-west-1
   serverless-offline:
-    port: 4002
+    httpPort: 4003
+    lambdaPort: 4005
+    websocketPort: 4004
     stage: local
     region: ${opt:region, '${env:TARGET_REGION}'}
   serverless-offline-sqs:

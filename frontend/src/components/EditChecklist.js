@@ -134,8 +134,9 @@ class EditChecklist extends Component {
         id="list-confirmation"
         title="Delete List?"
         open={!!this.state.confirmDeleteListOpen}
-        message={`Are you sure you want to remove the list '${list &&
-          list.name}' permanently?`}
+        message={`Are you sure you want to remove the list '${
+          list && list.name
+        }' permanently?`}
         onConfirm={this.handleRemoveList}
         onClose={this.handleListRemovalClose}
       />

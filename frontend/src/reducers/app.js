@@ -6,7 +6,7 @@ const defaultState = {
   titles: [appTitle]
 }
 
-export default (state = defaultState, { type, meta, payload, error }) => {
+const reducer = (state = defaultState, { type, meta, payload, error }) => {
   switch (type) {
     case LOCATION_CHANGE:
       return {
@@ -17,6 +17,8 @@ export default (state = defaultState, { type, meta, payload, error }) => {
       return state
   }
 }
+
+export default reducer
 
 function pathToTitles(path) {
   const titles = [appTitle]

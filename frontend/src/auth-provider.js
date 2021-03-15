@@ -1,4 +1,4 @@
-import { Auth as AmplifyAuth } from 'aws-amplify'
+import { Auth as AmplifyAuth } from '@aws-amplify/auth'
 import SimulatedAuth from 'mock-amplify-auth'
 import { simulatedAuth } from './mode'
 
