@@ -31,7 +31,9 @@ custom:
   domainPrefixes: ${file(../common-config.json):domainPrefixes}
   cloudFrontHostedZoneId: Z2FDTNDATAQYW2
   serverless-offline:
-    port: 4004
+    httpPort: 4006
+    lambdaPort: 4008
+    websocketPort: 4007
     stage: local
     region: ${self:provider.region}
   emailQueueName: ${self:provider.stage}-email-queue

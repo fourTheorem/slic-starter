@@ -5,10 +5,7 @@ services:
     image: localstack/localstack
     ports:
       - '18080:8080'
-      - '4576:4576' # SQS
-      - '4579:4579' # SES
-      - '4587:4587' # Events
-      - '4583:4583' # SSM
+      - '4566:4566'
     environment:
       - DEFAULT_REGION=us-east-1
       - SERVICES=sqs,sns,events,ssm
