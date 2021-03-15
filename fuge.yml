@@ -19,6 +19,7 @@ fuge_global:
     - 'EVENTS_ENDPOINT_URL=http://localhost:4566'
     - 'SSM_ENDPOINT_URL=http://localhost:4566'
     - 'AWS_XRAY_CONTEXT_MISSING=LOG_ERROR'
+    - 'AWS_XRAY_LOG_LEVEL=silent'
     - 'AWS_LAMBDA_FUNCTION_NAME=unknown_fuge_offline' # This is set to so https://github.com/awslabs/aws-embedded-metrics-node detects the environment as Lambda and doesn't assume a CW Agent is present. serverless-offline does not set this
 checklist:
   type: process
