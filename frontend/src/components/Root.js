@@ -37,11 +37,11 @@ class Root extends Component {
 
 Root.propTypes = {
   authenticated: PropTypes.bool,
-  dispatch: PropTypes.func.isRequired
+  dispatch: PropTypes.func.isRequired,
 }
 
 const mapStateToProps = ({ auth: { authenticated } }) => ({
-  authenticated
+  authenticated,
 })
 
 export default withRouter(connect(mapStateToProps)(Root))

@@ -14,7 +14,7 @@ import {
   ListItemSecondaryAction,
   Checkbox,
   ClickAwayListener,
-  List
+  List,
 } from '@material-ui/core'
 
 import { withStyles } from '@material-ui/core/styles'
@@ -27,22 +27,22 @@ import {
   loadEntries,
   addEntry,
   setEntryValue,
-  removeEntry
+  removeEntry,
 } from '../actions/entries'
 
 const styles = {
   hiddenButton: {
-    visibility: 'hidden'
+    visibility: 'hidden',
   },
   textField: {
-    width: '100%'
-  }
+    width: '100%',
+  },
 }
 
 const ExtListItem = withStyles({
   container: {
-    width: '100%'
-  }
+    width: '100%',
+  },
 })(ListItem)
 
 class Entries extends Component {
@@ -55,7 +55,7 @@ class Entries extends Component {
     anchorPosition: null,
     editingId: null,
     updatedTitle: null,
-    newEntryTitle: ''
+    newEntryTitle: '',
   }
 
   componentDidUpdate(prevProps) {
@@ -78,14 +78,14 @@ class Entries extends Component {
     }
   }
 
-  handleEntrySubmit = event => {
+  handleEntrySubmit = (event) => {
     event.preventDefault()
     if (this.validate()) {
       this.props.dispatch(
         addEntry({
           listId: this.props.list.listId,
           title: this.state.newEntryTitle,
-          value: false
+          value: false,
         })
       )
       this.setState({ newEntryTitle: '' })
@@ -99,49 +99,49 @@ class Entries extends Component {
   handleEntryValueChange = ({ target: { id, checked } }) => {
     const { dispatch, list, entries, updatingEntryValue } = this.props
     if (!updatingEntryValue) {
-      const entry = entries.find(ent => ent.entId === id)
+      const entry = entries.find((ent) => ent.entId === id)
       dispatch(
         setEntryValue({
           listId: list.listId,
-          entry: { ...entry, value: checked }
+          entry: { ...entry, value: checked },
         })
       )
     }
   }
 
-  handleEntryRemovalRequest = event => {
+  handleEntryRemovalRequest = (event) => {
     this.setState({
       confirmDeleteEntryOpen: true,
       editingId: this.state.menuEntryId,
-      deletingEntry: true
+      deletingEntry: true,
     })
   }
 
   handleEntryUpdateRequest = () => {
     const { entries } = this.props
-    const entry = entries.find(ent => ent.entId === this.state.menuEntryId)
+    const entry = entries.find((ent) => ent.entId === this.state.menuEntryId)
 
     this.setState({
       editingId: this.state.menuEntryId,
       menuEntryId: null,
       anchorPosition: null,
-      updatedTitle: entry.title
+      updatedTitle: entry.title,
     })
   }
 
   handleEntryUpdateSubmit = () => {
     const { dispatch, list, entries } = this.props
-    const entry = entries.find(ent => ent.entId === this.state.editingId)
+    const entry = entries.find((ent) => ent.entId === this.state.editingId)
     dispatch(
       setEntryValue({
         listId: list.listId,
-        entry: { ...entry, title: this.state.updatedTitle }
+        entry: { ...entry, title: this.state.updatedTitle },
       })
     )
     this.setState({
       editingId: null,
       menuEntryId: null,
-      updatedTitle: null
+      updatedTitle: null,
     })
   }
 
@@ -163,12 +163,12 @@ class Entries extends Component {
     this.setState({ anchorPosition: null })
   }
 
-  handleDropdownOpen = event => {
+  handleDropdownOpen = (event) => {
     const { x: left, y: top } = event.currentTarget.getBoundingClientRect()
     const anchorPosition = { left, top }
     this.setState({
       menuEntryId: event.currentTarget.id,
-      anchorPosition
+      anchorPosition,
     })
   }
 
@@ -182,7 +182,7 @@ class Entries extends Component {
       error,
       entries,
       list,
-      updatingEntryValue
+      updatingEntryValue,
     } = this.props
 
     if (!list) {
@@ -322,7 +322,7 @@ Entries.propTypes = {
   error: PropTypes.object,
   updatingList: PropTypes.bool,
   listUpdated: PropTypes.bool,
-  updatedAt: PropTypes.any
+  updatedAt: PropTypes.any,
 }
 
 const makeMapStateToProps = (initialState, ownProps) => {
@@ -337,8 +337,8 @@ const makeMapStateToProps = (initialState, ownProps) => {
       addEntryError,
       listEntriesError,
       entryValueUpdateError,
-      removeEntryError
-    }
+      removeEntryError,
+    },
   }) => {
     const list = listId ? listsById[listId] : {}
     const entries = entriesByListId[listId] || []
@@ -353,7 +353,7 @@ const makeMapStateToProps = (initialState, ownProps) => {
         addEntryError ||
         listEntriesError ||
         entryValueUpdateError ||
-        removeEntryError
+        removeEntryError,
     }
   }
 }

@@ -1,4 +1,4 @@
 semi: false
 singleQuote: true
 bracketSpacing: true
-trailingComma: false
+trailingComma: es5
