@@ -27,17 +27,17 @@ export function createShare({ email, listId, listName }) {
       body: {
         email,
         listId,
-        listName
-      }
+        listName,
+      },
     })
-      .then(result => {
+      .then((result) => {
         dispatch({
           type: CREATE_SHARE_SUCCESS,
           payload: result,
-          meta: { email }
+          meta: { email },
         })
       })
-      .catch(err => {
+      .catch((err) => {
         dispatch({ type: CREATE_SHARE_FAILURE, error: translateError(err) })
       })
   }
@@ -52,13 +52,13 @@ export function acceptShareRequest(code) {
     dispatch({ type: ACCEPT_SHARE_REQUEST })
     AmplifyApi.patch('sharing-api', `/${code}`, {
       body: {
-        code: code
-      }
+        code: code,
+      },
     })
-      .then(result => {
+      .then((result) => {
         dispatch({ type: ACCEPT_SHARE_SUCCESS })
       })
-      .catch(err => {
+      .catch((err) => {
         dispatch({ type: ACCEPT_SHARE_FAILURE, error: translateError(err) })
       })
   }

@@ -5,10 +5,10 @@ import { Typography } from '@material-ui/core'
 
 import { messages } from '../errors'
 
-const styles = theme => ({
+const styles = (theme) => ({
   error: {
-    color: theme.palette.error.main
-  }
+    color: theme.palette.error.main,
+  },
 })
 
 class ErrorMessage extends React.Component {
@@ -23,7 +23,7 @@ class ErrorMessage extends React.Component {
 
 ErrorMessage.propTypes = {
   messageId: PropTypes.symbol.isRequired,
-  classes: PropTypes.object.isRequired
+  classes: PropTypes.object.isRequired,
 }
 
 export default withStyles(styles)(ErrorMessage)

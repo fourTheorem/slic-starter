@@ -8,7 +8,7 @@ const envVars = {
   userPoolWebClientId: 'REACT_APP_USER_POOL_CLIENT_ID',
   identityPoolId: 'REACT_APP_IDENTITY_POOL',
   checklistServiceApiEndpoint: 'REACT_APP_CHECKLIST_SERVICE_URL',
-  sharingServiceApiEndpoint: 'REACT_APP_SHARING_SERVICE_URL'
+  sharingServiceApiEndpoint: 'REACT_APP_SHARING_SERVICE_URL',
 }
 
 const config = {}
@@ -33,9 +33,9 @@ const commonEndpointConfig = {
   custom_header: async () => {
     const session = await Auth.currentSession()
     return {
-      Authorization: get(session, 'idToken.jwtToken')
+      Authorization: get(session, 'idToken.jwtToken'),
     }
-  }
+  },
 }
 const amplifyConfig = {
   API: {
@@ -43,21 +43,21 @@ const amplifyConfig = {
       {
         name: 'checklist-api',
         endpoint: checklistServiceApiEndpoint,
-        ...commonEndpointConfig
+        ...commonEndpointConfig,
       },
       {
         name: 'sharing-api',
         endpoint: sharingServiceApiEndpoint,
-        ...commonEndpointConfig
-      }
-    ]
-  }
+        ...commonEndpointConfig,
+      },
+    ],
+  },
 }
 
 if (!simulatedAuth) {
   amplifyConfig.Auth = {
     mandatorySignIn: true,
-    ...authConfig
+    ...authConfig,
   }
 }
 

@@ -9,7 +9,7 @@ import ErrorMessage from './ErrorMessage'
 import { confirmSignup } from '../actions/auth'
 import { resendConfirmationCode } from '../actions/auth'
 
-const style = theme => ({
+const style = (theme) => ({
   root: {
     background: 'linear-gradient(to right, #4A00E0, #8E2DE2)',
     display: 'flex',
@@ -17,41 +17,41 @@ const style = theme => ({
     minWidth: '100%',
     minHeight: '100vh',
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
   },
   paper: {
     alignItems: 'center',
     minWidth: '460px',
-    padding: theme.spacing.unit * 2
+    padding: theme.spacing.unit * 2,
   },
   input: {
-    width: '100%'
+    width: '100%',
   },
   button: {
     width: '100%',
-    marginTop: theme.spacing.unit
+    marginTop: theme.spacing.unit,
   },
   success: {
-    color: 'green'
-  }
+    color: 'green',
+  },
 })
 
 class ConfirmSignup extends Component {
   state = {
     email: this.props.auth.email,
-    confirmationCode: ''
+    confirmationCode: '',
   }
 
   validate = () => this.state.confirmationCode.length > 5
 
   handleChange = ({ target: { id, value } }) => this.setState({ [id]: value })
 
-  resendConfirmation = event => {
+  resendConfirmation = (event) => {
     event.preventDefault()
     this.props.dispatch(resendConfirmationCode(this.state.email))
   }
 
-  handleSubmit = event => {
+  handleSubmit = (event) => {
     event.preventDefault()
     this.props.dispatch(
       confirmSignup(this.state.email, this.state.confirmationCode)
@@ -64,7 +64,7 @@ class ConfirmSignup extends Component {
       confirmingSignup,
       confirmationError,
       signupConfirmed,
-      codeSent
+      codeSent,
     } = this.props.auth
 
     const codeResent = codeSent ? (
@@ -167,7 +167,7 @@ class ConfirmSignup extends Component {
 ConfirmSignup.propTypes = {
   auth: PropTypes.object.isRequired,
   dispatch: PropTypes.func.isRequired,
-  classes: PropTypes.object.isRequired
+  classes: PropTypes.object.isRequired,
 }
 
 const mapStateToProps = ({ auth }) => ({ auth })

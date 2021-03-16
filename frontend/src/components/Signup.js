@@ -10,7 +10,7 @@ import { Link } from 'react-router-dom'
 import ErrorMessage from './ErrorMessage'
 import { signUp } from '../actions/auth'
 
-const styles = theme => ({
+const styles = (theme) => ({
   root: {
     background: 'linear-gradient(to right, #1fa2ff, #12d8fa, #a6ffcb)',
     display: 'flex',
@@ -18,32 +18,32 @@ const styles = theme => ({
     minWidth: '100%',
     minHeight: '100vh',
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
   },
   paper: {
     minWidth: '340px',
-    padding: theme.spacing.unit * 2
+    padding: theme.spacing.unit * 2,
   },
   input: {
-    width: '100%'
+    width: '100%',
   },
   button: {
     width: '100%',
-    marginTop: theme.spacing.unit
-  }
+    marginTop: theme.spacing.unit,
+  },
 })
 
 class Signup extends Component {
   state = {
     email: '',
-    password: ''
+    password: '',
   }
 
   validate = () => this.state.email.length > 0 && this.state.password.length > 5
 
   handleChange = ({ target: { id, value } }) => this.setState({ [id]: value })
 
-  handleSubmit = event => {
+  handleSubmit = (event) => {
     event.preventDefault()
     this.props.dispatch(signUp(this.state))
   }
@@ -127,7 +127,7 @@ class Signup extends Component {
 Signup.propTypes = {
   auth: PropTypes.object.isRequired,
   classes: PropTypes.object.isRequired,
-  dispatch: PropTypes.func.isRequired
+  dispatch: PropTypes.func.isRequired,
 }
 
 const mapStateToProps = ({ auth }) => ({ auth })

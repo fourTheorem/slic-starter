@@ -12,13 +12,13 @@ export function addEntry({ listId, title, value }) {
     AmplifyApi.post('checklist-api', `/${listId}/entries`, {
       body: {
         title,
-        value
-      }
+        value,
+      },
     })
-      .then(result => {
+      .then((result) => {
         dispatch({ type: ADD_ENTRY_SUCCESS, payload: result, meta })
       })
-      .catch(err => {
+      .catch((err) => {
         dispatch({ type: ADD_ENTRY_FAILURE, error: translateError(err) })
       })
   }
@@ -33,10 +33,10 @@ export function loadEntries({ listId }) {
   return function (dispatch) {
     dispatch({ type: LOAD_ENTRIES_REQUEST })
     AmplifyApi.get('checklist-api', `/${listId}/entries`)
-      .then(result => {
+      .then((result) => {
         dispatch({ type: LOAD_ENTRIES_SUCCESS, payload: result, meta })
       })
-      .catch(err => {
+      .catch((err) => {
         dispatch({ type: LOAD_ENTRIES_FAILURE, error: translateError(err) })
       })
   }
@@ -50,12 +50,12 @@ export function setEntryValue({ listId, entry }) {
   return function (dispatch) {
     dispatch({ type: SET_ENTRY_VALUE_REQUEST, meta: { entry, listId } })
     AmplifyApi.put('checklist-api', `/${listId}/entries/${entry.entId}`, {
-      body: entry
+      body: entry,
     })
-      .then(result => {
+      .then((result) => {
         dispatch({ type: SET_ENTRY_VALUE_SUCCESS, meta: { entry, listId } })
       })
-      .catch(err => {
+      .catch((err) => {
         dispatch({ type: SET_ENTRY_VALUE_FAILURE, error: translateError(err) })
       })
   }
@@ -69,10 +69,10 @@ export function removeEntry({ listId, entId }) {
   return function (dispatch) {
     dispatch({ type: REMOVE_ENTRY_REQUEST })
     AmplifyApi.del('checklist-api', `/${listId}/entries/${entId}`)
-      .then(result => {
+      .then((result) => {
         dispatch({ type: REMOVE_ENTRY_SUCCESS, meta: { listId, entId } })
       })
-      .catch(err => {
+      .catch((err) => {
         dispatch({ type: REMOVE_ENTRY_FAILURE, error: translateError(err) })
       })
   }

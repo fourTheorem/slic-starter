@@ -6,7 +6,7 @@ import { connect } from 'react-redux'
 import { withStyles } from '@material-ui/core/styles'
 import { acceptShareRequest } from '../actions/share'
 
-const styles = theme => ({
+const styles = (theme) => ({
   root: {
     background: 'linear-gradient(to right, #4A00E0, #8E2DE2)',
     display: 'flex',
@@ -14,31 +14,31 @@ const styles = theme => ({
     minWidth: '100%',
     minHeight: '100vh',
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
   },
   paper: {
     alignItems: 'center',
     minWidth: '460px',
-    padding: theme.spacing.unit * 2
+    padding: theme.spacing.unit * 2,
   },
   input: {
-    width: '100%'
+    width: '100%',
   },
   button: {
     width: '100%',
-    marginTop: theme.spacing.unit
+    marginTop: theme.spacing.unit,
   },
   success: {
-    color: 'green'
+    color: 'green',
   },
 
   failure: {
-    color: 'red'
-  }
+    color: 'red',
+  },
 })
 
 class AcceptShare extends Component {
-  handleConfirm = event => {
+  handleConfirm = (event) => {
     event.preventDefault()
     const { params } = this.props.match
     const { dispatch } = this.props
@@ -121,11 +121,15 @@ AcceptShare.propTypes = {
   acceptingShareRequest: PropTypes.bool.isRequired,
   shareRequestAccepted: PropTypes.bool.isRequired,
   shareRequestError: PropTypes.object,
-  match: PropTypes.object.isRequired
+  match: PropTypes.object.isRequired,
 }
 
 const mapStateToProps = ({
-  checklists: { acceptingShareRequest, shareRequestAccepted, shareRequestError }
+  checklists: {
+    acceptingShareRequest,
+    shareRequestAccepted,
+    shareRequestError,
+  },
 }) => ({ acceptingShareRequest, shareRequestAccepted, shareRequestError })
 
 export default connect(mapStateToProps)(withStyles(styles)(AcceptShare))

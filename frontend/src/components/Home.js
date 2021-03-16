@@ -25,7 +25,7 @@ class Home extends Component {
     const {
       auth: { authenticated, preAuthenticatedPath },
       dispatch,
-      loading
+      loading,
     } = this.props
 
     let authCheck = null
@@ -61,12 +61,12 @@ Home.propTypes = {
   auth: PropTypes.object.isRequired,
   dispatch: PropTypes.func.isRequired,
   loading: PropTypes.bool.isRequired,
-  location: PropTypes.object.isRequired
+  location: PropTypes.object.isRequired,
 }
 
 const mapStateToProps = ({ checklists: { loading }, auth }) => ({
   loading,
-  auth
+  auth,
 })
 
 export default connect(mapStateToProps)(Home)

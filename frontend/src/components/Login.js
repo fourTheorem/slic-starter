@@ -8,7 +8,7 @@ import { Button, Grid, Paper, TextField, Typography } from '@material-ui/core'
 import ErrorMessage from './ErrorMessage'
 import { logIn } from '../actions/auth'
 
-const styles = theme => ({
+const styles = (theme) => ({
   root: {
     background: 'linear-gradient(to right, #4A00E0, #8E2DE2)',
     display: 'flex',
@@ -16,32 +16,32 @@ const styles = theme => ({
     minWidth: '100%',
     minHeight: '100vh',
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
   },
   paper: {
     minWidth: '300px',
-    padding: theme.spacing.unit * 2
+    padding: theme.spacing.unit * 2,
   },
   input: {
-    width: '100%'
+    width: '100%',
   },
   button: {
     width: '100%',
-    marginTop: theme.spacing.unit
-  }
+    marginTop: theme.spacing.unit,
+  },
 })
 
 class Login extends Component {
   state = {
     email: '',
-    password: ''
+    password: '',
   }
 
   validate = () => this.state.email.length > 0 && this.state.password.length > 0
 
   handleChange = ({ target: { id, value } }) => this.setState({ [id]: value })
 
-  handleSubmit = event => {
+  handleSubmit = (event) => {
     event.preventDefault()
     this.props.dispatch(logIn(this.state))
   }
@@ -49,14 +49,14 @@ class Login extends Component {
   render() {
     const {
       classes,
-      auth: { userUnconfirmed }
+      auth: { userUnconfirmed },
     } = this.props
 
     const {
       loggingIn,
       loginError,
       authenticated,
-      preAuthenticatedPath
+      preAuthenticatedPath,
     } = this.props.auth
 
     const errorItem =
@@ -139,7 +139,7 @@ class Login extends Component {
 Login.propTypes = {
   auth: PropTypes.object.isRequired,
   classes: PropTypes.object.isRequired,
-  dispatch: PropTypes.func.isRequired
+  dispatch: PropTypes.func.isRequired,
 }
 
 const mapStateToProps = ({ auth }) => ({ auth })
