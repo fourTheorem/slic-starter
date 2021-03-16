@@ -6,7 +6,7 @@ import {
   TextField,
   Button,
   CardContent,
-  Grid
+  Grid,
 } from '@material-ui/core'
 import { Clear } from '@material-ui/icons'
 
@@ -19,24 +19,24 @@ import ConfirmationDialog from './ConfirmationDialog'
 
 import { createList, removeList, updateList } from '../actions/checklists'
 
-const styles = theme => ({
+const styles = (theme) => ({
   main: {
-    padding: theme.spacing(4)
+    padding: theme.spacing(4),
   },
   deleteBtn: {
     color: theme.palette.error.main,
     borderColor: theme.palette.error.main,
-    width: '100%'
+    width: '100%',
   },
   textField: {
-    width: '100%'
-  }
+    width: '100%',
+  },
 })
 
 class EditChecklist extends Component {
   state = {
     name: '',
-    confirmDeleteListOpen: false
+    confirmDeleteListOpen: false,
   }
 
   handleCancel = () => {
@@ -60,14 +60,14 @@ class EditChecklist extends Component {
     dispatch(removeList({ listId: list.listId }))
   }
 
-  handleSubmission = event => {
+  handleSubmission = (event) => {
     const { dispatch, list } = this.props
 
     if (!list.listId) {
       dispatch(
         createList({
           name: this.state.name,
-          description: this.state.description
+          description: this.state.description,
         })
       )
     } else {
@@ -75,7 +75,7 @@ class EditChecklist extends Component {
         updateList({
           listId: list.listId,
           name: this.state.name || list.name,
-          description: this.state.description || list.description
+          description: this.state.description || list.description,
         })
       )
     }
@@ -90,7 +90,7 @@ class EditChecklist extends Component {
       updatedListId,
       updateError,
       list,
-      classes
+      classes,
     } = this.props
 
     if (!list) {
@@ -231,14 +231,14 @@ EditChecklist.propTypes = {
   creationError: PropTypes.object,
   updating: PropTypes.bool.isRequired,
   updatedListId: PropTypes.string,
-  updateError: PropTypes.object
+  updateError: PropTypes.object,
 }
 
 const makeMapStateToProps = (initialState, ownProps) => {
   const {
     match: {
-      params: { id: listId }
-    }
+      params: { id: listId },
+    },
   } = ownProps
 
   return ({
@@ -249,8 +249,8 @@ const makeMapStateToProps = (initialState, ownProps) => {
       creating,
       updatedListId,
       updating,
-      updateError
-    }
+      updateError,
+    },
   }) => {
     const list = listId ? listsById[listId] : {}
     return {
@@ -260,7 +260,7 @@ const makeMapStateToProps = (initialState, ownProps) => {
       creationError,
       updating,
       updatedListId,
-      updateError
+      updateError,
     }
   }
 }

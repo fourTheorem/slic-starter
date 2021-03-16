@@ -13,10 +13,10 @@ const composeEnhancers = composeWithDevTools({})
 // Log redux actions relating to errors and failures
 const logger = createLogger({
   predicate: (getState, action) =>
-    action.type.endsWith('FAILURE') || action.error
+    action.type.endsWith('FAILURE') || action.error,
 })
 
-const store = history =>
+const store = (history) =>
   createStore(
     reducers(history),
     composeEnhancers(

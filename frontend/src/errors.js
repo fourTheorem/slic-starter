@@ -23,7 +23,7 @@ export const messages = {
   [NOT_AUTHORIZED_EXCEPTION]: 'Incorrect Username or Password',
   [CODE_MISMATCH_EXCEPTION]: 'The code entered is incorrect',
   [EXPIRED_CODE_EXCEPTION]: 'That code is expired, request a new code',
-  [LIMIT_EXCEEDED_EXCEPTION]: 'Attempt limit exceeded, try again later'
+  [LIMIT_EXCEEDED_EXCEPTION]: 'Attempt limit exceeded, try again later',
 }
 
 export function translateError(err) {
@@ -37,6 +37,6 @@ export function translateError(err) {
 
   return {
     id: errorId,
-    src: err
+    src: err,
   }
 }

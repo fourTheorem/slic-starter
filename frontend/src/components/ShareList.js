@@ -6,7 +6,7 @@ import {
   DialogTitle,
   Button,
   DialogContent,
-  DialogContentText
+  DialogContentText,
 } from '@material-ui/core'
 import { withStyles } from '@material-ui/core/styles'
 import { connect } from 'react-redux'
@@ -15,30 +15,30 @@ import PropTypes from 'prop-types'
 import ErrorMessage from './ErrorMessage'
 import { createShare } from '../actions/share'
 
-const styles = theme => ({
+const styles = (theme) => ({
   error: {
-    color: theme.palette.error.main
-  }
+    color: theme.palette.error.main,
+  },
 })
 
 class ShareList extends Component {
   state = {
     email: '',
-    errorMessage: ''
+    errorMessage: '',
   }
 
   handleChange = ({ target: { value } }) => {
     this.setState({ email: value })
   }
 
-  handleSubmit = event => {
+  handleSubmit = (event) => {
     event.preventDefault()
     const { list } = this.props
     this.props.dispatch(
       createShare({
         email: this.state.email,
         listId: list.listId,
-        listName: list.name
+        listName: list.name,
       })
     )
     this.setState({ email: '' })
@@ -51,7 +51,7 @@ class ShareList extends Component {
       classes,
       list,
       createdShare,
-      createShareError
+      createShareError,
     } = this.props
 
     const errorItem =
@@ -111,11 +111,11 @@ ShareList.propTypes = {
   onClose: PropTypes.func.isRequired,
   classes: PropTypes.object.isRequired,
   createdShare: PropTypes.bool,
-  createShareError: PropTypes.object
+  createShareError: PropTypes.object,
 }
 
 const mapStateToProps = ({
-  checklists: { createdShare, createShareError }
+  checklists: { createdShare, createShareError },
 }) => ({ createdShare, createShareError })
 
 export default connect(mapStateToProps)(withStyles(styles)(ShareList))

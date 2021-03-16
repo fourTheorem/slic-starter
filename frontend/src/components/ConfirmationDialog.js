@@ -7,7 +7,7 @@ import {
   DialogActions,
   DialogTitle,
   DialogContent,
-  DialogContentText
+  DialogContentText,
 } from '@material-ui/core'
 
 export default class ConfirmationDialog extends Component {
@@ -48,5 +48,5 @@ ConfirmationDialog.propTypes = {
   message: PropTypes.string.isRequired,
   onClose: PropTypes.func.isRequired,
   onConfirm: PropTypes.func.isRequired,
-  open: PropTypes.bool.isRequired
+  open: PropTypes.bool.isRequired,
 }

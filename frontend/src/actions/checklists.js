@@ -9,10 +9,10 @@ export function loadLists() {
   return function (dispatch) {
     dispatch({ type: LOAD_LISTS_REQUEST })
     AmplifyApi.get('checklist-api', '')
-      .then(result => {
+      .then((result) => {
         dispatch({ type: LOAD_LISTS_SUCCESS, payload: result })
       })
-      .catch(err => {
+      .catch((err) => {
         dispatch({ type: LOAD_LISTS_FAILURE, error: translateError(err) })
       })
   }
@@ -28,13 +28,13 @@ export function createList({ name, description }) {
     AmplifyApi.post('checklist-api', '', {
       body: {
         name,
-        description
-      }
+        description,
+      },
     })
-      .then(result => {
+      .then((result) => {
         dispatch({ type: CREATE_LIST_SUCCESS, payload: result })
       })
-      .catch(err => {
+      .catch((err) => {
         dispatch({ type: CREATE_LIST_FAILURE, error: translateError(err) })
       })
   }
@@ -49,10 +49,10 @@ export function removeList({ listId }) {
     const meta = { listId }
     dispatch({ type: REMOVE_LIST_REQUEST, meta })
     AmplifyApi.del('checklist-api', `/${listId}`)
-      .then(result => {
+      .then((result) => {
         dispatch({ type: REMOVE_LIST_SUCCESS, meta })
       })
-      .catch(err => {
+      .catch((err) => {
         dispatch({ type: REMOVE_LIST_FAILURE, error: translateError(err) })
       })
   }
@@ -69,13 +69,13 @@ export function updateList({ listId, name, description }) {
     AmplifyApi.put('checklist-api', `/${listId}`, {
       body: {
         name,
-        description
-      }
+        description,
+      },
     })
-      .then(result => {
+      .then((result) => {
         dispatch({ type: UPDATE_LIST_SUCCESS, meta, payload: result })
       })
-      .catch(err => {
+      .catch((err) => {
         dispatch({ type: UPDATE_LIST_FAILURE, error: translateError(err) })
       })
   }

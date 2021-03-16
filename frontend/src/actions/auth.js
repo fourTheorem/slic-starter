@@ -18,7 +18,7 @@ export function signUp({ email, password }) {
     dispatch({ type: SIGNUP_REQUEST })
     Auth.signUp(email, password).then(
       () => dispatch({ type: SIGNUP_SUCCESS, payload: { email } }),
-      err =>
+      (err) =>
         dispatch({ type: SIGNUP_FAILURE, error: translateCognitoError(err) })
     )
   }
@@ -33,7 +33,7 @@ export function logIn({ email, password }) {
     dispatch({ type: LOGIN_REQUEST, payload: { email } })
     Auth.signIn(email, password).then(
       () => dispatch({ type: LOGIN_SUCCESS }),
-      err =>
+      (err) =>
         dispatch({ type: LOGIN_FAILURE, error: translateCognitoError(err) })
     )
   }
@@ -46,7 +46,7 @@ export function checkAuthentication() {
   return function (dispatch) {
     Auth.currentSession().then(
       () => dispatch({ type: LOGIN_VALIDATED }),
-      err => dispatch({ type: LOGIN_INVALIDATED })
+      (err) => dispatch({ type: LOGIN_INVALIDATED })
     )
   }
 }
@@ -60,7 +60,7 @@ export function logOut() {
     dispatch({ type: LOGOUT_REQUEST })
     Auth.signOut().then(
       () => dispatch({ type: LOGOUT_SUCCESS }),
-      err => dispatch({ type: LOGOUT_FAILURE, error: err })
+      (err) => dispatch({ type: LOGOUT_FAILURE, error: err })
     )
   }
 }
@@ -74,7 +74,7 @@ export function confirmSignup(email, confirmationCode) {
     dispatch({ type: SIGNUP_CONFIRM_REQUEST })
     Auth.confirmSignUp(email, confirmationCode).then(
       () => dispatch({ type: SIGNUP_CONFIRM_SUCCESS, payload: { email } }),
-      err =>
+      (err) =>
         dispatch(
           { type: SIGNUP_CONFIRM_FAILURE, error: translateCognitoError(err) },
           console.log({ email, confirmationCode })
@@ -92,10 +92,10 @@ export function resendConfirmationCode(email) {
     dispatch({ type: RESEND_CODE_REQUEST })
     Auth.resendSignUp(email).then(
       () => dispatch({ type: RESEND_CODE_SUCCESS }),
-      err =>
+      (err) =>
         dispatch({
           type: RESEND_CODE_FAILURE,
-          error: translateCognitoError(err)
+          error: translateCognitoError(err),
         })
     )
   }
@@ -140,6 +140,6 @@ function translateCognitoError(cognitoErr) {
 
   return {
     id: errorId,
-    source: cognitoErr
+    source: cognitoErr,
   }
 }

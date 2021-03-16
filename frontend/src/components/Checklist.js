@@ -9,13 +9,13 @@ import {
   CardContent,
   Grid,
   IconButton,
-  Typography
+  Typography,
 } from '@material-ui/core'
 import {
   CircularProgress,
   ExpansionPanel,
   ExpansionPanelSummary,
-  ExpansionPanelDetails
+  ExpansionPanelDetails,
 } from '@material-ui/core'
 import { withStyles } from '@material-ui/core/styles'
 import Loading from './Loading'
@@ -27,36 +27,36 @@ const dateFns = require('date-fns')
 
 const ExtExpansionPanelSummary = withStyles({
   content: {
-    width: '100%'
-  }
+    width: '100%',
+  },
 })(ExpansionPanelSummary)
 
-const styles = theme => ({
+const styles = (theme) => ({
   typography: {
-    whiteSpace: 'pre-line'
+    whiteSpace: 'pre-line',
   },
   list: {
-    width: '100%'
+    width: '100%',
   },
   listItem: {
-    width: '100%'
+    width: '100%',
   },
   description: {
-    whiteSpace: 'pre-line'
+    whiteSpace: 'pre-line',
   },
   title: {
     overflow: 'hidden',
     textOverflow: 'ellipsis',
-    whiteSpace: 'nowrap'
+    whiteSpace: 'nowrap',
   },
   hiddenButton: {
-    visibility: 'hidden'
+    visibility: 'hidden',
   },
   expansionPanel: {
     '&:before': {
-      display: 'none'
-    }
-  }
+      display: 'none',
+    },
+  },
 })
 
 class Checklist extends Component {
@@ -66,7 +66,7 @@ class Checklist extends Component {
     description: '',
     isPanelExpanded: false,
     editingId: null,
-    updatedTitle: ''
+    updatedTitle: '',
   }
 
   handlePanelExpansion = () => {
@@ -175,18 +175,18 @@ Checklist.propTypes = {
   updatingList: PropTypes.bool,
   listUpdated: PropTypes.bool,
   editingShare: PropTypes.bool,
-  updatedAt: PropTypes.any
+  updatedAt: PropTypes.any,
 }
 
 const makeMapStateToProps = (initialState, ownProps) => {
   const {
     match: {
-      params: { id: listId }
-    }
+      params: { id: listId },
+    },
   } = ownProps
 
   return ({
-    checklists: { editingShare, listsById, removing, removalError }
+    checklists: { editingShare, listsById, removing, removalError },
   }) => {
     const list = listId ? listsById[listId] : {}
     return {
@@ -194,7 +194,7 @@ const makeMapStateToProps = (initialState, ownProps) => {
       list,
       listsById,
       removing,
-      error: removalError
+      error: removalError,
     }
   }
 }

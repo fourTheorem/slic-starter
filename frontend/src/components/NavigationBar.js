@@ -7,7 +7,7 @@ import {
   Button,
   IconButton,
   Toolbar,
-  Typography
+  Typography,
 } from '@material-ui/core'
 import { withStyles } from '@material-ui/core/styles'
 import { ArrowBack } from '@material-ui/icons'
@@ -16,12 +16,12 @@ import { logOut } from '../actions/auth'
 
 const styles = {
   grow: {
-    flexGrow: 1
+    flexGrow: 1,
   },
   backButton: {
     marginLeft: -12,
-    marginRight: 20
-  }
+    marginRight: 20,
+  },
 }
 
 class NavigationBar extends Component {
@@ -63,11 +63,11 @@ class NavigationBar extends Component {
 NavigationBar.propTypes = {
   classes: PropTypes.object.isRequired,
   dispatch: PropTypes.func.isRequired,
-  titles: PropTypes.array.isRequired
+  titles: PropTypes.array.isRequired,
 }
 
 const mapStateToProps = ({ app: { titles } }) => ({
-  titles
+  titles,
 })
 
 export default connect(mapStateToProps)(withStyles(styles)(NavigationBar))
