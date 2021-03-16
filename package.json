@@ -20,5 +20,8 @@
   "bugs": {
     "url": "https://github.com/fourTheorem/slic-starter/issues"
   },
-  "homepage": "https://github.com/fourTheorem/slic-starter#readme"
+  "homepage": "https://github.com/fourTheorem/slic-starter#readme",
+  "devDependencies": {
+    "serverless": "^2.30.1"
+  }
 }
