@@ -16,19 +16,19 @@
   "devDependencies": {
     "aws-sdk-mock": "^4.3.0",
     "awscred": "^1.4.2",
-    "husky": "^1.1.3",
+    "husky": "^1.3.1",
     "prettier-standard": "^16.4.1",
-    "proxyquire": "^2.1.0",
-    "tap": "^14.10.8"
+    "proxyquire": "^2.1.3",
+    "tap": "^14.11.0"
   },
   "dependencies": {
-    "@hapi/bourne": "^1.3.2",
+    "@hapi/bourne": "^2.0.0",
     "aws-sdk": "^2.867.0",
     "aws-signed-axios": "^1.1.0",
     "aws-xray-sdk": "^3.2.0",
     "lambda-logger-middleware": "^1.0.3",
     "lodash": "^4.17.21",
-    "middy": "^0.28.4",
+    "middy": "^0.36.0",
     "middy-autoproxyresponse": "^0.1.0",
     "pino": "^6.11.2"
   }
