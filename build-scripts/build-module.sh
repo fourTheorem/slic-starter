@@ -5,7 +5,7 @@ set -e
 source build-scripts/assume-cross-account-role.env
 cd ${MODULE_NAME}
 if [ -e package.json ]; then
-  npm install
+  npm ci
   npm test
 else
   echo No package.json, skipping NPM execution
