@@ -22,10 +22,10 @@
     "tap": "^14.10.8"
   },
   "dependencies": {
-    "aws-sdk": "^2.862.0",
+    "@hapi/bourne": "^1.3.2",
+    "aws-sdk": "^2.867.0",
     "aws-signed-axios": "^1.1.0",
     "aws-xray-sdk": "^3.2.0",
-    "bourne": "^1.1.2",
     "lambda-logger-middleware": "^1.0.3",
     "lodash": "^4.17.21",
     "middy": "^0.28.4",
