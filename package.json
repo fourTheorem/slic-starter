@@ -22,6 +22,6 @@
   },
   "homepage": "https://github.com/fourTheorem/slic-starter#readme",
   "devDependencies": {
-    "serverless": "^2.30.1"
+    "serverless": "^2.30.3"
   }
 }
