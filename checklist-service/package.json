@@ -29,7 +29,6 @@
     "serverless-iam-roles-per-function": "^3.1.0",
     "serverless-offline": "^6.8.0",
     "serverless-prune-plugin": "^1.4.4",
-    "serverless-pseudo-parameters": "^2.5.0",
     "serverless-webpack": "^5.3.5",
     "tap": "^14.11.0",
     "webpack": "^5.25.0",
