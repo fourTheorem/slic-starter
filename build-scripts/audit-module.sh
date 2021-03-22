@@ -2,10 +2,15 @@
 
 set -e
 
-cd ${MODULE_NAME}
 if [ -e package.json ]; then
-  npm install -g npm@latest
   npm audit --audit-level=moderate
 else
-  echo No package.json, skipping audit
+  echo No root package.json, skipping audit
+fi
+
+cd ${MODULE_NAME}
+if [ -e package.json ]; then
+  npm audit --audit-level=moderate
+else
+  echo No module package.json, skipping audit
 fi
