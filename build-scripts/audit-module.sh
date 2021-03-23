@@ -2,6 +2,8 @@
 
 set -e
 
+npm install -g npm@latest
+
 if [ -e package.json ]; then
   npm audit --audit-level=moderate
 else
