@@ -1,0 +1,11 @@
+{
+  "name": "slic-tools",
+  "version": "1.0.0",
+  "description": "Utilities for services",
+  "scripts": {},
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/fourTheorem/slic-starter"
+  },
+  "license": "MIT"
+}
