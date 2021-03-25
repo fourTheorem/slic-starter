@@ -8,7 +8,7 @@
     "lint": "prettier-standard --lint --ignore-pattern \"scripts/**\" .",
     "format": "prettier-standard --format \"**/*.js\"",
     "coverage": "npm run test -- --cov --coverage-report=html",
-    "test": "tap \"test/**/*.test.js\" --branches=100 --statements=100 --functions=100 --lines=100"
+    "test": "AWS_XRAY_CONTEXT_MISSING=LOG_ERROR AWS_XRAY_LOG_LEVEL=silent tap \"test/**/*.test.js\" --branches=100 --statements=100 --functions=100 --lines=100"
   },
   "author": "Eoin Shanaghy <eoin.shanaghy@fourtheorem.com>",
   "license": "MIT",
