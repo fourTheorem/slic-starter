@@ -8,7 +8,7 @@
     "lint": "prettier-standard --lint --ignore-pattern \"scripts/**\" .",
     "format": "prettier-standard --format \"**/*.js\"",
     "coverage": "npm run test -- --cov --coverage-report=html",
-    "test": "tap \"test/**/*.test.js\" --branches=100 --statements=100 --functions=100 --lines=100"
+    "test": "AWS_XRAY_CONTEXT_MISSING=LOG_ERROR AWS_XRAY_LOG_LEVEL=silent tap \"test/**/*.test.js\" --branches=100 --statements=100 --functions=100 --lines=100"
   },
   "author": "Eoin Shanaghy <eoin.shanaghy@fourtheorem.com>",
   "license": "MIT",
@@ -29,7 +29,6 @@
     "serverless-iam-roles-per-function": "^3.1.0",
     "serverless-offline": "^6.8.0",
     "serverless-prune-plugin": "^1.4.4",
-    "serverless-pseudo-parameters": "^2.5.0",
     "serverless-webpack": "^5.3.5",
     "tap": "^14.11.0",
     "webpack": "^5.25.0",

@@ -35,7 +35,7 @@ const nsDomain = process.env.SLIC_NS_DOMAIN
 
 console.log(`Using domain ${nsDomain}`)
 const envFilename = '.env.production'
-fs.writeFileSync(envFilename, `REACT_APP_AWS_REGION=${awsRegion}\n`)
+fs.writeFileSync(envFilename, `SKIP_PREFLIGHT_CHECK=true\nREACT_APP_AWS_REGION=${awsRegion}\n`)
 
 Promise.all([getUserServiceEnv(), getApiEndpointsEnv()])
   .then(envContentsList => {

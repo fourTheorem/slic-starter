@@ -37,7 +37,7 @@ export class UpdateDeploymentStateProject extends PipelineProject {
         phases: {
           install: {
             'runtime-versions': {
-              nodejs: 10
+              nodejs: 12
             }
           },
           build: {

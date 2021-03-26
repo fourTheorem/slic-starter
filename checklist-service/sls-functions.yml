@@ -14,7 +14,7 @@ create:
     - Effect: Allow
       Action:
         - dynamodb:PutItem
-      Resource: 'arn:aws:dynamodb:#{AWS::Region}:#{AWS::AccountId}:table/${self:custom.checklistTableName}'
+      Resource: !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${self:custom.checklistTableName}
     - Effect: Allow
       Action:
         - events:PutEvents
@@ -36,7 +36,7 @@ get:
     - Effect: Allow
       Action:
         - dynamodb:GetItem
-      Resource: 'arn:aws:dynamodb:#{AWS::Region}:#{AWS::AccountId}:table/${self:custom.checklistTableName}'
+      Resource: !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${self:custom.checklistTableName}
 
 list:
   handler: services/checklists/list.main
@@ -55,7 +55,7 @@ list:
       Action:
         - dynamodb:Query
         - dynamodb:BatchGetItem
-      Resource: 'arn:aws:dynamodb:#{AWS::Region}:#{AWS::AccountId}:table/${self:custom.checklistTableName}'
+      Resource: !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${self:custom.checklistTableName}
 
 update:
   handler: services/checklists/update.main
@@ -73,7 +73,7 @@ update:
     - Effect: Allow
       Action:
         - dynamodb:UpdateItem
-      Resource: 'arn:aws:dynamodb:#{AWS::Region}:#{AWS::AccountId}:table/${self:custom.checklistTableName}'
+      Resource: !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${self:custom.checklistTableName}
 
 delete:
   handler: services/checklists/delete.main
@@ -91,7 +91,7 @@ delete:
     - Effect: Allow
       Action:
         - dynamodb:DeleteItem
-      Resource: 'arn:aws:dynamodb:#{AWS::Region}:#{AWS::AccountId}:table/${self:custom.checklistTableName}'
+      Resource: !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${self:custom.checklistTableName}
 
 addEntry:
   handler: services/checklists/entries/add.main
@@ -109,7 +109,7 @@ addEntry:
     - Effect: Allow
       Action:
         - dynamodb:UpdateItem
-      Resource: 'arn:aws:dynamodb:#{AWS::Region}:#{AWS::AccountId}:table/${self:custom.checklistTableName}'
+      Resource: !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${self:custom.checklistTableName}
 
 listEntries:
   handler: services/checklists/entries/list.main
@@ -127,7 +127,7 @@ listEntries:
     - Effect: Allow
       Action:
         - dynamodb:GetItem
-      Resource: 'arn:aws:dynamodb:#{AWS::Region}:#{AWS::AccountId}:table/${self:custom.checklistTableName}'
+      Resource: !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${self:custom.checklistTableName}
 
 updateEntry:
   handler: services/checklists/entries/update.main
@@ -145,7 +145,7 @@ updateEntry:
     - Effect: Allow
       Action:
         - dynamodb:UpdateItem
-      Resource: 'arn:aws:dynamodb:#{AWS::Region}:#{AWS::AccountId}:table/${self:custom.checklistTableName}'
+      Resource: !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${self:custom.checklistTableName}
 
 deleteEntry:
   handler: services/checklists/entries/delete.main
@@ -163,7 +163,7 @@ deleteEntry:
     - Effect: Allow
       Action:
         - dynamodb:UpdateItem
-      Resource: 'arn:aws:dynamodb:#{AWS::Region}:#{AWS::AccountId}:table/${self:custom.checklistTableName}'
+      Resource: !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${self:custom.checklistTableName}
 
 addCollaborator:
   handler: services/checklists/add-collaborator.main
@@ -179,4 +179,4 @@ addCollaborator:
     - Effect: Allow
       Action:
         - dynamodb:PutItem
-      Resource: 'arn:aws:dynamodb:#{AWS::Region}:#{AWS::AccountId}:table/${self:custom.checklistTableName}'
+      Resource: !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${self:custom.checklistTableName}

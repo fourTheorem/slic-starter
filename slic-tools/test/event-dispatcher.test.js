@@ -30,7 +30,7 @@ test('dispatchEvent dispatches a CloudWatch custom event', async t => {
   t.ok(cwEntries[0])
   t.same(JSON.parse(cwEntries[0].Detail), testList)
   t.equal(cwEntries[0].DetailType, 'LIST_CREATED_EVENT')
-  t.equal(cwEntries[0].Source, 'slic-tools')
+  t.equal(cwEntries[0].Source, 'default-service')
 
   t.end()
 })

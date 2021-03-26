@@ -5,7 +5,7 @@ process.env.AWS_LAMBDA_FUNCTION_NAME = 'unknown_unit_test'
 const path = require('path')
 const { test } = require('tap')
 const awsMock = require('aws-sdk-mock')
-awsMock.setSDK(path.resolve('./node_modules/slic-tools/node_modules/aws-sdk'))
+awsMock.setSDK(path.resolve('../node_modules/aws-sdk'))
 
 const entries = require('../../../../services/checklists/entries/entries')
 
@@ -14,7 +14,7 @@ const entId = '4'
 const listId = 'a432'
 const testEntries = [
   { entId: 'ent1', title: 'Entry One' },
-  { entId: 'ent2', title: 'Entry Two' }
+  { entId: 'ent2', title: 'Entry Two' },
 ]
 const testEntriesObj = {}
 testEntries.forEach(({ entId, ...rest }) => {
@@ -22,25 +22,25 @@ testEntries.forEach(({ entId, ...rest }) => {
 })
 
 const received = {
-  dynamoDb: {}
+  dynamoDb: {},
 }
 
-awsMock.mock('DynamoDB.DocumentClient', 'put', function(params, callback) {
+awsMock.mock('DynamoDB.DocumentClient', 'put', function (params, callback) {
   received.dynamoDb.put = params
   callback(null, { ...params })
 })
 
-awsMock.mock('DynamoDB.DocumentClient', 'update', function(params, callback) {
+awsMock.mock('DynamoDB.DocumentClient', 'update', function (params, callback) {
   received.dynamoDb.update = params
   callback(null, { Attributes: { entries: testEntries } })
 })
 
-awsMock.mock('DynamoDB.DocumentClient', 'query', function(params, callback) {
+awsMock.mock('DynamoDB.DocumentClient', 'query', function (params, callback) {
   received.dynamoDb.query = params
   callback(null, { Items: testEntries })
 })
 
-awsMock.mock('DynamoDB.DocumentClient', 'get', function(params, callback) {
+awsMock.mock('DynamoDB.DocumentClient', 'get', function (params, callback) {
   received.dynamoDb.get = params
   callback(null, {
     Item: {
@@ -48,8 +48,8 @@ awsMock.mock('DynamoDB.DocumentClient', 'get', function(params, callback) {
       listId,
       name: 'Test List',
       createdAt: Date.now(),
-      entries: testEntriesObj
-    }
+      entries: testEntriesObj,
+    },
   })
 })
 
@@ -58,7 +58,7 @@ test('add new list entry', async t => {
     userId,
     listId,
     title: 'new entry',
-    value: 'not done'
+    value: 'not done',
   }
 
   await entries.addEntry(record)
@@ -81,7 +81,7 @@ test('add new list entry', async t => {
 test('List all entries', async t => {
   const record = {
     userId,
-    listId
+    listId,
   }
 
   const response = await entries.listEntries(record)
@@ -96,7 +96,7 @@ test('Update entry', async t => {
     userId,
     entId,
     title: 'New Title',
-    value: 'Complete'
+    value: 'Complete',
   }
   await entries.updateEntry(record)
   t.equal(
@@ -111,7 +111,7 @@ test('Delete Entry', async t => {
   const record = {
     userId,
     entId,
-    listId
+    listId,
   }
   await entries.deleteEntry(record)
   t.equal(

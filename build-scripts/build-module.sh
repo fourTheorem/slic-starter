@@ -3,12 +3,19 @@
 set -e
 
 source build-scripts/assume-cross-account-role.env
+
+if [ -e package.json ]; then
+  npm ci
+else
+  echo No root package.json, skipping npm ci
+fi
+
 cd ${MODULE_NAME}
 if [ -e package.json ]; then
-  npm install
+  npm ci
   npm test
 else
-  echo No package.json, skipping NPM execution
+  echo No module package.json, skipping npm ci
 fi
 
 # Optional, module-specific build

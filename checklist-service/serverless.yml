@@ -7,7 +7,6 @@ plugins:
   - '@dathuis/serverless-dynamodb-local'
   - serverless-offline
   - serverless-prune-plugin
-  - serverless-pseudo-parameters
   - serverless-iam-roles-per-function
 
 provider:
