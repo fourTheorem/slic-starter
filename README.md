@@ -8,7 +8,7 @@
 
 ---
 
-**SLIC Starter** is a complete starter project for production-grade **serverless** applications on AWS. SLIC Starter uses an opinionated, pragmatic approach to structuring, developing and deploying a modern, serverless application with one simple, overarching goal:
+**SLIC Starter** :-) is a complete starter project for production-grade **serverless** applications on AWS. SLIC Starter uses an opinionated, pragmatic approach to structuring, developing and deploying a modern, serverless application with one simple, overarching goal:
 
 > _Get your serverless application into production fast_
 
