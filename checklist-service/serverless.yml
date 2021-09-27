@@ -1,4 +1,6 @@
 service: checklist-service
+variablesResolutionMode: 20210326
+projectDir: ..
 
 plugins:
   - serverless-webpack
@@ -8,12 +10,13 @@ plugins:
   - serverless-offline
   - serverless-prune-plugin
   - serverless-iam-roles-per-function
+  - serverless-slic-watch-plugin
 
 provider:
   name: aws
   runtime: nodejs10.x
   stage: ${opt:stage, 'local'}
-  region: ${opt:region, '${env:TARGET_REGION}'}
+  region: ${opt:region}
   tracing:
     apiGateway: true
     lambda: true
@@ -25,18 +28,18 @@ provider:
       Resource:
         - '*'
   environment:
-    SLIC_STAGE: ${self:provider.stage}
+    STAGE: ${self:provider.stage}
     SERVICE_NAME: ${file(./package.json):name}
     SERVICE_VERSION: ${file(./package.json):version}
     CHECKLIST_TABLE_NAME: ${self:custom.checklistTableName}
   logRetentionInDays: 7
 
 custom:
+  common: ${file(../slic-config.json)}
   webpack:
     keepOutputDirectory: true
   checklistTableName: ${self:provider.stage}Checklists
-  nsDomain: ${env:SLIC_NS_DOMAIN}
-  domainPrefixes: ${file(../common-config.json):domainPrefixes}
+  nsDomain: ${self:custom.common.domainConfig.nsDomain}
   checklistApiUrl:
     Fn::Join:
       - ''
@@ -55,8 +58,9 @@ custom:
   prune:
     automatic: true
     number: 3
-  logForwarding:
-    destinationARN: !ImportValue ${self:provider.stage}-log-forwarder-function-arn
+  slicWatch:
+    disabled: ${self:custom.common.slicWatch}
+
 
 functions: ${file(./sls-functions.yml)}
 

@@ -1,8 +1,11 @@
 'use strict'
 
-const stage = process.env.SLIC_STAGE
-const domainPrefix = stage === 'prod' ? '' : `${stage}.`
+const { domainConfig } = require('./slic-config.json')
 
-module.exports = () => ({
-  apiDomainName: `api.${domainPrefix}${process.env.SLIC_NS_DOMAIN}`
-})
+module.exports = async ({ resolveVariable }) => {
+  const stage = await resolveVariable('sls:stage')
+  const domainPrefix = stage === 'prod' ? '' : `${stage}.`
+  return {
+    apiDomainName: `api.${domainPrefix}${domainConfig.nsDomain}`
+  }
+}

@@ -1,4 +1,6 @@
 service: user-service
+variablesResolutionMode: 20210326
+projectDir: ..
 
 plugins:
   - serverless-webpack
@@ -6,6 +8,7 @@ plugins:
   - serverless-prune-plugin
   - serverless-pseudo-parameters
   - serverless-iam-roles-per-function
+  - serverless-slic-watch-plugin
 
 provider:
   name: aws
@@ -38,6 +41,7 @@ custom:
     number: 3
   logForwarding:
     destinationARN: !ImportValue ${self:provider.stage}-log-forwarder-function-arn
+  slicWatch: ${self:custom.common.slicWatch}
 
 functions: ${file(./sls-functions.yml)}
 
