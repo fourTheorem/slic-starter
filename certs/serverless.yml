@@ -1,4 +1,6 @@
 service: certs
+variablesResolutionMode: 20210326
+projectDir: ..
 
 provider:
   name: aws
@@ -8,7 +10,7 @@ provider:
 
 custom:
   nsDomain: ${env:SLIC_NS_DOMAIN}
-  domainPrefixes: ${file(../common-config.json):domainPrefixes}
+  domainPrefixes: ${file(../slic-config.json):domainConfig.domainPrefixes}
   apiDomainName: api.${self:custom.domainPrefixes.${self:provider.stage}}${self:custom.nsDomain}
   siteDomainName: ${self:custom.domainPrefixes.${self:provider.stage}}${self:custom.nsDomain}
 
