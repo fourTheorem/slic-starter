@@ -1,10 +1,13 @@
 service: sharing-service
+variablesResolutionMode: 20210326
+projectDir: ..
 
 plugins:
   - serverless-webpack
   - serverless-offline
   - serverless-pseudo-parameters
   - serverless-iam-roles-per-function
+  - serverless-slic-watch-plugin
 
 provider:
   name: aws
@@ -40,6 +43,7 @@ custom:
   prune:
     automatic: true
     number: 3
+  slicWatch: ${self:custom.common.slicWatch}
 
 functions: ${file(./sls-functions.yml)}
 

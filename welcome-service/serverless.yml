@@ -1,4 +1,6 @@
 service: welcome-service
+variablesResolutionMode: 20210326
+projectDir: ..
 
 plugins:
   - serverless-webpack
@@ -6,6 +8,7 @@ plugins:
   - serverless-prune-plugin
   - serverless-pseudo-parameters
   - serverless-iam-roles-per-function
+  - serverless-slic-watch-plugin
 
 provider:
   name: aws
@@ -31,5 +34,6 @@ custom:
     websocketPort: 4013
     stage: local
     region: ${self:provider.region}
+  slicWatch: ${self:custom.common.slicWatch}
 
 functions: ${file(./sls-functions.yml)}
