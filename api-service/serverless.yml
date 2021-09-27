@@ -1,14 +1,15 @@
 service: api-service
+variablesResolutionMode: 20210326
+projectDir: ..
 
 provider:
   name: aws
   runtime: nodejs10.x
   stage: ${opt:stage, 'local'}
-  region: ${opt:region, '${env:TARGET_REGION}'}
+  region: ${opt:region}
 
 custom:
-  nsDomain: ${env:SLIC_NS_DOMAIN}
-  apiConfig: ${file(./api-config.js)}
+  common: ${file(../slic-config.json)}
   apiDomainConfig: ${file(../domain-config.js)}
   apiDomainName: ${self:custom.apiDomainConfig.apiDomainName}
   # The HostedZoneId for CloudFront distributions is always this value.
@@ -21,13 +22,13 @@ resources:
     apiCustomDomain:
       Type: AWS::ApiGateway::DomainName
       Properties:
-        CertificateArn: ${self:custom.apiConfig.apiCert}
+        CertificateArn: ${cf(us-east-1):certs-${self:provider.stage}.apiCert}
         DomainName: ${self:custom.apiDomainName}
 
     apiDomainDns:
       Type: AWS::Route53::RecordSetGroup
       Properties:
-        HostedZoneId: ${self:custom.apiConfig.publicHostedZone}
+        HostedZoneId: ${cf(us-east-1):certs-${self:provider.stage}.publicHostedZone}
         RecordSets:
           - Name: ${self:custom.apiDomainName}
             Type: A
