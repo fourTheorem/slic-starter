@@ -10,7 +10,7 @@ const received = {
   cwEvents: {}
 }
 
-awsMock.mock('CloudWatchEvents', 'putEvents', function(params, callback) {
+awsMock.mock('CloudWatchEvents', 'putEvents', function (params, callback) {
   received.cwEvents.putEvents = params
   callback(null, { ...params })
 })

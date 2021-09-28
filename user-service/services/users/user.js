@@ -9,7 +9,7 @@ const cognito = awsXray.captureAWSClient(
   new AWS.CognitoIdentityServiceProvider()
 )
 
-async function get({ userId }) {
+async function get ({ userId }) {
   const params = {
     UserPoolId: process.env.USER_POOL_ID,
     Username: userId

@@ -8,7 +8,7 @@ const cwEvents = awsXray.captureAWSClient(
 
 const { name: serviceName } = require('./service-info')
 
-async function dispatchEvent(type, detail) {
+async function dispatchEvent (type, detail) {
   const params = {
     Entries: [
       {

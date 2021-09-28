@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Component } from "react";
 import {
   TextField,
   Dialog,
@@ -7,42 +7,42 @@ import {
   Button,
   DialogContent,
   DialogContentText,
-} from '@material-ui/core'
-import { withStyles } from '@material-ui/core/styles'
-import { connect } from 'react-redux'
-import PropTypes from 'prop-types'
+} from "@material-ui/core";
+import { withStyles } from "@material-ui/core/styles";
+import { connect } from "react-redux";
+import PropTypes from "prop-types";
 
-import ErrorMessage from './ErrorMessage'
-import { createShare } from '../actions/share'
+import ErrorMessage from "./ErrorMessage";
+import { createShare } from "../actions/share";
 
 const styles = (theme) => ({
   error: {
     color: theme.palette.error.main,
   },
-})
+});
 
 class ShareList extends Component {
   state = {
-    email: '',
-    errorMessage: '',
-  }
+    email: "",
+    errorMessage: "",
+  };
 
   handleChange = ({ target: { value } }) => {
-    this.setState({ email: value })
-  }
+    this.setState({ email: value });
+  };
 
   handleSubmit = (event) => {
-    event.preventDefault()
-    const { list } = this.props
+    event.preventDefault();
+    const { list } = this.props;
     this.props.dispatch(
       createShare({
         email: this.state.email,
         listId: list.listId,
         listName: list.name,
       })
-    )
-    this.setState({ email: '' })
-  }
+    );
+    this.setState({ email: "" });
+  };
 
   render() {
     const {
@@ -52,12 +52,12 @@ class ShareList extends Component {
       list,
       createdShare,
       createShareError,
-    } = this.props
+    } = this.props;
 
     const errorItem =
       createShareError && !createdShare ? (
         <ErrorMessage messageId={createShareError.id} />
-      ) : null
+      ) : null;
 
     return (
       <Dialog
@@ -99,7 +99,7 @@ class ShareList extends Component {
           </Button>
         </DialogActions>
       </Dialog>
-    )
+    );
   }
 }
 
@@ -112,10 +112,10 @@ ShareList.propTypes = {
   classes: PropTypes.object.isRequired,
   createdShare: PropTypes.bool,
   createShareError: PropTypes.object,
-}
+};
 
 const mapStateToProps = ({
   checklists: { createdShare, createShareError },
-}) => ({ createdShare, createShareError })
+}) => ({ createdShare, createShareError });
 
-export default connect(mapStateToProps)(withStyles(styles)(ShareList))
+export default connect(mapStateToProps)(withStyles(styles)(ShareList));

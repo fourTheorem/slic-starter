@@ -1,8 +1,8 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
-import { connect } from 'react-redux'
-import { Redirect, Link } from 'react-router-dom'
-import { ExpandMore, Edit, Share } from '@material-ui/icons'
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import { connect } from "react-redux";
+import { Redirect, Link } from "react-router-dom";
+import { ExpandMore, Edit, Share } from "@material-ui/icons";
 import {
   Card,
   CardActions,
@@ -10,89 +10,89 @@ import {
   Grid,
   IconButton,
   Typography,
-} from '@material-ui/core'
+} from "@material-ui/core";
 import {
   CircularProgress,
   ExpansionPanel,
   ExpansionPanelSummary,
   ExpansionPanelDetails,
-} from '@material-ui/core'
-import { withStyles } from '@material-ui/core/styles'
-import Loading from './Loading'
-import Entries from './Entries'
-import ShareList from './ShareList'
-import { editShare, cancelShare } from '../actions/share'
+} from "@material-ui/core";
+import { withStyles } from "@material-ui/core/styles";
+import Loading from "./Loading";
+import Entries from "./Entries";
+import ShareList from "./ShareList";
+import { editShare, cancelShare } from "../actions/share";
 
-const dateFns = require('date-fns')
+const dateFns = require("date-fns");
 
 const ExtExpansionPanelSummary = withStyles({
   content: {
-    width: '100%',
+    width: "100%",
   },
-})(ExpansionPanelSummary)
+})(ExpansionPanelSummary);
 
 const styles = (theme) => ({
   typography: {
-    whiteSpace: 'pre-line',
+    whiteSpace: "pre-line",
   },
   list: {
-    width: '100%',
+    width: "100%",
   },
   listItem: {
-    width: '100%',
+    width: "100%",
   },
   description: {
-    whiteSpace: 'pre-line',
+    whiteSpace: "pre-line",
   },
   title: {
-    overflow: 'hidden',
-    textOverflow: 'ellipsis',
-    whiteSpace: 'nowrap',
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+    whiteSpace: "nowrap",
   },
   hiddenButton: {
-    visibility: 'hidden',
+    visibility: "hidden",
   },
   expansionPanel: {
-    '&:before': {
-      display: 'none',
+    "&:before": {
+      display: "none",
     },
   },
-})
+});
 
 class Checklist extends Component {
   state = {
     isEditingList: false,
-    name: '',
-    description: '',
+    name: "",
+    description: "",
     isPanelExpanded: false,
     editingId: null,
-    updatedTitle: '',
-  }
+    updatedTitle: "",
+  };
 
   handlePanelExpansion = () => {
-    this.setState({ isPanelExpanded: !this.state.isPanelExpanded })
-  }
+    this.setState({ isPanelExpanded: !this.state.isPanelExpanded });
+  };
 
   handleOpen = () => {
-    this.props.dispatch(editShare())
-  }
+    this.props.dispatch(editShare());
+  };
 
   handleShareClose = () => {
-    this.props.dispatch(cancelShare())
-  }
+    this.props.dispatch(cancelShare());
+  };
 
   render() {
-    const { removing, classes, list } = this.props
+    const { removing, classes, list } = this.props;
 
     if (!list) {
       // List was deleted, go home
-      return <Redirect to="/" />
+      return <Redirect to="/" />;
     }
 
     const date = `Created ${dateFns.distanceInWords(
       Date.now(),
       list.createdAt
-    )} ago`
+    )} ago`;
 
     const expansionPanel = (
       <ExpansionPanel
@@ -122,7 +122,7 @@ class Checklist extends Component {
           </Grid>
         </ExpansionPanelDetails>
       </ExpansionPanel>
-    )
+    );
 
     return list ? (
       <Grid container layout="row" justify="center">
@@ -162,7 +162,7 @@ class Checklist extends Component {
       </Grid>
     ) : (
       <Loading />
-    )
+    );
   }
 }
 
@@ -176,27 +176,27 @@ Checklist.propTypes = {
   listUpdated: PropTypes.bool,
   editingShare: PropTypes.bool,
   updatedAt: PropTypes.any,
-}
+};
 
 const makeMapStateToProps = (initialState, ownProps) => {
   const {
     match: {
       params: { id: listId },
     },
-  } = ownProps
+  } = ownProps;
 
   return ({
     checklists: { editingShare, listsById, removing, removalError },
   }) => {
-    const list = listId ? listsById[listId] : {}
+    const list = listId ? listsById[listId] : {};
     return {
       editingShare,
       list,
       listsById,
       removing,
       error: removalError,
-    }
-  }
-}
+    };
+  };
+};
 
-export default connect(makeMapStateToProps)(withStyles(styles)(Checklist))
+export default connect(makeMapStateToProps)(withStyles(styles)(Checklist));

@@ -1,57 +1,57 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
-import { Redirect } from 'react-router-dom'
-import { connect } from 'react-redux'
-import { Button, Grid, TextField } from '@material-ui/core'
-import { withStyles } from '@material-ui/core/styles'
-import { createList } from '../actions/checklists'
-import ErrorMessage from './ErrorMessage'
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import { Redirect } from "react-router-dom";
+import { connect } from "react-redux";
+import { Button, Grid, TextField } from "@material-ui/core";
+import { withStyles } from "@material-ui/core/styles";
+import { createList } from "../actions/checklists";
+import ErrorMessage from "./ErrorMessage";
 
 const styles = (theme) => ({
   root: {
     padding: theme.spacing.unit * 2,
-    height: '100%',
+    height: "100%",
   },
   textField: {
-    width: '100%',
+    width: "100%",
   },
   form: {
-    height: 'calc(100% - 64px)',
+    height: "calc(100% - 64px)",
   },
   error: {
     color: theme.palette.error.main,
   },
-})
+});
 
 class NewList extends Component {
   state = {
-    name: '',
-    description: '',
-  }
+    name: "",
+    description: "",
+  };
 
   handleSubmit = (event) => {
-    event.preventDefault()
-    this.props.dispatch(createList(this.state))
-  }
+    event.preventDefault();
+    this.props.dispatch(createList(this.state));
+  };
 
-  validate = () => this.state.name.trim().length > 0
+  validate = () => this.state.name.trim().length > 0;
 
   handleChange = ({ target: { id, value } }) => {
-    this.setState({ [id]: value })
-  }
+    this.setState({ [id]: value });
+  };
 
   render() {
-    const { creating, createdListId, creationError, classes } = this.props
+    const { creating, createdListId, creationError, classes } = this.props;
 
     if (createdListId && !creating) {
-      return <Redirect to={`/list/${createdListId}`} />
+      return <Redirect to={`/list/${createdListId}`} />;
     }
 
     const errorItem = creationError ? (
       <Grid item>
         <ErrorMessage messageId={creationError.id} />
       </Grid>
-    ) : null
+    ) : null;
 
     return (
       <form
@@ -116,14 +116,14 @@ class NewList extends Component {
                   type="submit"
                   disabled={creating || !this.validate()}
                 >
-                  {creating ? 'Creating...' : 'Create'}
+                  {creating ? "Creating..." : "Create"}
                 </Button>
               </Grid>
             </Grid>
           </Grid>
         </Grid>
       </form>
-    )
+    );
   }
 }
 
@@ -133,7 +133,7 @@ NewList.propTypes = {
   creationError: PropTypes.object,
   dispatch: PropTypes.func.isRequired,
   classes: PropTypes.object.isRequired,
-}
+};
 
 const mapStateToProps = ({
   checklists: { creationError, createdListId, creating },
@@ -141,6 +141,6 @@ const mapStateToProps = ({
   createdListId,
   creating,
   creationError,
-})
+});
 
-export default connect(mapStateToProps)(withStyles(styles)(NewList))
+export default connect(mapStateToProps)(withStyles(styles)(NewList));

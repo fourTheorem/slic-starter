@@ -1,71 +1,71 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
-import { connect } from 'react-redux'
-import { Redirect } from 'react-router-dom'
-import { Button, Grid, Paper, TextField, Typography } from '@material-ui/core'
-import { withStyles } from '@material-ui/core/styles'
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import { connect } from "react-redux";
+import { Redirect } from "react-router-dom";
+import { Button, Grid, Paper, TextField, Typography } from "@material-ui/core";
+import { withStyles } from "@material-ui/core/styles";
 
-import ErrorMessage from './ErrorMessage'
-import { confirmSignup } from '../actions/auth'
-import { resendConfirmationCode } from '../actions/auth'
+import ErrorMessage from "./ErrorMessage";
+import { confirmSignup } from "../actions/auth";
+import { resendConfirmationCode } from "../actions/auth";
 
 const style = (theme) => ({
   root: {
-    background: 'linear-gradient(to right, #4A00E0, #8E2DE2)',
-    display: 'flex',
-    flexDirection: 'column',
-    minWidth: '100%',
-    minHeight: '100vh',
-    alignItems: 'center',
-    justifyContent: 'center',
+    background: "linear-gradient(to right, #4A00E0, #8E2DE2)",
+    display: "flex",
+    flexDirection: "column",
+    minWidth: "100%",
+    minHeight: "100vh",
+    alignItems: "center",
+    justifyContent: "center",
   },
   paper: {
-    alignItems: 'center',
-    minWidth: '460px',
+    alignItems: "center",
+    minWidth: "460px",
     padding: theme.spacing.unit * 2,
   },
   input: {
-    width: '100%',
+    width: "100%",
   },
   button: {
-    width: '100%',
+    width: "100%",
     marginTop: theme.spacing.unit,
   },
   success: {
-    color: 'green',
+    color: "green",
   },
-})
+});
 
 class ConfirmSignup extends Component {
   state = {
     email: this.props.auth.email,
-    confirmationCode: '',
-  }
+    confirmationCode: "",
+  };
 
-  validate = () => this.state.confirmationCode.length > 5
+  validate = () => this.state.confirmationCode.length > 5;
 
-  handleChange = ({ target: { id, value } }) => this.setState({ [id]: value })
+  handleChange = ({ target: { id, value } }) => this.setState({ [id]: value });
 
   resendConfirmation = (event) => {
-    event.preventDefault()
-    this.props.dispatch(resendConfirmationCode(this.state.email))
-  }
+    event.preventDefault();
+    this.props.dispatch(resendConfirmationCode(this.state.email));
+  };
 
   handleSubmit = (event) => {
-    event.preventDefault()
+    event.preventDefault();
     this.props.dispatch(
       confirmSignup(this.state.email, this.state.confirmationCode)
-    )
-  }
+    );
+  };
 
   render() {
-    const { classes } = this.props
+    const { classes } = this.props;
     const {
       confirmingSignup,
       confirmationError,
       signupConfirmed,
       codeSent,
-    } = this.props.auth
+    } = this.props.auth;
 
     const codeResent = codeSent ? (
       <Grid item>
@@ -73,17 +73,17 @@ class ConfirmSignup extends Component {
           Code successfully sent!
         </Typography>
       </Grid>
-    ) : null
+    ) : null;
 
-    const noEmail = !this.state.email ? <Redirect to="/login" /> : null
+    const noEmail = !this.state.email ? <Redirect to="/login" /> : null;
 
-    const signupSuccess = signupConfirmed ? <Redirect to="/login" /> : null
+    const signupSuccess = signupConfirmed ? <Redirect to="/login" /> : null;
 
     const errorItem = confirmationError ? (
       <Grid item>
         <ErrorMessage messageId={confirmationError.id} />
       </Grid>
-    ) : null
+    ) : null;
 
     return (
       <div className={classes.root}>
@@ -152,7 +152,7 @@ class ConfirmSignup extends Component {
                       confirmingSignup || !this.validate() || !this.state.email
                     }
                   >
-                    {confirmingSignup ? 'Confirming...' : 'Confirm'}
+                    {confirmingSignup ? "Confirming..." : "Confirm"}
                   </Button>
                 </Grid>
               </Grid>
@@ -160,7 +160,7 @@ class ConfirmSignup extends Component {
           </Paper>
         </form>
       </div>
-    )
+    );
   }
 }
 
@@ -168,8 +168,8 @@ ConfirmSignup.propTypes = {
   auth: PropTypes.object.isRequired,
   dispatch: PropTypes.func.isRequired,
   classes: PropTypes.object.isRequired,
-}
+};
 
-const mapStateToProps = ({ auth }) => ({ auth })
+const mapStateToProps = ({ auth }) => ({ auth });
 
-export default connect(mapStateToProps)(withStyles(style)(ConfirmSignup))
+export default connect(mapStateToProps)(withStyles(style)(ConfirmSignup));

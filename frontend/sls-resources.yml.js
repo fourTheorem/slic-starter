@@ -1,5 +1,5 @@
 module.exports = () =>
-  require('yaml').parse(`
+  require("yaml").parse(`
 siteBucket:
   Type: AWS::S3::Bucket
   Properties:
@@ -56,7 +56,7 @@ siteDistribution:
           ? `
       Aliases:
         - $\{self:custom.siteDomainName}`
-          : ''
+          : ""
       }
       DefaultCacheBehavior:
         AllowedMethods:
@@ -78,7 +78,7 @@ siteDistribution:
       ViewerCertificate:
         AcmCertificateArn: $\{self:custom.siteConfig.siteCert}
         SslSupportMethod: sni-only`
-            : ''
+            : ""
         }
       CustomErrorResponses:
         - ErrorCode: 403
@@ -101,5 +101,5 @@ webRecordSets:
           DNSName: { Fn::GetAtt: [siteDistribution, DomainName] }
           HostedZoneId: $\{self:custom.cloudFrontHostedZoneId}
 `
-    : ''
-}`)
+    : ""
+}`);

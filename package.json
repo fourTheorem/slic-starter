@@ -5,7 +5,7 @@
   "scripts": {
     "coverage": "npm run test -- --cov --coverage-report=html",
     "format": "eslint --cache --fix .",
-    "test:lint": "eslint .",
+    "test:lint": "eslint --debug .",
     "test:packages": "tap \"*/test/**/*.test.js\" --branches=100 --statements=100 --functions=100 --lines=100",
     "test": "npm run test:lint && npm run test:packages"
   },

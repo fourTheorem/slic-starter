@@ -10,16 +10,16 @@ const frontendUrlPromise =
   stage === 'local'
     ? Promise.resolve('http://localhost:3000')
     : ssm
-        .getParameter({ Name: `/${stage}/frontend/url` })
-        .promise()
-        .then(data => data.Parameter.Value)
+      .getParameter({ Name: `/${stage}/frontend/url` })
+      .promise()
+      .then(data => data.Parameter.Value)
 const synchronousBaseUrl = sp(() => frontendUrlPromise)
 
-export function getBaseURL() {
+export function getBaseURL () {
   return synchronousBaseUrl()
 }
 
-export function getEmail() {
+export function getEmail () {
   let config
   let email
   if (stage === 'local') {
@@ -32,7 +32,7 @@ export function getEmail() {
   return email
 }
 
-export function getCode(email) {
+export function getCode (email) {
   switch (stage) {
     case 'local':
       return localConfig.retrieveCode(email)

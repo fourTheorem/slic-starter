@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Component } from "react";
 import {
   withStyles,
   Card,
@@ -7,17 +7,17 @@ import {
   Button,
   CardContent,
   Grid,
-} from '@material-ui/core'
-import { Clear } from '@material-ui/icons'
+} from "@material-ui/core";
+import { Clear } from "@material-ui/icons";
 
-import { Redirect } from 'react-router-dom'
-import { connect } from 'react-redux'
+import { Redirect } from "react-router-dom";
+import { connect } from "react-redux";
 
-import PropTypes from 'prop-types'
-import ErrorMessage from './ErrorMessage'
-import ConfirmationDialog from './ConfirmationDialog'
+import PropTypes from "prop-types";
+import ErrorMessage from "./ErrorMessage";
+import ConfirmationDialog from "./ConfirmationDialog";
 
-import { createList, removeList, updateList } from '../actions/checklists'
+import { createList, removeList, updateList } from "../actions/checklists";
 
 const styles = (theme) => ({
   main: {
@@ -26,42 +26,42 @@ const styles = (theme) => ({
   deleteBtn: {
     color: theme.palette.error.main,
     borderColor: theme.palette.error.main,
-    width: '100%',
+    width: "100%",
   },
   textField: {
-    width: '100%',
+    width: "100%",
   },
-})
+});
 
 class EditChecklist extends Component {
   state = {
-    name: '',
+    name: "",
     confirmDeleteListOpen: false,
-  }
+  };
 
   handleCancel = () => {
-    window.history.back()
-  }
+    window.history.back();
+  };
 
   handleChange = ({ target: { id, value } }) => {
-    this.setState({ [id]: value })
-  }
+    this.setState({ [id]: value });
+  };
 
   handleRemoveListRequest = () => {
-    this.setState({ confirmDeleteListOpen: true })
-  }
+    this.setState({ confirmDeleteListOpen: true });
+  };
 
   handleListRemovalClose = () => {
-    this.setState({ confirmDeleteListOpen: false })
-  }
+    this.setState({ confirmDeleteListOpen: false });
+  };
 
   handleRemoveList = () => {
-    const { dispatch, list } = this.props
-    dispatch(removeList({ listId: list.listId }))
-  }
+    const { dispatch, list } = this.props;
+    dispatch(removeList({ listId: list.listId }));
+  };
 
   handleSubmission = (event) => {
-    const { dispatch, list } = this.props
+    const { dispatch, list } = this.props;
 
     if (!list.listId) {
       dispatch(
@@ -69,7 +69,7 @@ class EditChecklist extends Component {
           name: this.state.name,
           description: this.state.description,
         })
-      )
+      );
     } else {
       dispatch(
         updateList({
@@ -77,9 +77,9 @@ class EditChecklist extends Component {
           name: this.state.name || list.name,
           description: this.state.description || list.description,
         })
-      )
+      );
     }
-  }
+  };
 
   render() {
     const {
@@ -91,31 +91,31 @@ class EditChecklist extends Component {
       updateError,
       list,
       classes,
-    } = this.props
+    } = this.props;
 
     if (!list) {
-      return <Redirect to="/" />
+      return <Redirect to="/" />;
     }
 
     if (createdListId && !creating) {
-      return <Redirect to={`/list/{${createdListId}}`} />
+      return <Redirect to={`/list/{${createdListId}}`} />;
     }
 
     if (updatedListId && !updating) {
-      return <Redirect to={`/list/${updatedListId}`} />
+      return <Redirect to={`/list/${updatedListId}`} />;
     }
 
     const errorItem = updateError ? (
       <Grid item>
         <ErrorMessage messageId={updateError.id} />
       </Grid>
-    ) : null
+    ) : null;
 
     const createListError = creationError ? (
       <Grid item>
         <ErrorMessage messageId={creationError.id} />
       </Grid>
-    ) : null
+    ) : null;
 
     const deleteListButton = list.listId ? (
       <Button
@@ -126,7 +126,7 @@ class EditChecklist extends Component {
       >
         Delete List
       </Button>
-    ) : null
+    ) : null;
 
     // ConfirmationDialog
     const confirmDeleteDialog = (
@@ -140,7 +140,7 @@ class EditChecklist extends Component {
         onConfirm={this.handleRemoveList}
         onClose={this.handleListRemovalClose}
       />
-    )
+    );
 
     return (
       <Grid container layout="row" justify="center">
@@ -218,7 +218,7 @@ class EditChecklist extends Component {
           </Card>
         </Grid>
       </Grid>
-    )
+    );
   }
 }
 
@@ -232,14 +232,14 @@ EditChecklist.propTypes = {
   updating: PropTypes.bool.isRequired,
   updatedListId: PropTypes.string,
   updateError: PropTypes.object,
-}
+};
 
 const makeMapStateToProps = (initialState, ownProps) => {
   const {
     match: {
       params: { id: listId },
     },
-  } = ownProps
+  } = ownProps;
 
   return ({
     checklists: {
@@ -252,7 +252,7 @@ const makeMapStateToProps = (initialState, ownProps) => {
       updateError,
     },
   }) => {
-    const list = listId ? listsById[listId] : {}
+    const list = listId ? listsById[listId] : {};
     return {
       list,
       createdListId,
@@ -261,8 +261,8 @@ const makeMapStateToProps = (initialState, ownProps) => {
       updating,
       updatedListId,
       updateError,
-    }
-  }
-}
+    };
+  };
+};
 
-export default connect(makeMapStateToProps)(withStyles(styles)(EditChecklist))
+export default connect(makeMapStateToProps)(withStyles(styles)(EditChecklist));

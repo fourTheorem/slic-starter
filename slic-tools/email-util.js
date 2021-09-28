@@ -17,7 +17,7 @@ if (!queueName) {
   log.info({ queueName }, 'Using queue')
 }
 
-async function sendEmail(message) {
+async function sendEmail (message) {
   const params = {
     MessageBody: JSON.stringify(message),
     QueueUrl: await fetchQueueUrl()
@@ -29,7 +29,7 @@ async function sendEmail(message) {
 
 let queueUrlPromise
 
-function fetchQueueUrl() {
+function fetchQueueUrl () {
   if (queueUrlPromise) {
     return queueUrlPromise
   }

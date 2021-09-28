@@ -10,7 +10,7 @@ const aws = () =>
   proxyquire('../aws', {
     'aws-sdk': {
       DynamoDB: {
-        DocumentClient: function DocumentClient(options) {
+        DocumentClient: function DocumentClient (options) {
           received.options = options
           this.message = message
         }

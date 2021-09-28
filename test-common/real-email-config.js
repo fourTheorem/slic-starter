@@ -13,11 +13,11 @@ module.exports = {
   retrieveEmail
 }
 
-function generateEmailAddress() {
+function generateEmailAddress () {
   return `${RandomWords(3).join('-')}.${serverId}@mailosaur.io`
 }
 
-async function retrieveCode(emailAddress) {
+async function retrieveCode (emailAddress) {
   const email = await retrieveEmail(emailAddress)
   const emailBody = email.html.body
   const splitBody = emailBody.split(' ')
@@ -25,7 +25,7 @@ async function retrieveCode(emailAddress) {
   return confirmationCode
 }
 
-async function retrieveEmail(emailAddress, subject) {
+async function retrieveEmail (emailAddress, subject) {
   const message = await client.messages.get(
     process.env.MAILOSAUR_SERVER_ID,
     {

@@ -14,7 +14,7 @@ const entId = '4'
 const listId = 'a432'
 const testEntries = [
   { entId: 'ent1', title: 'Entry One' },
-  { entId: 'ent2', title: 'Entry Two' },
+  { entId: 'ent2', title: 'Entry Two' }
 ]
 const testEntriesObj = {}
 testEntries.forEach(({ entId, ...rest }) => {
@@ -22,7 +22,7 @@ testEntries.forEach(({ entId, ...rest }) => {
 })
 
 const received = {
-  dynamoDb: {},
+  dynamoDb: {}
 }
 
 awsMock.mock('DynamoDB.DocumentClient', 'put', function (params, callback) {
@@ -48,8 +48,8 @@ awsMock.mock('DynamoDB.DocumentClient', 'get', function (params, callback) {
       listId,
       name: 'Test List',
       createdAt: Date.now(),
-      entries: testEntriesObj,
-    },
+      entries: testEntriesObj
+    }
   })
 })
 
@@ -58,7 +58,7 @@ test('add new list entry', async t => {
     userId,
     listId,
     title: 'new entry',
-    value: 'not done',
+    value: 'not done'
   }
 
   await entries.addEntry(record)
@@ -81,7 +81,7 @@ test('add new list entry', async t => {
 test('List all entries', async t => {
   const record = {
     userId,
-    listId,
+    listId
   }
 
   const response = await entries.listEntries(record)
@@ -96,7 +96,7 @@ test('Update entry', async t => {
     userId,
     entId,
     title: 'New Title',
-    value: 'Complete',
+    value: 'Complete'
   }
   await entries.updateEntry(record)
   t.equal(
@@ -111,7 +111,7 @@ test('Delete Entry', async t => {
   const record = {
     userId,
     entId,
-    listId,
+    listId
   }
   await entries.deleteEntry(record)
   t.equal(

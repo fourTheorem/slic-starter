@@ -10,7 +10,7 @@ ssm
   .then(({ Parameters: params }) => fetchParams(params))
   .then(output => console.log(output.join('\n')))
 
-function fetchParams(params) {
+function fetchParams (params) {
   return Promise.all(
     params.map(param => {
       if (param.Type === 'SecureString') {

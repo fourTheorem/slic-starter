@@ -11,7 +11,7 @@ const tableName = 'checklists'
 const userId = 'TODO1'
 const listId = 'TODO1'
 
-async function test() {
+async function test () {
   const updatedAt = Date.now()
   const entries = [1, 2, 3]
 

@@ -23,7 +23,7 @@ const propertyMappings = {
   'user-pool-id': 'userPoolId'
 }
 
-async function loadBackendConfig() {
+async function loadBackendConfig () {
   if (!backendConfig) {
     if (stage === 'local') {
       return {
@@ -73,7 +73,7 @@ async function loadBackendConfig() {
   return backendConfig
 }
 
-function getApiEndpoints() {
+function getApiEndpoints () {
   /* If process.env.SLIC_NS_DOMAIN is not set use describe stacks and
      get API Endpoint URLs from cloudformation outputs */
   return Promise.all(
@@ -81,16 +81,16 @@ function getApiEndpoints() {
       const apiUrlPromise = nsDomain
         ? Promise.resolve(
             `https://api.${domainSuffix}${nsDomain}${apiStackPaths[apiName]}`
-          )
+        )
         : cf
-            .describeStacks({ StackName: `${apiName}-${stage}` })
-            .promise()
-            .then(
-              data =>
-                data.Stacks[0].Outputs.find(
-                  output => output.OutputKey === 'ServiceEndpoint'
-                ).OutputValue
-            )
+          .describeStacks({ StackName: `${apiName}-${stage}` })
+          .promise()
+          .then(
+            data =>
+              data.Stacks[0].Outputs.find(
+                output => output.OutputKey === 'ServiceEndpoint'
+              ).OutputValue
+          )
       return apiUrlPromise.then(url => ({ [apiName]: url }))
     })
   ).then(results => Object.assign({}, ...results))

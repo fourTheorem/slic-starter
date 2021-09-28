@@ -1,23 +1,23 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
-import { connect } from 'react-redux'
-import { Route, Switch } from 'react-router'
-import { Redirect } from 'react-router-dom'
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import { connect } from "react-redux";
+import { Route, Switch } from "react-router";
+import { Redirect } from "react-router-dom";
 
-import Checklist from './Checklist'
-import NavigationBar from './NavigationBar'
-import Lists from './Lists'
-import Loading from './Loading'
-import EditChecklist from './EditChecklist'
-import AcceptShare from './AcceptShare'
+import Checklist from "./Checklist";
+import NavigationBar from "./NavigationBar";
+import Lists from "./Lists";
+import Loading from "./Loading";
+import EditChecklist from "./EditChecklist";
+import AcceptShare from "./AcceptShare";
 
-import { loadLists } from '../actions/checklists'
-import { setPreAuthenticatedPath } from '../actions/auth'
+import { loadLists } from "../actions/checklists";
+import { setPreAuthenticatedPath } from "../actions/auth";
 
 class Home extends Component {
   componentDidMount() {
     if (this.props.auth.authenticated) {
-      this.props.dispatch(loadLists())
+      this.props.dispatch(loadLists());
     }
   }
 
@@ -26,13 +26,13 @@ class Home extends Component {
       auth: { authenticated, preAuthenticatedPath },
       dispatch,
       loading,
-    } = this.props
+    } = this.props;
 
-    let authCheck = null
-    const { pathname } = this.props.location
+    let authCheck = null;
+    const { pathname } = this.props.location;
     if (!authenticated && preAuthenticatedPath !== pathname) {
-      dispatch(setPreAuthenticatedPath(pathname))
-      authCheck = <Redirect to="/login" />
+      dispatch(setPreAuthenticatedPath(pathname));
+      authCheck = <Redirect to="/login" />;
     }
 
     const body = loading ? (
@@ -45,15 +45,15 @@ class Home extends Component {
         <Route path="/invitation/:code" component={AcceptShare} />
         <Route path="/" component={Lists} />
       </Switch>
-    )
+    );
 
     return (
-      <div style={{ height: '100%', overflowX: 'hidden' }}>
+      <div style={{ height: "100%", overflowX: "hidden" }}>
         <NavigationBar />
         {body}
         {authCheck}
       </div>
-    )
+    );
   }
 }
 
@@ -62,11 +62,11 @@ Home.propTypes = {
   dispatch: PropTypes.func.isRequired,
   loading: PropTypes.bool.isRequired,
   location: PropTypes.object.isRequired,
-}
+};
 
 const mapStateToProps = ({ checklists: { loading }, auth }) => ({
   loading,
   auth,
-})
+});
 
-export default connect(mapStateToProps)(Home)
+export default connect(mapStateToProps)(Home);

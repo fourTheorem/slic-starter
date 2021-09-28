@@ -2,7 +2,7 @@
 
 const { extractEmail } = require('mock-amplify-auth')
 
-function get({ userId }) {
+function get ({ userId }) {
   return {
     userId,
     email: extractEmail(userId)

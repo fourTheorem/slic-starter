@@ -8,7 +8,7 @@ const stage = process.env.SLIC_STAGE || 'local'
 
 let userPromise
 
-async function createActualUser() {
+async function createActualUser () {
   if (stage === 'local') {
     const userId = rword.generate(3).join('-')
     const email = `${userId}@example.com`
@@ -24,14 +24,14 @@ async function createActualUser() {
   }
 }
 
-function getUser() {
+function getUser () {
   if (!userPromise) {
     userPromise = createActualUser()
   }
   return userPromise
 }
 
-async function removeUser() {
+async function removeUser () {
   const user = await getUser()
   if (stage !== 'local') {
     await deleteUser(user)

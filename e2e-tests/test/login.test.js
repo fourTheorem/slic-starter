@@ -8,7 +8,7 @@ const page = new Page()
 const baseUrl = config.getBaseURL()
 const email = config.getEmail()
 
-fixture(`Login test`)
+fixture('Login test')
   .page(baseUrl + '/login')
   .beforeEach(() => waitForReact())
 test('Login tests', async t => {

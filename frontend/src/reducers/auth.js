@@ -15,14 +15,14 @@ import {
   RESEND_CODE_SUCCESS,
   SET_PRE_AUTHENTICATED_PATH,
   RESEND_CODE_FAILURE,
-} from '../actions/auth'
-import * as errors from '../errors'
+} from "../actions/auth";
+import * as errors from "../errors";
 
 const defaultState = {
   preAuthenticatedPath: null,
   loggingIn: false,
   loginFailed: false,
-}
+};
 
 const reducer = (state = defaultState, { type, meta, payload, error }) => {
   switch (type) {
@@ -30,7 +30,7 @@ const reducer = (state = defaultState, { type, meta, payload, error }) => {
       return {
         ...state,
         preAuthenticatedPath: payload,
-      }
+      };
     case LOGIN_REQUEST:
       return {
         ...state,
@@ -38,7 +38,7 @@ const reducer = (state = defaultState, { type, meta, payload, error }) => {
         authenticated: false,
         loginError: null,
         email: payload.email,
-      }
+      };
     case LOGIN_SUCCESS:
     case LOGIN_VALIDATED:
       return {
@@ -46,12 +46,12 @@ const reducer = (state = defaultState, { type, meta, payload, error }) => {
         loggingIn: false,
         authenticated: true,
         loginError: null,
-      }
+      };
     case LOGIN_INVALIDATED:
       return {
         ...state,
         authenticated: false,
-      }
+      };
     case LOGIN_FAILURE:
       return {
         ...state,
@@ -59,12 +59,12 @@ const reducer = (state = defaultState, { type, meta, payload, error }) => {
         authenticated: false,
         loginError: error,
         userUnconfirmed: error.id === errors.USER_NOT_CONFIRMED,
-      }
+      };
     case LOGOUT_SUCCESS:
       return {
         preAuthenticatedPath: null,
         authenticated: false,
-      }
+      };
     case SIGNUP_REQUEST:
       return {
         ...state,
@@ -72,7 +72,7 @@ const reducer = (state = defaultState, { type, meta, payload, error }) => {
         signupError: null,
         userConfirmed: false,
         signedUp: false,
-      }
+      };
     case SIGNUP_SUCCESS:
       return {
         ...state,
@@ -81,7 +81,7 @@ const reducer = (state = defaultState, { type, meta, payload, error }) => {
         userConfirmed: false,
         signedUp: true,
         email: payload.email,
-      }
+      };
     case SIGNUP_FAILURE:
       return {
         ...state,
@@ -89,14 +89,14 @@ const reducer = (state = defaultState, { type, meta, payload, error }) => {
         signupError: error,
         userConfirmed: false,
         signedUp: false,
-      }
+      };
     case SIGNUP_CONFIRM_REQUEST:
       return {
         ...state,
         confirmingSignup: true,
         confirmationError: null,
         signupConfirmed: false,
-      }
+      };
     case SIGNUP_CONFIRM_SUCCESS:
       return {
         confirmingSignup: false,
@@ -104,7 +104,7 @@ const reducer = (state = defaultState, { type, meta, payload, error }) => {
         authenticated: false,
         signupConfirmed: true,
         email: payload.email,
-      }
+      };
     case SIGNUP_CONFIRM_FAILURE:
       return {
         ...state,
@@ -112,14 +112,14 @@ const reducer = (state = defaultState, { type, meta, payload, error }) => {
         confirmationError: error,
         authenticated: false,
         signupConfirmed: false,
-      }
+      };
     case RESEND_CODE_REQUEST:
       return {
         ...state,
         resendingCode: true,
         resendError: null,
         codeSent: false,
-      }
+      };
 
     case RESEND_CODE_SUCCESS:
       return {
@@ -127,7 +127,7 @@ const reducer = (state = defaultState, { type, meta, payload, error }) => {
         resendingCode: false,
         resendError: null,
         codeSent: true,
-      }
+      };
 
     case RESEND_CODE_FAILURE:
       return {
@@ -135,11 +135,11 @@ const reducer = (state = defaultState, { type, meta, payload, error }) => {
         resendingCode: false,
         resendError: error,
         codeSent: false,
-      }
+      };
 
     default:
-      return state
+      return state;
   }
-}
+};
 
-export default reducer
+export default reducer;
