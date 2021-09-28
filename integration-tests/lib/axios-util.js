@@ -4,7 +4,7 @@ const pick = require('lodash/pick')
 
 const suppressedProperties = ['nativeProtocols']
 
-function toneAxiosError(error) {
+function toneAxiosError (error) {
   if (!process.env.VERBOSE_AXIOS_ERRORS) {
     const summarized = {}
 

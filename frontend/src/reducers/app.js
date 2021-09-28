@@ -3,7 +3,7 @@ import { LOCATION_CHANGE } from 'connected-react-router'
 const appTitle = 'SLIC Lists'
 
 const defaultState = {
-  titles: [appTitle],
+  titles: [appTitle]
 }
 
 const reducer = (state = defaultState, { type, meta, payload, error }) => {
@@ -11,7 +11,7 @@ const reducer = (state = defaultState, { type, meta, payload, error }) => {
     case LOCATION_CHANGE:
       return {
         ...state,
-        titles: pathToTitles(payload.location.pathname),
+        titles: pathToTitles(payload.location.pathname)
       }
     default:
       return state
@@ -20,7 +20,7 @@ const reducer = (state = defaultState, { type, meta, payload, error }) => {
 
 export default reducer
 
-function pathToTitles(path) {
+function pathToTitles (path) {
   const titles = [appTitle]
   if (path === '/new-list') {
     titles.push('New List')

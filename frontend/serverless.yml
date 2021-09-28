@@ -1,14 +1,15 @@
 service: frontend
+variablesResolutionMode: 20210326
+projectDir: ..
 
 plugins:
   - serverless-s3-sync
-  - serverless-pseudo-parameters
 
 provider:
   name: aws
   runtime: nodejs10.x
   stage: ${opt:stage, 'local'}
-  region: ${opt:region, '${env:TARGET_REGION}'}
+  region: ${opt:region}
 
 custom: ${file(./custom.yml.js)}
 

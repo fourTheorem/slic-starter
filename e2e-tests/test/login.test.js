@@ -1,4 +1,4 @@
-import { ClientFunction, Selector } from 'testcafe'
+import { Selector } from 'testcafe'
 import { waitForReact } from 'testcafe-react-selectors'
 import Page from './PageModels/page-model'
 
@@ -8,7 +8,7 @@ const page = new Page()
 const baseUrl = config.getBaseURL()
 const email = config.getEmail()
 
-fixture(`Login test`)
+fixture('Login test')
   .page(baseUrl + '/login')
   .beforeEach(() => waitForReact())
 test('Login tests', async t => {
@@ -31,7 +31,6 @@ test('User can Log in after signing up', async t => {
   await t.expect(page.passInput.value).contains('Slic123@')
   await t.click(page.loginBtn)
 
-  const getLocation = ClientFunction(() => document.location.href)
   const h6 = Selector('h6')
   await t.expect(
     h6.withText("You don't have any lists. Click the button to create one!")

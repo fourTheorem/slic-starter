@@ -8,7 +8,7 @@ import {
   CardMedia,
   CardActionArea,
   CardContent,
-  Typography,
+  Typography
 } from '@material-ui/core'
 
 const generate = require('string-to-color')
@@ -21,11 +21,11 @@ const styles = {
   card: {
     maxWidth: 400,
     minHeight: 400,
-    maxHeight: 400,
+    maxHeight: 400
   },
 
   media: {
-    height: 140,
+    height: 140
   },
 
   description: {
@@ -35,21 +35,21 @@ const styles = {
     overflow: 'hidden',
     color: '#444343',
     maxHeight: '12em',
-    whiteSpace: 'pre-line',
+    whiteSpace: 'pre-line'
   },
 
   title: {
     color: '#3d3d3d',
-    fontSize: 21,
-  },
+    fontSize: 21
+  }
 }
 
 class ListSummary extends Component {
-  render() {
+  render () {
     const { list, classes } = this.props
     const tileColor = generate(list.name)
     const newStyle = {
-      backgroundColor: tileColor,
+      backgroundColor: tileColor
     }
 
     const createdAtDate = `Created ${dateFns.distanceInWords(
@@ -84,13 +84,13 @@ class ListSummary extends Component {
 
 ListSummary.propTypes = {
   list: PropTypes.object.isRequired,
-  classes: PropTypes.object.isRequired,
+  classes: PropTypes.object.isRequired
 }
 
 const makeMapStateToProps = (initialState, ownProps) => {
   const { listId } = ownProps
   return ({ checklists: { listsById } }) => ({
-    list: listsById[listId],
+    list: listsById[listId]
   })
 }
 

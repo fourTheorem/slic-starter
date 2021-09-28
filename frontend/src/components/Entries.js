@@ -14,7 +14,7 @@ import {
   ListItemSecondaryAction,
   Checkbox,
   ClickAwayListener,
-  List,
+  List
 } from '@material-ui/core'
 
 import { withStyles } from '@material-ui/core/styles'
@@ -27,22 +27,22 @@ import {
   loadEntries,
   addEntry,
   setEntryValue,
-  removeEntry,
+  removeEntry
 } from '../actions/entries'
 
 const styles = {
   hiddenButton: {
-    visibility: 'hidden',
+    visibility: 'hidden'
   },
   textField: {
-    width: '100%',
-  },
+    width: '100%'
+  }
 }
 
 const ExtListItem = withStyles({
   container: {
-    width: '100%',
-  },
+    width: '100%'
+  }
 })(ListItem)
 
 class Entries extends Component {
@@ -55,10 +55,10 @@ class Entries extends Component {
     anchorPosition: null,
     editingId: null,
     updatedTitle: null,
-    newEntryTitle: '',
-  }
+    newEntryTitle: ''
+  };
 
-  componentDidUpdate(prevProps) {
+  componentDidUpdate (prevProps) {
     if (prevProps.list && !this.props.list) {
       // The list was deleted - go back home
       this.props.dispatch(push('/'))
@@ -68,9 +68,9 @@ class Entries extends Component {
     }
   }
 
-  validate = () => this.state.newEntryTitle.trim().length > 0
+  validate = () => this.state.newEntryTitle.trim().length > 0;
 
-  componentDidMount() {
+  componentDidMount () {
     this.setState({ newEntryTitle: '' })
     const { list, dispatch } = this.props
     if (this.props.list) {
@@ -85,16 +85,16 @@ class Entries extends Component {
         addEntry({
           listId: this.props.list.listId,
           title: this.state.newEntryTitle,
-          value: false,
+          value: false
         })
       )
       this.setState({ newEntryTitle: '' })
     }
-  }
+  };
 
   handleEntryTitleChange = ({ target: { value } }) => {
     this.setState({ newEntryTitle: value })
-  }
+  };
 
   handleEntryValueChange = ({ target: { id, checked } }) => {
     const { dispatch, list, entries, updatingEntryValue } = this.props
@@ -103,19 +103,19 @@ class Entries extends Component {
       dispatch(
         setEntryValue({
           listId: list.listId,
-          entry: { ...entry, value: checked },
+          entry: { ...entry, value: checked }
         })
       )
     }
-  }
+  };
 
   handleEntryRemovalRequest = (event) => {
     this.setState({
       confirmDeleteEntryOpen: true,
       editingId: this.state.menuEntryId,
-      deletingEntry: true,
+      deletingEntry: true
     })
-  }
+  };
 
   handleEntryUpdateRequest = () => {
     const { entries } = this.props
@@ -125,9 +125,9 @@ class Entries extends Component {
       editingId: this.state.menuEntryId,
       menuEntryId: null,
       anchorPosition: null,
-      updatedTitle: entry.title,
+      updatedTitle: entry.title
     })
-  }
+  };
 
   handleEntryUpdateSubmit = () => {
     const { dispatch, list, entries } = this.props
@@ -135,44 +135,44 @@ class Entries extends Component {
     dispatch(
       setEntryValue({
         listId: list.listId,
-        entry: { ...entry, title: this.state.updatedTitle },
+        entry: { ...entry, title: this.state.updatedTitle }
       })
     )
     this.setState({
       editingId: null,
       menuEntryId: null,
-      updatedTitle: null,
+      updatedTitle: null
     })
-  }
+  };
 
   onUpdateTitleChange = ({ target: { value } }) => {
     this.setState({ updatedTitle: value })
-  }
+  };
 
   handleEntryRemovalRequestClose = () => {
     this.setState({ confirmDeleteEntryOpen: false })
-  }
+  };
 
   handleRemoveListEntry = () => {
     const { dispatch, list } = this.props
     dispatch(removeEntry({ listId: list.listId, entId: this.state.editingId }))
     this.setState({ confirmDeleteEntryOpen: false, menuEntryId: null })
-  }
+  };
 
   handleClickAway = () => {
     this.setState({ anchorPosition: null })
-  }
+  };
 
   handleDropdownOpen = (event) => {
     const { x: left, y: top } = event.currentTarget.getBoundingClientRect()
     const anchorPosition = { left, top }
     this.setState({
       menuEntryId: event.currentTarget.id,
-      anchorPosition,
+      anchorPosition
     })
-  }
+  };
 
-  render() {
+  render () {
     const {
       addingEntry,
       gettingListEntries,
@@ -182,7 +182,7 @@ class Entries extends Component {
       error,
       entries,
       list,
-      updatingEntryValue,
+      updatingEntryValue
     } = this.props
 
     if (!list) {
@@ -206,15 +206,19 @@ class Entries extends Component {
       !updatingList &&
       !removingEntry &&
       !updatingEntryValue &&
-      error ? (
+      error
+        ? (
         <ExtListItem>
           <ErrorMessage messageId={error.id} />
         </ExtListItem>
-      ) : null
+          )
+        : null
 
-    const newItemEntry = addingEntry ? (
+    const newItemEntry = addingEntry
+      ? (
       <Loading />
-    ) : (
+        )
+      : (
       <ExtListItem>
         <IconButton className={classes.hiddenButton}>
           <Clear />
@@ -231,7 +235,7 @@ class Entries extends Component {
         </ListItemText>
         <ListItemSecondaryAction />
       </ExtListItem>
-    )
+        )
 
     return (
       <ClickAwayListener onClickAway={this.handleClickAway}>
@@ -248,7 +252,8 @@ class Entries extends Component {
                   <MoreVert />
                 </Button>
                 {this.state.editingId === entry.entId &&
-                !this.state.deletingEntry ? (
+                !this.state.deletingEntry
+                  ? (
                   <form
                     autoComplete="off"
                     onSubmit={this.handleEntryUpdateSubmit}
@@ -263,9 +268,10 @@ class Entries extends Component {
                       Save
                     </Button>
                   </form>
-                ) : (
+                    )
+                  : (
                   <ListItemText>{entry.title}</ListItemText>
-                )}
+                    )}
                 <ListItemSecondaryAction>
                   <Checkbox
                     color="primary"
@@ -322,7 +328,7 @@ Entries.propTypes = {
   error: PropTypes.object,
   updatingList: PropTypes.bool,
   listUpdated: PropTypes.bool,
-  updatedAt: PropTypes.any,
+  updatedAt: PropTypes.any
 }
 
 const makeMapStateToProps = (initialState, ownProps) => {
@@ -337,8 +343,8 @@ const makeMapStateToProps = (initialState, ownProps) => {
       addEntryError,
       listEntriesError,
       entryValueUpdateError,
-      removeEntryError,
-    },
+      removeEntryError
+    }
   }) => {
     const list = listId ? listsById[listId] : {}
     const entries = entriesByListId[listId] || []
@@ -353,7 +359,7 @@ const makeMapStateToProps = (initialState, ownProps) => {
         addEntryError ||
         listEntriesError ||
         entryValueUpdateError ||
-        removeEntryError,
+        removeEntryError
     }
   }
 }

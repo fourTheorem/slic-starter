@@ -45,7 +45,6 @@ test('An invitation can be confirmed', async t => {
     pathParameters
   }
 
-  debugger
   await confirmHandler.main(event, {}, () => {})
 
   t.ok(received.confirmParams[0].userId, userId)

@@ -6,12 +6,12 @@ import { CircularProgress, Grid, Typography } from '@material-ui/core'
 
 const styles = (theme) => ({
   root: {
-    height: '100%',
-  },
+    height: '100%'
+  }
 })
 
 class Loading extends Component {
-  render() {
+  render () {
     const { classes, label } = this.props
     return (
       <Grid
@@ -32,7 +32,7 @@ class Loading extends Component {
 
 Loading.propTypes = {
   classes: PropTypes.object.isRequired,
-  label: PropTypes.string,
+  label: PropTypes.string
 }
 
 export default withStyles(styles)(Loading)

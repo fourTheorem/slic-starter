@@ -9,8 +9,8 @@ const page = new Page()
 const baseUrl = config.getBaseURL()
 const email = config.getEmail()
 
-fixture(`Signup test`)
-  .page(baseUrl + '/signup') //use env variables
+fixture('Signup test')
+  .page(baseUrl + '/signup') // use env variables
   .beforeEach(() => waitForReact())
 
 test('User can sign up for a new account', async t => {

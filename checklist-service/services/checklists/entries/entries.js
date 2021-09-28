@@ -2,7 +2,6 @@
 
 const Uuid = require('uuid')
 const { dynamoDocClient } = require('slic-tools/aws')
-const log = require('slic-tools/log')
 
 const { createMetricsLogger, Unit } = require('aws-embedded-metrics')
 
@@ -15,7 +14,7 @@ module.exports = {
   deleteEntry
 }
 
-async function addEntry({ userId, listId, title, value }) {
+async function addEntry ({ userId, listId, title, value }) {
   const entId = Uuid.v4()
   const params = {
     TableName: tableName,
@@ -58,7 +57,7 @@ async function addEntry({ userId, listId, title, value }) {
   }
 }
 
-async function updateEntry({ userId, listId, entId, title, value }) {
+async function updateEntry ({ userId, listId, entId, title, value }) {
   const params = {
     TableName: tableName,
     Key: {
@@ -95,7 +94,7 @@ async function updateEntry({ userId, listId, entId, title, value }) {
   }
 }
 
-async function listEntries({ listId, userId }) {
+async function listEntries ({ listId, userId }) {
   return (await dynamoDocClient()
     .get({
       TableName: tableName,
@@ -105,7 +104,7 @@ async function listEntries({ listId, userId }) {
     .promise()).Item.entries
 }
 
-async function deleteEntry({ userId, listId, entId }) {
+async function deleteEntry ({ userId, listId, entId }) {
   const params = {
     TableName: tableName,
     Key: {

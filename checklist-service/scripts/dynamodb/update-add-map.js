@@ -1,7 +1,7 @@
-var params = {
+const params = {
   TableName: 'checklists',
   Key: {
-    userId: 'eoin', //(string | number | boolean | null | Binary)
+    userId: 'eoin', // (string | number | boolean | null | Binary)
     listId: 'eoin-first-list'
   },
   UpdateExpression: 'SET #ent = :entries', // String representation of the update to an attribute
@@ -19,7 +19,7 @@ var params = {
   ReturnConsumedCapacity: 'NONE', // optional (NONE | TOTAL | INDEXES)
   ReturnItemCollectionMetrics: 'NONE' // optional (NONE | SIZE)
 }
-docClient.update(params, function(err, data) {
+docClient.update(params, function (err, data) {
   if (err) ppJson(err)
   // an error occurred
   else ppJson(data) // successful response

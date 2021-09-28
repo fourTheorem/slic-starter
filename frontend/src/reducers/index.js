@@ -10,7 +10,7 @@ const reducer = (history) =>
     app,
     auth,
     checklists,
-    router: connectRouter(history),
+    router: connectRouter(history)
   })
 
 export default reducer

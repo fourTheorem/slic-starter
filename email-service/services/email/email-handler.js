@@ -14,7 +14,7 @@ const ses = awsXray.captureAWSClient(
   })
 )
 
-async function sendEmail(message) {
+async function sendEmail (message) {
   log.info({ message }, 'sendEmail')
 
   const { to, subject, body } = JSON.parse(message.Records[0].body)

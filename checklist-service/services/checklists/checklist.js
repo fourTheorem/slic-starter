@@ -16,7 +16,7 @@ module.exports = {
   addCollaborator
 }
 
-async function create({ userId, name, description }) {
+async function create ({ userId, name, description }) {
   const item = {
     userId,
     name,
@@ -37,7 +37,7 @@ async function create({ userId, name, description }) {
   return item
 }
 
-async function update({ listId, userId, name = null, description = null }) {
+async function update ({ listId, userId, name = null, description = null }) {
   const updatedAt = Date.now()
   const result = await dynamoDocClient()
     .update({
@@ -62,7 +62,7 @@ async function update({ listId, userId, name = null, description = null }) {
   return result.Attributes
 }
 
-async function remove({ listId, userId }) {
+async function remove ({ listId, userId }) {
   await dynamoDocClient()
     .delete({
       TableName: tableName,
@@ -71,7 +71,7 @@ async function remove({ listId, userId }) {
     .promise()
 }
 
-async function get({ listId, userId }) {
+async function get ({ listId, userId }) {
   return (await dynamoDocClient()
     .get({
       TableName: tableName,
@@ -85,7 +85,7 @@ async function get({ listId, userId }) {
     .promise()).Item
 }
 
-async function list({ userId }) {
+async function list ({ userId }) {
   // Find all lists accessible by the user, including
   // shared lists which have sharedListOwner set but no values
   // for name, description or createdAt
@@ -139,7 +139,7 @@ async function list({ userId }) {
   return lists
 }
 
-async function addCollaborator({ sharedListOwner, listId, userId }) {
+async function addCollaborator ({ sharedListOwner, listId, userId }) {
   const item = {
     sharedListOwner,
     listId,
