@@ -21,14 +21,13 @@ export function getBaseURL () {
 
 export function getEmail () {
   let config
-  let email
   if (stage === 'local') {
     config = localConfig
   } else {
     config = realConfig
   }
 
-  email = config.generateEmailAddress()
+  const email = config.generateEmailAddress()
   return email
 }
 

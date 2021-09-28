@@ -7,3 +7,5 @@ cicd/*.yml
 **/.serverless
 **/.webpack
 frontend/build/static/
+cicd/**/*.js
+**/scripts/*

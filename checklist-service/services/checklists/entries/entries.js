@@ -2,7 +2,6 @@
 
 const Uuid = require('uuid')
 const { dynamoDocClient } = require('slic-tools/aws')
-const log = require('slic-tools/log')
 
 const { createMetricsLogger, Unit } = require('aws-embedded-metrics')
 
