@@ -1,6 +1,11 @@
 # Ignore YAML files as we uses partials with indentation for CICD
 cicd/*.yml
+**/node_modules/
+**/dist/
 **/.nyc_output
 **/coverage
 **/.serverless
 **/.webpack
+frontend/build/static/
+cicd/**/*.js
+**/scripts/*

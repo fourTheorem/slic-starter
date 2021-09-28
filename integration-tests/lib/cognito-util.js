@@ -11,7 +11,7 @@ const cognitoServiceProvider = new AWS.CognitoIdentityServiceProvider()
 
 const generatePassword = () => `${chance.string({ length: 10 })}!Aa0`
 
-async function createUser() {
+async function createUser () {
   const email = generateEmailAddress()
   const password = generatePassword()
 
@@ -70,7 +70,7 @@ async function createUser() {
   return user
 }
 
-async function deleteUser(user) {
+async function deleteUser (user) {
   const backendConfig = await loadBackendConfig()
   const deleteRequest = {
     UserPoolId: backendConfig.userPoolId,

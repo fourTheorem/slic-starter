@@ -60,3 +60,4 @@ slic-config.json
 *.gitignored
 
 .webpack/
+.eslintcache

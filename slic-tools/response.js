@@ -7,7 +7,7 @@ const headers = {
   'Access-Control-Allow-Credentials': true
 }
 
-async function createResponse(promise, options) {
+async function createResponse (promise, options) {
   const successCode = (options && options.successCode) || 200
   try {
     const result = await promise

@@ -13,7 +13,7 @@ const received = {
   SES: {}
 }
 
-awsMock.mock('SES', 'sendEmail', function(params, callback) {
+awsMock.mock('SES', 'sendEmail', function (params, callback) {
   received.SES.sendEmail = params
   callback(null, { ...params })
 })

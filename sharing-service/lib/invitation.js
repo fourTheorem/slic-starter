@@ -2,13 +2,13 @@
 
 const crypto = require('crypto')
 
-module.exports = function invitation(secret) {
+module.exports = function invitation (secret) {
   return {
     createCode,
     parseCode: code => parseCode(code, secret)
   }
 
-  function createCode({ listName, listId, userId, email }) {
+  function createCode ({ listName, listId, userId, email }) {
     if (!listName || !listId || !userId || !email) {
       throw new Error('Invalid parameters for invitation code')
     }
@@ -36,7 +36,7 @@ module.exports = function invitation(secret) {
   }
 }
 
-function parseCode(code, secret) {
+function parseCode (code, secret) {
   const normalized = code.replace(/-/g, '+').replace(/_/g, '/')
   const codeBuffer = Buffer.from(normalized, 'base64')
   const digestBuffer = codeBuffer.subarray(0, 32)
@@ -64,7 +64,7 @@ function parseCode(code, secret) {
   return { listName, listId, userId, email }
 }
 
-function bufferToUuid(buffer) {
+function bufferToUuid (buffer) {
   return [
     buffer.subarray(0, 4).toString('hex'),
     buffer.subarray(4, 6).toString('hex'),

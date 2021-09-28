@@ -11,7 +11,7 @@ const tableName = 'checklists'
 testaccount1@example.com UserId: mock-auth-dGVzdGFjY291bnQxQGV4YW1wbGUuY29t
 testaccount2@example.com mock-auth-dGVzdGFjY291bnQyQGV4YW1wbGUuY29t
 */
-async function run() {
+async function run () {
   console.log('Querying records')
   const userId = 'mock-auth-dGVzdGFjY291bnQyQGV4YW1wbGUuY29t' // testaccount2
   const lists = (await docClient

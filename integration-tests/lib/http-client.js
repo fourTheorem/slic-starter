@@ -5,7 +5,7 @@ const { toneAxiosError } = require('./axios-util')
 const { loadBackendConfig } = require('./backend-config')
 const { getUser } = require('./user-util')
 
-async function getHttpClient(apiName = 'checklist-service') {
+async function getHttpClient (apiName = 'checklist-service') {
   const { apiEndpoints } = await loadBackendConfig()
   const { idToken } = await getUser()
 
@@ -32,13 +32,13 @@ async function getHttpClient(apiName = 'checklist-service') {
   return axiosClient
 }
 
-let httpClientPromise = getHttpClient()
+const httpClientPromise = getHttpClient()
 
 const proxy = new Proxy(
   {},
   {
     get: (target, name) => {
-      return function proxyRequest() {
+      return function proxyRequest () {
         const requestArgs = arguments
         return httpClientPromise.then(axiosClient => {
           return axiosClient[name].apply(axiosClient, requestArgs)

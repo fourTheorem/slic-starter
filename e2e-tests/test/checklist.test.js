@@ -38,7 +38,7 @@ const role = Role(
   { preserveUrl: true }
 )
 
-fixture(`Checklist test`)
+fixture('Checklist test')
 
 test('User can create a new List', async t => {
   await t.useRole(role).click(Selector('#new-list-button', { timeout: 15000 }))

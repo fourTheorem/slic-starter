@@ -13,11 +13,11 @@ const user = {
   Users: [{ Username: '123' }]
 }
 
-awsMock.mock('SSM', 'getParameter', function(params, callback) {
+awsMock.mock('SSM', 'getParameter', function (params, callback) {
   callback(null, { Parameter: { Value: 'test-user-pool-id' } })
 })
 
-awsMock.mock('CognitoIdentityServiceProvider', 'adminGetUser', function(
+awsMock.mock('CognitoIdentityServiceProvider', 'adminGetUser', function (
   params,
   callback
 ) {
@@ -25,7 +25,7 @@ awsMock.mock('CognitoIdentityServiceProvider', 'adminGetUser', function(
   callback(null, { UserAttributes })
 })
 
-awsMock.mock('CognitoIdentityServiceProvider', 'listUsers', function(
+awsMock.mock('CognitoIdentityServiceProvider', 'listUsers', function (
   params,
   callback
 ) {

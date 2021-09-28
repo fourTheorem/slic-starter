@@ -4,7 +4,7 @@ const signedAxios = require('aws-signed-axios')
 
 const log = require('./log')
 
-async function getUser(userId) {
+async function getUser (userId) {
   const userServiceUrl = process.env.USER_SERVICE_URL
   if (!userServiceUrl) {
     throw new Error('USER_SERVICE_URL is not defined')

@@ -7,12 +7,12 @@ import { messages } from '../errors'
 
 const styles = (theme) => ({
   error: {
-    color: theme.palette.error.main,
-  },
+    color: theme.palette.error.main
+  }
 })
 
 class ErrorMessage extends React.Component {
-  render() {
+  render () {
     const { classes, messageId } = this.props
 
     const message = messages[messageId]
@@ -23,7 +23,7 @@ class ErrorMessage extends React.Component {
 
 ErrorMessage.propTypes = {
   messageId: PropTypes.symbol.isRequired,
-  classes: PropTypes.object.isRequired,
+  classes: PropTypes.object.isRequired
 }
 
 export default withStyles(styles)(ErrorMessage)

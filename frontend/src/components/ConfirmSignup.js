@@ -6,8 +6,7 @@ import { Button, Grid, Paper, TextField, Typography } from '@material-ui/core'
 import { withStyles } from '@material-ui/core/styles'
 
 import ErrorMessage from './ErrorMessage'
-import { confirmSignup } from '../actions/auth'
-import { resendConfirmationCode } from '../actions/auth'
+import { confirmSignup, resendConfirmationCode } from '../actions/auth'
 
 const style = (theme) => ({
   root: {
@@ -17,73 +16,77 @@ const style = (theme) => ({
     minWidth: '100%',
     minHeight: '100vh',
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'center'
   },
   paper: {
     alignItems: 'center',
     minWidth: '460px',
-    padding: theme.spacing.unit * 2,
+    padding: theme.spacing.unit * 2
   },
   input: {
-    width: '100%',
+    width: '100%'
   },
   button: {
     width: '100%',
-    marginTop: theme.spacing.unit,
+    marginTop: theme.spacing.unit
   },
   success: {
-    color: 'green',
-  },
+    color: 'green'
+  }
 })
 
 class ConfirmSignup extends Component {
   state = {
     email: this.props.auth.email,
-    confirmationCode: '',
-  }
+    confirmationCode: ''
+  };
 
-  validate = () => this.state.confirmationCode.length > 5
+  validate = () => this.state.confirmationCode.length > 5;
 
-  handleChange = ({ target: { id, value } }) => this.setState({ [id]: value })
+  handleChange = ({ target: { id, value } }) => this.setState({ [id]: value });
 
   resendConfirmation = (event) => {
     event.preventDefault()
     this.props.dispatch(resendConfirmationCode(this.state.email))
-  }
+  };
 
   handleSubmit = (event) => {
     event.preventDefault()
     this.props.dispatch(
       confirmSignup(this.state.email, this.state.confirmationCode)
     )
-  }
+  };
 
-  render() {
+  render () {
     const { classes } = this.props
     const {
       confirmingSignup,
       confirmationError,
       signupConfirmed,
-      codeSent,
+      codeSent
     } = this.props.auth
 
-    const codeResent = codeSent ? (
+    const codeResent = codeSent
+      ? (
       <Grid item>
         <Typography className={classes.success}>
           Code successfully sent!
         </Typography>
       </Grid>
-    ) : null
+        )
+      : null
 
     const noEmail = !this.state.email ? <Redirect to="/login" /> : null
 
     const signupSuccess = signupConfirmed ? <Redirect to="/login" /> : null
 
-    const errorItem = confirmationError ? (
+    const errorItem = confirmationError
+      ? (
       <Grid item>
         <ErrorMessage messageId={confirmationError.id} />
       </Grid>
-    ) : null
+        )
+      : null
 
     return (
       <div className={classes.root}>
@@ -167,7 +170,7 @@ class ConfirmSignup extends Component {
 ConfirmSignup.propTypes = {
   auth: PropTypes.object.isRequired,
   dispatch: PropTypes.func.isRequired,
-  classes: PropTypes.object.isRequired,
+  classes: PropTypes.object.isRequired
 }
 
 const mapStateToProps = ({ auth }) => ({ auth })

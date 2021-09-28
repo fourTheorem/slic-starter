@@ -4,7 +4,7 @@ const { processEvent } = require('slic-tools/event-util')
 const { middify } = require('slic-tools/middy-util')
 const share = require('./share')
 
-async function main(event) {
+async function main (event) {
   const { body, userId } = processEvent(event)
   const { email, listId, listName } = body
 
