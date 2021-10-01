@@ -1,67 +1,71 @@
-import React, { Component } from "react";
-import PropTypes from "prop-types";
-import { Buffer } from "buffer/";
-import { Button, Grid, Paper, Typography } from "@material-ui/core";
-import { connect } from "react-redux";
-import { withStyles } from "@material-ui/core/styles";
-import { acceptShareRequest } from "../actions/share";
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
+import { Buffer } from 'buffer/'
+import { Button, Grid, Paper, Typography } from '@material-ui/core'
+import { connect } from 'react-redux'
+import { withStyles } from '@material-ui/core/styles'
+import { acceptShareRequest } from '../actions/share'
 
 const styles = (theme) => ({
   root: {
-    background: "linear-gradient(to right, #4A00E0, #8E2DE2)",
-    display: "flex",
-    flexDirection: "column",
-    minWidth: "100%",
-    minHeight: "100vh",
-    alignItems: "center",
-    justifyContent: "center",
+    background: 'linear-gradient(to right, #4A00E0, #8E2DE2)',
+    display: 'flex',
+    flexDirection: 'column',
+    minWidth: '100%',
+    minHeight: '100vh',
+    alignItems: 'center',
+    justifyContent: 'center'
   },
   paper: {
-    alignItems: "center",
-    minWidth: "460px",
-    padding: theme.spacing.unit * 2,
+    alignItems: 'center',
+    minWidth: '460px',
+    padding: theme.spacing.unit * 2
   },
   input: {
-    width: "100%",
+    width: '100%'
   },
   button: {
-    width: "100%",
-    marginTop: theme.spacing.unit,
+    width: '100%',
+    marginTop: theme.spacing.unit
   },
   success: {
-    color: "green",
+    color: 'green'
   },
 
   failure: {
-    color: "red",
-  },
-});
+    color: 'red'
+  }
+})
 
 class AcceptShare extends Component {
   handleConfirm = (event) => {
-    event.preventDefault();
-    const { params } = this.props.match;
-    const { dispatch } = this.props;
-    dispatch(acceptShareRequest(params.code));
+    event.preventDefault()
+    const { params } = this.props.match
+    const { dispatch } = this.props
+    dispatch(acceptShareRequest(params.code))
   };
 
-  render() {
-    const { classes, shareRequestAccepted, shareRequestError } = this.props;
+  render () {
+    const { classes, shareRequestAccepted, shareRequestError } = this.props
 
-    const { params } = this.props.match;
+    const { params } = this.props.match
 
-    const listName = extractCodeListName(params.code);
+    const listName = extractCodeListName(params.code)
 
-    const shareAccepted = shareRequestAccepted ? (
+    const shareAccepted = shareRequestAccepted
+      ? (
       <Typography className={classes.success}>
         You now have access to {listName}
       </Typography>
-    ) : null;
+        )
+      : null
 
     const shareFailure =
-      !shareRequestAccepted && shareRequestError ? (
+      !shareRequestAccepted && shareRequestError
+        ? (
         <Typography className={classes.failure}>An error occured</Typography>
-      ) : null;
+          )
+        : null
 
     return (
       <div className={classes.root}>
@@ -102,15 +106,15 @@ class AcceptShare extends Component {
           </Grid>
         </Paper>
       </div>
-    );
+    )
   }
 }
 
-function extractCodeListName(code) {
-  const normalized = code.replace(/-/g, "+").replace(/_/g, "/");
-  const codeBuffer = Buffer.from(normalized, "base64");
-  const listNameLength = codeBuffer.readUInt8(32);
-  return codeBuffer.toString("utf8", 33, listNameLength + 33);
+function extractCodeListName (code) {
+  const normalized = code.replace(/-/g, '+').replace(/_/g, '/')
+  const codeBuffer = Buffer.from(normalized, 'base64')
+  const listNameLength = codeBuffer.readUInt8(32)
+  return codeBuffer.toString('utf8', 33, listNameLength + 33)
 }
 
 AcceptShare.propTypes = {
@@ -121,15 +125,15 @@ AcceptShare.propTypes = {
   acceptingShareRequest: PropTypes.bool.isRequired,
   shareRequestAccepted: PropTypes.bool.isRequired,
   shareRequestError: PropTypes.object,
-  match: PropTypes.object.isRequired,
-};
+  match: PropTypes.object.isRequired
+}
 
 const mapStateToProps = ({
   checklists: {
     acceptingShareRequest,
     shareRequestAccepted,
-    shareRequestError,
-  },
-}) => ({ acceptingShareRequest, shareRequestAccepted, shareRequestError });
+    shareRequestError
+  }
+}) => ({ acceptingShareRequest, shareRequestAccepted, shareRequestError })
 
-export default connect(mapStateToProps)(withStyles(styles)(AcceptShare));
+export default connect(mapStateToProps)(withStyles(styles)(AcceptShare))

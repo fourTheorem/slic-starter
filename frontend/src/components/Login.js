@@ -1,40 +1,40 @@
-import React, { Component } from "react";
-import { connect } from "react-redux";
-import PropTypes from "prop-types";
-import { Redirect, Link } from "react-router-dom";
-import { withStyles } from "@material-ui/core/styles";
-import { Button, Grid, Paper, TextField, Typography } from "@material-ui/core";
+import React, { Component } from 'react'
+import { connect } from 'react-redux'
+import PropTypes from 'prop-types'
+import { Redirect, Link } from 'react-router-dom'
+import { withStyles } from '@material-ui/core/styles'
+import { Button, Grid, Paper, TextField, Typography } from '@material-ui/core'
 
-import ErrorMessage from "./ErrorMessage";
-import { logIn } from "../actions/auth";
+import ErrorMessage from './ErrorMessage'
+import { logIn } from '../actions/auth'
 
 const styles = (theme) => ({
   root: {
-    background: "linear-gradient(to right, #4A00E0, #8E2DE2)",
-    display: "flex",
-    flexDirection: "column",
-    minWidth: "100%",
-    minHeight: "100vh",
-    alignItems: "center",
-    justifyContent: "center",
+    background: 'linear-gradient(to right, #4A00E0, #8E2DE2)',
+    display: 'flex',
+    flexDirection: 'column',
+    minWidth: '100%',
+    minHeight: '100vh',
+    alignItems: 'center',
+    justifyContent: 'center'
   },
   paper: {
-    minWidth: "300px",
-    padding: theme.spacing.unit * 2,
+    minWidth: '300px',
+    padding: theme.spacing.unit * 2
   },
   input: {
-    width: "100%",
+    width: '100%'
   },
   button: {
-    width: "100%",
-    marginTop: theme.spacing.unit,
-  },
-});
+    width: '100%',
+    marginTop: theme.spacing.unit
+  }
+})
 
 class Login extends Component {
   state = {
-    email: "",
-    password: "",
+    email: '',
+    password: ''
   };
 
   validate = () =>
@@ -43,37 +43,43 @@ class Login extends Component {
   handleChange = ({ target: { id, value } }) => this.setState({ [id]: value });
 
   handleSubmit = (event) => {
-    event.preventDefault();
-    this.props.dispatch(logIn(this.state));
+    event.preventDefault()
+    this.props.dispatch(logIn(this.state))
   };
 
-  render() {
+  render () {
     const {
       classes,
-      auth: { userUnconfirmed },
-    } = this.props;
+      auth: { userUnconfirmed }
+    } = this.props
 
     const {
       loggingIn,
       loginError,
       authenticated,
-      preAuthenticatedPath,
-    } = this.props.auth;
+      preAuthenticatedPath
+    } = this.props.auth
 
     const errorItem =
-      !loggingIn && loginError ? (
+      !loggingIn && loginError
+        ? (
         <Grid item>
           <ErrorMessage messageId={loginError.id} />
         </Grid>
-      ) : null;
+          )
+        : null
 
-    const signedIn = authenticated ? (
-      <Redirect to={preAuthenticatedPath || "/"} />
-    ) : null;
+    const signedIn = authenticated
+      ? (
+      <Redirect to={preAuthenticatedPath || '/'} />
+        )
+      : null
 
-    const unconfirmed = userUnconfirmed ? (
+    const unconfirmed = userUnconfirmed
+      ? (
       <Redirect to="/confirm-signup" />
-    ) : null;
+        )
+      : null
 
     return (
       <div className={classes.root}>
@@ -121,7 +127,7 @@ class Login extends Component {
                   className={classes.button}
                   disabled={loggingIn || !this.validate()}
                 >
-                  {loggingIn ? "Logging in..." : "Log In"}
+                  {loggingIn ? 'Logging in...' : 'Log In'}
                 </Button>
               </Grid>
               <Grid item>
@@ -133,16 +139,16 @@ class Login extends Component {
           </Paper>
         </form>
       </div>
-    );
+    )
   }
 }
 
 Login.propTypes = {
   auth: PropTypes.object.isRequired,
   classes: PropTypes.object.isRequired,
-  dispatch: PropTypes.func.isRequired,
-};
+  dispatch: PropTypes.func.isRequired
+}
 
-const mapStateToProps = ({ auth }) => ({ auth });
+const mapStateToProps = ({ auth }) => ({ auth })
 
-export default connect(mapStateToProps)(withStyles(styles)(Login));
+export default connect(mapStateToProps)(withStyles(styles)(Login))

@@ -14,65 +14,65 @@ import {
   RESEND_CODE_REQUEST,
   RESEND_CODE_SUCCESS,
   SET_PRE_AUTHENTICATED_PATH,
-  RESEND_CODE_FAILURE,
-} from "../actions/auth";
-import * as errors from "../errors";
+  RESEND_CODE_FAILURE
+} from '../actions/auth'
+import * as errors from '../errors'
 
 const defaultState = {
   preAuthenticatedPath: null,
   loggingIn: false,
-  loginFailed: false,
-};
+  loginFailed: false
+}
 
 const reducer = (state = defaultState, { type, meta, payload, error }) => {
   switch (type) {
     case SET_PRE_AUTHENTICATED_PATH:
       return {
         ...state,
-        preAuthenticatedPath: payload,
-      };
+        preAuthenticatedPath: payload
+      }
     case LOGIN_REQUEST:
       return {
         ...state,
         loggingIn: true,
         authenticated: false,
         loginError: null,
-        email: payload.email,
-      };
+        email: payload.email
+      }
     case LOGIN_SUCCESS:
     case LOGIN_VALIDATED:
       return {
         ...state,
         loggingIn: false,
         authenticated: true,
-        loginError: null,
-      };
+        loginError: null
+      }
     case LOGIN_INVALIDATED:
       return {
         ...state,
-        authenticated: false,
-      };
+        authenticated: false
+      }
     case LOGIN_FAILURE:
       return {
         ...state,
         loggingIn: false,
         authenticated: false,
         loginError: error,
-        userUnconfirmed: error.id === errors.USER_NOT_CONFIRMED,
-      };
+        userUnconfirmed: error.id === errors.USER_NOT_CONFIRMED
+      }
     case LOGOUT_SUCCESS:
       return {
         preAuthenticatedPath: null,
-        authenticated: false,
-      };
+        authenticated: false
+      }
     case SIGNUP_REQUEST:
       return {
         ...state,
         signingUp: true,
         signupError: null,
         userConfirmed: false,
-        signedUp: false,
-      };
+        signedUp: false
+      }
     case SIGNUP_SUCCESS:
       return {
         ...state,
@@ -80,66 +80,66 @@ const reducer = (state = defaultState, { type, meta, payload, error }) => {
         signupError: null,
         userConfirmed: false,
         signedUp: true,
-        email: payload.email,
-      };
+        email: payload.email
+      }
     case SIGNUP_FAILURE:
       return {
         ...state,
         signingUp: false,
         signupError: error,
         userConfirmed: false,
-        signedUp: false,
-      };
+        signedUp: false
+      }
     case SIGNUP_CONFIRM_REQUEST:
       return {
         ...state,
         confirmingSignup: true,
         confirmationError: null,
-        signupConfirmed: false,
-      };
+        signupConfirmed: false
+      }
     case SIGNUP_CONFIRM_SUCCESS:
       return {
         confirmingSignup: false,
         confirmationError: null,
         authenticated: false,
         signupConfirmed: true,
-        email: payload.email,
-      };
+        email: payload.email
+      }
     case SIGNUP_CONFIRM_FAILURE:
       return {
         ...state,
         confirmingSignup: false,
         confirmationError: error,
         authenticated: false,
-        signupConfirmed: false,
-      };
+        signupConfirmed: false
+      }
     case RESEND_CODE_REQUEST:
       return {
         ...state,
         resendingCode: true,
         resendError: null,
-        codeSent: false,
-      };
+        codeSent: false
+      }
 
     case RESEND_CODE_SUCCESS:
       return {
         ...state,
         resendingCode: false,
         resendError: null,
-        codeSent: true,
-      };
+        codeSent: true
+      }
 
     case RESEND_CODE_FAILURE:
       return {
         ...state,
         resendingCode: false,
         resendError: error,
-        codeSent: false,
-      };
+        codeSent: false
+      }
 
     default:
-      return state;
+      return state
   }
-};
+}
 
-export default reducer;
+export default reducer

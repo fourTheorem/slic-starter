@@ -1,5 +1,8 @@
+/* eslint-disable no-template-curly-in-string, no-useless-escape */
+const { domainConfig: { nsDomain } } = require('../slic-config.json')
+
 module.exports = () =>
-  require("yaml").parse(`
+  require('yaml').parse(`
 siteBucket:
   Type: AWS::S3::Bucket
   Properties:
@@ -27,8 +30,8 @@ frontendUrl:
     Name: /$\{self:provider.stage}/frontend/url
     Type: String
     Value: ${
-      process.env.SLIC_NS_DOMAIN
-        ? `https://$\{self:custom.siteDomainName}`
+      nsDomain
+        ? 'https://$\{self:custom.siteDomainName}'
         : `
       Fn::Join:
         - ""
@@ -52,11 +55,11 @@ siteDistribution:
       Enabled: true
       DefaultRootObject: index.html
       HttpVersion: http2${
-        process.env.SLIC_NS_DOMAIN
+        nsDomain
           ? `
       Aliases:
         - $\{self:custom.siteDomainName}`
-          : ""
+          : ''
       }
       DefaultCacheBehavior:
         AllowedMethods:
@@ -73,12 +76,12 @@ siteDistribution:
           Cookies:
             Forward: none
         ViewerProtocolPolicy: redirect-to-https${
-          process.env.SLIC_NS_DOMAIN
+          nsDomain
             ? `
       ViewerCertificate:
-        AcmCertificateArn: $\{self:custom.siteConfig.siteCert}
+        AcmCertificateArn: $\{cf(us-east-1):certs-$\{self:provider.stage}.apiCert}
         SslSupportMethod: sni-only`
-            : ""
+            : ''
         }
       CustomErrorResponses:
         - ErrorCode: 403
@@ -88,12 +91,13 @@ siteDistribution:
           ResponseCode: 200
           ResponsePagePath: /
 ${
-  process.env.SLIC_NS_DOMAIN
+  nsDomain
     ? `
 webRecordSets:
   Type: AWS::Route53::RecordSetGroup
   Properties:
-    HostedZoneId: $\{self:custom.siteConfig.publicHostedZone}
+    HostedZoneId: $\{cf(us-east-1):certs-$\{self:provider.stage}.publicHostedZone}
+
     RecordSets:
       - Name: $\{self:custom.siteDomainName}
         Type: A
@@ -101,5 +105,5 @@ webRecordSets:
           DNSName: { Fn::GetAtt: [siteDistribution, DomainName] }
           HostedZoneId: $\{self:custom.cloudFrontHostedZoneId}
 `
-    : ""
-}`);
+    : ''
+}`)

@@ -1,5 +1,5 @@
-import React, { Component } from "react";
-import PropTypes from "prop-types";
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 
 import {
   Button,
@@ -7,12 +7,12 @@ import {
   DialogActions,
   DialogTitle,
   DialogContent,
-  DialogContentText,
-} from "@material-ui/core";
+  DialogContentText
+} from '@material-ui/core'
 
 export default class ConfirmationDialog extends Component {
-  render() {
-    const { id, title, message, open, onConfirm, onClose } = this.props;
+  render () {
+    const { id, title, message, open, onConfirm, onClose } = this.props
 
     return (
       <Dialog
@@ -38,7 +38,7 @@ export default class ConfirmationDialog extends Component {
           </Button>
         </DialogActions>
       </Dialog>
-    );
+    )
   }
 }
 
@@ -48,5 +48,5 @@ ConfirmationDialog.propTypes = {
   message: PropTypes.string.isRequired,
   onClose: PropTypes.func.isRequired,
   onConfirm: PropTypes.func.isRequired,
-  open: PropTypes.bool.isRequired,
-};
+  open: PropTypes.bool.isRequired
+}
