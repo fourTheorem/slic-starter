@@ -1,5 +1,4 @@
 enum StageName {
-  dev = 'dev',
   stg = 'stg',
   prod = 'prod'
 }

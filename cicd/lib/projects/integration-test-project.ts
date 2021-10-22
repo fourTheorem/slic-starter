@@ -6,11 +6,11 @@ import {
   LinuxBuildImage
 } from '@aws-cdk/aws-codebuild'
 import StageName from '../stage-name'
-import { Construct } from '@aws-cdk/core'
+import { Construct, Stack } from '@aws-cdk/core'
 import iam = require('@aws-cdk/aws-iam')
-import config from '../../config'
-import CodeBuildRole from '../code-build-role'
+import * as ssmParams from '../../ssm-params'
 
+import CodeBuildRole from '../code-build-role'
 export interface IntegrationTestProjectProps extends PipelineProjectProps {
   stageName: StageName
 }
@@ -27,14 +27,14 @@ export class IntegrationTestProject extends PipelineProject {
       scope,
       `${props.stageName}IntegrationTestRole`
     )
+    const { region, account } = Stack.of(scope)
+
     // Allow access to secret environment variables in Parameter Store required for tests
     role.addToPolicy(
       new iam.PolicyStatement({
         actions: ['ssm:GetParameters'],
         resources: [
-          `arn:aws:ssm:${config.region}:${
-            config.accountIds.cicd
-          }:parameter/test/*`
+          `arn:aws:ssm:${region}:${account}:parameter/test/*`
         ]
       })
     )
@@ -49,16 +49,16 @@ export class IntegrationTestProject extends PipelineProject {
           value: props.stageName
         },
         CROSS_ACCOUNT_ID: {
-          type: BuildEnvironmentVariableType.PLAINTEXT,
-          value: `${config.accountIds[props.stageName]}`
+          type: BuildEnvironmentVariableType.PARAMETER_STORE,
+          value: ssmParams.Accounts[stageName]
         },
         MAILOSAUR_API_KEY: {
           type: BuildEnvironmentVariableType.PARAMETER_STORE,
-          value: '/test/mailosaur/apiKey'
+          value: ssmParams.Test.MAILOSAUR_API_KEY
         },
         MAILOSAUR_SERVER_ID: {
           type: BuildEnvironmentVariableType.PARAMETER_STORE,
-          value: '/test/mailosaur/serverId'
+          value: ssmParams.Test.MAILOSAUR_SERVER_ID
         }
       },
       buildSpec: BuildSpec.fromSourceFilename(

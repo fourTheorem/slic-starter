@@ -1,5 +1,5 @@
 import { Pipeline, Artifact } from '@aws-cdk/aws-codepipeline'
-import { Construct } from '@aws-cdk/core'
+import { Construct, Stack } from '@aws-cdk/core'
 import { Bucket } from '@aws-cdk/aws-s3'
 import {
   S3SourceAction,
@@ -12,7 +12,7 @@ import { ModuleBuildProject } from './projects/module-build-project'
 import { Role } from '@aws-cdk/aws-iam'
 import { BuildEnvironmentVariableType } from '@aws-cdk/aws-codebuild'
 import { projectEnvironmentVars } from './projects/project-environment'
-import config from '../config'
+import * as ssmParams from '../ssm-params'
 
 export interface ModulePipelineProps {
   artifactsBucket: Bucket
@@ -53,18 +53,20 @@ export class ModulePipeline extends Pipeline {
       role: pipelineRole
     })
 
+    const { region } = Stack.of(scope)
+
     this.addStage({
       stageName: 'Source',
       actions: [sourceAction]
     })
     const environmentVars = {
       CROSS_ACCOUNT_ID: {
-        type: BuildEnvironmentVariableType.PLAINTEXT,
-        value: `${config.accountIds[stageName]}`
+        type: BuildEnvironmentVariableType.PARAMETER_STORE,
+        value: ssmParams.Accounts[stageName]
       },
       TARGET_REGION: {
         type: BuildEnvironmentVariableType.PLAINTEXT,
-        value: `${config.defaultRegions[stageName]}`
+        value: region
       },
       SLIC_STAGE: {
         type: BuildEnvironmentVariableType.PLAINTEXT,

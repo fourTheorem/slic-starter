@@ -58,9 +58,7 @@ custom:
   prune:
     automatic: true
     number: 3
-  slicWatch:
-    disabled: ${self:custom.common.slicWatch}
-
+  slicWatch: ${self:custom.common.slicWatch}
 
 functions: ${file(./sls-functions.yml)}
 
