@@ -6,8 +6,8 @@ import {
 } from '@aws-cdk/aws-codebuild'
 import StageName from '../stage-name'
 import { Construct } from '@aws-cdk/core'
-import config from '../../config'
 import modules from '../../modules'
+import * as ssmParams from '../../ssm-params'
 
 export interface OrchestratorDeployProjectProps extends PipelineProjectProps {
   stageName: StageName
@@ -28,8 +28,8 @@ export class OrchestratorDeployProject extends PipelineProject {
           value: props.stageName
         },
         CROSS_ACCOUNT_ID: {
-          type: BuildEnvironmentVariableType.PLAINTEXT,
-          value: `${config.accountIds[props.stageName]}`
+          type: BuildEnvironmentVariableType.PARAMETER_STORE,
+          value: ssmParams.Accounts[stageName]
         },
         MODULE_NAMES: {
           type: BuildEnvironmentVariableType.PLAINTEXT,

@@ -9,3 +9,4 @@ cicd/*.yml
 frontend/build/static/
 cicd/**/*.js
 **/scripts/*
+**/*.json

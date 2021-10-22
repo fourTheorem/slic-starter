@@ -1,3 +1,5 @@
+const { nsDomain } = require('./config')
+
 export interface Modules {
   moduleNames: string[]
 }
@@ -9,7 +11,7 @@ const moduleNames = [
   'email-service',
   'welcome-service',
   'sharing-service',
-  ...(process.env.SLIC_NS_DOMAIN ? ['certs', 'api-service'] : [])
+  ...(nsDomain ? ['certs', 'api-service'] : [])
 ]
 
 const modules: Modules = {

@@ -20,16 +20,6 @@
     "type": "String"
   },
   {
-    "name": "/stg/logging/logzio/token",
-    "value": "TODO",
-    "type": "SecureString"
-  },
-  {
-    "name": "/prod/logging/logzio/token",
-    "value": "TODO",
-    "type": "SecureString"
-  },
-  {
     "name": "/stg/sharing-service/code-secret",
     "value": "TODO",
     "type": "SecureString"
