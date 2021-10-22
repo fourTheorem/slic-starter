@@ -1,15 +1,11 @@
 {
-  "deployment": {
-    "region": "eu-west-1"
-  },
   "sourceRepo": {
     "owner": "fourTheorem",
     "name": "slic-starter",
-    "branch": "master"
+    "branch": "slic-watch"
   },
   "domainConfig": {
-    "siteBucketPrefix": "define-this-if-not-using-nsDomain",
-    "nsDomain": "your-apex.domain",
+    "nsDomain": "sliclists.com",
     "domainPrefixes": {
       "dev": "dev.",
       "stg": "stg.",
@@ -18,7 +14,7 @@
     }
   },
   "slicWatch": {
-    "topic": "SET_TOPIC_ARN_HERE",
-    "disabled": true
+    "topic": "${ssm:/${self:provider.stage}/slicWatch/topicArn}",
+    "disabled": false
   }
 }

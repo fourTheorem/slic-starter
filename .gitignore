@@ -56,7 +56,7 @@ _GIT_REPO/
 .vscode/
 pipeline-state.env\
 aws-accounts.json
-slic-config.json
+slic-deploy.json
 *.gitignored
 
 .webpack/

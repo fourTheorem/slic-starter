@@ -1,7 +1,7 @@
 # SLIC Starter
 
 [![serverless](http://public.serverless.com/badges/v3.svg)](http://www.serverless.com)
-[![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square)](https://github.com/prettier/prettier)
+[![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
 [![license](https://img.shields.io/npm/l/slic-starter.svg)](./LICENSE)
 
 **Jump to:** [Getting Started](#getting-started) | [Quick Start](./QUICK_START.md) | [CI/CD](#cicd) | [Architecture](#application-architecture) | [Contributing](./CONTRIBUTING.md)
@@ -199,7 +199,7 @@ cd cicd
 npm install
 npm run build
 AWS_PROFILE=your-cicd-account npm run cdk -- bootstrap
-SLIC_NS_DOMAIN=your_domain AWS_PROFILE=your-cicd-account npm run deploy
+AWS_PROFILE=your-cicd-account npm run deploy
 ```
 
 12. Trigger your pipeline by commiting your changes to the repository
