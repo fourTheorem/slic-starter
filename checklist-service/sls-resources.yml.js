@@ -1,4 +1,7 @@
 'use strict'
+
+const { domainConfig: { nsDomain } } = require('../slic-config.json')
+
 module.exports = () =>
   require('yamljs').parse(`
 
@@ -43,7 +46,7 @@ checklistServiceNameParameter:
         - ['https://', {'Ref': 'ApiGatewayRestApi'}, '.execute-api.$\{self:provider.region}.amazonaws.com/$\{self:provider.stage}']
 
 ${
-  process.env.SLIC_NS_DOMAIN
+  nsDomain
     ? `
 # Workaround for "Invalid stage identifier specified"
 # See https://github.com/serverless/serverless/issues/4029
@@ -61,7 +64,7 @@ apiCustomDomainPathMappings:
     BasePath: 'checklist'
     RestApiId:
       Ref: ApiGatewayRestApi
-    DomainName: api.$\{self:custom.domainPrefixes.$\{self:provider.stage}}$\{env:SLIC_NS_DOMAIN}
+    DomainName: api.$\{self:custom.common.domainPrefixes.$\{self:provider.stage}}$\{nsDomain}
     Stage: $\{self:provider.stage}
   DependsOn: resApiGatewayDeployment
 

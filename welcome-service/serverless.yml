@@ -22,6 +22,7 @@ provider:
   logRetentionInDays: 7
 
 custom:
+  common: ${file(../slic-config.json)}
   webpack:
     keepOutputDirectory: true
   emailQueueName: ${self:provider.stage}-email-queue

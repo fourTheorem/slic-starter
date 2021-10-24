@@ -6,7 +6,6 @@ plugins:
   - serverless-webpack
   - serverless-offline
   - serverless-prune-plugin
-  - serverless-pseudo-parameters
   - serverless-iam-roles-per-function
   - serverless-slic-watch-plugin
 
@@ -26,6 +25,7 @@ provider:
   logRetentionInDays: 7
 
 custom:
+  common: ${file(../slic-config.json)}
   webpack:
     keepOutputDirectory: true
   stage: ${opt:stage, 'dev'}
