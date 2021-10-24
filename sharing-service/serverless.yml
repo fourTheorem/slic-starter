@@ -32,7 +32,6 @@ custom:
   common: ${file(../slic-config.json)}
   webpack:
     keepOutputDirectory: true
-  domainPrefixes: ${self:custom.common:domainConfig.domainPrefixes}
   cloudFrontHostedZoneId: Z2FDTNDATAQYW2
   serverless-offline:
     httpPort: 4006

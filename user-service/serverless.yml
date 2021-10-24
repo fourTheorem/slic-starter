@@ -6,7 +6,6 @@ plugins:
   - serverless-webpack
   - serverless-offline
   - serverless-prune-plugin
-  - serverless-pseudo-parameters
   - serverless-iam-roles-per-function
   - serverless-slic-watch-plugin
 

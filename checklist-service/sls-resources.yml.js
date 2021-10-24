@@ -64,7 +64,7 @@ apiCustomDomainPathMappings:
     BasePath: 'checklist'
     RestApiId:
       Ref: ApiGatewayRestApi
-    DomainName: api.$\{self:custom.domainPrefixes.$\{self:provider.stage}}$\{nsDomain}
+    DomainName: api.$\{self:custom.common.domainPrefixes.$\{self:provider.stage}}$\{nsDomain}
     Stage: $\{self:provider.stage}
   DependsOn: resApiGatewayDeployment
 
