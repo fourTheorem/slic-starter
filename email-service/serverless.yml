@@ -12,6 +12,7 @@ plugins:
   - serverless-slic-watch-plugin
 
 provider:
+  common: ${file(../slic-config.json)}
   name: aws
   runtime: nodejs10.x
   stage: ${opt:stage, 'local'}
@@ -31,8 +32,6 @@ custom:
   prune:
     automatic: true
   number: 3
-  nsDomain: ${env:SLIC_NS_DOMAIN}
-  domainPrefixes: ${file(../common-config.json):domainPrefixes}
   sesRegions:
     us-east-1: us-east-1
     us-west-2: us-west-2

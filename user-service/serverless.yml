@@ -26,6 +26,7 @@ provider:
   logRetentionInDays: 7
 
 custom:
+  common: ${file(../slic-config.json)}
   webpack:
     keepOutputDirectory: true
   stage: ${opt:stage, 'dev'}

@@ -29,9 +29,10 @@ provider:
   logRetentionInDays: 7
 
 custom:
+  common: ${file(../slic-config.json)}
   webpack:
     keepOutputDirectory: true
-  domainPrefixes: ${file(../common-config.json):domainPrefixes}
+  domainPrefixes: ${self:custom.common:domainConfig.domainPrefixes}
   cloudFrontHostedZoneId: Z2FDTNDATAQYW2
   serverless-offline:
     httpPort: 4006
