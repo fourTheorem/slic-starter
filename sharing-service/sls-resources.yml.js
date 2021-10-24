@@ -1,4 +1,7 @@
 'use strict'
+
+const { domainConfig: { nsDomain } } = require('../slic-config.json')
+
 module.exports = () =>
   require('yamljs').parse(`
 cognitoAuthorizer:
@@ -22,8 +25,8 @@ sharingServiceUrlParameter:
       Fn::Join:
         - ''
         - ['https://', {'Ref': 'ApiGatewayRestApi'}, '.execute-api.$\{self:provider.region}.amazonaws.com/$\{self:provider.stage}']
-${
-  process.env.SLIC_NS_DOMAIN
+ ${
+  nsDomain
     ? `
 # Workaround for "Invalid stage identifier specified"
 # See https://github.com/serverless/serverless/issues/4029
@@ -41,7 +44,7 @@ apiCustomDomainPathMappings:
     BasePath: 'share'
     RestApiId:
       Ref: ApiGatewayRestApi
-    DomainName: api.$\{self:custom.domainPrefixes.$\{self:provider.stage}}$\{env:SLIC_NS_DOMAIN}
+    DomainName: api.$\{self:custom.common.domainPrefixes.$\{self:provider.stage}}$\{env:SLIC_NS_DOMAIN}
     Stage: $\{self:provider.stage}
   DependsOn: resApiGatewayDeployment
 
