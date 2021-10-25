@@ -32,7 +32,7 @@ if (!awsRegion) {
 
 console.log('Using region', awsRegion)
 
-const cf = new CloudFormation()
+const cf = new CloudFormation({ region: awsRegion })
 
 const envFilename = '.env.production'
 fs.writeFileSync(
@@ -55,6 +55,7 @@ Promise.all([getUserServiceEnv(), getApiEndpointsEnv()])
   })
 
 function getUserServiceEnv () {
+  console.log(userServiceStackName)
   return cf
     .describeStacks({ StackName: userServiceStackName })
     .promise()
@@ -80,7 +81,7 @@ function getUserServiceEnv () {
 }
 
 function getApiEndpointsEnv () {
-  /* If process.env.SLIC_NS_DOMAIN is not set use describe stacks and
+  /* If nsDomain is not set use describe stacks and
      get API Endpoint URL's from cloudformation outputs */
   return Promise.all(
     Object.keys(apiStackPaths).map((stackNamePrefix) => {
