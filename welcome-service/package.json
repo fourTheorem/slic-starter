@@ -37,7 +37,6 @@
     "babel-plugin-source-map-support": "^2.1.1",
     "bourne": "^1.1.2",
     "pino": "^6.11.1",
-    "serverless-pseudo-parameters": "^2.5.0",
     "slic-tools": "file:../slic-tools"
   },
   "nyc": {

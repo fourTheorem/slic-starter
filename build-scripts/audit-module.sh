@@ -1,18 +1,24 @@
 #!/bin/bash
 
 set -e
+AUDIT_ARGS="--audit-level=high"
 
 npm install -g npm@latest
 
 if [ -e package.json ]; then
-  npm audit --audit-level=high
+  echo npm audit ${AUDIT_ARGS}
 else
   echo No root package.json, skipping audit
 fi
 
 cd ${MODULE_NAME}
 if [ -e package.json ]; then
-  npm audit --audit-level=high
+  if [ "${MODULE_NAME}" = "frontend" ]; then
+    # https://github.com/facebook/create-react-app/issues/11174
+    AUDIT_ARGS="${AUDIT_ARGS} --production"
+  fi
+  echo Auditing with ${AUDIT_ARGS}
+  npm audit ${AUDIT_ARGS}
 else
   echo No module package.json, skipping audit
 fi

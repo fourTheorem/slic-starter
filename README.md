@@ -150,10 +150,6 @@ For further details, see the [logging README](./logging/README.md)
 
 We use AWS Secrets Manager for storing the GitHub personal access token and AWS Systems Manager Parameter Store for storing other secrets, such as API access tokens.
 
-### User Accounts and Authorization
-
-_Coming soon_. SLIC Starter will include support for roles and Role-Based Access Control (RBAC).
-
 ## Before you Begin!
 
 SLIC Starter is designed to get you up in running with a real-world application as quickly as possible. The fact that we go beyond the average sample application, there is a bit more involved in getting to production. For example:
@@ -170,41 +166,42 @@ This section covers a full deployment using multiple accounts with domain names 
 
 To set up deployment to your own accounts, first run through these steps.
 
-1. Decide when DNS name you will use for your application. If you need to register one, the best place to do this is probably in your production account using [Amazon Route 53](https://aws.amazon.com/route53/).
-2. Copy `slic-config.json.sample` to `slic-config.json` and edit it to include the AWS Account IDs of your staging, production and CI/CD accounts. For single account deployment the Account ID's of CICD, Production and Staging would all be the same. This file is `.gitignore`'d so your account IDs are not commited to Git. Also specify your GitHub repository details and DNS domain for your deployment. Use a domain you own so you can update DNS entries to point to your deployed environment. When the deployment process runs, the domain owner will be sent an email to verify ownership before the deployment completes.
-3. Fork the repository into your own account or organization on GitHub. If you don't use GitHub, you will have to tweak the source project in the CICD module ([source-project.ts](./cicd/lib/project/source-project.ts))
-4. Enable CodeBuild to access your GitHub repo. The most reliable way to do this is to use a Personal Access Token with access to create webhooks on your repository. The guide from AWS on how to do this is [here](https://docs.aws.amazon.com/codebuild/latest/userguide/sample-access-tokens.html).
-5. (Optional - this will be required for repo tagging). Set up GitHub authentication for your repo. Create a GitHub Personal Access Token and add it as an secret with the name `GitHubPersonalAccessToken` in Secrets Manager _in the CICD account_. See [this post](https://medium.com/@eoins/securing-github-tokens-in-a-serverless-codepipeline-dc3a24ddc356) for more detail on this approach.
-6. Under the parent directory, open the file `common-config.json`. If desired, you can configure the default regions and domain prefixes by account. If you have no reason to change them, leave the default values as they are.
-7. Create a [Mailosaur](https://mailosaur.com) account. Take the server ID and API key and add them in your CICD account to the Parameter Store as `SecretString` values with the following names
-
+1. Fork the repository into your own account or organization on GitHub. If you don't use GitHub, you will have to tweak the source project in the CICD module ([source-project.ts](./cicd/lib/project/source-project.ts))
+2. Enable CodeBuild to access your GitHub repo. The most reliable way to do this is to use a Personal Access Token with access to create webhooks on your repository. The guide from AWS on how to do this is [here](https://docs.aws.amazon.com/codebuild/latest/userguide/sample-access-tokens.html).
+3. Decide when DNS name you will use for your application. If you need to register one, the best place to do this is probably in your production account using [Amazon Route 53](https://aws.amazon.com/route53/).
+4. Edit `slic-config.json` as follows:
+ * Update to point to your correct repository (Change `owner` and `name` under `sourceRepo`)
+ * Edit `domainConfig` to point to your domain. Use a domain you own so you can update DNS entries to point to your deployed environment. When the deployment process runs, the domain owner will be sent an email to verify ownership before the deployment completes.
+5. Create SSM parameters in your CICD account, pointing to the accounts of your staging (`stg`) and production(`prod`).
+ * `/shared/accounts/stg: <staging account ID>`
+ * `/shared/accounts/prod: <production account ID>`
+ For single account deployment the Account IDs of CICD, Production and Staging would all be the same.
+6. (Optional). Set up GitHub authentication for your repo. Create a GitHub Personal Access Token and add it as an secret with the name `GitHubPersonalAccessToken` in Secrets Manager _in the CICD account_. See [this post](https://medium.com/@eoins/securing-github-tokens-in-a-serverless-codepipeline-dc3a24ddc356) for more detail on this approach.
+7. Create a [Mailosaur](https://mailosaur.com) account. This is required for integration and end-to-end tests to verify that the application is sending emails as expected. Take the Mailosaur server ID and API key and add them in your CICD account to the Parameter Store as `SecretString` values with the following names
 - `test/mailosaur/serverId`
 - `test/mailosaur/apiKey`
   These are picked up by the integration and end-to-end test CodeBuild projects.
-
-9. Create a secret string in System Manager Parameter store with a value used to sign and verify verification codes - the parameter name should be `/STAGE/sharing-service/code-secret` where STAGE is the stage you are deploying to (dev, stg or prod).
-10. Give permissions for your CICD account to deploy to staging and production accounts.
+8. Create a secret string in System Manager Parameter store for each target account (e.g, stg or prod) with a value used to sign and verify verification codes - the parameter name should be `/STAGE/sharing-service/code-secret` where STAGE is the stage you are deploying to (dev, stg or prod).
+9. Give permissions for your CICD account to deploy to staging and production accounts.
 
 ```
 npm install -g serverless
 cd cicd/cross-account
-AWS_PROFILE=your-staging-account serverless deploy
-AWS_PROFILE=your-production-account serverless deploy
+CICD_ACCOUNT_ID=<your-cicd-account-id> AWS_PROFILE=<your-staging-account> serverless deploy --region <target-region>
+CICD_ACCOUNT_ID=<your-cicd-account-id> AWS_PROFILE=<your-production-account> serverless deploy --region <target-region>
 ```
-
-11. Deploy the CI/CD pipeline to your CICD account.
+10. Deploy the CI/CD pipeline to your CICD account.
 
 ```
 cd cicd
 npm install
 npm run build
-AWS_PROFILE=your-cicd-account npm run cdk -- bootstrap
-AWS_PROFILE=your-cicd-account npm run deploy
+AWS_PROFILE=<your-cicd-account-profile> npm run cdk -- bootstrap
+AWS_PROFILE=<your-cicd-account-profile> npm run deploy
 ```
-
-12. Trigger your pipeline by commiting your changes to the repository
-13. Monitor your deployment by viewing the orchestrator pipeline in the AWS Console CodePipeline page.
-14. Wait for your deployment to fail! _Wait, what?_ Yes, your first deployment will fail. This is expected and all part of the process. Read on to find out more!
+11. Trigger your pipeline by commiting your changes to the repository
+12. Monitor your deployment by viewing the orchestrator pipeline in the AWS Console CodePipeline page.
+13. Wait for your deployment to fail! _Wait, what?_ Yes, your first deployment will fail. This is expected and all part of the process. Read on to find out more!
 
 ## Getting to your First Successful Deployment
 
@@ -259,10 +256,10 @@ SLIC Starter provides a fully-featured application for managing checklists calle
 
 ## Code Style and Syntax
 
-SLIC Starter uses [Prettier](https://github.com/prettier/prettier) for code formatting and [ESLint](https://eslint.org/) for syntax checking.
+SLIC Starter uses [Standard](https://standardjs.com/) with [ESLint](https://eslint.org/).
 
-- Prettier is configured to format the code on commit (run manually with `npm run format` in each project)
-- Linting can be run with `npm run lint` in each project
+- ESLint is configured to format the code on commit (run manually with `npm run format`).
+- Linting can be run with `npm run lint`.
 
 ## Who is behind it?
 
@@ -292,4 +289,4 @@ See [CONTRIBUTING.md](CONTRIBUTING.md)
 
 ## License
 
-Copyright fourTheorem Ltd. 2018-2019. Distributed under the MIT License. See [LICENCE](LICENCE)
+Copyright fourTheorem Ltd. 2018-2021. Distributed under the MIT License. See [LICENCE](LICENCE)

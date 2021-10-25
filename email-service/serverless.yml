@@ -7,12 +7,10 @@ plugins:
   - serverless-offline
   - serverless-offline-sqs
   - serverless-prune-plugin
-  - serverless-pseudo-parameters
   - serverless-iam-roles-per-function
   - serverless-slic-watch-plugin
 
 provider:
-  common: ${file(../slic-config.json)}
   name: aws
   runtime: nodejs10.x
   stage: ${opt:stage, 'local'}
@@ -26,6 +24,7 @@ provider:
   logRetentionInDays: 7
 
 custom:
+  common: ${file(../slic-config.json)}
   webpack:
     keepOutputDirectory: true
   emailQueueName: ${self:provider.stage}-email-queue

@@ -87,7 +87,7 @@ class Checklist extends Component {
       return <Redirect to="/" />
     }
 
-    const date = `Created ${dateFns.distanceInWords(
+    const date = `Created ${dateFns.formatDistance(
       Date.now(),
       list.createdAt
     )} ago`

@@ -9,11 +9,11 @@ This setup is faster than the full, domain-based, multi-account setup because:
 
 # Prerequisites
 
-- Node v8 should be installed locally. A later version should also be perfectly acceptable. NPM v6 or later is recommended because it supports relative path modules better. (Like `test-common`, included as a relative dependency by `e2e-tests` and `integration-tests`)
-- The Serverless Framework v1.51 or later should be installed:
+- Node v10 should be installed locally. A later version should also be perfectly acceptable. NPM v6 or later is recommended because it supports relative path modules better. (Like `test-common`, included as a relative dependency by `e2e-tests` and `integration-tests`)
+- The Serverless Framework v2 should be installed:
 
 ```
-npm install serverless@1.51 -g
+npm install serverless@2 -g
 ```
 
 # Steps
@@ -51,14 +51,13 @@ aws codebuild import-source-credentials --generate-cli-skeleton > /tmp/skeleton.
 1. Copy `slic-config.json.sample` to `slic-config.json`.
 2. Edit it to specify the target AWS account ID for all accounts.
 3. Remove `nsDomain`
-4. Specify a new value for `siteBucketPrefix`.
-5. Change repository owner and name.
+4. Specify a new value for `siteBucketPrefix`. This should be unique to your deployment! If the `siteBucketPrefix` value is `my-slic-app`, the bucket name created to host the production site will be `my-slic-app-prod`.
+5. Change repository owner and name to point to _your_ fork of the SLIC Starter repo. This is important if you want your application to be continuously deployed from your code!
 
 ## 5. Configure secrets and parameters
-
 If you wish, this step can be defered until you have problems with deployment and tests failing due to missing configuration.
 
-1. Create an account on mailosaur.com and grab the API key and server ID. Mailosaur is used for testing that emails have been sent by the system during automated integration tests. If you want to configure logz.io for centralized logging, do the same there.
+1. Create an account on mailosaur.com and grab the API key and server ID. Mailosaur is used for testing that emails have been sent by the system during automated integration tests. 
 2. Run `cp util/ssm-params-template.json /tmp/ssm-params.json`
 3. Edit `/tmp/ssm-params.json` and fill out all parameters for the system. You can enter your Mailosaur and logz.io keys here.
 4. The code secret for the sharing service should be a randomly-generated secret. This is used to sign and verify invitation codes.
@@ -73,7 +72,7 @@ SLIC Starter uses SES to send and receive emails. If you want SES to be able to 
 
 ```
 cd cicd/cross-account
-sls deploy
+CICD_ACCOUNT_ID=<your-account-id> serverless deploy --region <target-region>
 ```
 
 ## 8. Deploy the CI/CD Pipeline
@@ -93,10 +92,10 @@ Make a commit to your repository. You can watch the CodePipeline job run. It wil
 
 ## 10. Check your deployment
 
-The deployed front-end application is now running and deployed. It is automatically configured to talk to the backend's APIs and Cognito user pool. To get the generated CloudFront name for the application, you can check the valu eof `/stg/frontend/url` in the Parameter Store. There is a handy script to print out all your (non-secret) parameters from SSM.
+The deployed front-end application is now running and deployed. It is automatically configured to talk to the backend's APIs and Cognito user pool. To get the generated CloudFront name for the application, you can check the value of `/stg/frontend/url` in the Parameter Store. There is a handy script to print out all your (non-secret) parameters from SSM.
 
 ```
-
+./util/show-ssm-params.js
 ```
 
 Go to the CloudFront address to load and use the deployed staging SLIC Lists application!
@@ -107,8 +106,3 @@ Start making changes and transform SLIC Starter into your own application.
 
 Let us know how you get on in the GitHub issues! We would love to hear from you and see any contributions you have to SLIC Starter.
 
-# Local Development
-
-```
-npm install -g fuge
-```

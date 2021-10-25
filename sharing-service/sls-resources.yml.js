@@ -44,7 +44,7 @@ apiCustomDomainPathMappings:
     BasePath: 'share'
     RestApiId:
       Ref: ApiGatewayRestApi
-    DomainName: api.$\{self:custom.common.domainPrefixes.$\{self:provider.stage}}$\{env:SLIC_NS_DOMAIN}
+    DomainName: api.$\{self:custom.common.domainConfig.domainPrefixes.$\{self:provider.stage}}${nsDomain}
     Stage: $\{self:provider.stage}
   DependsOn: resApiGatewayDeployment
 
