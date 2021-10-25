@@ -1,16 +1,12 @@
 service: cicd-deployment-target
 
 custom:
-  stage: ${opt:stage, 'cicd'}
-  region: ${opt:region, '${file(../../slic-config.json):defaultRegions.cicd}'}
-  runtime: nodejs8.10
-  accountIds: ${file(../../slic-config.json):accountIds}
+  cicdAccountId: ${env:CICD_ACCOUNT_ID}
 
 provider:
   name: aws
-  runtime: ${self:custom.runtime}
-  stage: ${self:custom.stage}
-  region: ${self:custom.region}
+  stage: 'cicd'
+  region: ${self:opt.region}
 
 resources:
   Resources:
@@ -23,7 +19,7 @@ resources:
           Statement:
             - Effect: Allow
               Principal:
-                AWS: ${self:custom.accountIds.cicd}
+                AWS: ${self:custom.cicdAccountId}
               Action: [sts:AssumeRole]
         Path: /
 
@@ -122,7 +118,7 @@ resources:
                 - dynamodb:PutItem
                 - dynamodb:UpdateItem
                 - dynamodb:DeleteItem
-              Resource: 'arn:aws:dynamodb:${self:custom.region}:*:*'
+              Resource: 'arn:aws:dynamodb:${self:provider.region}:*:*'
             - Effect: Allow
               Action: 'sqs:*'
               Resource:
@@ -130,6 +126,13 @@ resources:
             - Effect: Allow
               Action:
                 - cloudwatch:GetMetricStatistics
+                - cloudwatch:DescribeAlarms
+                - cloudwatch:DeleteAlarms
+                - cloudwatch:PutMetricAlarm
+                - cloudwatch:DeleteDashboards
+                - cloudwatch:ListDashboards
+                - cloudwatch:GetDashboard
+                - cloudwatch:PutDashboard
               Resource:
                 - '*'
             - Effect: Allow

@@ -188,8 +188,8 @@ To set up deployment to your own accounts, first run through these steps.
 ```
 npm install -g serverless
 cd cicd/cross-account
-AWS_PROFILE=your-staging-account serverless deploy
-AWS_PROFILE=your-production-account serverless deploy
+CICD_ACCOUNT_ID=<your-cicd-account-id> AWS_PROFILE=<your-staging-account> serverless deploy --region <target-region>
+CICD_ACCOUNT_ID=<your-cicd-account-id> AWS_PROFILE=<your-production-account> serverless deploy --region <target-region>
 ```
 
 11. Deploy the CI/CD pipeline to your CICD account.
@@ -198,8 +198,8 @@ AWS_PROFILE=your-production-account serverless deploy
 cd cicd
 npm install
 npm run build
-AWS_PROFILE=your-cicd-account npm run cdk -- bootstrap
-AWS_PROFILE=your-cicd-account npm run deploy
+AWS_PROFILE=<your-cicd-account-profile> npm run cdk -- bootstrap
+AWS_PROFILE=<your-cicd-account-profile> npm run deploy
 ```
 
 12. Trigger your pipeline by commiting your changes to the repository

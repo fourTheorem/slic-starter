@@ -14,13 +14,13 @@ handleNewChecklist:
       Action:
         - sqs:GetQueueUrl
         - sqs:SendMessage
-      Resource: arn:aws:sqs:*:#{AWS::AccountId}:${self:custom.emailQueueName}
+      Resource: arn:aws:sqs:*:${aws:accountId}:${self:custom.emailQueueName}
     - Effect: Allow
       Action:
         - ssm:GetParameters
         - ssm:GetParametersByPath
       Resource:
-        - arn:aws:ssm:#{AWS::Region}:#{AWS::AccountId}:parameter/${self:provider.stage}/user-service/url
+        - arn:aws:ssm:${aws:region}:${aws:accountId}:parameter/${self:provider.stage}/user-service/url
     - Effect: Allow
       Action:
         - xray:PutTraceSegments
@@ -32,4 +32,4 @@ handleNewChecklist:
         - execute-api:Invoke
         - execute-api:GET
       Resource:
-        - arn:aws:execute-api:#{AWS::Region}:#{AWS::AccountId}:*/${self:provider.stage}/GET/user/*
+        - arn:aws:execute-api:${aws:region}:${aws:accountId}:*/${self:provider.stage}/GET/user/*

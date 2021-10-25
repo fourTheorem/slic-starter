@@ -7,7 +7,6 @@ plugins:
   - serverless-offline
   - serverless-offline-sqs
   - serverless-prune-plugin
-  - serverless-pseudo-parameters
   - serverless-iam-roles-per-function
   - serverless-slic-watch-plugin
 
