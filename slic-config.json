@@ -14,7 +14,7 @@
     }
   },
   "slicWatch": {
-    "topic": "${ssm:/${self:provider.stage}/slicWatch/topicArn}",
-    "disabled": false
+    "topicArn": "${ssm:/${self:provider.stage}/slicWatch/topicArn}",
+    "enabled": true
   }
 }
