@@ -5,7 +5,6 @@ projectDir: ..
 plugins:
   - serverless-webpack
   - serverless-offline
-  - serverless-pseudo-parameters
   - serverless-iam-roles-per-function
   - serverless-slic-watch-plugin
 

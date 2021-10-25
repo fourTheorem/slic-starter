@@ -52,7 +52,7 @@ class ListSummary extends Component {
       backgroundColor: tileColor
     }
 
-    const createdAtDate = `Created ${dateFns.distanceInWords(
+    const createdAtDate = `Created ${dateFns.formatDistance(
       Date.now(),
       list.createdAt
     )} ago`

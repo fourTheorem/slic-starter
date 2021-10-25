@@ -79,7 +79,7 @@ siteDistribution:
           nsDomain
             ? `
       ViewerCertificate:
-        AcmCertificateArn: $\{cf(us-east-1):certs-$\{self:provider.stage}.apiCert}
+        AcmCertificateArn: $\{cf(us-east-1):certs-$\{self:provider.stage}.siteCert}
         SslSupportMethod: sni-only`
             : ''
         }

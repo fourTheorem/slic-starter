@@ -18,7 +18,7 @@
     }
   },
   "slicWatch": {
-    "topic": "SET_TOPIC_ARN_HERE",
-    "disabled": true
+    "topicArn": "SET_TOPIC_ARN_HERE",
+    "enabled": false
   }
 }
