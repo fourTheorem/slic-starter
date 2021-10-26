@@ -72,7 +72,7 @@ SLIC Starter uses SES to send and receive emails. If you want SES to be able to 
 
 ```
 cd cicd/cross-account
-sls deploy
+CICD_ACCOUNT_ID=<your-account-id> serverless deploy --region <target-region>
 ```
 
 ## 8. Deploy the CI/CD Pipeline
