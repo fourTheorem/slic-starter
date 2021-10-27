@@ -4,15 +4,14 @@ projectDir: ..
 
 provider:
   name: aws
-  runtime: nodejs10.x
   stage: ${opt:stage, 'dev'}
   region: us-east-1
 
 custom:
-  nsDomain: ${env:SLIC_NS_DOMAIN}
-  domainPrefixes: ${file(../slic-config.json):domainConfig.domainPrefixes}
-  apiDomainName: api.${self:custom.domainPrefixes.${self:provider.stage}}${self:custom.nsDomain}
-  siteDomainName: ${self:custom.domainPrefixes.${self:provider.stage}}${self:custom.nsDomain}
+  domainConfig: ${file(../slic-config.json):domainConfig}
+  domainPrefixes: ${self:custom.domainConfig.domainPrefixes}
+  apiDomainName: api.${self:custom.domainPrefixes.${self:provider.stage}}${self:custom.domainConfig.nsDomain}
+  siteDomainName: ${self:custom.domainPrefixes.${self:provider.stage}}${self:custom.domainConfig.nsDomain}
 
 resources:
   Outputs:
@@ -33,7 +32,7 @@ resources:
     publicHostedZone:
       Type: AWS::Route53::HostedZone
       Properties:
-        Name: ${self:custom.nsDomain}
+        Name: ${self:custom.domainConfig.nsDomain}
 
     siteCert:
       Type: AWS::CertificateManager::Certificate
@@ -41,7 +40,7 @@ resources:
         DomainName: ${self:custom.siteDomainName}
         DomainValidationOptions:
           - DomainName: ${self:custom.siteDomainName}
-            ValidationDomain: ${self:custom.nsDomain}
+            ValidationDomain: ${self:custom.domainConfig.nsDomain}
         ValidationMethod: EMAIL
 
     apiCert:
@@ -50,5 +49,5 @@ resources:
         DomainName: ${self:custom.apiDomainName}
         DomainValidationOptions:
           - DomainName: ${self:custom.apiDomainName}
-            ValidationDomain: ${self:custom.nsDomain}
+            ValidationDomain: ${self:custom.domainConfig.nsDomain}
         ValidationMethod: EMAIL
