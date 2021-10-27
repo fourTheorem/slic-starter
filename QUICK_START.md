@@ -57,7 +57,7 @@ aws codebuild import-source-credentials --generate-cli-skeleton > /tmp/skeleton.
 ## 5. Configure secrets and parameters
 If you wish, this step can be defered until you have problems with deployment and tests failing due to missing configuration.
 
-1. Create an account on mailosaur.com and grab the API key and server ID. Mailosaur is used for testing that emails have been sent by the system during automated integration tests. If you want to configure logz.io for centralized logging, do the same there.
+1. Create an account on mailosaur.com and grab the API key and server ID. Mailosaur is used for testing that emails have been sent by the system during automated integration tests. 
 2. Run `cp util/ssm-params-template.json /tmp/ssm-params.json`
 3. Edit `/tmp/ssm-params.json` and fill out all parameters for the system. You can enter your Mailosaur and logz.io keys here.
 4. The code secret for the sharing service should be a randomly-generated secret. This is used to sign and verify invitation codes.
