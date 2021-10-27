@@ -12,26 +12,27 @@ provider:
   name: aws
   runtime: nodejs10.x
   stage: ${opt:stage, 'local'}
-  region: ${opt:region, '${env:TARGET_REGION}'}
+  region: ${opt:region}
   tracing:
     apiGateway: true
     lambda: true
-  environment:
-    SLIC_STAGE: ${self:provider.stage}
-    EMAIL_QUEUE_NAME: ${self:custom.emailQueueName}
-  resourcePolicy:
+  iamRoleStatements:
     - Effect: Allow
-      Principal: '*'
-      Action: 'execute-api:Invoke'
+      Action:
+        - xray:PutTraceSegments
+        - xray:PutTelemetryRecords
       Resource:
-        - execute-api:/*/*/*
+        - '*'
+  environment:
+    STAGE: ${self:provider.stage}
+    EMAIL_QUEUE_NAME: ${self:custom.emailQueueName}
   logRetentionInDays: 7
 
 custom:
   common: ${file(../slic-config.json)}
+  nsDomain: ${self:custom.common.domainConfig.nsDomain}
   webpack:
     keepOutputDirectory: true
-  cloudFrontHostedZoneId: Z2FDTNDATAQYW2
   serverless-offline:
     httpPort: 4006
     lambdaPort: 4008
@@ -47,4 +48,60 @@ custom:
 functions: ${file(./sls-functions.yml)}
 
 resources:
-  Resources: ${file(./sls-resources.yml.js)}
+  Parameters:
+    NsDomainParameter:
+      Type: String
+      Default: ${self:custom.common.domainConfig.nsDomain}
+
+    UserPoolArnParameter:
+      Type: AWS::SSM::Parameter::Value<String>
+      Default: /${self:provider.stage}/user-service/user-pool-arn
+
+  Conditions:
+    HasDomain: !Not [!Equals [!Ref NsDomainParameter, '']]
+
+  Resources:
+    cognitoAuthorizer:
+      Type: AWS::ApiGateway::Authorizer
+      Properties:
+        IdentitySource: method.request.header.Authorization
+        Name: slic-user-pool-authorizer-sharing-service
+        RestApiId:
+          Ref: ApiGatewayRestApi
+        Type: COGNITO_USER_POOLS
+        ProviderARNs:
+          - !Ref UserPoolArnParameter
+
+    # The service's generated API Gateway URL is only used when no domain is defined
+    sharingServiceUrlParameter:
+      Type: AWS::SSM::Parameter
+      Properties:
+        Name: /${self:provider.stage}/sharing-service/url
+        Type: String
+        Value:
+          Fn::Join:
+            - ''
+            - ['https://', {'Ref': 'ApiGatewayRestApi'}, '.execute-api.${self:provider.region}.amazonaws.com/${self:provider.stage}']
+
+    # Workaround for "Invalid stage identifier specified"
+    # See https://github.com/serverless/serverless/issues/4029
+    resApiGatewayDeployment:
+      Type: AWS::ApiGateway::Deployment
+      Condition: HasDomain
+      DependsOn: ApiGatewayMethodPost
+      Properties:
+        StageName: ${self:provider.stage}
+        RestApiId:
+          Ref: ApiGatewayRestApi
+
+    apiCustomDomainPathMappings:
+      Type: AWS::ApiGateway::BasePathMapping
+      Condition: HasDomain
+      Properties:
+        BasePath: 'share'
+        RestApiId:
+          Ref: ApiGatewayRestApi
+        DomainName: api.${self:custom.common.domainConfig.domainPrefixes.${self:provider.stage}}${self:custom.nsDomain}
+        Stage: ${self:provider.stage}
+      DependsOn: resApiGatewayDeployment
+
