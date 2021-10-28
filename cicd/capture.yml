@@ -1,0 +1,4804 @@
+
+> cicd@0.1.0 cdk /Users/direnakkocdemir/slic-starter/cicd
+> cdk "synth"
+
+Transform: AWS::Serverless-2016-10-31
+Resources:
+  artifactsBucket6C289622:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName:
+        Fn::Join:
+          - ""
+          - - slic-build-artifacts-
+            - Ref: AWS::AccountId
+            - "-"
+            - Ref: AWS::Region
+      VersioningConfiguration:
+        Status: Enabled
+    UpdateReplacePolicy: Retain
+    DeletionPolicy: Retain
+    Metadata:
+      aws:cdk:path: CicdStack/artifactsBucket/Resource
+  artifactsBucketCicdStackfrontendstgpipelineAB497A4FSourceEventRulestgmodulepipelinesmodulesourcefrontendzipAFEE5C72:
+    Type: AWS::Events::Rule
+    Properties:
+      EventPattern:
+        source:
+          - aws.s3
+        detail-type:
+          - AWS API Call via CloudTrail
+        detail:
+          resources:
+            ARN:
+              - Fn::Join:
+                  - ""
+                  - - Fn::GetAtt:
+                        - artifactsBucket6C289622
+                        - Arn
+                    - /stg_module_pipelines/module_source/frontend.zip
+          eventName:
+            - CompleteMultipartUpload
+            - CopyObject
+            - PutObject
+          requestParameters:
+            bucketName:
+              - Ref: artifactsBucket6C289622
+            key:
+              - stg_module_pipelines/module_source/frontend.zip
+      State: ENABLED
+      Targets:
+        - Arn:
+            Fn::Join:
+              - ""
+              - - "arn:"
+                - Ref: AWS::Partition
+                - ":codepipeline:"
+                - Ref: AWS::Region
+                - ":"
+                - Ref: AWS::AccountId
+                - ":"
+                - Ref: frontendstgpipeline7473BBA4
+          Id: Target0
+          RoleArn:
+            Fn::GetAtt:
+              - frontendstgpipelineEventsRole899909FB
+              - Arn
+    Metadata:
+      aws:cdk:path: CicdStack/artifactsBucket/CicdStackfrontendstgpipelineAB497A4FSourceEventRulestg_module_pipelines--module_source--frontend.zip/Resource
+  artifactsBucketCicdStackchecklistservicestgpipelineF2423178SourceEventRulestgmodulepipelinesmodulesourcechecklistservicezip03D5F562:
+    Type: AWS::Events::Rule
+    Properties:
+      EventPattern:
+        source:
+          - aws.s3
+        detail-type:
+          - AWS API Call via CloudTrail
+        detail:
+          resources:
+            ARN:
+              - Fn::Join:
+                  - ""
+                  - - Fn::GetAtt:
+                        - artifactsBucket6C289622
+                        - Arn
+                    - /stg_module_pipelines/module_source/checklist-service.zip
+          eventName:
+            - CompleteMultipartUpload
+            - CopyObject
+            - PutObject
+          requestParameters:
+            bucketName:
+              - Ref: artifactsBucket6C289622
+            key:
+              - stg_module_pipelines/module_source/checklist-service.zip
+      State: ENABLED
+      Targets:
+        - Arn:
+            Fn::Join:
+              - ""
+              - - "arn:"
+                - Ref: AWS::Partition
+                - ":codepipeline:"
+                - Ref: AWS::Region
+                - ":"
+                - Ref: AWS::AccountId
+                - ":"
+                - Ref: checklistservicestgpipeline512BD5A3
+          Id: Target0
+          RoleArn:
+            Fn::GetAtt:
+              - checklistservicestgpipelineEventsRole9AD38C12
+              - Arn
+    Metadata:
+      aws:cdk:path: CicdStack/artifactsBucket/CicdStackchecklistservicestgpipelineF2423178SourceEventRulestg_module_pipelines--module_source--checklist-service.zip/Resource
+  artifactsBucketCicdStackuserservicestgpipelineB1623DD4SourceEventRulestgmodulepipelinesmodulesourceuserservicezip5F9816CC:
+    Type: AWS::Events::Rule
+    Properties:
+      EventPattern:
+        source:
+          - aws.s3
+        detail-type:
+          - AWS API Call via CloudTrail
+        detail:
+          resources:
+            ARN:
+              - Fn::Join:
+                  - ""
+                  - - Fn::GetAtt:
+                        - artifactsBucket6C289622
+                        - Arn
+                    - /stg_module_pipelines/module_source/user-service.zip
+          eventName:
+            - CompleteMultipartUpload
+            - CopyObject
+            - PutObject
+          requestParameters:
+            bucketName:
+              - Ref: artifactsBucket6C289622
+            key:
+              - stg_module_pipelines/module_source/user-service.zip
+      State: ENABLED
+      Targets:
+        - Arn:
+            Fn::Join:
+              - ""
+              - - "arn:"
+                - Ref: AWS::Partition
+                - ":codepipeline:"
+                - Ref: AWS::Region
+                - ":"
+                - Ref: AWS::AccountId
+                - ":"
+                - Ref: userservicestgpipeline34AFB577
+          Id: Target0
+          RoleArn:
+            Fn::GetAtt:
+              - userservicestgpipelineEventsRole161032D9
+              - Arn
+    Metadata:
+      aws:cdk:path: CicdStack/artifactsBucket/CicdStackuserservicestgpipelineB1623DD4SourceEventRulestg_module_pipelines--module_source--user-service.zip/Resource
+  artifactsBucketCicdStackemailservicestgpipelineE8267812SourceEventRulestgmodulepipelinesmodulesourceemailservicezip5E3706A5:
+    Type: AWS::Events::Rule
+    Properties:
+      EventPattern:
+        source:
+          - aws.s3
+        detail-type:
+          - AWS API Call via CloudTrail
+        detail:
+          resources:
+            ARN:
+              - Fn::Join:
+                  - ""
+                  - - Fn::GetAtt:
+                        - artifactsBucket6C289622
+                        - Arn
+                    - /stg_module_pipelines/module_source/email-service.zip
+          eventName:
+            - CompleteMultipartUpload
+            - CopyObject
+            - PutObject
+          requestParameters:
+            bucketName:
+              - Ref: artifactsBucket6C289622
+            key:
+              - stg_module_pipelines/module_source/email-service.zip
+      State: ENABLED
+      Targets:
+        - Arn:
+            Fn::Join:
+              - ""
+              - - "arn:"
+                - Ref: AWS::Partition
+                - ":codepipeline:"
+                - Ref: AWS::Region
+                - ":"
+                - Ref: AWS::AccountId
+                - ":"
+                - Ref: emailservicestgpipeline78A0697C
+          Id: Target0
+          RoleArn:
+            Fn::GetAtt:
+              - emailservicestgpipelineEventsRoleA8FCCB78
+              - Arn
+    Metadata:
+      aws:cdk:path: CicdStack/artifactsBucket/CicdStackemailservicestgpipelineE8267812SourceEventRulestg_module_pipelines--module_source--email-service.zip/Resource
+  artifactsBucketCicdStackwelcomeservicestgpipelineF4E86FDESourceEventRulestgmodulepipelinesmodulesourcewelcomeservicezipB245F026:
+    Type: AWS::Events::Rule
+    Properties:
+      EventPattern:
+        source:
+          - aws.s3
+        detail-type:
+          - AWS API Call via CloudTrail
+        detail:
+          resources:
+            ARN:
+              - Fn::Join:
+                  - ""
+                  - - Fn::GetAtt:
+                        - artifactsBucket6C289622
+                        - Arn
+                    - /stg_module_pipelines/module_source/welcome-service.zip
+          eventName:
+            - CompleteMultipartUpload
+            - CopyObject
+            - PutObject
+          requestParameters:
+            bucketName:
+              - Ref: artifactsBucket6C289622
+            key:
+              - stg_module_pipelines/module_source/welcome-service.zip
+      State: ENABLED
+      Targets:
+        - Arn:
+            Fn::Join:
+              - ""
+              - - "arn:"
+                - Ref: AWS::Partition
+                - ":codepipeline:"
+                - Ref: AWS::Region
+                - ":"
+                - Ref: AWS::AccountId
+                - ":"
+                - Ref: welcomeservicestgpipelineAA058C98
+          Id: Target0
+          RoleArn:
+            Fn::GetAtt:
+              - welcomeservicestgpipelineEventsRole27220F44
+              - Arn
+    Metadata:
+      aws:cdk:path: CicdStack/artifactsBucket/CicdStackwelcomeservicestgpipelineF4E86FDESourceEventRulestg_module_pipelines--module_source--welcome-service.zip/Resource
+  artifactsBucketCicdStacksharingservicestgpipeline2652CFFCSourceEventRulestgmodulepipelinesmodulesourcesharingservicezip538AB6C3:
+    Type: AWS::Events::Rule
+    Properties:
+      EventPattern:
+        source:
+          - aws.s3
+        detail-type:
+          - AWS API Call via CloudTrail
+        detail:
+          resources:
+            ARN:
+              - Fn::Join:
+                  - ""
+                  - - Fn::GetAtt:
+                        - artifactsBucket6C289622
+                        - Arn
+                    - /stg_module_pipelines/module_source/sharing-service.zip
+          eventName:
+            - CompleteMultipartUpload
+            - CopyObject
+            - PutObject
+          requestParameters:
+            bucketName:
+              - Ref: artifactsBucket6C289622
+            key:
+              - stg_module_pipelines/module_source/sharing-service.zip
+      State: ENABLED
+      Targets:
+        - Arn:
+            Fn::Join:
+              - ""
+              - - "arn:"
+                - Ref: AWS::Partition
+                - ":codepipeline:"
+                - Ref: AWS::Region
+                - ":"
+                - Ref: AWS::AccountId
+                - ":"
+                - Ref: sharingservicestgpipeline94E3F903
+          Id: Target0
+          RoleArn:
+            Fn::GetAtt:
+              - sharingservicestgpipelineEventsRoleD3ECE8C7
+              - Arn
+    Metadata:
+      aws:cdk:path: CicdStack/artifactsBucket/CicdStacksharingservicestgpipeline2652CFFCSourceEventRulestg_module_pipelines--module_source--sharing-service.zip/Resource
+  artifactsBucketCicdStackfrontendprodpipeline5A8AAE1ESourceEventRuleprodmodulepipelinesmodulesourcefrontendzip69FBE314:
+    Type: AWS::Events::Rule
+    Properties:
+      EventPattern:
+        source:
+          - aws.s3
+        detail-type:
+          - AWS API Call via CloudTrail
+        detail:
+          resources:
+            ARN:
+              - Fn::Join:
+                  - ""
+                  - - Fn::GetAtt:
+                        - artifactsBucket6C289622
+                        - Arn
+                    - /prod_module_pipelines/module_source/frontend.zip
+          eventName:
+            - CompleteMultipartUpload
+            - CopyObject
+            - PutObject
+          requestParameters:
+            bucketName:
+              - Ref: artifactsBucket6C289622
+            key:
+              - prod_module_pipelines/module_source/frontend.zip
+      State: ENABLED
+      Targets:
+        - Arn:
+            Fn::Join:
+              - ""
+              - - "arn:"
+                - Ref: AWS::Partition
+                - ":codepipeline:"
+                - Ref: AWS::Region
+                - ":"
+                - Ref: AWS::AccountId
+                - ":"
+                - Ref: frontendprodpipeline0F6AF360
+          Id: Target0
+          RoleArn:
+            Fn::GetAtt:
+              - frontendprodpipelineEventsRole90E2F9AF
+              - Arn
+    Metadata:
+      aws:cdk:path: CicdStack/artifactsBucket/CicdStackfrontendprodpipeline5A8AAE1ESourceEventRuleprod_module_pipelines--module_source--frontend.zip/Resource
+  artifactsBucketCicdStackchecklistserviceprodpipelineFB171922SourceEventRuleprodmodulepipelinesmodulesourcechecklistservicezip2139EF30:
+    Type: AWS::Events::Rule
+    Properties:
+      EventPattern:
+        source:
+          - aws.s3
+        detail-type:
+          - AWS API Call via CloudTrail
+        detail:
+          resources:
+            ARN:
+              - Fn::Join:
+                  - ""
+                  - - Fn::GetAtt:
+                        - artifactsBucket6C289622
+                        - Arn
+                    - /prod_module_pipelines/module_source/checklist-service.zip
+          eventName:
+            - CompleteMultipartUpload
+            - CopyObject
+            - PutObject
+          requestParameters:
+            bucketName:
+              - Ref: artifactsBucket6C289622
+            key:
+              - prod_module_pipelines/module_source/checklist-service.zip
+      State: ENABLED
+      Targets:
+        - Arn:
+            Fn::Join:
+              - ""
+              - - "arn:"
+                - Ref: AWS::Partition
+                - ":codepipeline:"
+                - Ref: AWS::Region
+                - ":"
+                - Ref: AWS::AccountId
+                - ":"
+                - Ref: checklistserviceprodpipelineB452FC7D
+          Id: Target0
+          RoleArn:
+            Fn::GetAtt:
+              - checklistserviceprodpipelineEventsRoleF06819C5
+              - Arn
+    Metadata:
+      aws:cdk:path: CicdStack/artifactsBucket/CicdStackchecklistserviceprodpipelineFB171922SourceEventRuleprod_module_pipelines--module_source--checklist-service.zip/Resource
+  artifactsBucketCicdStackuserserviceprodpipelineC7171138SourceEventRuleprodmodulepipelinesmodulesourceuserservicezip9FA700DC:
+    Type: AWS::Events::Rule
+    Properties:
+      EventPattern:
+        source:
+          - aws.s3
+        detail-type:
+          - AWS API Call via CloudTrail
+        detail:
+          resources:
+            ARN:
+              - Fn::Join:
+                  - ""
+                  - - Fn::GetAtt:
+                        - artifactsBucket6C289622
+                        - Arn
+                    - /prod_module_pipelines/module_source/user-service.zip
+          eventName:
+            - CompleteMultipartUpload
+            - CopyObject
+            - PutObject
+          requestParameters:
+            bucketName:
+              - Ref: artifactsBucket6C289622
+            key:
+              - prod_module_pipelines/module_source/user-service.zip
+      State: ENABLED
+      Targets:
+        - Arn:
+            Fn::Join:
+              - ""
+              - - "arn:"
+                - Ref: AWS::Partition
+                - ":codepipeline:"
+                - Ref: AWS::Region
+                - ":"
+                - Ref: AWS::AccountId
+                - ":"
+                - Ref: userserviceprodpipeline38231989
+          Id: Target0
+          RoleArn:
+            Fn::GetAtt:
+              - userserviceprodpipelineEventsRole35526426
+              - Arn
+    Metadata:
+      aws:cdk:path: CicdStack/artifactsBucket/CicdStackuserserviceprodpipelineC7171138SourceEventRuleprod_module_pipelines--module_source--user-service.zip/Resource
+  artifactsBucketCicdStackemailserviceprodpipeline808CF416SourceEventRuleprodmodulepipelinesmodulesourceemailservicezip8B3820F4:
+    Type: AWS::Events::Rule
+    Properties:
+      EventPattern:
+        source:
+          - aws.s3
+        detail-type:
+          - AWS API Call via CloudTrail
+        detail:
+          resources:
+            ARN:
+              - Fn::Join:
+                  - ""
+                  - - Fn::GetAtt:
+                        - artifactsBucket6C289622
+                        - Arn
+                    - /prod_module_pipelines/module_source/email-service.zip
+          eventName:
+            - CompleteMultipartUpload
+            - CopyObject
+            - PutObject
+          requestParameters:
+            bucketName:
+              - Ref: artifactsBucket6C289622
+            key:
+              - prod_module_pipelines/module_source/email-service.zip
+      State: ENABLED
+      Targets:
+        - Arn:
+            Fn::Join:
+              - ""
+              - - "arn:"
+                - Ref: AWS::Partition
+                - ":codepipeline:"
+                - Ref: AWS::Region
+                - ":"
+                - Ref: AWS::AccountId
+                - ":"
+                - Ref: emailserviceprodpipeline3A7282C3
+          Id: Target0
+          RoleArn:
+            Fn::GetAtt:
+              - emailserviceprodpipelineEventsRoleA471A8BE
+              - Arn
+    Metadata:
+      aws:cdk:path: CicdStack/artifactsBucket/CicdStackemailserviceprodpipeline808CF416SourceEventRuleprod_module_pipelines--module_source--email-service.zip/Resource
+  artifactsBucketCicdStackwelcomeserviceprodpipeline2BFE4E0DSourceEventRuleprodmodulepipelinesmodulesourcewelcomeservicezip9467E6BE:
+    Type: AWS::Events::Rule
+    Properties:
+      EventPattern:
+        source:
+          - aws.s3
+        detail-type:
+          - AWS API Call via CloudTrail
+        detail:
+          resources:
+            ARN:
+              - Fn::Join:
+                  - ""
+                  - - Fn::GetAtt:
+                        - artifactsBucket6C289622
+                        - Arn
+                    - /prod_module_pipelines/module_source/welcome-service.zip
+          eventName:
+            - CompleteMultipartUpload
+            - CopyObject
+            - PutObject
+          requestParameters:
+            bucketName:
+              - Ref: artifactsBucket6C289622
+            key:
+              - prod_module_pipelines/module_source/welcome-service.zip
+      State: ENABLED
+      Targets:
+        - Arn:
+            Fn::Join:
+              - ""
+              - - "arn:"
+                - Ref: AWS::Partition
+                - ":codepipeline:"
+                - Ref: AWS::Region
+                - ":"
+                - Ref: AWS::AccountId
+                - ":"
+                - Ref: welcomeserviceprodpipelineFD9DABBD
+          Id: Target0
+          RoleArn:
+            Fn::GetAtt:
+              - welcomeserviceprodpipelineEventsRole5878D8B5
+              - Arn
+    Metadata:
+      aws:cdk:path: CicdStack/artifactsBucket/CicdStackwelcomeserviceprodpipeline2BFE4E0DSourceEventRuleprod_module_pipelines--module_source--welcome-service.zip/Resource
+  artifactsBucketCicdStacksharingserviceprodpipeline77DBE34ASourceEventRuleprodmodulepipelinesmodulesourcesharingservicezip2F41C745:
+    Type: AWS::Events::Rule
+    Properties:
+      EventPattern:
+        source:
+          - aws.s3
+        detail-type:
+          - AWS API Call via CloudTrail
+        detail:
+          resources:
+            ARN:
+              - Fn::Join:
+                  - ""
+                  - - Fn::GetAtt:
+                        - artifactsBucket6C289622
+                        - Arn
+                    - /prod_module_pipelines/module_source/sharing-service.zip
+          eventName:
+            - CompleteMultipartUpload
+            - CopyObject
+            - PutObject
+          requestParameters:
+            bucketName:
+              - Ref: artifactsBucket6C289622
+            key:
+              - prod_module_pipelines/module_source/sharing-service.zip
+      State: ENABLED
+      Targets:
+        - Arn:
+            Fn::Join:
+              - ""
+              - - "arn:"
+                - Ref: AWS::Partition
+                - ":codepipeline:"
+                - Ref: AWS::Region
+                - ":"
+                - Ref: AWS::AccountId
+                - ":"
+                - Ref: sharingserviceprodpipelineC5DA154F
+          Id: Target0
+          RoleArn:
+            Fn::GetAtt:
+              - sharingserviceprodpipelineEventsRole54A93191
+              - Arn
+    Metadata:
+      aws:cdk:path: CicdStack/artifactsBucket/CicdStacksharingserviceprodpipeline77DBE34ASourceEventRuleprod_module_pipelines--module_source--sharing-service.zip/Resource
+  sourceCodeBuildRole1651962E:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Principal:
+              Service: codebuild.amazonaws.com
+        Version: "2012-10-17"
+    Metadata:
+      aws:cdk:path: CicdStack/sourceCodeBuildRole/Resource
+  sourceCodeBuildRoleDefaultPolicyA470A26F:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyDocument:
+        Statement:
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Resource:
+              Fn::Join:
+                - ""
+                - - "arn:aws:iam::"
+                  - Ref: sourceCodeBuildRolestgAccountParameter3408335B
+                  - :role/slic-cicd-deployment-role
+          - Action: cloudformation:Describe*
+            Effect: Allow
+            Resource:
+              Fn::Join:
+                - ""
+                - - "arn:aws:cloudformation:eu-west-1:"
+                  - Ref: sourceCodeBuildRolestgAccountParameter3408335B
+                  - :stack/*/*
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Resource:
+              Fn::Join:
+                - ""
+                - - "arn:aws:iam::"
+                  - Ref: sourceCodeBuildRoleprodAccountParameterAE7A7371
+                  - :role/slic-cicd-deployment-role
+          - Action: cloudformation:Describe*
+            Effect: Allow
+            Resource:
+              Fn::Join:
+                - ""
+                - - "arn:aws:cloudformation:eu-west-1:"
+                  - Ref: sourceCodeBuildRoleprodAccountParameterAE7A7371
+                  - :stack/*/*
+          - Action: secretsmanager:GetSecretValue
+            Effect: Allow
+            Resource:
+              Fn::Join:
+                - ""
+                - - "arn:aws:secretsmanager:"
+                  - Ref: AWS::Region
+                  - ":"
+                  - Ref: AWS::AccountId
+                  - :secret:CICD*
+          - Action:
+              - lambda:Get*
+              - lambda:List*
+              - lambda:CreateFunction
+            Effect: Allow
+            Resource: "*"
+          - Action:
+              - lambda:AddPermission
+              - lambda:CreateAlias
+              - lambda:DeleteFunction
+              - lambda:InvokeFunction
+              - lambda:PublishVersion
+              - lambda:RemovePermission
+              - lambda:Update*
+            Effect: Allow
+            Resource:
+              Fn::Join:
+                - ""
+                - - "arn:aws:lambda:"
+                  - Ref: AWS::Region
+                  - :*:function:*
+          - Action:
+              - route53:CreateHostedZone
+              - route53:ChangeResourceRecordSets
+            Effect: Allow
+            Resource: "*"
+          - Action: acm:RequestCertificate
+            Effect: Allow
+            Resource: "*"
+          - Action:
+              - apigateway:GET
+              - apigateway:POST
+              - apigateway:PUT
+              - apigateway:DELETE
+            Effect: Allow
+            Resource: arn:aws:apigateway:*::/restapis*
+          - Action:
+              - iam:PassRole
+              - iam:GetRole
+              - iam:CreateRole
+              - iam:PutRolePolicy
+              - iam:DeleteRolePolicy
+              - iam:DeleteRole
+            Effect: Allow
+            Resource: arn:aws:iam::*:role/*
+          - Action: sqs:*
+            Effect: Allow
+            Resource: arn:aws:sqs:*:*:*
+          - Action:
+              - logs:CreateLogGroup
+              - logs:CreateLogStream
+              - logs:DeleteLogGroup
+              - logs:PutLogEvents
+            Effect: Allow
+            Resource:
+              Fn::Join:
+                - ""
+                - - "arn:aws:logs:"
+                  - Ref: AWS::Region
+                  - :*:log-group:*
+          - Action:
+              - events:Put*
+              - events:Remove*
+              - events:Delete*
+            Effect: Allow
+            Resource:
+              Fn::Join:
+                - ""
+                - - "arn:aws:events:"
+                  - Ref: AWS::Region
+                  - :*:rule/*
+          - Action:
+              - logs:CreateLogGroup
+              - logs:CreateLogStream
+              - logs:PutLogEvents
+            Effect: Allow
+            Resource:
+              - Fn::Join:
+                  - ""
+                  - - "arn:"
+                    - Ref: AWS::Partition
+                    - ":logs:"
+                    - Ref: AWS::Region
+                    - ":"
+                    - Ref: AWS::AccountId
+                    - :log-group:/aws/codebuild/
+                    - Ref: orchestratorpipelineupdateDeploymentStateProject66656774
+              - Fn::Join:
+                  - ""
+                  - - "arn:"
+                    - Ref: AWS::Partition
+                    - ":logs:"
+                    - Ref: AWS::Region
+                    - ":"
+                    - Ref: AWS::AccountId
+                    - :log-group:/aws/codebuild/
+                    - Ref: orchestratorpipelineupdateDeploymentStateProject66656774
+                    - :*
+          - Action:
+              - codebuild:CreateReportGroup
+              - codebuild:CreateReport
+              - codebuild:UpdateReport
+              - codebuild:BatchPutTestCases
+              - codebuild:BatchPutCodeCoverages
+            Effect: Allow
+            Resource:
+              Fn::Join:
+                - ""
+                - - "arn:"
+                  - Ref: AWS::Partition
+                  - ":codebuild:"
+                  - Ref: AWS::Region
+                  - ":"
+                  - Ref: AWS::AccountId
+                  - :report-group/
+                  - Ref: orchestratorpipelineupdateDeploymentStateProject66656774
+                  - -*
+          - Action:
+              - s3:GetObject*
+              - s3:GetBucket*
+              - s3:List*
+            Effect: Allow
+            Resource:
+              - Fn::GetAtt:
+                  - artifactsBucket6C289622
+                  - Arn
+              - Fn::Join:
+                  - ""
+                  - - Fn::GetAtt:
+                        - artifactsBucket6C289622
+                        - Arn
+                    - /*
+          - Action:
+              - s3:GetObject*
+              - s3:GetBucket*
+              - s3:List*
+              - s3:DeleteObject*
+              - s3:PutObject*
+              - s3:Abort*
+            Effect: Allow
+            Resource:
+              - Fn::GetAtt:
+                  - artifactsBucket6C289622
+                  - Arn
+              - Fn::Join:
+                  - ""
+                  - - Fn::GetAtt:
+                        - artifactsBucket6C289622
+                        - Arn
+                    - /*
+          - Action:
+              - logs:CreateLogGroup
+              - logs:CreateLogStream
+              - logs:PutLogEvents
+            Effect: Allow
+            Resource:
+              - Fn::Join:
+                  - ""
+                  - - "arn:"
+                    - Ref: AWS::Partition
+                    - ":logs:"
+                    - Ref: AWS::Region
+                    - ":"
+                    - Ref: AWS::AccountId
+                    - :log-group:/aws/codebuild/
+                    - Ref: sourceProjectBCA86C81
+              - Fn::Join:
+                  - ""
+                  - - "arn:"
+                    - Ref: AWS::Partition
+                    - ":logs:"
+                    - Ref: AWS::Region
+                    - ":"
+                    - Ref: AWS::AccountId
+                    - :log-group:/aws/codebuild/
+                    - Ref: sourceProjectBCA86C81
+                    - :*
+          - Action:
+              - codebuild:CreateReportGroup
+              - codebuild:CreateReport
+              - codebuild:UpdateReport
+              - codebuild:BatchPutTestCases
+              - codebuild:BatchPutCodeCoverages
+            Effect: Allow
+            Resource:
+              Fn::Join:
+                - ""
+                - - "arn:"
+                  - Ref: AWS::Partition
+                  - ":codebuild:"
+                  - Ref: AWS::Region
+                  - ":"
+                  - Ref: AWS::AccountId
+                  - :report-group/
+                  - Ref: sourceProjectBCA86C81
+                  - -*
+        Version: "2012-10-17"
+      PolicyName: sourceCodeBuildRoleDefaultPolicyA470A26F
+      Roles:
+        - Ref: sourceCodeBuildRole1651962E
+    Metadata:
+      aws:cdk:path: CicdStack/sourceCodeBuildRole/DefaultPolicy/Resource
+  orchestratorpipelineRoleBAE98446:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Principal:
+              Service: codepipeline.amazonaws.com
+        Version: "2012-10-17"
+    Metadata:
+      aws:cdk:path: CicdStack/orchestrator-pipeline/Role/Resource
+  orchestratorpipelineRoleDefaultPolicyA94A6BA3:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyDocument:
+        Statement:
+          - Action:
+              - s3:GetObject*
+              - s3:GetBucket*
+              - s3:List*
+              - s3:DeleteObject*
+              - s3:PutObject*
+              - s3:Abort*
+            Effect: Allow
+            Resource:
+              - Fn::GetAtt:
+                  - artifactsBucket6C289622
+                  - Arn
+              - Fn::Join:
+                  - ""
+                  - - Fn::GetAtt:
+                        - artifactsBucket6C289622
+                        - Arn
+                    - /*
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Resource:
+              Fn::GetAtt:
+                - orchestratorpipelineSourceSLICSourceCodePipelineActionRoleF8E3C529
+                - Arn
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Resource:
+              Fn::GetAtt:
+                - orchestratorpipelinestgDeploystgCodePipelineActionRole3A0D2062
+                - Arn
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Resource:
+              Fn::GetAtt:
+                - orchestratorpipelineTestintegrationtestsCodePipelineActionRole1C2BC584
+                - Arn
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Resource:
+              Fn::GetAtt:
+                - orchestratorpipelineTeste2etestsCodePipelineActionRole7963DBD9
+                - Arn
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Resource:
+              Fn::GetAtt:
+                - orchestratorpipelineApprovalMoveToProductionCodePipelineActionRole4A0BDBA0
+                - Arn
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Resource:
+              Fn::GetAtt:
+                - orchestratorpipelineprodDeployprodCodePipelineActionRole78D27A53
+                - Arn
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Resource:
+              Fn::GetAtt:
+                - orchestratorpipelineUpdateDeploymentStateUpdateStateCodePipelineActionRoleC9F98709
+                - Arn
+        Version: "2012-10-17"
+      PolicyName: orchestratorpipelineRoleDefaultPolicyA94A6BA3
+      Roles:
+        - Ref: orchestratorpipelineRoleBAE98446
+    Metadata:
+      aws:cdk:path: CicdStack/orchestrator-pipeline/Role/DefaultPolicy/Resource
+  orchestratorpipelineB4E5CAFB:
+    Type: AWS::CodePipeline::Pipeline
+    Properties:
+      RoleArn:
+        Fn::GetAtt:
+          - orchestratorpipelineRoleBAE98446
+          - Arn
+      Stages:
+        - Actions:
+            - ActionTypeId:
+                Category: Source
+                Owner: AWS
+                Provider: S3
+                Version: "1"
+              Configuration:
+                S3Bucket:
+                  Ref: artifactsBucket6C289622
+                S3ObjectKey: orchestrator-pipeline-source.zip
+                PollForSourceChanges: true
+              Name: SLICSource
+              OutputArtifacts:
+                - Name: Artifact_Source_SLICSource
+              RoleArn:
+                Fn::GetAtt:
+                  - orchestratorpipelineSourceSLICSourceCodePipelineActionRoleF8E3C529
+                  - Arn
+              RunOrder: 1
+          Name: Source
+        - Actions:
+            - ActionTypeId:
+                Category: Build
+                Owner: AWS
+                Provider: CodeBuild
+                Version: "1"
+              Configuration:
+                ProjectName:
+                  Ref: orchestratorpipelinestgOrchestratorDeploy622D0087
+              InputArtifacts:
+                - Name: Artifact_Source_SLICSource
+              Name: stg
+              OutputArtifacts:
+                - Name: Artifact_stgDeploy_stg
+              RoleArn:
+                Fn::GetAtt:
+                  - orchestratorpipelinestgDeploystgCodePipelineActionRole3A0D2062
+                  - Arn
+              RunOrder: 1
+          Name: stgDeploy
+        - Actions:
+            - ActionTypeId:
+                Category: Build
+                Owner: AWS
+                Provider: CodeBuild
+                Version: "1"
+              Configuration:
+                ProjectName:
+                  Ref: orchestratorpipelineIntegrationTests2BDEAF1B
+              InputArtifacts:
+                - Name: Artifact_Source_SLICSource
+              Name: integration_tests
+              OutputArtifacts:
+                - Name: Artifact_Test_integration_tests
+              RoleArn:
+                Fn::GetAtt:
+                  - orchestratorpipelineTestintegrationtestsCodePipelineActionRole1C2BC584
+                  - Arn
+              RunOrder: 1
+            - ActionTypeId:
+                Category: Build
+                Owner: AWS
+                Provider: CodeBuild
+                Version: "1"
+              Configuration:
+                ProjectName:
+                  Ref: orchestratorpipelinee2eTests4E897681
+              InputArtifacts:
+                - Name: Artifact_Source_SLICSource
+              Name: e2e_tests
+              OutputArtifacts:
+                - Name: Artifact_Test_e2e_tests
+              RoleArn:
+                Fn::GetAtt:
+                  - orchestratorpipelineTeste2etestsCodePipelineActionRole7963DBD9
+                  - Arn
+              RunOrder: 1
+          Name: Test
+        - Actions:
+            - ActionTypeId:
+                Category: Approval
+                Owner: AWS
+                Provider: Manual
+                Version: "1"
+              Name: MoveToProduction
+              RoleArn:
+                Fn::GetAtt:
+                  - orchestratorpipelineApprovalMoveToProductionCodePipelineActionRole4A0BDBA0
+                  - Arn
+              RunOrder: 1
+          Name: Approval
+        - Actions:
+            - ActionTypeId:
+                Category: Build
+                Owner: AWS
+                Provider: CodeBuild
+                Version: "1"
+              Configuration:
+                ProjectName:
+                  Ref: orchestratorpipelineprodOrchestratorDeploy74607C96
+              InputArtifacts:
+                - Name: Artifact_Source_SLICSource
+              Name: prod
+              OutputArtifacts:
+                - Name: Artifact_prodDeploy_prod
+              RoleArn:
+                Fn::GetAtt:
+                  - orchestratorpipelineprodDeployprodCodePipelineActionRole78D27A53
+                  - Arn
+              RunOrder: 1
+          Name: prodDeploy
+        - Actions:
+            - ActionTypeId:
+                Category: Build
+                Owner: AWS
+                Provider: CodeBuild
+                Version: "1"
+              Configuration:
+                ProjectName:
+                  Ref: orchestratorpipelineupdateDeploymentStateProject66656774
+              InputArtifacts:
+                - Name: Artifact_Source_SLICSource
+              Name: UpdateState
+              RoleArn:
+                Fn::GetAtt:
+                  - orchestratorpipelineUpdateDeploymentStateUpdateStateCodePipelineActionRoleC9F98709
+                  - Arn
+              RunOrder: 1
+          Name: UpdateDeploymentState
+      ArtifactStore:
+        Location:
+          Ref: artifactsBucket6C289622
+        Type: S3
+      Name: OrchestratorPipeline
+    DependsOn:
+      - orchestratorpipelineRoleDefaultPolicyA94A6BA3
+      - orchestratorpipelineRoleBAE98446
+    Metadata:
+      aws:cdk:path: CicdStack/orchestrator-pipeline/Resource
+  orchestratorpipelineorchestratorcodebuildroleEF36BD19:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Principal:
+              Service: codebuild.amazonaws.com
+        Version: "2012-10-17"
+      RoleName: orchestrator-codebuild-role
+    Metadata:
+      aws:cdk:path: CicdStack/orchestrator-pipeline/orchestrator-codebuild-role/Resource
+  orchestratorpipelineorchestratorcodebuildroleDefaultPolicy24DCC129:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyDocument:
+        Statement:
+          - Action:
+              - codepipeline:GetPipelineExecution
+              - codepipeline:StartPipelineExecution
+            Effect: Allow
+            Resource: "*"
+          - Action: ssm:GetParameters
+            Effect: Allow
+            Resource:
+              Fn::Join:
+                - ""
+                - - "arn:"
+                  - Ref: AWS::Partition
+                  - ":ssm:"
+                  - Ref: AWS::Region
+                  - ":"
+                  - Ref: AWS::AccountId
+                  - :parameter/shared/accounts/stg
+          - Action:
+              - logs:CreateLogGroup
+              - logs:CreateLogStream
+              - logs:PutLogEvents
+            Effect: Allow
+            Resource:
+              - Fn::Join:
+                  - ""
+                  - - "arn:"
+                    - Ref: AWS::Partition
+                    - ":logs:"
+                    - Ref: AWS::Region
+                    - ":"
+                    - Ref: AWS::AccountId
+                    - :log-group:/aws/codebuild/
+                    - Ref: orchestratorpipelinestgOrchestratorDeploy622D0087
+              - Fn::Join:
+                  - ""
+                  - - "arn:"
+                    - Ref: AWS::Partition
+                    - ":logs:"
+                    - Ref: AWS::Region
+                    - ":"
+                    - Ref: AWS::AccountId
+                    - :log-group:/aws/codebuild/
+                    - Ref: orchestratorpipelinestgOrchestratorDeploy622D0087
+                    - :*
+          - Action:
+              - codebuild:CreateReportGroup
+              - codebuild:CreateReport
+              - codebuild:UpdateReport
+              - codebuild:BatchPutTestCases
+              - codebuild:BatchPutCodeCoverages
+            Effect: Allow
+            Resource:
+              Fn::Join:
+                - ""
+                - - "arn:"
+                  - Ref: AWS::Partition
+                  - ":codebuild:"
+                  - Ref: AWS::Region
+                  - ":"
+                  - Ref: AWS::AccountId
+                  - :report-group/
+                  - Ref: orchestratorpipelinestgOrchestratorDeploy622D0087
+                  - -*
+          - Action:
+              - s3:GetObject*
+              - s3:GetBucket*
+              - s3:List*
+              - s3:DeleteObject*
+              - s3:PutObject*
+              - s3:Abort*
+            Effect: Allow
+            Resource:
+              - Fn::GetAtt:
+                  - artifactsBucket6C289622
+                  - Arn
+              - Fn::Join:
+                  - ""
+                  - - Fn::GetAtt:
+                        - artifactsBucket6C289622
+                        - Arn
+                    - /*
+          - Action: ssm:GetParameters
+            Effect: Allow
+            Resource:
+              Fn::Join:
+                - ""
+                - - "arn:"
+                  - Ref: AWS::Partition
+                  - ":ssm:"
+                  - Ref: AWS::Region
+                  - ":"
+                  - Ref: AWS::AccountId
+                  - :parameter/shared/accounts/prod
+          - Action:
+              - logs:CreateLogGroup
+              - logs:CreateLogStream
+              - logs:PutLogEvents
+            Effect: Allow
+            Resource:
+              - Fn::Join:
+                  - ""
+                  - - "arn:"
+                    - Ref: AWS::Partition
+                    - ":logs:"
+                    - Ref: AWS::Region
+                    - ":"
+                    - Ref: AWS::AccountId
+                    - :log-group:/aws/codebuild/
+                    - Ref: orchestratorpipelineprodOrchestratorDeploy74607C96
+              - Fn::Join:
+                  - ""
+                  - - "arn:"
+                    - Ref: AWS::Partition
+                    - ":logs:"
+                    - Ref: AWS::Region
+                    - ":"
+                    - Ref: AWS::AccountId
+                    - :log-group:/aws/codebuild/
+                    - Ref: orchestratorpipelineprodOrchestratorDeploy74607C96
+                    - :*
+          - Action:
+              - codebuild:CreateReportGroup
+              - codebuild:CreateReport
+              - codebuild:UpdateReport
+              - codebuild:BatchPutTestCases
+              - codebuild:BatchPutCodeCoverages
+            Effect: Allow
+            Resource:
+              Fn::Join:
+                - ""
+                - - "arn:"
+                  - Ref: AWS::Partition
+                  - ":codebuild:"
+                  - Ref: AWS::Region
+                  - ":"
+                  - Ref: AWS::AccountId
+                  - :report-group/
+                  - Ref: orchestratorpipelineprodOrchestratorDeploy74607C96
+                  - -*
+        Version: "2012-10-17"
+      PolicyName: orchestratorpipelineorchestratorcodebuildroleDefaultPolicy24DCC129
+      Roles:
+        - Ref: orchestratorpipelineorchestratorcodebuildroleEF36BD19
+    Metadata:
+      aws:cdk:path: CicdStack/orchestrator-pipeline/orchestrator-codebuild-role/DefaultPolicy/Resource
+  orchestratorpipelineSourceSLICSourceCodePipelineActionRoleF8E3C529:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Principal:
+              AWS:
+                Fn::Join:
+                  - ""
+                  - - "arn:"
+                    - Ref: AWS::Partition
+                    - ":iam::"
+                    - Ref: AWS::AccountId
+                    - :root
+        Version: "2012-10-17"
+    Metadata:
+      aws:cdk:path: CicdStack/orchestrator-pipeline/Source/SLICSource/CodePipelineActionRole/Resource
+  orchestratorpipelineSourceSLICSourceCodePipelineActionRoleDefaultPolicy39134E24:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyDocument:
+        Statement:
+          - Action:
+              - s3:GetObject*
+              - s3:GetBucket*
+              - s3:List*
+            Effect: Allow
+            Resource:
+              - Fn::GetAtt:
+                  - artifactsBucket6C289622
+                  - Arn
+              - Fn::Join:
+                  - ""
+                  - - Fn::GetAtt:
+                        - artifactsBucket6C289622
+                        - Arn
+                    - /orchestrator-pipeline-source.zip
+          - Action:
+              - s3:DeleteObject*
+              - s3:PutObject*
+              - s3:Abort*
+            Effect: Allow
+            Resource:
+              - Fn::GetAtt:
+                  - artifactsBucket6C289622
+                  - Arn
+              - Fn::Join:
+                  - ""
+                  - - Fn::GetAtt:
+                        - artifactsBucket6C289622
+                        - Arn
+                    - /*
+        Version: "2012-10-17"
+      PolicyName: orchestratorpipelineSourceSLICSourceCodePipelineActionRoleDefaultPolicy39134E24
+      Roles:
+        - Ref: orchestratorpipelineSourceSLICSourceCodePipelineActionRoleF8E3C529
+    Metadata:
+      aws:cdk:path: CicdStack/orchestrator-pipeline/Source/SLICSource/CodePipelineActionRole/DefaultPolicy/Resource
+  orchestratorpipelinestgOrchestratorDeploy622D0087:
+    Type: AWS::CodeBuild::Project
+    Properties:
+      Artifacts:
+        Type: CODEPIPELINE
+      Environment:
+        ComputeType: BUILD_GENERAL1_SMALL
+        EnvironmentVariables:
+          - Name: SLIC_STAGE
+            Type: PLAINTEXT
+            Value: stg
+          - Name: CROSS_ACCOUNT_ID
+            Type: PARAMETER_STORE
+            Value: /shared/accounts/stg
+          - Name: MODULE_NAMES
+            Type: PLAINTEXT
+            Value: frontend checklist-service user-service email-service welcome-service sharing-service
+        Image: aws/codebuild/standard:1.0
+        ImagePullCredentialsType: CODEBUILD
+        PrivilegedMode: false
+        Type: LINUX_CONTAINER
+      ServiceRole:
+        Fn::GetAtt:
+          - orchestratorpipelineorchestratorcodebuildroleEF36BD19
+          - Arn
+      Source:
+        BuildSpec: |-
+          {
+            "version": "0.2",
+            "phases": {
+              "build": {
+                "commands": [
+                  "bash ./build-scripts/orchestrator-stage-deploy.sh"
+                ]
+              }
+            }
+          }
+        Type: CODEPIPELINE
+      EncryptionKey: alias/aws/s3
+      Name: stgDeployProject
+    Metadata:
+      aws:cdk:path: CicdStack/orchestrator-pipeline/stgOrchestratorDeploy/Resource
+  orchestratorpipelinestgDeploystgCodePipelineActionRole3A0D2062:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Principal:
+              AWS:
+                Fn::Join:
+                  - ""
+                  - - "arn:"
+                    - Ref: AWS::Partition
+                    - ":iam::"
+                    - Ref: AWS::AccountId
+                    - :root
+        Version: "2012-10-17"
+    Metadata:
+      aws:cdk:path: CicdStack/orchestrator-pipeline/stgDeploy/stg/CodePipelineActionRole/Resource
+  orchestratorpipelinestgDeploystgCodePipelineActionRoleDefaultPolicy44682B04:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyDocument:
+        Statement:
+          - Action:
+              - codebuild:BatchGetBuilds
+              - codebuild:StartBuild
+              - codebuild:StopBuild
+            Effect: Allow
+            Resource:
+              Fn::GetAtt:
+                - orchestratorpipelinestgOrchestratorDeploy622D0087
+                - Arn
+        Version: "2012-10-17"
+      PolicyName: orchestratorpipelinestgDeploystgCodePipelineActionRoleDefaultPolicy44682B04
+      Roles:
+        - Ref: orchestratorpipelinestgDeploystgCodePipelineActionRole3A0D2062
+    Metadata:
+      aws:cdk:path: CicdStack/orchestrator-pipeline/stgDeploy/stg/CodePipelineActionRole/DefaultPolicy/Resource
+  orchestratorpipelinestgIntegrationTestRole43B3D4F0:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Principal:
+              Service: codebuild.amazonaws.com
+        Version: "2012-10-17"
+    Metadata:
+      aws:cdk:path: CicdStack/orchestrator-pipeline/stgIntegrationTestRole/Resource
+  orchestratorpipelinestgIntegrationTestRoleDefaultPolicyEB6DF7C7:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyDocument:
+        Statement:
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Resource:
+              Fn::Join:
+                - ""
+                - - "arn:aws:iam::"
+                  - Ref: orchestratorpipelinestgIntegrationTestRolestgAccountParameter4B2ECDDA
+                  - :role/slic-cicd-deployment-role
+          - Action: cloudformation:Describe*
+            Effect: Allow
+            Resource:
+              Fn::Join:
+                - ""
+                - - "arn:aws:cloudformation:eu-west-1:"
+                  - Ref: orchestratorpipelinestgIntegrationTestRolestgAccountParameter4B2ECDDA
+                  - :stack/*/*
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Resource:
+              Fn::Join:
+                - ""
+                - - "arn:aws:iam::"
+                  - Ref: orchestratorpipelinestgIntegrationTestRoleprodAccountParameter42061460
+                  - :role/slic-cicd-deployment-role
+          - Action: cloudformation:Describe*
+            Effect: Allow
+            Resource:
+              Fn::Join:
+                - ""
+                - - "arn:aws:cloudformation:eu-west-1:"
+                  - Ref: orchestratorpipelinestgIntegrationTestRoleprodAccountParameter42061460
+                  - :stack/*/*
+          - Action: secretsmanager:GetSecretValue
+            Effect: Allow
+            Resource:
+              Fn::Join:
+                - ""
+                - - "arn:aws:secretsmanager:"
+                  - Ref: AWS::Region
+                  - ":"
+                  - Ref: AWS::AccountId
+                  - :secret:CICD*
+          - Action:
+              - lambda:Get*
+              - lambda:List*
+              - lambda:CreateFunction
+            Effect: Allow
+            Resource: "*"
+          - Action:
+              - lambda:AddPermission
+              - lambda:CreateAlias
+              - lambda:DeleteFunction
+              - lambda:InvokeFunction
+              - lambda:PublishVersion
+              - lambda:RemovePermission
+              - lambda:Update*
+            Effect: Allow
+            Resource:
+              Fn::Join:
+                - ""
+                - - "arn:aws:lambda:"
+                  - Ref: AWS::Region
+                  - :*:function:*
+          - Action:
+              - route53:CreateHostedZone
+              - route53:ChangeResourceRecordSets
+            Effect: Allow
+            Resource: "*"
+          - Action: acm:RequestCertificate
+            Effect: Allow
+            Resource: "*"
+          - Action:
+              - apigateway:GET
+              - apigateway:POST
+              - apigateway:PUT
+              - apigateway:DELETE
+            Effect: Allow
+            Resource: arn:aws:apigateway:*::/restapis*
+          - Action:
+              - iam:PassRole
+              - iam:GetRole
+              - iam:CreateRole
+              - iam:PutRolePolicy
+              - iam:DeleteRolePolicy
+              - iam:DeleteRole
+            Effect: Allow
+            Resource: arn:aws:iam::*:role/*
+          - Action: sqs:*
+            Effect: Allow
+            Resource: arn:aws:sqs:*:*:*
+          - Action:
+              - logs:CreateLogGroup
+              - logs:CreateLogStream
+              - logs:DeleteLogGroup
+              - logs:PutLogEvents
+            Effect: Allow
+            Resource:
+              Fn::Join:
+                - ""
+                - - "arn:aws:logs:"
+                  - Ref: AWS::Region
+                  - :*:log-group:*
+          - Action:
+              - events:Put*
+              - events:Remove*
+              - events:Delete*
+            Effect: Allow
+            Resource:
+              Fn::Join:
+                - ""
+                - - "arn:aws:events:"
+                  - Ref: AWS::Region
+                  - :*:rule/*
+          - Action: ssm:GetParameters
+            Effect: Allow
+            Resource:
+              Fn::Join:
+                - ""
+                - - "arn:aws:ssm:"
+                  - Ref: AWS::Region
+                  - ":"
+                  - Ref: AWS::AccountId
+                  - :parameter/test/*
+          - Action: ssm:GetParameters
+            Effect: Allow
+            Resource:
+              - Fn::Join:
+                  - ""
+                  - - "arn:"
+                    - Ref: AWS::Partition
+                    - ":ssm:"
+                    - Ref: AWS::Region
+                    - ":"
+                    - Ref: AWS::AccountId
+                    - :parameter/shared/accounts/stg
+              - Fn::Join:
+                  - ""
+                  - - "arn:"
+                    - Ref: AWS::Partition
+                    - ":ssm:"
+                    - Ref: AWS::Region
+                    - ":"
+                    - Ref: AWS::AccountId
+                    - :parameter/test/mailosaur/apiKey
+              - Fn::Join:
+                  - ""
+                  - - "arn:"
+                    - Ref: AWS::Partition
+                    - ":ssm:"
+                    - Ref: AWS::Region
+                    - ":"
+                    - Ref: AWS::AccountId
+                    - :parameter/test/mailosaur/serverId
+          - Action:
+              - logs:CreateLogGroup
+              - logs:CreateLogStream
+              - logs:PutLogEvents
+            Effect: Allow
+            Resource:
+              - Fn::Join:
+                  - ""
+                  - - "arn:"
+                    - Ref: AWS::Partition
+                    - ":logs:"
+                    - Ref: AWS::Region
+                    - ":"
+                    - Ref: AWS::AccountId
+                    - :log-group:/aws/codebuild/
+                    - Ref: orchestratorpipelineIntegrationTests2BDEAF1B
+              - Fn::Join:
+                  - ""
+                  - - "arn:"
+                    - Ref: AWS::Partition
+                    - ":logs:"
+                    - Ref: AWS::Region
+                    - ":"
+                    - Ref: AWS::AccountId
+                    - :log-group:/aws/codebuild/
+                    - Ref: orchestratorpipelineIntegrationTests2BDEAF1B
+                    - :*
+          - Action:
+              - codebuild:CreateReportGroup
+              - codebuild:CreateReport
+              - codebuild:UpdateReport
+              - codebuild:BatchPutTestCases
+              - codebuild:BatchPutCodeCoverages
+            Effect: Allow
+            Resource:
+              Fn::Join:
+                - ""
+                - - "arn:"
+                  - Ref: AWS::Partition
+                  - ":codebuild:"
+                  - Ref: AWS::Region
+                  - ":"
+                  - Ref: AWS::AccountId
+                  - :report-group/
+                  - Ref: orchestratorpipelineIntegrationTests2BDEAF1B
+                  - -*
+          - Action:
+              - s3:GetObject*
+              - s3:GetBucket*
+              - s3:List*
+              - s3:DeleteObject*
+              - s3:PutObject*
+              - s3:Abort*
+            Effect: Allow
+            Resource:
+              - Fn::GetAtt:
+                  - artifactsBucket6C289622
+                  - Arn
+              - Fn::Join:
+                  - ""
+                  - - Fn::GetAtt:
+                        - artifactsBucket6C289622
+                        - Arn
+                    - /*
+        Version: "2012-10-17"
+      PolicyName: orchestratorpipelinestgIntegrationTestRoleDefaultPolicyEB6DF7C7
+      Roles:
+        - Ref: orchestratorpipelinestgIntegrationTestRole43B3D4F0
+    Metadata:
+      aws:cdk:path: CicdStack/orchestrator-pipeline/stgIntegrationTestRole/DefaultPolicy/Resource
+  orchestratorpipelineIntegrationTests2BDEAF1B:
+    Type: AWS::CodeBuild::Project
+    Properties:
+      Artifacts:
+        Type: CODEPIPELINE
+      Environment:
+        ComputeType: BUILD_GENERAL1_SMALL
+        EnvironmentVariables:
+          - Name: SLIC_STAGE
+            Type: PLAINTEXT
+            Value: stg
+          - Name: CROSS_ACCOUNT_ID
+            Type: PARAMETER_STORE
+            Value: /shared/accounts/stg
+          - Name: MAILOSAUR_API_KEY
+            Type: PARAMETER_STORE
+            Value: /test/mailosaur/apiKey
+          - Name: MAILOSAUR_SERVER_ID
+            Type: PARAMETER_STORE
+            Value: /test/mailosaur/serverId
+        Image: aws/codebuild/standard:2.0
+        ImagePullCredentialsType: CODEBUILD
+        PrivilegedMode: false
+        Type: LINUX_CONTAINER
+      ServiceRole:
+        Fn::GetAtt:
+          - orchestratorpipelinestgIntegrationTestRole43B3D4F0
+          - Arn
+      Source:
+        BuildSpec: integration-tests/buildspec.yml
+        Type: CODEPIPELINE
+      EncryptionKey: alias/aws/s3
+      Name: stgIntegrationTest
+    Metadata:
+      aws:cdk:path: CicdStack/orchestrator-pipeline/IntegrationTests/Resource
+  orchestratorpipelinestgE2ETestRoleC921BB44:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Principal:
+              Service: codebuild.amazonaws.com
+        Version: "2012-10-17"
+    Metadata:
+      aws:cdk:path: CicdStack/orchestrator-pipeline/stgE2ETestRole/Resource
+  orchestratorpipelinestgE2ETestRoleDefaultPolicy8D490D58:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyDocument:
+        Statement:
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Resource:
+              Fn::Join:
+                - ""
+                - - "arn:aws:iam::"
+                  - Ref: orchestratorpipelinestgE2ETestRolestgAccountParameter9E464D55
+                  - :role/slic-cicd-deployment-role
+          - Action: cloudformation:Describe*
+            Effect: Allow
+            Resource:
+              Fn::Join:
+                - ""
+                - - "arn:aws:cloudformation:eu-west-1:"
+                  - Ref: orchestratorpipelinestgE2ETestRolestgAccountParameter9E464D55
+                  - :stack/*/*
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Resource:
+              Fn::Join:
+                - ""
+                - - "arn:aws:iam::"
+                  - Ref: orchestratorpipelinestgE2ETestRoleprodAccountParameterF39952E4
+                  - :role/slic-cicd-deployment-role
+          - Action: cloudformation:Describe*
+            Effect: Allow
+            Resource:
+              Fn::Join:
+                - ""
+                - - "arn:aws:cloudformation:eu-west-1:"
+                  - Ref: orchestratorpipelinestgE2ETestRoleprodAccountParameterF39952E4
+                  - :stack/*/*
+          - Action: secretsmanager:GetSecretValue
+            Effect: Allow
+            Resource:
+              Fn::Join:
+                - ""
+                - - "arn:aws:secretsmanager:"
+                  - Ref: AWS::Region
+                  - ":"
+                  - Ref: AWS::AccountId
+                  - :secret:CICD*
+          - Action:
+              - lambda:Get*
+              - lambda:List*
+              - lambda:CreateFunction
+            Effect: Allow
+            Resource: "*"
+          - Action:
+              - lambda:AddPermission
+              - lambda:CreateAlias
+              - lambda:DeleteFunction
+              - lambda:InvokeFunction
+              - lambda:PublishVersion
+              - lambda:RemovePermission
+              - lambda:Update*
+            Effect: Allow
+            Resource:
+              Fn::Join:
+                - ""
+                - - "arn:aws:lambda:"
+                  - Ref: AWS::Region
+                  - :*:function:*
+          - Action:
+              - route53:CreateHostedZone
+              - route53:ChangeResourceRecordSets
+            Effect: Allow
+            Resource: "*"
+          - Action: acm:RequestCertificate
+            Effect: Allow
+            Resource: "*"
+          - Action:
+              - apigateway:GET
+              - apigateway:POST
+              - apigateway:PUT
+              - apigateway:DELETE
+            Effect: Allow
+            Resource: arn:aws:apigateway:*::/restapis*
+          - Action:
+              - iam:PassRole
+              - iam:GetRole
+              - iam:CreateRole
+              - iam:PutRolePolicy
+              - iam:DeleteRolePolicy
+              - iam:DeleteRole
+            Effect: Allow
+            Resource: arn:aws:iam::*:role/*
+          - Action: sqs:*
+            Effect: Allow
+            Resource: arn:aws:sqs:*:*:*
+          - Action:
+              - logs:CreateLogGroup
+              - logs:CreateLogStream
+              - logs:DeleteLogGroup
+              - logs:PutLogEvents
+            Effect: Allow
+            Resource:
+              Fn::Join:
+                - ""
+                - - "arn:aws:logs:"
+                  - Ref: AWS::Region
+                  - :*:log-group:*
+          - Action:
+              - events:Put*
+              - events:Remove*
+              - events:Delete*
+            Effect: Allow
+            Resource:
+              Fn::Join:
+                - ""
+                - - "arn:aws:events:"
+                  - Ref: AWS::Region
+                  - :*:rule/*
+          - Action: ssm:GetParameters
+            Effect: Allow
+            Resource:
+              Fn::Join:
+                - ""
+                - - "arn:aws:ssm:"
+                  - Ref: AWS::Region
+                  - ":"
+                  - Ref: AWS::AccountId
+                  - :parameter/test/*
+          - Action: ssm:GetParameters
+            Effect: Allow
+            Resource:
+              - Fn::Join:
+                  - ""
+                  - - "arn:"
+                    - Ref: AWS::Partition
+                    - ":ssm:"
+                    - Ref: AWS::Region
+                    - ":"
+                    - Ref: AWS::AccountId
+                    - :parameter/shared/accounts/stg
+              - Fn::Join:
+                  - ""
+                  - - "arn:"
+                    - Ref: AWS::Partition
+                    - ":ssm:"
+                    - Ref: AWS::Region
+                    - ":"
+                    - Ref: AWS::AccountId
+                    - :parameter/test/mailosaur/apiKey
+              - Fn::Join:
+                  - ""
+                  - - "arn:"
+                    - Ref: AWS::Partition
+                    - ":ssm:"
+                    - Ref: AWS::Region
+                    - ":"
+                    - Ref: AWS::AccountId
+                    - :parameter/test/mailosaur/serverId
+          - Action:
+              - logs:CreateLogGroup
+              - logs:CreateLogStream
+              - logs:PutLogEvents
+            Effect: Allow
+            Resource:
+              - Fn::Join:
+                  - ""
+                  - - "arn:"
+                    - Ref: AWS::Partition
+                    - ":logs:"
+                    - Ref: AWS::Region
+                    - ":"
+                    - Ref: AWS::AccountId
+                    - :log-group:/aws/codebuild/
+                    - Ref: orchestratorpipelinee2eTests4E897681
+              - Fn::Join:
+                  - ""
+                  - - "arn:"
+                    - Ref: AWS::Partition
+                    - ":logs:"
+                    - Ref: AWS::Region
+                    - ":"
+                    - Ref: AWS::AccountId
+                    - :log-group:/aws/codebuild/
+                    - Ref: orchestratorpipelinee2eTests4E897681
+                    - :*
+          - Action:
+              - codebuild:CreateReportGroup
+              - codebuild:CreateReport
+              - codebuild:UpdateReport
+              - codebuild:BatchPutTestCases
+              - codebuild:BatchPutCodeCoverages
+            Effect: Allow
+            Resource:
+              Fn::Join:
+                - ""
+                - - "arn:"
+                  - Ref: AWS::Partition
+                  - ":codebuild:"
+                  - Ref: AWS::Region
+                  - ":"
+                  - Ref: AWS::AccountId
+                  - :report-group/
+                  - Ref: orchestratorpipelinee2eTests4E897681
+                  - -*
+          - Action:
+              - s3:GetObject*
+              - s3:GetBucket*
+              - s3:List*
+              - s3:DeleteObject*
+              - s3:PutObject*
+              - s3:Abort*
+            Effect: Allow
+            Resource:
+              - Fn::GetAtt:
+                  - artifactsBucket6C289622
+                  - Arn
+              - Fn::Join:
+                  - ""
+                  - - Fn::GetAtt:
+                        - artifactsBucket6C289622
+                        - Arn
+                    - /*
+        Version: "2012-10-17"
+      PolicyName: orchestratorpipelinestgE2ETestRoleDefaultPolicy8D490D58
+      Roles:
+        - Ref: orchestratorpipelinestgE2ETestRoleC921BB44
+    Metadata:
+      aws:cdk:path: CicdStack/orchestrator-pipeline/stgE2ETestRole/DefaultPolicy/Resource
+  orchestratorpipelinee2eTests4E897681:
+    Type: AWS::CodeBuild::Project
+    Properties:
+      Artifacts:
+        Type: CODEPIPELINE
+      Environment:
+        ComputeType: BUILD_GENERAL1_SMALL
+        EnvironmentVariables:
+          - Name: SLIC_STAGE
+            Type: PLAINTEXT
+            Value: stg
+          - Name: CROSS_ACCOUNT_ID
+            Type: PARAMETER_STORE
+            Value: /shared/accounts/stg
+          - Name: MAILOSAUR_API_KEY
+            Type: PARAMETER_STORE
+            Value: /test/mailosaur/apiKey
+          - Name: MAILOSAUR_SERVER_ID
+            Type: PARAMETER_STORE
+            Value: /test/mailosaur/serverId
+        Image: aws/codebuild/standard:2.0
+        ImagePullCredentialsType: CODEBUILD
+        PrivilegedMode: false
+        Type: LINUX_CONTAINER
+      ServiceRole:
+        Fn::GetAtt:
+          - orchestratorpipelinestgE2ETestRoleC921BB44
+          - Arn
+      Source:
+        BuildSpec: e2e-tests/buildspec.yml
+        Type: CODEPIPELINE
+      EncryptionKey: alias/aws/s3
+      Name: stgE2ETest
+    Metadata:
+      aws:cdk:path: CicdStack/orchestrator-pipeline/e2eTests/Resource
+  orchestratorpipelineTestintegrationtestsCodePipelineActionRole1C2BC584:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Principal:
+              AWS:
+                Fn::Join:
+                  - ""
+                  - - "arn:"
+                    - Ref: AWS::Partition
+                    - ":iam::"
+                    - Ref: AWS::AccountId
+                    - :root
+        Version: "2012-10-17"
+    Metadata:
+      aws:cdk:path: CicdStack/orchestrator-pipeline/Test/integration_tests/CodePipelineActionRole/Resource
+  orchestratorpipelineTestintegrationtestsCodePipelineActionRoleDefaultPolicy8E6C0F93:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyDocument:
+        Statement:
+          - Action:
+              - codebuild:BatchGetBuilds
+              - codebuild:StartBuild
+              - codebuild:StopBuild
+            Effect: Allow
+            Resource:
+              Fn::GetAtt:
+                - orchestratorpipelineIntegrationTests2BDEAF1B
+                - Arn
+        Version: "2012-10-17"
+      PolicyName: orchestratorpipelineTestintegrationtestsCodePipelineActionRoleDefaultPolicy8E6C0F93
+      Roles:
+        - Ref: orchestratorpipelineTestintegrationtestsCodePipelineActionRole1C2BC584
+    Metadata:
+      aws:cdk:path: CicdStack/orchestrator-pipeline/Test/integration_tests/CodePipelineActionRole/DefaultPolicy/Resource
+  orchestratorpipelineTeste2etestsCodePipelineActionRole7963DBD9:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Principal:
+              AWS:
+                Fn::Join:
+                  - ""
+                  - - "arn:"
+                    - Ref: AWS::Partition
+                    - ":iam::"
+                    - Ref: AWS::AccountId
+                    - :root
+        Version: "2012-10-17"
+    Metadata:
+      aws:cdk:path: CicdStack/orchestrator-pipeline/Test/e2e_tests/CodePipelineActionRole/Resource
+  orchestratorpipelineTeste2etestsCodePipelineActionRoleDefaultPolicy7F8BBF57:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyDocument:
+        Statement:
+          - Action:
+              - codebuild:BatchGetBuilds
+              - codebuild:StartBuild
+              - codebuild:StopBuild
+            Effect: Allow
+            Resource:
+              Fn::GetAtt:
+                - orchestratorpipelinee2eTests4E897681
+                - Arn
+        Version: "2012-10-17"
+      PolicyName: orchestratorpipelineTeste2etestsCodePipelineActionRoleDefaultPolicy7F8BBF57
+      Roles:
+        - Ref: orchestratorpipelineTeste2etestsCodePipelineActionRole7963DBD9
+    Metadata:
+      aws:cdk:path: CicdStack/orchestrator-pipeline/Test/e2e_tests/CodePipelineActionRole/DefaultPolicy/Resource
+  orchestratorpipelineApprovalMoveToProductionCodePipelineActionRole4A0BDBA0:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Principal:
+              AWS:
+                Fn::Join:
+                  - ""
+                  - - "arn:"
+                    - Ref: AWS::Partition
+                    - ":iam::"
+                    - Ref: AWS::AccountId
+                    - :root
+        Version: "2012-10-17"
+    Metadata:
+      aws:cdk:path: CicdStack/orchestrator-pipeline/Approval/MoveToProduction/CodePipelineActionRole/Resource
+  orchestratorpipelineprodOrchestratorDeploy74607C96:
+    Type: AWS::CodeBuild::Project
+    Properties:
+      Artifacts:
+        Type: CODEPIPELINE
+      Environment:
+        ComputeType: BUILD_GENERAL1_SMALL
+        EnvironmentVariables:
+          - Name: SLIC_STAGE
+            Type: PLAINTEXT
+            Value: prod
+          - Name: CROSS_ACCOUNT_ID
+            Type: PARAMETER_STORE
+            Value: /shared/accounts/prod
+          - Name: MODULE_NAMES
+            Type: PLAINTEXT
+            Value: frontend checklist-service user-service email-service welcome-service sharing-service
+        Image: aws/codebuild/standard:1.0
+        ImagePullCredentialsType: CODEBUILD
+        PrivilegedMode: false
+        Type: LINUX_CONTAINER
+      ServiceRole:
+        Fn::GetAtt:
+          - orchestratorpipelineorchestratorcodebuildroleEF36BD19
+          - Arn
+      Source:
+        BuildSpec: |-
+          {
+            "version": "0.2",
+            "phases": {
+              "build": {
+                "commands": [
+                  "bash ./build-scripts/orchestrator-stage-deploy.sh"
+                ]
+              }
+            }
+          }
+        Type: CODEPIPELINE
+      EncryptionKey: alias/aws/s3
+      Name: prodDeployProject
+    Metadata:
+      aws:cdk:path: CicdStack/orchestrator-pipeline/prodOrchestratorDeploy/Resource
+  orchestratorpipelineprodDeployprodCodePipelineActionRole78D27A53:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Principal:
+              AWS:
+                Fn::Join:
+                  - ""
+                  - - "arn:"
+                    - Ref: AWS::Partition
+                    - ":iam::"
+                    - Ref: AWS::AccountId
+                    - :root
+        Version: "2012-10-17"
+    Metadata:
+      aws:cdk:path: CicdStack/orchestrator-pipeline/prodDeploy/prod/CodePipelineActionRole/Resource
+  orchestratorpipelineprodDeployprodCodePipelineActionRoleDefaultPolicy8CA6C430:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyDocument:
+        Statement:
+          - Action:
+              - codebuild:BatchGetBuilds
+              - codebuild:StartBuild
+              - codebuild:StopBuild
+            Effect: Allow
+            Resource:
+              Fn::GetAtt:
+                - orchestratorpipelineprodOrchestratorDeploy74607C96
+                - Arn
+        Version: "2012-10-17"
+      PolicyName: orchestratorpipelineprodDeployprodCodePipelineActionRoleDefaultPolicy8CA6C430
+      Roles:
+        - Ref: orchestratorpipelineprodDeployprodCodePipelineActionRole78D27A53
+    Metadata:
+      aws:cdk:path: CicdStack/orchestrator-pipeline/prodDeploy/prod/CodePipelineActionRole/DefaultPolicy/Resource
+  orchestratorpipelineupdateDeploymentStateProject66656774:
+    Type: AWS::CodeBuild::Project
+    Properties:
+      Artifacts:
+        Type: CODEPIPELINE
+      Environment:
+        ComputeType: BUILD_GENERAL1_SMALL
+        EnvironmentVariables:
+          - Name: DEPLOYMENT_STATE_BUCKET
+            Type: PLAINTEXT
+            Value:
+              Ref: artifactsBucket6C289622
+          - Name: DEPLOYMENT_STATE_KEY
+            Type: PLAINTEXT
+            Value: deployment-state.env
+        Image: aws/codebuild/standard:3.0
+        ImagePullCredentialsType: CODEBUILD
+        PrivilegedMode: false
+        Type: LINUX_CONTAINER
+      ServiceRole:
+        Fn::GetAtt:
+          - sourceCodeBuildRole1651962E
+          - Arn
+      Source:
+        BuildSpec: |-
+          {
+            "version": "0.2",
+            "phases": {
+              "install": {
+                "runtime-versions": {
+                  "nodejs": 12
+                }
+              },
+              "build": {
+                "commands": [
+                  "bash ./build-scripts/update-deployment-state.sh"
+                ]
+              }
+            }
+          }
+        Type: CODEPIPELINE
+      EncryptionKey: alias/aws/s3
+      Name: updateDeploymentStateProject
+    Metadata:
+      aws:cdk:path: CicdStack/orchestrator-pipeline/updateDeploymentStateProject/Resource
+  orchestratorpipelineUpdateDeploymentStateUpdateStateCodePipelineActionRoleC9F98709:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Principal:
+              AWS:
+                Fn::Join:
+                  - ""
+                  - - "arn:"
+                    - Ref: AWS::Partition
+                    - ":iam::"
+                    - Ref: AWS::AccountId
+                    - :root
+        Version: "2012-10-17"
+    Metadata:
+      aws:cdk:path: CicdStack/orchestrator-pipeline/UpdateDeploymentState/UpdateState/CodePipelineActionRole/Resource
+  orchestratorpipelineUpdateDeploymentStateUpdateStateCodePipelineActionRoleDefaultPolicy38A47377:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyDocument:
+        Statement:
+          - Action:
+              - codebuild:BatchGetBuilds
+              - codebuild:StartBuild
+              - codebuild:StopBuild
+            Effect: Allow
+            Resource:
+              Fn::GetAtt:
+                - orchestratorpipelineupdateDeploymentStateProject66656774
+                - Arn
+        Version: "2012-10-17"
+      PolicyName: orchestratorpipelineUpdateDeploymentStateUpdateStateCodePipelineActionRoleDefaultPolicy38A47377
+      Roles:
+        - Ref: orchestratorpipelineUpdateDeploymentStateUpdateStateCodePipelineActionRoleC9F98709
+    Metadata:
+      aws:cdk:path: CicdStack/orchestrator-pipeline/UpdateDeploymentState/UpdateState/CodePipelineActionRole/DefaultPolicy/Resource
+  buildRoleDCAA7F5D:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Principal:
+              Service: codebuild.amazonaws.com
+        Version: "2012-10-17"
+    Metadata:
+      aws:cdk:path: CicdStack/buildRole/Resource
+  buildRoleDefaultPolicyA2B1D36E:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyDocument:
+        Statement:
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Resource:
+              Fn::Join:
+                - ""
+                - - "arn:aws:iam::"
+                  - Ref: buildRolestgAccountParameter1B2C3993
+                  - :role/slic-cicd-deployment-role
+          - Action: cloudformation:Describe*
+            Effect: Allow
+            Resource:
+              Fn::Join:
+                - ""
+                - - "arn:aws:cloudformation:eu-west-1:"
+                  - Ref: buildRolestgAccountParameter1B2C3993
+                  - :stack/*/*
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Resource:
+              Fn::Join:
+                - ""
+                - - "arn:aws:iam::"
+                  - Ref: buildRoleprodAccountParameter8B12C7DF
+                  - :role/slic-cicd-deployment-role
+          - Action: cloudformation:Describe*
+            Effect: Allow
+            Resource:
+              Fn::Join:
+                - ""
+                - - "arn:aws:cloudformation:eu-west-1:"
+                  - Ref: buildRoleprodAccountParameter8B12C7DF
+                  - :stack/*/*
+          - Action: secretsmanager:GetSecretValue
+            Effect: Allow
+            Resource:
+              Fn::Join:
+                - ""
+                - - "arn:aws:secretsmanager:"
+                  - Ref: AWS::Region
+                  - ":"
+                  - Ref: AWS::AccountId
+                  - :secret:CICD*
+          - Action:
+              - lambda:Get*
+              - lambda:List*
+              - lambda:CreateFunction
+            Effect: Allow
+            Resource: "*"
+          - Action:
+              - lambda:AddPermission
+              - lambda:CreateAlias
+              - lambda:DeleteFunction
+              - lambda:InvokeFunction
+              - lambda:PublishVersion
+              - lambda:RemovePermission
+              - lambda:Update*
+            Effect: Allow
+            Resource:
+              Fn::Join:
+                - ""
+                - - "arn:aws:lambda:"
+                  - Ref: AWS::Region
+                  - :*:function:*
+          - Action:
+              - route53:CreateHostedZone
+              - route53:ChangeResourceRecordSets
+            Effect: Allow
+            Resource: "*"
+          - Action: acm:RequestCertificate
+            Effect: Allow
+            Resource: "*"
+          - Action:
+              - apigateway:GET
+              - apigateway:POST
+              - apigateway:PUT
+              - apigateway:DELETE
+            Effect: Allow
+            Resource: arn:aws:apigateway:*::/restapis*
+          - Action:
+              - iam:PassRole
+              - iam:GetRole
+              - iam:CreateRole
+              - iam:PutRolePolicy
+              - iam:DeleteRolePolicy
+              - iam:DeleteRole
+            Effect: Allow
+            Resource: arn:aws:iam::*:role/*
+          - Action: sqs:*
+            Effect: Allow
+            Resource: arn:aws:sqs:*:*:*
+          - Action:
+              - logs:CreateLogGroup
+              - logs:CreateLogStream
+              - logs:DeleteLogGroup
+              - logs:PutLogEvents
+            Effect: Allow
+            Resource:
+              Fn::Join:
+                - ""
+                - - "arn:aws:logs:"
+                  - Ref: AWS::Region
+                  - :*:log-group:*
+          - Action:
+              - events:Put*
+              - events:Remove*
+              - events:Delete*
+            Effect: Allow
+            Resource:
+              Fn::Join:
+                - ""
+                - - "arn:aws:events:"
+                  - Ref: AWS::Region
+                  - :*:rule/*
+          - Action:
+              - logs:CreateLogGroup
+              - logs:CreateLogStream
+              - logs:PutLogEvents
+            Effect: Allow
+            Resource:
+              - Fn::Join:
+                  - ""
+                  - - "arn:"
+                    - Ref: AWS::Partition
+                    - ":logs:"
+                    - Ref: AWS::Region
+                    - ":"
+                    - Ref: AWS::AccountId
+                    - :log-group:/aws/codebuild/
+                    - Ref: modulebuild2EEFE7F2
+              - Fn::Join:
+                  - ""
+                  - - "arn:"
+                    - Ref: AWS::Partition
+                    - ":logs:"
+                    - Ref: AWS::Region
+                    - ":"
+                    - Ref: AWS::AccountId
+                    - :log-group:/aws/codebuild/
+                    - Ref: modulebuild2EEFE7F2
+                    - :*
+          - Action:
+              - codebuild:CreateReportGroup
+              - codebuild:CreateReport
+              - codebuild:UpdateReport
+              - codebuild:BatchPutTestCases
+              - codebuild:BatchPutCodeCoverages
+            Effect: Allow
+            Resource:
+              Fn::Join:
+                - ""
+                - - "arn:"
+                  - Ref: AWS::Partition
+                  - ":codebuild:"
+                  - Ref: AWS::Region
+                  - ":"
+                  - Ref: AWS::AccountId
+                  - :report-group/
+                  - Ref: modulebuild2EEFE7F2
+                  - -*
+          - Action:
+              - s3:GetObject*
+              - s3:GetBucket*
+              - s3:List*
+              - s3:DeleteObject*
+              - s3:PutObject*
+              - s3:Abort*
+            Effect: Allow
+            Resource:
+              - Fn::GetAtt:
+                  - artifactsBucket6C289622
+                  - Arn
+              - Fn::Join:
+                  - ""
+                  - - Fn::GetAtt:
+                        - artifactsBucket6C289622
+                        - Arn
+                    - /*
+          - Action: ssm:GetParameters
+            Effect: Allow
+            Resource:
+              Fn::Join:
+                - ""
+                - - "arn:"
+                  - Ref: AWS::Partition
+                  - ":ssm:"
+                  - Ref: AWS::Region
+                  - ":"
+                  - Ref: AWS::AccountId
+                  - :parameter/shared/accounts/stg
+          - Action: ssm:GetParameters
+            Effect: Allow
+            Resource:
+              Fn::Join:
+                - ""
+                - - "arn:"
+                  - Ref: AWS::Partition
+                  - ":ssm:"
+                  - Ref: AWS::Region
+                  - ":"
+                  - Ref: AWS::AccountId
+                  - :parameter/shared/accounts/prod
+        Version: "2012-10-17"
+      PolicyName: buildRoleDefaultPolicyA2B1D36E
+      Roles:
+        - Ref: buildRoleDCAA7F5D
+    Metadata:
+      aws:cdk:path: CicdStack/buildRole/DefaultPolicy/Resource
+  deployRoleC71C5D76:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Principal:
+              Service: codebuild.amazonaws.com
+        Version: "2012-10-17"
+    Metadata:
+      aws:cdk:path: CicdStack/deployRole/Resource
+  deployRoleDefaultPolicy207FBA3A:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyDocument:
+        Statement:
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Resource:
+              Fn::Join:
+                - ""
+                - - "arn:aws:iam::"
+                  - Ref: deployRolestgAccountParameter3D913D6E
+                  - :role/slic-cicd-deployment-role
+          - Action: cloudformation:Describe*
+            Effect: Allow
+            Resource:
+              Fn::Join:
+                - ""
+                - - "arn:aws:cloudformation:eu-west-1:"
+                  - Ref: deployRolestgAccountParameter3D913D6E
+                  - :stack/*/*
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Resource:
+              Fn::Join:
+                - ""
+                - - "arn:aws:iam::"
+                  - Ref: deployRoleprodAccountParameter7D100AEC
+                  - :role/slic-cicd-deployment-role
+          - Action: cloudformation:Describe*
+            Effect: Allow
+            Resource:
+              Fn::Join:
+                - ""
+                - - "arn:aws:cloudformation:eu-west-1:"
+                  - Ref: deployRoleprodAccountParameter7D100AEC
+                  - :stack/*/*
+          - Action: secretsmanager:GetSecretValue
+            Effect: Allow
+            Resource:
+              Fn::Join:
+                - ""
+                - - "arn:aws:secretsmanager:"
+                  - Ref: AWS::Region
+                  - ":"
+                  - Ref: AWS::AccountId
+                  - :secret:CICD*
+          - Action:
+              - lambda:Get*
+              - lambda:List*
+              - lambda:CreateFunction
+            Effect: Allow
+            Resource: "*"
+          - Action:
+              - lambda:AddPermission
+              - lambda:CreateAlias
+              - lambda:DeleteFunction
+              - lambda:InvokeFunction
+              - lambda:PublishVersion
+              - lambda:RemovePermission
+              - lambda:Update*
+            Effect: Allow
+            Resource:
+              Fn::Join:
+                - ""
+                - - "arn:aws:lambda:"
+                  - Ref: AWS::Region
+                  - :*:function:*
+          - Action:
+              - route53:CreateHostedZone
+              - route53:ChangeResourceRecordSets
+            Effect: Allow
+            Resource: "*"
+          - Action: acm:RequestCertificate
+            Effect: Allow
+            Resource: "*"
+          - Action:
+              - apigateway:GET
+              - apigateway:POST
+              - apigateway:PUT
+              - apigateway:DELETE
+            Effect: Allow
+            Resource: arn:aws:apigateway:*::/restapis*
+          - Action:
+              - iam:PassRole
+              - iam:GetRole
+              - iam:CreateRole
+              - iam:PutRolePolicy
+              - iam:DeleteRolePolicy
+              - iam:DeleteRole
+            Effect: Allow
+            Resource: arn:aws:iam::*:role/*
+          - Action: sqs:*
+            Effect: Allow
+            Resource: arn:aws:sqs:*:*:*
+          - Action:
+              - logs:CreateLogGroup
+              - logs:CreateLogStream
+              - logs:DeleteLogGroup
+              - logs:PutLogEvents
+            Effect: Allow
+            Resource:
+              Fn::Join:
+                - ""
+                - - "arn:aws:logs:"
+                  - Ref: AWS::Region
+                  - :*:log-group:*
+          - Action:
+              - events:Put*
+              - events:Remove*
+              - events:Delete*
+            Effect: Allow
+            Resource:
+              Fn::Join:
+                - ""
+                - - "arn:aws:events:"
+                  - Ref: AWS::Region
+                  - :*:rule/*
+          - Action:
+              - logs:CreateLogGroup
+              - logs:CreateLogStream
+              - logs:PutLogEvents
+            Effect: Allow
+            Resource:
+              - Fn::Join:
+                  - ""
+                  - - "arn:"
+                    - Ref: AWS::Partition
+                    - ":logs:"
+                    - Ref: AWS::Region
+                    - ":"
+                    - Ref: AWS::AccountId
+                    - :log-group:/aws/codebuild/
+                    - Ref: moduledeploy2FF9E84E
+              - Fn::Join:
+                  - ""
+                  - - "arn:"
+                    - Ref: AWS::Partition
+                    - ":logs:"
+                    - Ref: AWS::Region
+                    - ":"
+                    - Ref: AWS::AccountId
+                    - :log-group:/aws/codebuild/
+                    - Ref: moduledeploy2FF9E84E
+                    - :*
+          - Action:
+              - codebuild:CreateReportGroup
+              - codebuild:CreateReport
+              - codebuild:UpdateReport
+              - codebuild:BatchPutTestCases
+              - codebuild:BatchPutCodeCoverages
+            Effect: Allow
+            Resource:
+              Fn::Join:
+                - ""
+                - - "arn:"
+                  - Ref: AWS::Partition
+                  - ":codebuild:"
+                  - Ref: AWS::Region
+                  - ":"
+                  - Ref: AWS::AccountId
+                  - :report-group/
+                  - Ref: moduledeploy2FF9E84E
+                  - -*
+          - Action:
+              - s3:GetObject*
+              - s3:GetBucket*
+              - s3:List*
+              - s3:DeleteObject*
+              - s3:PutObject*
+              - s3:Abort*
+            Effect: Allow
+            Resource:
+              - Fn::GetAtt:
+                  - artifactsBucket6C289622
+                  - Arn
+              - Fn::Join:
+                  - ""
+                  - - Fn::GetAtt:
+                        - artifactsBucket6C289622
+                        - Arn
+                    - /*
+          - Action: ssm:GetParameters
+            Effect: Allow
+            Resource:
+              Fn::Join:
+                - ""
+                - - "arn:"
+                  - Ref: AWS::Partition
+                  - ":ssm:"
+                  - Ref: AWS::Region
+                  - ":"
+                  - Ref: AWS::AccountId
+                  - :parameter/shared/accounts/stg
+          - Action: ssm:GetParameters
+            Effect: Allow
+            Resource:
+              Fn::Join:
+                - ""
+                - - "arn:"
+                  - Ref: AWS::Partition
+                  - ":ssm:"
+                  - Ref: AWS::Region
+                  - ":"
+                  - Ref: AWS::AccountId
+                  - :parameter/shared/accounts/prod
+        Version: "2012-10-17"
+      PolicyName: deployRoleDefaultPolicy207FBA3A
+      Roles:
+        - Ref: deployRoleC71C5D76
+    Metadata:
+      aws:cdk:path: CicdStack/deployRole/DefaultPolicy/Resource
+  modulebuild2EEFE7F2:
+    Type: AWS::CodeBuild::Project
+    Properties:
+      Artifacts:
+        Type: CODEPIPELINE
+      Environment:
+        ComputeType: BUILD_GENERAL1_SMALL
+        EnvironmentVariables:
+          - Name: SITE_BUCKET_PREFIX
+            Type: PLAINTEXT
+            Value: my-slic-watch
+        Image: aws/codebuild/standard:3.0
+        ImagePullCredentialsType: CODEBUILD
+        PrivilegedMode: false
+        Type: LINUX_CONTAINER
+      ServiceRole:
+        Fn::GetAtt:
+          - buildRoleDCAA7F5D
+          - Arn
+      Source:
+        BuildSpec: |-
+          {
+            "version": "0.2",
+            "phases": {
+              "install": {
+                "runtime-versions": {
+                  "nodejs": 12,
+                  "python": 3.8
+                }
+              },
+              "pre_build": {
+                "commands": [
+                  "bash ./build-scripts/audit-module.sh"
+                ]
+              },
+              "build": {
+                "commands": [
+                  "bash ./build-scripts/build-module.sh"
+                ]
+              },
+              "post_build": {
+                "commands": [
+                  "bash ./build-scripts/package-module.sh"
+                ]
+              }
+            },
+            "artifacts": {
+              "files": [
+                "*.yml",
+                "*.json",
+                "*.js",
+                "build-scripts/**/*",
+                "node_modules/**/*",
+                "*/*.yml",
+                "*/*.js",
+                "*/node_modules/**/*",
+                "*/package.json",
+                "*/package-lock.json",
+                "*/build-artifacts/**/*",
+                "*/build/**/*"
+              ]
+            }
+          }
+        Type: CODEPIPELINE
+      EncryptionKey: alias/aws/s3
+      Name: module_build
+    Metadata:
+      aws:cdk:path: CicdStack/module_build/Resource
+  moduledeploy2FF9E84E:
+    Type: AWS::CodeBuild::Project
+    Properties:
+      Artifacts:
+        Type: CODEPIPELINE
+      Environment:
+        ComputeType: BUILD_GENERAL1_SMALL
+        EnvironmentVariables:
+          - Name: SITE_BUCKET_PREFIX
+            Type: PLAINTEXT
+            Value: my-slic-watch
+        Image: aws/codebuild/standard:3.0
+        ImagePullCredentialsType: CODEBUILD
+        PrivilegedMode: false
+        Type: LINUX_CONTAINER
+      ServiceRole:
+        Fn::GetAtt:
+          - deployRoleC71C5D76
+          - Arn
+      Source:
+        BuildSpec: |-
+          {
+            "version": "0.2",
+            "phases": {
+              "install": {
+                "runtime-versions": {
+                  "nodejs": 12,
+                  "python": 3.8
+                }
+              },
+              "build": {
+                "commands": [
+                  "bash ./build-scripts/deploy-module.sh"
+                ]
+              }
+            },
+            "artifacts": {
+              "files": [
+                "*.yml",
+                "*.json",
+                "*.js",
+                "build-scripts/**/*",
+                "node_modules/**/*",
+                "*/*.yml",
+                "*/*.js",
+                "*/node_modules/**/*",
+                "*/package.json",
+                "*/package-lock.json",
+                "*/build-artifacts/**/*",
+                "*/build/**/*"
+              ]
+            }
+          }
+        Type: CODEPIPELINE
+      EncryptionKey: alias/aws/s3
+      Name: module_deploy
+    Metadata:
+      aws:cdk:path: CicdStack/module_deploy/Resource
+  stgPipelineRole20495B13:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Principal:
+              Service: codepipeline.amazonaws.com
+        Version: "2012-10-17"
+    Metadata:
+      aws:cdk:path: CicdStack/stgPipelineRole/Resource
+  stgPipelineRoleDefaultPolicyA7A19515:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyDocument:
+        Statement:
+          - Action:
+              - s3:GetObject*
+              - s3:GetBucket*
+              - s3:List*
+              - s3:DeleteObject*
+              - s3:PutObject*
+              - s3:Abort*
+            Effect: Allow
+            Resource:
+              - Fn::GetAtt:
+                  - artifactsBucket6C289622
+                  - Arn
+              - Fn::Join:
+                  - ""
+                  - - Fn::GetAtt:
+                        - artifactsBucket6C289622
+                        - Arn
+                    - /*
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Resource:
+              Fn::GetAtt:
+                - stgPipelineRole20495B13
+                - Arn
+          - Action:
+              - s3:GetObject*
+              - s3:GetBucket*
+              - s3:List*
+            Effect: Allow
+            Resource:
+              - Fn::GetAtt:
+                  - artifactsBucket6C289622
+                  - Arn
+              - Fn::Join:
+                  - ""
+                  - - Fn::GetAtt:
+                        - artifactsBucket6C289622
+                        - Arn
+                    - /stg_module_pipelines/module_source/frontend.zip
+          - Action:
+              - s3:DeleteObject*
+              - s3:PutObject*
+              - s3:Abort*
+            Effect: Allow
+            Resource:
+              - Fn::GetAtt:
+                  - artifactsBucket6C289622
+                  - Arn
+              - Fn::Join:
+                  - ""
+                  - - Fn::GetAtt:
+                        - artifactsBucket6C289622
+                        - Arn
+                    - /*
+          - Action:
+              - codebuild:BatchGetBuilds
+              - codebuild:StartBuild
+              - codebuild:StopBuild
+            Effect: Allow
+            Resource:
+              Fn::GetAtt:
+                - modulebuild2EEFE7F2
+                - Arn
+          - Action:
+              - codebuild:BatchGetBuilds
+              - codebuild:StartBuild
+              - codebuild:StopBuild
+            Effect: Allow
+            Resource:
+              Fn::GetAtt:
+                - moduledeploy2FF9E84E
+                - Arn
+          - Action:
+              - s3:GetObject*
+              - s3:GetBucket*
+              - s3:List*
+            Effect: Allow
+            Resource:
+              - Fn::GetAtt:
+                  - artifactsBucket6C289622
+                  - Arn
+              - Fn::Join:
+                  - ""
+                  - - Fn::GetAtt:
+                        - artifactsBucket6C289622
+                        - Arn
+                    - /stg_module_pipelines/module_source/checklist-service.zip
+          - Action:
+              - s3:GetObject*
+              - s3:GetBucket*
+              - s3:List*
+            Effect: Allow
+            Resource:
+              - Fn::GetAtt:
+                  - artifactsBucket6C289622
+                  - Arn
+              - Fn::Join:
+                  - ""
+                  - - Fn::GetAtt:
+                        - artifactsBucket6C289622
+                        - Arn
+                    - /stg_module_pipelines/module_source/user-service.zip
+          - Action:
+              - s3:GetObject*
+              - s3:GetBucket*
+              - s3:List*
+            Effect: Allow
+            Resource:
+              - Fn::GetAtt:
+                  - artifactsBucket6C289622
+                  - Arn
+              - Fn::Join:
+                  - ""
+                  - - Fn::GetAtt:
+                        - artifactsBucket6C289622
+                        - Arn
+                    - /stg_module_pipelines/module_source/email-service.zip
+          - Action:
+              - s3:GetObject*
+              - s3:GetBucket*
+              - s3:List*
+            Effect: Allow
+            Resource:
+              - Fn::GetAtt:
+                  - artifactsBucket6C289622
+                  - Arn
+              - Fn::Join:
+                  - ""
+                  - - Fn::GetAtt:
+                        - artifactsBucket6C289622
+                        - Arn
+                    - /stg_module_pipelines/module_source/welcome-service.zip
+          - Action:
+              - s3:GetObject*
+              - s3:GetBucket*
+              - s3:List*
+            Effect: Allow
+            Resource:
+              - Fn::GetAtt:
+                  - artifactsBucket6C289622
+                  - Arn
+              - Fn::Join:
+                  - ""
+                  - - Fn::GetAtt:
+                        - artifactsBucket6C289622
+                        - Arn
+                    - /stg_module_pipelines/module_source/sharing-service.zip
+        Version: "2012-10-17"
+      PolicyName: stgPipelineRoleDefaultPolicyA7A19515
+      Roles:
+        - Ref: stgPipelineRole20495B13
+    Metadata:
+      aws:cdk:path: CicdStack/stgPipelineRole/DefaultPolicy/Resource
+  frontendstgpipeline7473BBA4:
+    Type: AWS::CodePipeline::Pipeline
+    Properties:
+      RoleArn:
+        Fn::GetAtt:
+          - stgPipelineRole20495B13
+          - Arn
+      Stages:
+        - Actions:
+            - ActionTypeId:
+                Category: Source
+                Owner: AWS
+                Provider: S3
+                Version: "1"
+              Configuration:
+                S3Bucket:
+                  Ref: artifactsBucket6C289622
+                S3ObjectKey: stg_module_pipelines/module_source/frontend.zip
+                PollForSourceChanges: false
+              Name: frontend_src
+              OutputArtifacts:
+                - Name: Artifact_Source_frontend_src
+              RoleArn:
+                Fn::GetAtt:
+                  - stgPipelineRole20495B13
+                  - Arn
+              RunOrder: 1
+          Name: Source
+        - Actions:
+            - ActionTypeId:
+                Category: Build
+                Owner: AWS
+                Provider: CodeBuild
+                Version: "1"
+              Configuration:
+                ProjectName:
+                  Ref: modulebuild2EEFE7F2
+                EnvironmentVariables:
+                  Fn::Join:
+                    - ""
+                    - - '[{"name":"CROSS_ACCOUNT_ID","type":"PARAMETER_STORE","value":"/shared/accounts/stg"},{"name":"TARGET_REGION","type":"PLAINTEXT","value":"'
+                      - Ref: AWS::Region
+                      - '"},{"name":"SLIC_STAGE","type":"PLAINTEXT","value":"stg"},{"name":"MODULE_NAME","type":"PLAINTEXT","value":"frontend"},{"name":"SITE_BUCKET_PREFIX","type":"PLAINTEXT","value":"my-slic-watch"}]'
+              InputArtifacts:
+                - Name: Artifact_Source_frontend_src
+              Name: Build
+              OutputArtifacts:
+                - Name: Artifact_Build_Build
+              RoleArn:
+                Fn::GetAtt:
+                  - stgPipelineRole20495B13
+                  - Arn
+              RunOrder: 1
+          Name: Build
+        - Actions:
+            - ActionTypeId:
+                Category: Build
+                Owner: AWS
+                Provider: CodeBuild
+                Version: "1"
+              Configuration:
+                ProjectName:
+                  Ref: moduledeploy2FF9E84E
+                EnvironmentVariables:
+                  Fn::Join:
+                    - ""
+                    - - '[{"name":"CROSS_ACCOUNT_ID","type":"PARAMETER_STORE","value":"/shared/accounts/stg"},{"name":"TARGET_REGION","type":"PLAINTEXT","value":"'
+                      - Ref: AWS::Region
+                      - '"},{"name":"SLIC_STAGE","type":"PLAINTEXT","value":"stg"},{"name":"MODULE_NAME","type":"PLAINTEXT","value":"frontend"},{"name":"SITE_BUCKET_PREFIX","type":"PLAINTEXT","value":"my-slic-watch"}]'
+              InputArtifacts:
+                - Name: Artifact_Build_Build
+              Name: Deploy
+              OutputArtifacts:
+                - Name: Artifact_Deploy_Deploy
+              RoleArn:
+                Fn::GetAtt:
+                  - stgPipelineRole20495B13
+                  - Arn
+              RunOrder: 1
+          Name: Deploy
+      ArtifactStore:
+        Location:
+          Ref: artifactsBucket6C289622
+        Type: S3
+      Name: frontend_stg_pipeline
+    DependsOn:
+      - stgPipelineRoleDefaultPolicyA7A19515
+      - stgPipelineRole20495B13
+    Metadata:
+      aws:cdk:path: CicdStack/frontend_stg_pipeline/Resource
+  frontendstgpipelineEventsRole899909FB:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Principal:
+              Service: events.amazonaws.com
+        Version: "2012-10-17"
+    Metadata:
+      aws:cdk:path: CicdStack/frontend_stg_pipeline/EventsRole/Resource
+  frontendstgpipelineEventsRoleDefaultPolicy37F16832:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyDocument:
+        Statement:
+          - Action: codepipeline:StartPipelineExecution
+            Effect: Allow
+            Resource:
+              Fn::Join:
+                - ""
+                - - "arn:"
+                  - Ref: AWS::Partition
+                  - ":codepipeline:"
+                  - Ref: AWS::Region
+                  - ":"
+                  - Ref: AWS::AccountId
+                  - ":"
+                  - Ref: frontendstgpipeline7473BBA4
+        Version: "2012-10-17"
+      PolicyName: frontendstgpipelineEventsRoleDefaultPolicy37F16832
+      Roles:
+        - Ref: frontendstgpipelineEventsRole899909FB
+    Metadata:
+      aws:cdk:path: CicdStack/frontend_stg_pipeline/EventsRole/DefaultPolicy/Resource
+  checklistservicestgpipeline512BD5A3:
+    Type: AWS::CodePipeline::Pipeline
+    Properties:
+      RoleArn:
+        Fn::GetAtt:
+          - stgPipelineRole20495B13
+          - Arn
+      Stages:
+        - Actions:
+            - ActionTypeId:
+                Category: Source
+                Owner: AWS
+                Provider: S3
+                Version: "1"
+              Configuration:
+                S3Bucket:
+                  Ref: artifactsBucket6C289622
+                S3ObjectKey: stg_module_pipelines/module_source/checklist-service.zip
+                PollForSourceChanges: false
+              Name: checklist-service_src
+              OutputArtifacts:
+                - Name: Artifact_Source_checklist-service_src
+              RoleArn:
+                Fn::GetAtt:
+                  - stgPipelineRole20495B13
+                  - Arn
+              RunOrder: 1
+          Name: Source
+        - Actions:
+            - ActionTypeId:
+                Category: Build
+                Owner: AWS
+                Provider: CodeBuild
+                Version: "1"
+              Configuration:
+                ProjectName:
+                  Ref: modulebuild2EEFE7F2
+                EnvironmentVariables:
+                  Fn::Join:
+                    - ""
+                    - - '[{"name":"CROSS_ACCOUNT_ID","type":"PARAMETER_STORE","value":"/shared/accounts/stg"},{"name":"TARGET_REGION","type":"PLAINTEXT","value":"'
+                      - Ref: AWS::Region
+                      - '"},{"name":"SLIC_STAGE","type":"PLAINTEXT","value":"stg"},{"name":"MODULE_NAME","type":"PLAINTEXT","value":"checklist-service"},{"name":"SITE_BUCKET_PREFIX","type":"PLAINTEXT","value":"my-slic-watch"}]'
+              InputArtifacts:
+                - Name: Artifact_Source_checklist-service_src
+              Name: Build
+              OutputArtifacts:
+                - Name: Artifact_Build_Build
+              RoleArn:
+                Fn::GetAtt:
+                  - stgPipelineRole20495B13
+                  - Arn
+              RunOrder: 1
+          Name: Build
+        - Actions:
+            - ActionTypeId:
+                Category: Build
+                Owner: AWS
+                Provider: CodeBuild
+                Version: "1"
+              Configuration:
+                ProjectName:
+                  Ref: moduledeploy2FF9E84E
+                EnvironmentVariables:
+                  Fn::Join:
+                    - ""
+                    - - '[{"name":"CROSS_ACCOUNT_ID","type":"PARAMETER_STORE","value":"/shared/accounts/stg"},{"name":"TARGET_REGION","type":"PLAINTEXT","value":"'
+                      - Ref: AWS::Region
+                      - '"},{"name":"SLIC_STAGE","type":"PLAINTEXT","value":"stg"},{"name":"MODULE_NAME","type":"PLAINTEXT","value":"checklist-service"},{"name":"SITE_BUCKET_PREFIX","type":"PLAINTEXT","value":"my-slic-watch"}]'
+              InputArtifacts:
+                - Name: Artifact_Build_Build
+              Name: Deploy
+              OutputArtifacts:
+                - Name: Artifact_Deploy_Deploy
+              RoleArn:
+                Fn::GetAtt:
+                  - stgPipelineRole20495B13
+                  - Arn
+              RunOrder: 1
+          Name: Deploy
+      ArtifactStore:
+        Location:
+          Ref: artifactsBucket6C289622
+        Type: S3
+      Name: checklist-service_stg_pipeline
+    DependsOn:
+      - stgPipelineRoleDefaultPolicyA7A19515
+      - stgPipelineRole20495B13
+    Metadata:
+      aws:cdk:path: CicdStack/checklist-service_stg_pipeline/Resource
+  checklistservicestgpipelineEventsRole9AD38C12:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Principal:
+              Service: events.amazonaws.com
+        Version: "2012-10-17"
+    Metadata:
+      aws:cdk:path: CicdStack/checklist-service_stg_pipeline/EventsRole/Resource
+  checklistservicestgpipelineEventsRoleDefaultPolicy2FC3229C:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyDocument:
+        Statement:
+          - Action: codepipeline:StartPipelineExecution
+            Effect: Allow
+            Resource:
+              Fn::Join:
+                - ""
+                - - "arn:"
+                  - Ref: AWS::Partition
+                  - ":codepipeline:"
+                  - Ref: AWS::Region
+                  - ":"
+                  - Ref: AWS::AccountId
+                  - ":"
+                  - Ref: checklistservicestgpipeline512BD5A3
+        Version: "2012-10-17"
+      PolicyName: checklistservicestgpipelineEventsRoleDefaultPolicy2FC3229C
+      Roles:
+        - Ref: checklistservicestgpipelineEventsRole9AD38C12
+    Metadata:
+      aws:cdk:path: CicdStack/checklist-service_stg_pipeline/EventsRole/DefaultPolicy/Resource
+  userservicestgpipeline34AFB577:
+    Type: AWS::CodePipeline::Pipeline
+    Properties:
+      RoleArn:
+        Fn::GetAtt:
+          - stgPipelineRole20495B13
+          - Arn
+      Stages:
+        - Actions:
+            - ActionTypeId:
+                Category: Source
+                Owner: AWS
+                Provider: S3
+                Version: "1"
+              Configuration:
+                S3Bucket:
+                  Ref: artifactsBucket6C289622
+                S3ObjectKey: stg_module_pipelines/module_source/user-service.zip
+                PollForSourceChanges: false
+              Name: user-service_src
+              OutputArtifacts:
+                - Name: Artifact_Source_user-service_src
+              RoleArn:
+                Fn::GetAtt:
+                  - stgPipelineRole20495B13
+                  - Arn
+              RunOrder: 1
+          Name: Source
+        - Actions:
+            - ActionTypeId:
+                Category: Build
+                Owner: AWS
+                Provider: CodeBuild
+                Version: "1"
+              Configuration:
+                ProjectName:
+                  Ref: modulebuild2EEFE7F2
+                EnvironmentVariables:
+                  Fn::Join:
+                    - ""
+                    - - '[{"name":"CROSS_ACCOUNT_ID","type":"PARAMETER_STORE","value":"/shared/accounts/stg"},{"name":"TARGET_REGION","type":"PLAINTEXT","value":"'
+                      - Ref: AWS::Region
+                      - '"},{"name":"SLIC_STAGE","type":"PLAINTEXT","value":"stg"},{"name":"MODULE_NAME","type":"PLAINTEXT","value":"user-service"},{"name":"SITE_BUCKET_PREFIX","type":"PLAINTEXT","value":"my-slic-watch"}]'
+              InputArtifacts:
+                - Name: Artifact_Source_user-service_src
+              Name: Build
+              OutputArtifacts:
+                - Name: Artifact_Build_Build
+              RoleArn:
+                Fn::GetAtt:
+                  - stgPipelineRole20495B13
+                  - Arn
+              RunOrder: 1
+          Name: Build
+        - Actions:
+            - ActionTypeId:
+                Category: Build
+                Owner: AWS
+                Provider: CodeBuild
+                Version: "1"
+              Configuration:
+                ProjectName:
+                  Ref: moduledeploy2FF9E84E
+                EnvironmentVariables:
+                  Fn::Join:
+                    - ""
+                    - - '[{"name":"CROSS_ACCOUNT_ID","type":"PARAMETER_STORE","value":"/shared/accounts/stg"},{"name":"TARGET_REGION","type":"PLAINTEXT","value":"'
+                      - Ref: AWS::Region
+                      - '"},{"name":"SLIC_STAGE","type":"PLAINTEXT","value":"stg"},{"name":"MODULE_NAME","type":"PLAINTEXT","value":"user-service"},{"name":"SITE_BUCKET_PREFIX","type":"PLAINTEXT","value":"my-slic-watch"}]'
+              InputArtifacts:
+                - Name: Artifact_Build_Build
+              Name: Deploy
+              OutputArtifacts:
+                - Name: Artifact_Deploy_Deploy
+              RoleArn:
+                Fn::GetAtt:
+                  - stgPipelineRole20495B13
+                  - Arn
+              RunOrder: 1
+          Name: Deploy
+      ArtifactStore:
+        Location:
+          Ref: artifactsBucket6C289622
+        Type: S3
+      Name: user-service_stg_pipeline
+    DependsOn:
+      - stgPipelineRoleDefaultPolicyA7A19515
+      - stgPipelineRole20495B13
+    Metadata:
+      aws:cdk:path: CicdStack/user-service_stg_pipeline/Resource
+  userservicestgpipelineEventsRole161032D9:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Principal:
+              Service: events.amazonaws.com
+        Version: "2012-10-17"
+    Metadata:
+      aws:cdk:path: CicdStack/user-service_stg_pipeline/EventsRole/Resource
+  userservicestgpipelineEventsRoleDefaultPolicy7AD6056E:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyDocument:
+        Statement:
+          - Action: codepipeline:StartPipelineExecution
+            Effect: Allow
+            Resource:
+              Fn::Join:
+                - ""
+                - - "arn:"
+                  - Ref: AWS::Partition
+                  - ":codepipeline:"
+                  - Ref: AWS::Region
+                  - ":"
+                  - Ref: AWS::AccountId
+                  - ":"
+                  - Ref: userservicestgpipeline34AFB577
+        Version: "2012-10-17"
+      PolicyName: userservicestgpipelineEventsRoleDefaultPolicy7AD6056E
+      Roles:
+        - Ref: userservicestgpipelineEventsRole161032D9
+    Metadata:
+      aws:cdk:path: CicdStack/user-service_stg_pipeline/EventsRole/DefaultPolicy/Resource
+  emailservicestgpipeline78A0697C:
+    Type: AWS::CodePipeline::Pipeline
+    Properties:
+      RoleArn:
+        Fn::GetAtt:
+          - stgPipelineRole20495B13
+          - Arn
+      Stages:
+        - Actions:
+            - ActionTypeId:
+                Category: Source
+                Owner: AWS
+                Provider: S3
+                Version: "1"
+              Configuration:
+                S3Bucket:
+                  Ref: artifactsBucket6C289622
+                S3ObjectKey: stg_module_pipelines/module_source/email-service.zip
+                PollForSourceChanges: false
+              Name: email-service_src
+              OutputArtifacts:
+                - Name: Artifact_Source_email-service_src
+              RoleArn:
+                Fn::GetAtt:
+                  - stgPipelineRole20495B13
+                  - Arn
+              RunOrder: 1
+          Name: Source
+        - Actions:
+            - ActionTypeId:
+                Category: Build
+                Owner: AWS
+                Provider: CodeBuild
+                Version: "1"
+              Configuration:
+                ProjectName:
+                  Ref: modulebuild2EEFE7F2
+                EnvironmentVariables:
+                  Fn::Join:
+                    - ""
+                    - - '[{"name":"CROSS_ACCOUNT_ID","type":"PARAMETER_STORE","value":"/shared/accounts/stg"},{"name":"TARGET_REGION","type":"PLAINTEXT","value":"'
+                      - Ref: AWS::Region
+                      - '"},{"name":"SLIC_STAGE","type":"PLAINTEXT","value":"stg"},{"name":"MODULE_NAME","type":"PLAINTEXT","value":"email-service"},{"name":"SITE_BUCKET_PREFIX","type":"PLAINTEXT","value":"my-slic-watch"}]'
+              InputArtifacts:
+                - Name: Artifact_Source_email-service_src
+              Name: Build
+              OutputArtifacts:
+                - Name: Artifact_Build_Build
+              RoleArn:
+                Fn::GetAtt:
+                  - stgPipelineRole20495B13
+                  - Arn
+              RunOrder: 1
+          Name: Build
+        - Actions:
+            - ActionTypeId:
+                Category: Build
+                Owner: AWS
+                Provider: CodeBuild
+                Version: "1"
+              Configuration:
+                ProjectName:
+                  Ref: moduledeploy2FF9E84E
+                EnvironmentVariables:
+                  Fn::Join:
+                    - ""
+                    - - '[{"name":"CROSS_ACCOUNT_ID","type":"PARAMETER_STORE","value":"/shared/accounts/stg"},{"name":"TARGET_REGION","type":"PLAINTEXT","value":"'
+                      - Ref: AWS::Region
+                      - '"},{"name":"SLIC_STAGE","type":"PLAINTEXT","value":"stg"},{"name":"MODULE_NAME","type":"PLAINTEXT","value":"email-service"},{"name":"SITE_BUCKET_PREFIX","type":"PLAINTEXT","value":"my-slic-watch"}]'
+              InputArtifacts:
+                - Name: Artifact_Build_Build
+              Name: Deploy
+              OutputArtifacts:
+                - Name: Artifact_Deploy_Deploy
+              RoleArn:
+                Fn::GetAtt:
+                  - stgPipelineRole20495B13
+                  - Arn
+              RunOrder: 1
+          Name: Deploy
+      ArtifactStore:
+        Location:
+          Ref: artifactsBucket6C289622
+        Type: S3
+      Name: email-service_stg_pipeline
+    DependsOn:
+      - stgPipelineRoleDefaultPolicyA7A19515
+      - stgPipelineRole20495B13
+    Metadata:
+      aws:cdk:path: CicdStack/email-service_stg_pipeline/Resource
+  emailservicestgpipelineEventsRoleA8FCCB78:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Principal:
+              Service: events.amazonaws.com
+        Version: "2012-10-17"
+    Metadata:
+      aws:cdk:path: CicdStack/email-service_stg_pipeline/EventsRole/Resource
+  emailservicestgpipelineEventsRoleDefaultPolicyA20C034B:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyDocument:
+        Statement:
+          - Action: codepipeline:StartPipelineExecution
+            Effect: Allow
+            Resource:
+              Fn::Join:
+                - ""
+                - - "arn:"
+                  - Ref: AWS::Partition
+                  - ":codepipeline:"
+                  - Ref: AWS::Region
+                  - ":"
+                  - Ref: AWS::AccountId
+                  - ":"
+                  - Ref: emailservicestgpipeline78A0697C
+        Version: "2012-10-17"
+      PolicyName: emailservicestgpipelineEventsRoleDefaultPolicyA20C034B
+      Roles:
+        - Ref: emailservicestgpipelineEventsRoleA8FCCB78
+    Metadata:
+      aws:cdk:path: CicdStack/email-service_stg_pipeline/EventsRole/DefaultPolicy/Resource
+  welcomeservicestgpipelineAA058C98:
+    Type: AWS::CodePipeline::Pipeline
+    Properties:
+      RoleArn:
+        Fn::GetAtt:
+          - stgPipelineRole20495B13
+          - Arn
+      Stages:
+        - Actions:
+            - ActionTypeId:
+                Category: Source
+                Owner: AWS
+                Provider: S3
+                Version: "1"
+              Configuration:
+                S3Bucket:
+                  Ref: artifactsBucket6C289622
+                S3ObjectKey: stg_module_pipelines/module_source/welcome-service.zip
+                PollForSourceChanges: false
+              Name: welcome-service_src
+              OutputArtifacts:
+                - Name: Artifact_Source_welcome-service_src
+              RoleArn:
+                Fn::GetAtt:
+                  - stgPipelineRole20495B13
+                  - Arn
+              RunOrder: 1
+          Name: Source
+        - Actions:
+            - ActionTypeId:
+                Category: Build
+                Owner: AWS
+                Provider: CodeBuild
+                Version: "1"
+              Configuration:
+                ProjectName:
+                  Ref: modulebuild2EEFE7F2
+                EnvironmentVariables:
+                  Fn::Join:
+                    - ""
+                    - - '[{"name":"CROSS_ACCOUNT_ID","type":"PARAMETER_STORE","value":"/shared/accounts/stg"},{"name":"TARGET_REGION","type":"PLAINTEXT","value":"'
+                      - Ref: AWS::Region
+                      - '"},{"name":"SLIC_STAGE","type":"PLAINTEXT","value":"stg"},{"name":"MODULE_NAME","type":"PLAINTEXT","value":"welcome-service"},{"name":"SITE_BUCKET_PREFIX","type":"PLAINTEXT","value":"my-slic-watch"}]'
+              InputArtifacts:
+                - Name: Artifact_Source_welcome-service_src
+              Name: Build
+              OutputArtifacts:
+                - Name: Artifact_Build_Build
+              RoleArn:
+                Fn::GetAtt:
+                  - stgPipelineRole20495B13
+                  - Arn
+              RunOrder: 1
+          Name: Build
+        - Actions:
+            - ActionTypeId:
+                Category: Build
+                Owner: AWS
+                Provider: CodeBuild
+                Version: "1"
+              Configuration:
+                ProjectName:
+                  Ref: moduledeploy2FF9E84E
+                EnvironmentVariables:
+                  Fn::Join:
+                    - ""
+                    - - '[{"name":"CROSS_ACCOUNT_ID","type":"PARAMETER_STORE","value":"/shared/accounts/stg"},{"name":"TARGET_REGION","type":"PLAINTEXT","value":"'
+                      - Ref: AWS::Region
+                      - '"},{"name":"SLIC_STAGE","type":"PLAINTEXT","value":"stg"},{"name":"MODULE_NAME","type":"PLAINTEXT","value":"welcome-service"},{"name":"SITE_BUCKET_PREFIX","type":"PLAINTEXT","value":"my-slic-watch"}]'
+              InputArtifacts:
+                - Name: Artifact_Build_Build
+              Name: Deploy
+              OutputArtifacts:
+                - Name: Artifact_Deploy_Deploy
+              RoleArn:
+                Fn::GetAtt:
+                  - stgPipelineRole20495B13
+                  - Arn
+              RunOrder: 1
+          Name: Deploy
+      ArtifactStore:
+        Location:
+          Ref: artifactsBucket6C289622
+        Type: S3
+      Name: welcome-service_stg_pipeline
+    DependsOn:
+      - stgPipelineRoleDefaultPolicyA7A19515
+      - stgPipelineRole20495B13
+    Metadata:
+      aws:cdk:path: CicdStack/welcome-service_stg_pipeline/Resource
+  welcomeservicestgpipelineEventsRole27220F44:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Principal:
+              Service: events.amazonaws.com
+        Version: "2012-10-17"
+    Metadata:
+      aws:cdk:path: CicdStack/welcome-service_stg_pipeline/EventsRole/Resource
+  welcomeservicestgpipelineEventsRoleDefaultPolicyB2008C03:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyDocument:
+        Statement:
+          - Action: codepipeline:StartPipelineExecution
+            Effect: Allow
+            Resource:
+              Fn::Join:
+                - ""
+                - - "arn:"
+                  - Ref: AWS::Partition
+                  - ":codepipeline:"
+                  - Ref: AWS::Region
+                  - ":"
+                  - Ref: AWS::AccountId
+                  - ":"
+                  - Ref: welcomeservicestgpipelineAA058C98
+        Version: "2012-10-17"
+      PolicyName: welcomeservicestgpipelineEventsRoleDefaultPolicyB2008C03
+      Roles:
+        - Ref: welcomeservicestgpipelineEventsRole27220F44
+    Metadata:
+      aws:cdk:path: CicdStack/welcome-service_stg_pipeline/EventsRole/DefaultPolicy/Resource
+  sharingservicestgpipeline94E3F903:
+    Type: AWS::CodePipeline::Pipeline
+    Properties:
+      RoleArn:
+        Fn::GetAtt:
+          - stgPipelineRole20495B13
+          - Arn
+      Stages:
+        - Actions:
+            - ActionTypeId:
+                Category: Source
+                Owner: AWS
+                Provider: S3
+                Version: "1"
+              Configuration:
+                S3Bucket:
+                  Ref: artifactsBucket6C289622
+                S3ObjectKey: stg_module_pipelines/module_source/sharing-service.zip
+                PollForSourceChanges: false
+              Name: sharing-service_src
+              OutputArtifacts:
+                - Name: Artifact_Source_sharing-service_src
+              RoleArn:
+                Fn::GetAtt:
+                  - stgPipelineRole20495B13
+                  - Arn
+              RunOrder: 1
+          Name: Source
+        - Actions:
+            - ActionTypeId:
+                Category: Build
+                Owner: AWS
+                Provider: CodeBuild
+                Version: "1"
+              Configuration:
+                ProjectName:
+                  Ref: modulebuild2EEFE7F2
+                EnvironmentVariables:
+                  Fn::Join:
+                    - ""
+                    - - '[{"name":"CROSS_ACCOUNT_ID","type":"PARAMETER_STORE","value":"/shared/accounts/stg"},{"name":"TARGET_REGION","type":"PLAINTEXT","value":"'
+                      - Ref: AWS::Region
+                      - '"},{"name":"SLIC_STAGE","type":"PLAINTEXT","value":"stg"},{"name":"MODULE_NAME","type":"PLAINTEXT","value":"sharing-service"},{"name":"SITE_BUCKET_PREFIX","type":"PLAINTEXT","value":"my-slic-watch"}]'
+              InputArtifacts:
+                - Name: Artifact_Source_sharing-service_src
+              Name: Build
+              OutputArtifacts:
+                - Name: Artifact_Build_Build
+              RoleArn:
+                Fn::GetAtt:
+                  - stgPipelineRole20495B13
+                  - Arn
+              RunOrder: 1
+          Name: Build
+        - Actions:
+            - ActionTypeId:
+                Category: Build
+                Owner: AWS
+                Provider: CodeBuild
+                Version: "1"
+              Configuration:
+                ProjectName:
+                  Ref: moduledeploy2FF9E84E
+                EnvironmentVariables:
+                  Fn::Join:
+                    - ""
+                    - - '[{"name":"CROSS_ACCOUNT_ID","type":"PARAMETER_STORE","value":"/shared/accounts/stg"},{"name":"TARGET_REGION","type":"PLAINTEXT","value":"'
+                      - Ref: AWS::Region
+                      - '"},{"name":"SLIC_STAGE","type":"PLAINTEXT","value":"stg"},{"name":"MODULE_NAME","type":"PLAINTEXT","value":"sharing-service"},{"name":"SITE_BUCKET_PREFIX","type":"PLAINTEXT","value":"my-slic-watch"}]'
+              InputArtifacts:
+                - Name: Artifact_Build_Build
+              Name: Deploy
+              OutputArtifacts:
+                - Name: Artifact_Deploy_Deploy
+              RoleArn:
+                Fn::GetAtt:
+                  - stgPipelineRole20495B13
+                  - Arn
+              RunOrder: 1
+          Name: Deploy
+      ArtifactStore:
+        Location:
+          Ref: artifactsBucket6C289622
+        Type: S3
+      Name: sharing-service_stg_pipeline
+    DependsOn:
+      - stgPipelineRoleDefaultPolicyA7A19515
+      - stgPipelineRole20495B13
+    Metadata:
+      aws:cdk:path: CicdStack/sharing-service_stg_pipeline/Resource
+  sharingservicestgpipelineEventsRoleD3ECE8C7:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Principal:
+              Service: events.amazonaws.com
+        Version: "2012-10-17"
+    Metadata:
+      aws:cdk:path: CicdStack/sharing-service_stg_pipeline/EventsRole/Resource
+  sharingservicestgpipelineEventsRoleDefaultPolicy4DB1AABF:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyDocument:
+        Statement:
+          - Action: codepipeline:StartPipelineExecution
+            Effect: Allow
+            Resource:
+              Fn::Join:
+                - ""
+                - - "arn:"
+                  - Ref: AWS::Partition
+                  - ":codepipeline:"
+                  - Ref: AWS::Region
+                  - ":"
+                  - Ref: AWS::AccountId
+                  - ":"
+                  - Ref: sharingservicestgpipeline94E3F903
+        Version: "2012-10-17"
+      PolicyName: sharingservicestgpipelineEventsRoleDefaultPolicy4DB1AABF
+      Roles:
+        - Ref: sharingservicestgpipelineEventsRoleD3ECE8C7
+    Metadata:
+      aws:cdk:path: CicdStack/sharing-service_stg_pipeline/EventsRole/DefaultPolicy/Resource
+  prodPipelineRoleD9ED788A:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Principal:
+              Service: codepipeline.amazonaws.com
+        Version: "2012-10-17"
+    Metadata:
+      aws:cdk:path: CicdStack/prodPipelineRole/Resource
+  prodPipelineRoleDefaultPolicy1C28794D:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyDocument:
+        Statement:
+          - Action:
+              - s3:GetObject*
+              - s3:GetBucket*
+              - s3:List*
+              - s3:DeleteObject*
+              - s3:PutObject*
+              - s3:Abort*
+            Effect: Allow
+            Resource:
+              - Fn::GetAtt:
+                  - artifactsBucket6C289622
+                  - Arn
+              - Fn::Join:
+                  - ""
+                  - - Fn::GetAtt:
+                        - artifactsBucket6C289622
+                        - Arn
+                    - /*
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Resource:
+              Fn::GetAtt:
+                - prodPipelineRoleD9ED788A
+                - Arn
+          - Action:
+              - s3:GetObject*
+              - s3:GetBucket*
+              - s3:List*
+            Effect: Allow
+            Resource:
+              - Fn::GetAtt:
+                  - artifactsBucket6C289622
+                  - Arn
+              - Fn::Join:
+                  - ""
+                  - - Fn::GetAtt:
+                        - artifactsBucket6C289622
+                        - Arn
+                    - /prod_module_pipelines/module_source/frontend.zip
+          - Action:
+              - s3:DeleteObject*
+              - s3:PutObject*
+              - s3:Abort*
+            Effect: Allow
+            Resource:
+              - Fn::GetAtt:
+                  - artifactsBucket6C289622
+                  - Arn
+              - Fn::Join:
+                  - ""
+                  - - Fn::GetAtt:
+                        - artifactsBucket6C289622
+                        - Arn
+                    - /*
+          - Action:
+              - codebuild:BatchGetBuilds
+              - codebuild:StartBuild
+              - codebuild:StopBuild
+            Effect: Allow
+            Resource:
+              Fn::GetAtt:
+                - modulebuild2EEFE7F2
+                - Arn
+          - Action:
+              - codebuild:BatchGetBuilds
+              - codebuild:StartBuild
+              - codebuild:StopBuild
+            Effect: Allow
+            Resource:
+              Fn::GetAtt:
+                - moduledeploy2FF9E84E
+                - Arn
+          - Action:
+              - s3:GetObject*
+              - s3:GetBucket*
+              - s3:List*
+            Effect: Allow
+            Resource:
+              - Fn::GetAtt:
+                  - artifactsBucket6C289622
+                  - Arn
+              - Fn::Join:
+                  - ""
+                  - - Fn::GetAtt:
+                        - artifactsBucket6C289622
+                        - Arn
+                    - /prod_module_pipelines/module_source/checklist-service.zip
+          - Action:
+              - s3:GetObject*
+              - s3:GetBucket*
+              - s3:List*
+            Effect: Allow
+            Resource:
+              - Fn::GetAtt:
+                  - artifactsBucket6C289622
+                  - Arn
+              - Fn::Join:
+                  - ""
+                  - - Fn::GetAtt:
+                        - artifactsBucket6C289622
+                        - Arn
+                    - /prod_module_pipelines/module_source/user-service.zip
+          - Action:
+              - s3:GetObject*
+              - s3:GetBucket*
+              - s3:List*
+            Effect: Allow
+            Resource:
+              - Fn::GetAtt:
+                  - artifactsBucket6C289622
+                  - Arn
+              - Fn::Join:
+                  - ""
+                  - - Fn::GetAtt:
+                        - artifactsBucket6C289622
+                        - Arn
+                    - /prod_module_pipelines/module_source/email-service.zip
+          - Action:
+              - s3:GetObject*
+              - s3:GetBucket*
+              - s3:List*
+            Effect: Allow
+            Resource:
+              - Fn::GetAtt:
+                  - artifactsBucket6C289622
+                  - Arn
+              - Fn::Join:
+                  - ""
+                  - - Fn::GetAtt:
+                        - artifactsBucket6C289622
+                        - Arn
+                    - /prod_module_pipelines/module_source/welcome-service.zip
+          - Action:
+              - s3:GetObject*
+              - s3:GetBucket*
+              - s3:List*
+            Effect: Allow
+            Resource:
+              - Fn::GetAtt:
+                  - artifactsBucket6C289622
+                  - Arn
+              - Fn::Join:
+                  - ""
+                  - - Fn::GetAtt:
+                        - artifactsBucket6C289622
+                        - Arn
+                    - /prod_module_pipelines/module_source/sharing-service.zip
+        Version: "2012-10-17"
+      PolicyName: prodPipelineRoleDefaultPolicy1C28794D
+      Roles:
+        - Ref: prodPipelineRoleD9ED788A
+    Metadata:
+      aws:cdk:path: CicdStack/prodPipelineRole/DefaultPolicy/Resource
+  frontendprodpipeline0F6AF360:
+    Type: AWS::CodePipeline::Pipeline
+    Properties:
+      RoleArn:
+        Fn::GetAtt:
+          - prodPipelineRoleD9ED788A
+          - Arn
+      Stages:
+        - Actions:
+            - ActionTypeId:
+                Category: Source
+                Owner: AWS
+                Provider: S3
+                Version: "1"
+              Configuration:
+                S3Bucket:
+                  Ref: artifactsBucket6C289622
+                S3ObjectKey: prod_module_pipelines/module_source/frontend.zip
+                PollForSourceChanges: false
+              Name: frontend_src
+              OutputArtifacts:
+                - Name: Artifact_Source_frontend_src
+              RoleArn:
+                Fn::GetAtt:
+                  - prodPipelineRoleD9ED788A
+                  - Arn
+              RunOrder: 1
+          Name: Source
+        - Actions:
+            - ActionTypeId:
+                Category: Build
+                Owner: AWS
+                Provider: CodeBuild
+                Version: "1"
+              Configuration:
+                ProjectName:
+                  Ref: modulebuild2EEFE7F2
+                EnvironmentVariables:
+                  Fn::Join:
+                    - ""
+                    - - '[{"name":"CROSS_ACCOUNT_ID","type":"PARAMETER_STORE","value":"/shared/accounts/prod"},{"name":"TARGET_REGION","type":"PLAINTEXT","value":"'
+                      - Ref: AWS::Region
+                      - '"},{"name":"SLIC_STAGE","type":"PLAINTEXT","value":"prod"},{"name":"MODULE_NAME","type":"PLAINTEXT","value":"frontend"},{"name":"SITE_BUCKET_PREFIX","type":"PLAINTEXT","value":"my-slic-watch"}]'
+              InputArtifacts:
+                - Name: Artifact_Source_frontend_src
+              Name: Build
+              OutputArtifacts:
+                - Name: Artifact_Build_Build
+              RoleArn:
+                Fn::GetAtt:
+                  - prodPipelineRoleD9ED788A
+                  - Arn
+              RunOrder: 1
+          Name: Build
+        - Actions:
+            - ActionTypeId:
+                Category: Build
+                Owner: AWS
+                Provider: CodeBuild
+                Version: "1"
+              Configuration:
+                ProjectName:
+                  Ref: moduledeploy2FF9E84E
+                EnvironmentVariables:
+                  Fn::Join:
+                    - ""
+                    - - '[{"name":"CROSS_ACCOUNT_ID","type":"PARAMETER_STORE","value":"/shared/accounts/prod"},{"name":"TARGET_REGION","type":"PLAINTEXT","value":"'
+                      - Ref: AWS::Region
+                      - '"},{"name":"SLIC_STAGE","type":"PLAINTEXT","value":"prod"},{"name":"MODULE_NAME","type":"PLAINTEXT","value":"frontend"},{"name":"SITE_BUCKET_PREFIX","type":"PLAINTEXT","value":"my-slic-watch"}]'
+              InputArtifacts:
+                - Name: Artifact_Build_Build
+              Name: Deploy
+              OutputArtifacts:
+                - Name: Artifact_Deploy_Deploy
+              RoleArn:
+                Fn::GetAtt:
+                  - prodPipelineRoleD9ED788A
+                  - Arn
+              RunOrder: 1
+          Name: Deploy
+      ArtifactStore:
+        Location:
+          Ref: artifactsBucket6C289622
+        Type: S3
+      Name: frontend_prod_pipeline
+    DependsOn:
+      - prodPipelineRoleDefaultPolicy1C28794D
+      - prodPipelineRoleD9ED788A
+    Metadata:
+      aws:cdk:path: CicdStack/frontend_prod_pipeline/Resource
+  frontendprodpipelineEventsRole90E2F9AF:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Principal:
+              Service: events.amazonaws.com
+        Version: "2012-10-17"
+    Metadata:
+      aws:cdk:path: CicdStack/frontend_prod_pipeline/EventsRole/Resource
+  frontendprodpipelineEventsRoleDefaultPolicy6E632FFB:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyDocument:
+        Statement:
+          - Action: codepipeline:StartPipelineExecution
+            Effect: Allow
+            Resource:
+              Fn::Join:
+                - ""
+                - - "arn:"
+                  - Ref: AWS::Partition
+                  - ":codepipeline:"
+                  - Ref: AWS::Region
+                  - ":"
+                  - Ref: AWS::AccountId
+                  - ":"
+                  - Ref: frontendprodpipeline0F6AF360
+        Version: "2012-10-17"
+      PolicyName: frontendprodpipelineEventsRoleDefaultPolicy6E632FFB
+      Roles:
+        - Ref: frontendprodpipelineEventsRole90E2F9AF
+    Metadata:
+      aws:cdk:path: CicdStack/frontend_prod_pipeline/EventsRole/DefaultPolicy/Resource
+  checklistserviceprodpipelineB452FC7D:
+    Type: AWS::CodePipeline::Pipeline
+    Properties:
+      RoleArn:
+        Fn::GetAtt:
+          - prodPipelineRoleD9ED788A
+          - Arn
+      Stages:
+        - Actions:
+            - ActionTypeId:
+                Category: Source
+                Owner: AWS
+                Provider: S3
+                Version: "1"
+              Configuration:
+                S3Bucket:
+                  Ref: artifactsBucket6C289622
+                S3ObjectKey: prod_module_pipelines/module_source/checklist-service.zip
+                PollForSourceChanges: false
+              Name: checklist-service_src
+              OutputArtifacts:
+                - Name: Artifact_Source_checklist-service_src
+              RoleArn:
+                Fn::GetAtt:
+                  - prodPipelineRoleD9ED788A
+                  - Arn
+              RunOrder: 1
+          Name: Source
+        - Actions:
+            - ActionTypeId:
+                Category: Build
+                Owner: AWS
+                Provider: CodeBuild
+                Version: "1"
+              Configuration:
+                ProjectName:
+                  Ref: modulebuild2EEFE7F2
+                EnvironmentVariables:
+                  Fn::Join:
+                    - ""
+                    - - '[{"name":"CROSS_ACCOUNT_ID","type":"PARAMETER_STORE","value":"/shared/accounts/prod"},{"name":"TARGET_REGION","type":"PLAINTEXT","value":"'
+                      - Ref: AWS::Region
+                      - '"},{"name":"SLIC_STAGE","type":"PLAINTEXT","value":"prod"},{"name":"MODULE_NAME","type":"PLAINTEXT","value":"checklist-service"},{"name":"SITE_BUCKET_PREFIX","type":"PLAINTEXT","value":"my-slic-watch"}]'
+              InputArtifacts:
+                - Name: Artifact_Source_checklist-service_src
+              Name: Build
+              OutputArtifacts:
+                - Name: Artifact_Build_Build
+              RoleArn:
+                Fn::GetAtt:
+                  - prodPipelineRoleD9ED788A
+                  - Arn
+              RunOrder: 1
+          Name: Build
+        - Actions:
+            - ActionTypeId:
+                Category: Build
+                Owner: AWS
+                Provider: CodeBuild
+                Version: "1"
+              Configuration:
+                ProjectName:
+                  Ref: moduledeploy2FF9E84E
+                EnvironmentVariables:
+                  Fn::Join:
+                    - ""
+                    - - '[{"name":"CROSS_ACCOUNT_ID","type":"PARAMETER_STORE","value":"/shared/accounts/prod"},{"name":"TARGET_REGION","type":"PLAINTEXT","value":"'
+                      - Ref: AWS::Region
+                      - '"},{"name":"SLIC_STAGE","type":"PLAINTEXT","value":"prod"},{"name":"MODULE_NAME","type":"PLAINTEXT","value":"checklist-service"},{"name":"SITE_BUCKET_PREFIX","type":"PLAINTEXT","value":"my-slic-watch"}]'
+              InputArtifacts:
+                - Name: Artifact_Build_Build
+              Name: Deploy
+              OutputArtifacts:
+                - Name: Artifact_Deploy_Deploy
+              RoleArn:
+                Fn::GetAtt:
+                  - prodPipelineRoleD9ED788A
+                  - Arn
+              RunOrder: 1
+          Name: Deploy
+      ArtifactStore:
+        Location:
+          Ref: artifactsBucket6C289622
+        Type: S3
+      Name: checklist-service_prod_pipeline
+    DependsOn:
+      - prodPipelineRoleDefaultPolicy1C28794D
+      - prodPipelineRoleD9ED788A
+    Metadata:
+      aws:cdk:path: CicdStack/checklist-service_prod_pipeline/Resource
+  checklistserviceprodpipelineEventsRoleF06819C5:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Principal:
+              Service: events.amazonaws.com
+        Version: "2012-10-17"
+    Metadata:
+      aws:cdk:path: CicdStack/checklist-service_prod_pipeline/EventsRole/Resource
+  checklistserviceprodpipelineEventsRoleDefaultPolicyAFC508A6:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyDocument:
+        Statement:
+          - Action: codepipeline:StartPipelineExecution
+            Effect: Allow
+            Resource:
+              Fn::Join:
+                - ""
+                - - "arn:"
+                  - Ref: AWS::Partition
+                  - ":codepipeline:"
+                  - Ref: AWS::Region
+                  - ":"
+                  - Ref: AWS::AccountId
+                  - ":"
+                  - Ref: checklistserviceprodpipelineB452FC7D
+        Version: "2012-10-17"
+      PolicyName: checklistserviceprodpipelineEventsRoleDefaultPolicyAFC508A6
+      Roles:
+        - Ref: checklistserviceprodpipelineEventsRoleF06819C5
+    Metadata:
+      aws:cdk:path: CicdStack/checklist-service_prod_pipeline/EventsRole/DefaultPolicy/Resource
+  userserviceprodpipeline38231989:
+    Type: AWS::CodePipeline::Pipeline
+    Properties:
+      RoleArn:
+        Fn::GetAtt:
+          - prodPipelineRoleD9ED788A
+          - Arn
+      Stages:
+        - Actions:
+            - ActionTypeId:
+                Category: Source
+                Owner: AWS
+                Provider: S3
+                Version: "1"
+              Configuration:
+                S3Bucket:
+                  Ref: artifactsBucket6C289622
+                S3ObjectKey: prod_module_pipelines/module_source/user-service.zip
+                PollForSourceChanges: false
+              Name: user-service_src
+              OutputArtifacts:
+                - Name: Artifact_Source_user-service_src
+              RoleArn:
+                Fn::GetAtt:
+                  - prodPipelineRoleD9ED788A
+                  - Arn
+              RunOrder: 1
+          Name: Source
+        - Actions:
+            - ActionTypeId:
+                Category: Build
+                Owner: AWS
+                Provider: CodeBuild
+                Version: "1"
+              Configuration:
+                ProjectName:
+                  Ref: modulebuild2EEFE7F2
+                EnvironmentVariables:
+                  Fn::Join:
+                    - ""
+                    - - '[{"name":"CROSS_ACCOUNT_ID","type":"PARAMETER_STORE","value":"/shared/accounts/prod"},{"name":"TARGET_REGION","type":"PLAINTEXT","value":"'
+                      - Ref: AWS::Region
+                      - '"},{"name":"SLIC_STAGE","type":"PLAINTEXT","value":"prod"},{"name":"MODULE_NAME","type":"PLAINTEXT","value":"user-service"},{"name":"SITE_BUCKET_PREFIX","type":"PLAINTEXT","value":"my-slic-watch"}]'
+              InputArtifacts:
+                - Name: Artifact_Source_user-service_src
+              Name: Build
+              OutputArtifacts:
+                - Name: Artifact_Build_Build
+              RoleArn:
+                Fn::GetAtt:
+                  - prodPipelineRoleD9ED788A
+                  - Arn
+              RunOrder: 1
+          Name: Build
+        - Actions:
+            - ActionTypeId:
+                Category: Build
+                Owner: AWS
+                Provider: CodeBuild
+                Version: "1"
+              Configuration:
+                ProjectName:
+                  Ref: moduledeploy2FF9E84E
+                EnvironmentVariables:
+                  Fn::Join:
+                    - ""
+                    - - '[{"name":"CROSS_ACCOUNT_ID","type":"PARAMETER_STORE","value":"/shared/accounts/prod"},{"name":"TARGET_REGION","type":"PLAINTEXT","value":"'
+                      - Ref: AWS::Region
+                      - '"},{"name":"SLIC_STAGE","type":"PLAINTEXT","value":"prod"},{"name":"MODULE_NAME","type":"PLAINTEXT","value":"user-service"},{"name":"SITE_BUCKET_PREFIX","type":"PLAINTEXT","value":"my-slic-watch"}]'
+              InputArtifacts:
+                - Name: Artifact_Build_Build
+              Name: Deploy
+              OutputArtifacts:
+                - Name: Artifact_Deploy_Deploy
+              RoleArn:
+                Fn::GetAtt:
+                  - prodPipelineRoleD9ED788A
+                  - Arn
+              RunOrder: 1
+          Name: Deploy
+      ArtifactStore:
+        Location:
+          Ref: artifactsBucket6C289622
+        Type: S3
+      Name: user-service_prod_pipeline
+    DependsOn:
+      - prodPipelineRoleDefaultPolicy1C28794D
+      - prodPipelineRoleD9ED788A
+    Metadata:
+      aws:cdk:path: CicdStack/user-service_prod_pipeline/Resource
+  userserviceprodpipelineEventsRole35526426:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Principal:
+              Service: events.amazonaws.com
+        Version: "2012-10-17"
+    Metadata:
+      aws:cdk:path: CicdStack/user-service_prod_pipeline/EventsRole/Resource
+  userserviceprodpipelineEventsRoleDefaultPolicyEDEB45E5:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyDocument:
+        Statement:
+          - Action: codepipeline:StartPipelineExecution
+            Effect: Allow
+            Resource:
+              Fn::Join:
+                - ""
+                - - "arn:"
+                  - Ref: AWS::Partition
+                  - ":codepipeline:"
+                  - Ref: AWS::Region
+                  - ":"
+                  - Ref: AWS::AccountId
+                  - ":"
+                  - Ref: userserviceprodpipeline38231989
+        Version: "2012-10-17"
+      PolicyName: userserviceprodpipelineEventsRoleDefaultPolicyEDEB45E5
+      Roles:
+        - Ref: userserviceprodpipelineEventsRole35526426
+    Metadata:
+      aws:cdk:path: CicdStack/user-service_prod_pipeline/EventsRole/DefaultPolicy/Resource
+  emailserviceprodpipeline3A7282C3:
+    Type: AWS::CodePipeline::Pipeline
+    Properties:
+      RoleArn:
+        Fn::GetAtt:
+          - prodPipelineRoleD9ED788A
+          - Arn
+      Stages:
+        - Actions:
+            - ActionTypeId:
+                Category: Source
+                Owner: AWS
+                Provider: S3
+                Version: "1"
+              Configuration:
+                S3Bucket:
+                  Ref: artifactsBucket6C289622
+                S3ObjectKey: prod_module_pipelines/module_source/email-service.zip
+                PollForSourceChanges: false
+              Name: email-service_src
+              OutputArtifacts:
+                - Name: Artifact_Source_email-service_src
+              RoleArn:
+                Fn::GetAtt:
+                  - prodPipelineRoleD9ED788A
+                  - Arn
+              RunOrder: 1
+          Name: Source
+        - Actions:
+            - ActionTypeId:
+                Category: Build
+                Owner: AWS
+                Provider: CodeBuild
+                Version: "1"
+              Configuration:
+                ProjectName:
+                  Ref: modulebuild2EEFE7F2
+                EnvironmentVariables:
+                  Fn::Join:
+                    - ""
+                    - - '[{"name":"CROSS_ACCOUNT_ID","type":"PARAMETER_STORE","value":"/shared/accounts/prod"},{"name":"TARGET_REGION","type":"PLAINTEXT","value":"'
+                      - Ref: AWS::Region
+                      - '"},{"name":"SLIC_STAGE","type":"PLAINTEXT","value":"prod"},{"name":"MODULE_NAME","type":"PLAINTEXT","value":"email-service"},{"name":"SITE_BUCKET_PREFIX","type":"PLAINTEXT","value":"my-slic-watch"}]'
+              InputArtifacts:
+                - Name: Artifact_Source_email-service_src
+              Name: Build
+              OutputArtifacts:
+                - Name: Artifact_Build_Build
+              RoleArn:
+                Fn::GetAtt:
+                  - prodPipelineRoleD9ED788A
+                  - Arn
+              RunOrder: 1
+          Name: Build
+        - Actions:
+            - ActionTypeId:
+                Category: Build
+                Owner: AWS
+                Provider: CodeBuild
+                Version: "1"
+              Configuration:
+                ProjectName:
+                  Ref: moduledeploy2FF9E84E
+                EnvironmentVariables:
+                  Fn::Join:
+                    - ""
+                    - - '[{"name":"CROSS_ACCOUNT_ID","type":"PARAMETER_STORE","value":"/shared/accounts/prod"},{"name":"TARGET_REGION","type":"PLAINTEXT","value":"'
+                      - Ref: AWS::Region
+                      - '"},{"name":"SLIC_STAGE","type":"PLAINTEXT","value":"prod"},{"name":"MODULE_NAME","type":"PLAINTEXT","value":"email-service"},{"name":"SITE_BUCKET_PREFIX","type":"PLAINTEXT","value":"my-slic-watch"}]'
+              InputArtifacts:
+                - Name: Artifact_Build_Build
+              Name: Deploy
+              OutputArtifacts:
+                - Name: Artifact_Deploy_Deploy
+              RoleArn:
+                Fn::GetAtt:
+                  - prodPipelineRoleD9ED788A
+                  - Arn
+              RunOrder: 1
+          Name: Deploy
+      ArtifactStore:
+        Location:
+          Ref: artifactsBucket6C289622
+        Type: S3
+      Name: email-service_prod_pipeline
+    DependsOn:
+      - prodPipelineRoleDefaultPolicy1C28794D
+      - prodPipelineRoleD9ED788A
+    Metadata:
+      aws:cdk:path: CicdStack/email-service_prod_pipeline/Resource
+  emailserviceprodpipelineEventsRoleA471A8BE:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Principal:
+              Service: events.amazonaws.com
+        Version: "2012-10-17"
+    Metadata:
+      aws:cdk:path: CicdStack/email-service_prod_pipeline/EventsRole/Resource
+  emailserviceprodpipelineEventsRoleDefaultPolicyB6D8F02C:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyDocument:
+        Statement:
+          - Action: codepipeline:StartPipelineExecution
+            Effect: Allow
+            Resource:
+              Fn::Join:
+                - ""
+                - - "arn:"
+                  - Ref: AWS::Partition
+                  - ":codepipeline:"
+                  - Ref: AWS::Region
+                  - ":"
+                  - Ref: AWS::AccountId
+                  - ":"
+                  - Ref: emailserviceprodpipeline3A7282C3
+        Version: "2012-10-17"
+      PolicyName: emailserviceprodpipelineEventsRoleDefaultPolicyB6D8F02C
+      Roles:
+        - Ref: emailserviceprodpipelineEventsRoleA471A8BE
+    Metadata:
+      aws:cdk:path: CicdStack/email-service_prod_pipeline/EventsRole/DefaultPolicy/Resource
+  welcomeserviceprodpipelineFD9DABBD:
+    Type: AWS::CodePipeline::Pipeline
+    Properties:
+      RoleArn:
+        Fn::GetAtt:
+          - prodPipelineRoleD9ED788A
+          - Arn
+      Stages:
+        - Actions:
+            - ActionTypeId:
+                Category: Source
+                Owner: AWS
+                Provider: S3
+                Version: "1"
+              Configuration:
+                S3Bucket:
+                  Ref: artifactsBucket6C289622
+                S3ObjectKey: prod_module_pipelines/module_source/welcome-service.zip
+                PollForSourceChanges: false
+              Name: welcome-service_src
+              OutputArtifacts:
+                - Name: Artifact_Source_welcome-service_src
+              RoleArn:
+                Fn::GetAtt:
+                  - prodPipelineRoleD9ED788A
+                  - Arn
+              RunOrder: 1
+          Name: Source
+        - Actions:
+            - ActionTypeId:
+                Category: Build
+                Owner: AWS
+                Provider: CodeBuild
+                Version: "1"
+              Configuration:
+                ProjectName:
+                  Ref: modulebuild2EEFE7F2
+                EnvironmentVariables:
+                  Fn::Join:
+                    - ""
+                    - - '[{"name":"CROSS_ACCOUNT_ID","type":"PARAMETER_STORE","value":"/shared/accounts/prod"},{"name":"TARGET_REGION","type":"PLAINTEXT","value":"'
+                      - Ref: AWS::Region
+                      - '"},{"name":"SLIC_STAGE","type":"PLAINTEXT","value":"prod"},{"name":"MODULE_NAME","type":"PLAINTEXT","value":"welcome-service"},{"name":"SITE_BUCKET_PREFIX","type":"PLAINTEXT","value":"my-slic-watch"}]'
+              InputArtifacts:
+                - Name: Artifact_Source_welcome-service_src
+              Name: Build
+              OutputArtifacts:
+                - Name: Artifact_Build_Build
+              RoleArn:
+                Fn::GetAtt:
+                  - prodPipelineRoleD9ED788A
+                  - Arn
+              RunOrder: 1
+          Name: Build
+        - Actions:
+            - ActionTypeId:
+                Category: Build
+                Owner: AWS
+                Provider: CodeBuild
+                Version: "1"
+              Configuration:
+                ProjectName:
+                  Ref: moduledeploy2FF9E84E
+                EnvironmentVariables:
+                  Fn::Join:
+                    - ""
+                    - - '[{"name":"CROSS_ACCOUNT_ID","type":"PARAMETER_STORE","value":"/shared/accounts/prod"},{"name":"TARGET_REGION","type":"PLAINTEXT","value":"'
+                      - Ref: AWS::Region
+                      - '"},{"name":"SLIC_STAGE","type":"PLAINTEXT","value":"prod"},{"name":"MODULE_NAME","type":"PLAINTEXT","value":"welcome-service"},{"name":"SITE_BUCKET_PREFIX","type":"PLAINTEXT","value":"my-slic-watch"}]'
+              InputArtifacts:
+                - Name: Artifact_Build_Build
+              Name: Deploy
+              OutputArtifacts:
+                - Name: Artifact_Deploy_Deploy
+              RoleArn:
+                Fn::GetAtt:
+                  - prodPipelineRoleD9ED788A
+                  - Arn
+              RunOrder: 1
+          Name: Deploy
+      ArtifactStore:
+        Location:
+          Ref: artifactsBucket6C289622
+        Type: S3
+      Name: welcome-service_prod_pipeline
+    DependsOn:
+      - prodPipelineRoleDefaultPolicy1C28794D
+      - prodPipelineRoleD9ED788A
+    Metadata:
+      aws:cdk:path: CicdStack/welcome-service_prod_pipeline/Resource
+  welcomeserviceprodpipelineEventsRole5878D8B5:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Principal:
+              Service: events.amazonaws.com
+        Version: "2012-10-17"
+    Metadata:
+      aws:cdk:path: CicdStack/welcome-service_prod_pipeline/EventsRole/Resource
+  welcomeserviceprodpipelineEventsRoleDefaultPolicy8C2F83AF:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyDocument:
+        Statement:
+          - Action: codepipeline:StartPipelineExecution
+            Effect: Allow
+            Resource:
+              Fn::Join:
+                - ""
+                - - "arn:"
+                  - Ref: AWS::Partition
+                  - ":codepipeline:"
+                  - Ref: AWS::Region
+                  - ":"
+                  - Ref: AWS::AccountId
+                  - ":"
+                  - Ref: welcomeserviceprodpipelineFD9DABBD
+        Version: "2012-10-17"
+      PolicyName: welcomeserviceprodpipelineEventsRoleDefaultPolicy8C2F83AF
+      Roles:
+        - Ref: welcomeserviceprodpipelineEventsRole5878D8B5
+    Metadata:
+      aws:cdk:path: CicdStack/welcome-service_prod_pipeline/EventsRole/DefaultPolicy/Resource
+  sharingserviceprodpipelineC5DA154F:
+    Type: AWS::CodePipeline::Pipeline
+    Properties:
+      RoleArn:
+        Fn::GetAtt:
+          - prodPipelineRoleD9ED788A
+          - Arn
+      Stages:
+        - Actions:
+            - ActionTypeId:
+                Category: Source
+                Owner: AWS
+                Provider: S3
+                Version: "1"
+              Configuration:
+                S3Bucket:
+                  Ref: artifactsBucket6C289622
+                S3ObjectKey: prod_module_pipelines/module_source/sharing-service.zip
+                PollForSourceChanges: false
+              Name: sharing-service_src
+              OutputArtifacts:
+                - Name: Artifact_Source_sharing-service_src
+              RoleArn:
+                Fn::GetAtt:
+                  - prodPipelineRoleD9ED788A
+                  - Arn
+              RunOrder: 1
+          Name: Source
+        - Actions:
+            - ActionTypeId:
+                Category: Build
+                Owner: AWS
+                Provider: CodeBuild
+                Version: "1"
+              Configuration:
+                ProjectName:
+                  Ref: modulebuild2EEFE7F2
+                EnvironmentVariables:
+                  Fn::Join:
+                    - ""
+                    - - '[{"name":"CROSS_ACCOUNT_ID","type":"PARAMETER_STORE","value":"/shared/accounts/prod"},{"name":"TARGET_REGION","type":"PLAINTEXT","value":"'
+                      - Ref: AWS::Region
+                      - '"},{"name":"SLIC_STAGE","type":"PLAINTEXT","value":"prod"},{"name":"MODULE_NAME","type":"PLAINTEXT","value":"sharing-service"},{"name":"SITE_BUCKET_PREFIX","type":"PLAINTEXT","value":"my-slic-watch"}]'
+              InputArtifacts:
+                - Name: Artifact_Source_sharing-service_src
+              Name: Build
+              OutputArtifacts:
+                - Name: Artifact_Build_Build
+              RoleArn:
+                Fn::GetAtt:
+                  - prodPipelineRoleD9ED788A
+                  - Arn
+              RunOrder: 1
+          Name: Build
+        - Actions:
+            - ActionTypeId:
+                Category: Build
+                Owner: AWS
+                Provider: CodeBuild
+                Version: "1"
+              Configuration:
+                ProjectName:
+                  Ref: moduledeploy2FF9E84E
+                EnvironmentVariables:
+                  Fn::Join:
+                    - ""
+                    - - '[{"name":"CROSS_ACCOUNT_ID","type":"PARAMETER_STORE","value":"/shared/accounts/prod"},{"name":"TARGET_REGION","type":"PLAINTEXT","value":"'
+                      - Ref: AWS::Region
+                      - '"},{"name":"SLIC_STAGE","type":"PLAINTEXT","value":"prod"},{"name":"MODULE_NAME","type":"PLAINTEXT","value":"sharing-service"},{"name":"SITE_BUCKET_PREFIX","type":"PLAINTEXT","value":"my-slic-watch"}]'
+              InputArtifacts:
+                - Name: Artifact_Build_Build
+              Name: Deploy
+              OutputArtifacts:
+                - Name: Artifact_Deploy_Deploy
+              RoleArn:
+                Fn::GetAtt:
+                  - prodPipelineRoleD9ED788A
+                  - Arn
+              RunOrder: 1
+          Name: Deploy
+      ArtifactStore:
+        Location:
+          Ref: artifactsBucket6C289622
+        Type: S3
+      Name: sharing-service_prod_pipeline
+    DependsOn:
+      - prodPipelineRoleDefaultPolicy1C28794D
+      - prodPipelineRoleD9ED788A
+    Metadata:
+      aws:cdk:path: CicdStack/sharing-service_prod_pipeline/Resource
+  sharingserviceprodpipelineEventsRole54A93191:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Principal:
+              Service: events.amazonaws.com
+        Version: "2012-10-17"
+    Metadata:
+      aws:cdk:path: CicdStack/sharing-service_prod_pipeline/EventsRole/Resource
+  sharingserviceprodpipelineEventsRoleDefaultPolicyE7C41BD7:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyDocument:
+        Statement:
+          - Action: codepipeline:StartPipelineExecution
+            Effect: Allow
+            Resource:
+              Fn::Join:
+                - ""
+                - - "arn:"
+                  - Ref: AWS::Partition
+                  - ":codepipeline:"
+                  - Ref: AWS::Region
+                  - ":"
+                  - Ref: AWS::AccountId
+                  - ":"
+                  - Ref: sharingserviceprodpipelineC5DA154F
+        Version: "2012-10-17"
+      PolicyName: sharingserviceprodpipelineEventsRoleDefaultPolicyE7C41BD7
+      Roles:
+        - Ref: sharingserviceprodpipelineEventsRole54A93191
+    Metadata:
+      aws:cdk:path: CicdStack/sharing-service_prod_pipeline/EventsRole/DefaultPolicy/Resource
+  sourceProjectBCA86C81:
+    Type: AWS::CodeBuild::Project
+    Properties:
+      Artifacts:
+        Location:
+          Ref: artifactsBucket6C289622
+        Name: orchestrator-pipeline-source.zip
+        NamespaceType: NONE
+        Packaging: ZIP
+        Type: S3
+      Environment:
+        ComputeType: BUILD_GENERAL1_SMALL
+        EnvironmentVariables:
+          - Name: ARTIFACTS_BUCKET_NAME
+            Type: PLAINTEXT
+            Value:
+              Ref: artifactsBucket6C289622
+          - Name: ARTIFACTS_BUCKET_ARN
+            Type: PLAINTEXT
+            Value:
+              Fn::GetAtt:
+                - artifactsBucket6C289622
+                - Arn
+          - Name: DEPLOYMENT_STATE_BUCKET
+            Type: PLAINTEXT
+            Value:
+              Ref: artifactsBucket6C289622
+          - Name: DEPLOYMENT_STATE_KEY
+            Type: PLAINTEXT
+            Value: deployment-state.env
+        Image: aws/codebuild/standard:3.0
+        ImagePullCredentialsType: CODEBUILD
+        PrivilegedMode: false
+        Type: LINUX_CONTAINER
+      ServiceRole:
+        Fn::GetAtt:
+          - sourceCodeBuildRole1651962E
+          - Arn
+      Source:
+        BuildSpec: |-
+          {
+            "version": "0.2",
+            "phases": {
+              "install": {
+                "runtime-versions": {
+                  "nodejs": 12,
+                  "python": 3.8
+                },
+                "commands": [
+                  "npm install"
+                ]
+              },
+              "build": {
+                "commands": [
+                  "bash ./build-scripts/source-kickoff.sh https://github.com/direnakkocdemir/slic-starter.git $CODEBUILD_RESOLVED_SOURCE_VERSION"
+                ]
+              }
+            },
+            "artifacts": {
+              "files": "**/*"
+            }
+          }
+        Location: https://github.com/direnakkocdemir/slic-starter.git
+        ReportBuildStatus: true
+        Type: GITHUB
+      EncryptionKey: alias/aws/s3
+      Name: SLICPipelineSource
+      Triggers:
+        FilterGroups:
+          - - Pattern: PUSH
+              Type: EVENT
+            - Pattern: refs/heads/slic-watch
+              Type: HEAD_REF
+        Webhook: true
+    Metadata:
+      aws:cdk:path: CicdStack/sourceProject/Resource
+  pipelinedashboardApp:
+    Type: AWS::Serverless::Application
+    Properties:
+      Location:
+        ApplicationId: arn:aws:serverlessrepo:us-east-1:923120264911:applications/pipeline-dashboard
+        SemanticVersion: 0.0.8
+      Parameters:
+        PipelinePattern: "*"
+    Metadata:
+      aws:cdk:path: CicdStack/pipeline-dashboardApp
+  CDKMetadata:
+    Type: AWS::CDK::Metadata
+    Properties:
+      Analytics: v2:deflate64:H4sIAAAAAAAA/02PXWrDMBCEz5L39bpKE8hjmlzAuCdQ5Q2sfySjn5QidPfKsiB5mo9hNLMSKI5n/Dhc5a9r1DC1URlLGL+9VBPcjXbeBuXh/tCdtHIhTxZ6ciZYRZv7zjk+sGejE2x10X1ivAU1UXm/UwJ6kvYOYx/mvSFrApZLtky1Nu3MzOqvLBdKoMxAK680s84ndpVKovKe+Qk8D69AZ81I9Q8VqyZweTb7X+uaJ2S5PYHOHTi69ilOKC4oDqNjbmzQnhfCftd/2VGp5ToBAAA=
+    Metadata:
+      aws:cdk:path: CicdStack/CDKMetadata/Default
+    Condition: CDKMetadataAvailable
+Parameters:
+  sourceCodeBuildRolestgAccountParameter3408335B:
+    Type: AWS::SSM::Parameter::Value<String>
+    Default: /shared/accounts/stg
+  sourceCodeBuildRoleprodAccountParameterAE7A7371:
+    Type: AWS::SSM::Parameter::Value<String>
+    Default: /shared/accounts/prod
+  orchestratorpipelinestgIntegrationTestRolestgAccountParameter4B2ECDDA:
+    Type: AWS::SSM::Parameter::Value<String>
+    Default: /shared/accounts/stg
+  orchestratorpipelinestgIntegrationTestRoleprodAccountParameter42061460:
+    Type: AWS::SSM::Parameter::Value<String>
+    Default: /shared/accounts/prod
+  orchestratorpipelinestgE2ETestRolestgAccountParameter9E464D55:
+    Type: AWS::SSM::Parameter::Value<String>
+    Default: /shared/accounts/stg
+  orchestratorpipelinestgE2ETestRoleprodAccountParameterF39952E4:
+    Type: AWS::SSM::Parameter::Value<String>
+    Default: /shared/accounts/prod
+  buildRolestgAccountParameter1B2C3993:
+    Type: AWS::SSM::Parameter::Value<String>
+    Default: /shared/accounts/stg
+  buildRoleprodAccountParameter8B12C7DF:
+    Type: AWS::SSM::Parameter::Value<String>
+    Default: /shared/accounts/prod
+  deployRolestgAccountParameter3D913D6E:
+    Type: AWS::SSM::Parameter::Value<String>
+    Default: /shared/accounts/stg
+  deployRoleprodAccountParameter7D100AEC:
+    Type: AWS::SSM::Parameter::Value<String>
+    Default: /shared/accounts/prod
+Conditions:
+  CDKMetadataAvailable:
+    Fn::Or:
+      - Fn::Or:
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - af-south-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - ap-east-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - ap-northeast-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - ap-northeast-2
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - ap-south-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - ap-southeast-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - ap-southeast-2
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - ca-central-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - cn-north-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - cn-northwest-1
+      - Fn::Or:
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - eu-central-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - eu-north-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - eu-south-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - eu-west-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - eu-west-2
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - eu-west-3
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - me-south-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - sa-east-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - us-east-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - us-east-2
+      - Fn::Or:
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - us-west-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - us-west-2
+
