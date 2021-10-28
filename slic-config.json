@@ -1,11 +1,11 @@
 {
   "sourceRepo": {
-    "owner": "fourTheorem",
+    "owner": "direnakkocdemir",
     "name": "slic-starter",
     "branch": "slic-watch"
   },
   "domainConfig": {
-    "nsDomain": "sliclists.com",
+    "siteBucketPrefix": "my-slic-watch",
     "domainPrefixes": {
       "dev": "dev.",
       "stg": "stg.",
