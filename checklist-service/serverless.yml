@@ -34,7 +34,6 @@ provider:
   logRetentionInDays: 7
 
 custom:
-  common: ${file(../slic-config.json)}
   webpack:
     keepOutputDirectory: true
   checklistTableName: ${self:provider.stage}Checklists
