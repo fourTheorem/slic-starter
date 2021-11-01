@@ -34,6 +34,7 @@ provider:
   logRetentionInDays: 7
 
 custom:
+  common: ${file(../slic-config.json)}  
   webpack:
     keepOutputDirectory: true
   checklistTableName: ${self:provider.stage}Checklists
@@ -59,6 +60,7 @@ custom:
     number: 3
   logForwarding:
     destinationARN: !ImportValue ${self:provider.stage}-log-forwarder-function-arn
+  slicWatch: ${self:custom.common.slicWatch}
 
 functions: ${file(./sls-functions.yml)}
 
