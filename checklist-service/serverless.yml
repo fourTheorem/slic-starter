@@ -27,7 +27,7 @@ provider:
       Resource:
         - '*'
   environment:
-    SLIC_STAGE: ${self:provider.stage}
+    STAGE: ${self:provider.stage}
     SERVICE_NAME: ${file(./package.json):name}
     SERVICE_VERSION: ${file(./package.json):version}
     CHECKLIST_TABLE_NAME: ${self:custom.checklistTableName}
