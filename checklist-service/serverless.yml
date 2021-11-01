@@ -39,6 +39,7 @@ custom:
     keepOutputDirectory: true
   checklistTableName: ${self:provider.stage}Checklists
   nsDomain: ${env:SLIC_NS_DOMAIN}
+  domainPrefixes: ${file(../common-config.json):domainPrefixes}
   checklistApiUrl:
     Fn::Join:
       - ''
