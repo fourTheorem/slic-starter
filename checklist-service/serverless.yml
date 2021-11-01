@@ -57,7 +57,8 @@ custom:
   prune:
     automatic: true
     number: 3
-  slicWatch: ${self:custom.common.slicWatch}
+  logForwarding:
+    destinationARN: !ImportValue ${self:provider.stage}-log-forwarder-function-arn
 
 functions: ${file(./sls-functions.yml)}
 
