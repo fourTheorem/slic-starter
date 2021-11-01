@@ -6,7 +6,6 @@
   },
   "domainConfig": {
     "siteBucketPrefix": "my-slic-watch",
-    "nsDomain": "sliclists.com",
     "domainPrefixes": {
       "dev": "dev.",
       "stg": "stg.",
