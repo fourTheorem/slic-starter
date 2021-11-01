@@ -4,7 +4,7 @@ projectDir: ..
 
 plugins:
   - serverless-s3-sync
-  - serverless-pseudo-parameters
+  
 provider:
   name: aws
   runtime: nodejs10.x
