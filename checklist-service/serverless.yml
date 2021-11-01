@@ -38,7 +38,7 @@ custom:
   webpack:
     keepOutputDirectory: true
   checklistTableName: ${self:provider.stage}Checklists
-  nsDomain: ${self:custom.common.domainConfig.nsDomain}
+  nsDomain: ${env:SLIC_NS_DOMAIN}
   domainPrefixes: ${file(../slic-config.json):domainConfig.domainPrefixes}
   checklistApiUrl:
     Fn::Join:
