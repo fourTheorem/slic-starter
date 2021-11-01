@@ -5,6 +5,7 @@
     "branch": "slic-watch"
   },
   "domainConfig": {
+    "siteBucketPrefix": "my-slic-watch",
     "nsDomain": "sliclists.com",
     "domainPrefixes": {
       "dev": "dev.",
