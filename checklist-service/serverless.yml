@@ -10,7 +10,6 @@ plugins:
   - serverless-offline
   - serverless-prune-plugin
   - serverless-iam-roles-per-function
-  - serverless-slic-watch-plugin
 
 provider:
   name: aws
