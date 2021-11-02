@@ -1,7 +1,9 @@
 'use strict'
 
 const awsXray = require('aws-xray-sdk')
-const AWS = awsXray.captureAWS(require('aws-sdk'))
+const coreAws = require('aws-sdk')
+const AWS = process.env.IS_OFFLINE ? coreAws : awsXray.captureAWS(coreAws) // TODO - Revisit this to enable XRay always
+
 const defaultOptions = {
   convertEmptyValues: true // If this is not set, empty strings cause an error. This converts them automatically to NULL
 }

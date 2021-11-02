@@ -2,9 +2,8 @@
 
 const awsXray = require('aws-xray-sdk')
 const AWS = require('aws-sdk')
-const cwEvents = awsXray.captureAWSClient(
-  new AWS.CloudWatchEvents({ endpoint: process.env.EVENTS_ENDPOINT_URL })
-)
+const cwEventsCore = new AWS.CloudWatchEvents({ endpoint: process.env.EVENTS_ENDPOINT_URL })
+const cwEvents = process.env.IS_OFFLINE ? cwEventsCore : awsXray.captureAWSClient(cwEventsCore) // TODO Re-enable X-Ray always
 
 const { name: serviceName } = require('./service-info')
 
