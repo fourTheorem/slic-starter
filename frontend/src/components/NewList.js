@@ -65,7 +65,7 @@ class NewList extends Component {
           container
           direction="row"
           className={classes.root}
-          justify="center"
+          justifyContent="center"
           alignItems="center"
         >
           <Grid
@@ -109,7 +109,7 @@ class NewList extends Component {
 
             {errorItem}
 
-            <Grid item container layout="row" justify="flex-end">
+            <Grid item container layout="row" justifyContent="flex-end">
               <Grid item>
                 <Button
                   variant="contained"

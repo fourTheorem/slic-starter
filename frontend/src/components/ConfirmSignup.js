@@ -96,7 +96,7 @@ class ConfirmSignup extends Component {
               className={classes.input}
               container
               direction="column"
-              justify="center"
+              justifyContent="center"
               alignItems="stretch"
               spacing={8}
             >
@@ -131,7 +131,7 @@ class ConfirmSignup extends Component {
                 item
                 container
                 layout="row"
-                justify="flex-end"
+                justifyContent="flex-end"
                 alignItems="center"
               >
                 <Grid item>

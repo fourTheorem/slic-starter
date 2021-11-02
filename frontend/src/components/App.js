@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles'
+import { MuiThemeProvider, createTheme } from '@material-ui/core/styles'
 import { CssBaseline } from '@material-ui/core'
 import { Provider } from 'react-redux'
 import { ConnectedRouter } from 'connected-react-router'
@@ -11,7 +11,7 @@ class App extends Component {
   render () {
     const { history, store } = this.props
 
-    const theme = createMuiTheme({
+    const theme = createTheme({
       typography: {
         useNextVariants: true
       },

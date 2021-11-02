@@ -11,9 +11,9 @@ import {
   IconButton,
   Typography,
   CircularProgress,
-  ExpansionPanel,
-  ExpansionPanelSummary,
-  ExpansionPanelDetails
+  Accordion,
+  AccordionSummary,
+  AccordionDetails
 } from '@material-ui/core'
 import { withStyles } from '@material-ui/core/styles'
 import Loading from './Loading'
@@ -23,11 +23,11 @@ import { editShare, cancelShare } from '../actions/share'
 
 const dateFns = require('date-fns')
 
-const ExtExpansionPanelSummary = withStyles({
+const ExtAccordionSummary = withStyles({
   content: {
     width: '100%'
   }
-})(ExpansionPanelSummary)
+})(AccordionSummary)
 
 const styles = (theme) => ({
   typography: {
@@ -93,42 +93,42 @@ class Checklist extends Component {
     )} ago`
 
     const expansionPanel = (
-      <ExpansionPanel
+      <Accordion
         elevation={0}
         className={classes.expansionPanel}
         expanded={this.state.isPanelExpanded}
         onChange={this.handlePanelExpansion}
       >
-        <ExtExpansionPanelSummary
+        <ExtAccordionSummary
           id="expansion-summary"
           expandIcon={<ExpandMore />}
         >
-          <Typography variant="h4" className={classes.title}>
+          <Typography variant="h4" className={classes.title} id="list-name">
             {list.name}
           </Typography>
-        </ExtExpansionPanelSummary>
-        <ExpansionPanelDetails>
+        </ExtAccordionSummary>
+        <AccordionDetails>
           <Grid container direction="column" spacing={2}>
             <Grid item>
               <Typography variant="caption">{date}</Typography>
             </Grid>
             <Grid item>
-              <Typography variant="h6" className={classes.description}>
+              <Typography variant="h6" className={classes.description} id="list-description">
                 {list.description}
               </Typography>
             </Grid>
           </Grid>
-        </ExpansionPanelDetails>
-      </ExpansionPanel>
+        </AccordionDetails>
+      </Accordion>
     )
 
     return list
       ? (
-      <Grid container layout="row" justify="center">
+      <Grid container layout="row" justifyContent="center">
         <Grid item xs={12} sm={10} md={8} lg={6}>
           <Card>
             <CardContent>
-              <Grid container direction="row" justify="flex-end">
+              <Grid container direction="row" justifyContent="flex-end">
                 <Grid item>
                   <IconButton
                     id="share-list-btn"

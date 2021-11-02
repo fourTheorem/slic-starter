@@ -3,7 +3,6 @@ variablesResolutionMode: 20210326
 projectDir: ..
 
 plugins:
-  - serverless-webpack
   - serverless-offline
   - serverless-iam-roles-per-function
   - serverless-slic-watch-plugin
@@ -24,15 +23,13 @@ provider:
       Resource:
         - '*'
   environment:
-    STAGE: ${self:provider.stage}
+    SLIC_STAGE: ${self:provider.stage}
     EMAIL_QUEUE_NAME: ${self:custom.emailQueueName}
   logRetentionInDays: 7
 
 custom:
   common: ${file(../slic-config.json)}
   nsDomain: ${self:custom.common.domainConfig.nsDomain}
-  webpack:
-    keepOutputDirectory: true
   serverless-offline:
     httpPort: 4006
     lambdaPort: 4008

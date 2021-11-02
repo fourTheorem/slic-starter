@@ -4,7 +4,7 @@
   "description": "Checklist Service",
   "scripts": {
     "sls": "../node_modules/serverless/bin/serverless",
-    "start": "AWS_XRAY_CONTEXT_MISSING=LOG_ERROR SLIC_NS_DOMAIN=sliclists.com SLIC_STAGE=local sls offline start --region eu-west-1",
+    "start": "source ../localstack.env && sls offline start --region us-east-1",
     "lint": "eslint .",
     "format": "eslint --cache --fix \"**/*.js\"",
     "coverage": "npm run test -- --cov --coverage-report=html",
@@ -30,7 +30,6 @@
     "serverless-slic-watch-plugin": "^1.0.4-rc2",
     "serverless-webpack": "^5.5.4",
     "tap": "^15.0.10",
-    "webpack": "^5.25.0",
     "yamljs": "^0.3.0"
   },
   "dependencies": {

@@ -1,7 +1,6 @@
 const localConfig = require('./local-email-config.js')
 const realConfig = require('test-common/real-email-config')
 const AWS = require('aws-sdk')
-const sp = require('synchronized-promise')
 const ssm = new AWS.SSM()
 
 const stage = process.env.SLIC_STAGE
@@ -13,10 +12,9 @@ const frontendUrlPromise =
       .getParameter({ Name: `/${stage}/frontend/url` })
       .promise()
       .then(data => data.Parameter.Value)
-const synchronousBaseUrl = sp(() => frontendUrlPromise)
 
-export function getBaseURL () {
-  return synchronousBaseUrl()
+export function getBaseUrl () {
+  return frontendUrlPromise
 }
 
 export function getEmail () {

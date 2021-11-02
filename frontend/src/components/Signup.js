@@ -73,7 +73,7 @@ class Signup extends Component {
             <Grid
               container
               direction="column"
-              justify="center"
+              justifyContent="center"
               alignItems="stretch"
               spacing={8}
             >
