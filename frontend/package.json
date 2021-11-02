@@ -7,6 +7,7 @@
     "format": "eslint --cache --fix \"**/*.js\"",
     "fetch-deployment-config": "node scripts/fetch-deployment-config",
     "start": "SLIC_STAGE=local react-scripts start",
+    "start-any": "react-scripts start",
     "react-app-build": "node node_modules/react-scripts/bin/react-scripts build",
     "build": "npm run fetch-deployment-config && npm run react-app-build",
     "test": "npm run lint",
@@ -52,5 +53,8 @@
     "string-to-color": "^2.0.1",
     "typescript": "^3.7.5",
     "yaml": "^1.7.2"
+  },
+  "dependencies": {
+    "pino": "^7.0.5"
   }
 }

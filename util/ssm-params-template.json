@@ -1,11 +1,11 @@
 [
   {
-    "name": "test/mailosaur/serverId",
+    "name": "/test/mailosaur/serverId",
     "value": "TODO",
     "type": "SecureString"
   },
   {
-    "name": "test/mailosaur/apiKey",
+    "name": "/test/mailosaur/apiKey",
     "value": "TODO",
     "type": "SecureString"
   },

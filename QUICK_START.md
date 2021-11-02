@@ -59,7 +59,7 @@ If you wish, this step can be defered until you have problems with deployment an
 
 1. Create an account on mailosaur.com and grab the API key and server ID. Mailosaur is used for testing that emails have been sent by the system during automated integration tests. 
 2. Run `cp util/ssm-params-template.json /tmp/ssm-params.json`
-3. Edit `/tmp/ssm-params.json` and fill out all parameters for the system. You can enter your Mailosaur and logz.io keys here.
+3. Edit `/tmp/ssm-params.json` and fill out all parameters for the system. You can enter your Mailosaur keys here.
 4. The code secret for the sharing service should be a randomly-generated secret. This is used to sign and verify invitation codes.
 5. The 'from-address' used by the email service specifies the 'From:' address for sent emails. More on this in the SES section below.
 6. When you have entered all required parameters, run `util/create-ssm-params.js /tmp/ssm-params.json`
