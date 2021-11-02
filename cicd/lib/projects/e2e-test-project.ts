@@ -35,7 +35,7 @@ export class E2ETestProject extends PipelineProject {
     super(scope, id, {
       projectName: `${props.stageName}E2ETest`,
       environment: {
-        buildImage: LinuxBuildImage.STANDARD_2_0
+        buildImage: LinuxBuildImage.STANDARD_3_0,
       },
       environmentVariables: {
         SLIC_STAGE: {
