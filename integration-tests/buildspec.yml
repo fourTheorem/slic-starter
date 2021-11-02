@@ -3,10 +3,9 @@ version: 0.2
 phases:
   install:
     runtime-versions:
-      nodejs: 8
+      nodejs: 12
     commands:
       - cd integration-tests
-      - npm install -g npm@6
       - npm install
   build:
     commands:

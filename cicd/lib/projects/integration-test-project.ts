@@ -41,7 +41,7 @@ export class IntegrationTestProject extends PipelineProject {
     super(scope, id, {
       projectName: `${props.stageName}IntegrationTest`,
       environment: {
-        buildImage: LinuxBuildImage.STANDARD_2_0
+        buildImage: LinuxBuildImage.STANDARD_3_0
       },
       environmentVariables: {
         SLIC_STAGE: {
