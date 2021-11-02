@@ -1,5 +1,6 @@
 'use strict'
 
+const awscred = require('awscred')
 const AWS = require('aws-sdk')
 const jwt = require('jsonwebtoken')
 const chance = require('chance').Chance()
@@ -7,9 +8,10 @@ const chance = require('chance').Chance()
 const { generateEmailAddress } = require('test-common/real-email-config')
 const { loadBackendConfig } = require('./backend-config')
 
-const cognitoServiceProvider = new AWS.CognitoIdentityServiceProvider()
-
 const generatePassword = () => `${chance.string({ length: 10 })}!Aa0`
+
+const awsRegion = awscred.loadRegionSync()
+const cognitoServiceProvider = new AWS.CognitoIdentityServiceProvider({ region: awsRegion })
 
 async function createUser () {
   const email = generateEmailAddress()

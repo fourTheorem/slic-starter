@@ -13,7 +13,14 @@ const apiStackPaths = {
 }
 
 const nsDomain = process.env.SLIC_NS_DOMAIN
-const cf = new CloudFormation()
+
+const awsRegion = awscred.loadRegionSync()
+if (!awsRegion) {
+  throw new Error(
+    'The region must be set using any of the AWS-SDK-supported methods to the region of the deployed backend'
+  )
+}
+const cf = new CloudFormation({ region: awsRegion })
 
 let backendConfig
 
@@ -37,14 +44,7 @@ async function loadBackendConfig () {
       }
     }
 
-    const awsRegion = awscred.loadRegionSync()
-    if (!awsRegion) {
-      throw new Error(
-        'The region must be set using any of the AWS-SDK-supported methods to the region of the deployed backend'
-      )
-    }
-
-    const apiEndpoints = await getApiEndpoints()
+    const apiEndpoints = await getApiEndpoints(cf)
 
     backendConfig = await cf
       .describeStacks({ StackName: stackName })
@@ -74,7 +74,7 @@ async function loadBackendConfig () {
 }
 
 function getApiEndpoints () {
-  /* If process.env.SLIC_NS_DOMAIN is not set use describe stacks and
+  /* If nsDomain is not set use describe stacks and
      get API Endpoint URLs from cloudformation outputs */
   return Promise.all(
     Object.keys(apiStackPaths).map(apiName => {
