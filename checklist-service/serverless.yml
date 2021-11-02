@@ -3,7 +3,6 @@ variablesResolutionMode: 20210326
 projectDir: ..
 
 plugins:
-  - serverless-webpack
   # Order of plugins is important for dynamodb-local
   # Using fork of serverless-dynamodb-local due to https://github.com/99xt/dynamodb-localhost/issues/25
   - '@dathuis/serverless-dynamodb-local'
@@ -28,7 +27,7 @@ provider:
       Resource:
         - '*'
   environment:
-    STAGE: ${self:provider.stage}
+    SLIC_STAGE: ${self:provider.stage}
     SERVICE_NAME: ${file(./package.json):name}
     SERVICE_VERSION: ${file(./package.json):version}
     CHECKLIST_TABLE_NAME: ${self:custom.checklistTableName}

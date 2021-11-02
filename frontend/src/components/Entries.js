@@ -13,7 +13,6 @@ import {
   TextField,
   ListItemSecondaryAction,
   Checkbox,
-  ClickAwayListener,
   List
 } from '@material-ui/core'
 
@@ -52,7 +51,7 @@ class Entries extends Component {
     isEditingList: false,
     name: '',
     description: '',
-    anchorPosition: null,
+    anchorEl: null,
     editingId: null,
     updatedTitle: null,
     newEntryTitle: ''
@@ -90,7 +89,11 @@ class Entries extends Component {
       )
       this.setState({ newEntryTitle: '' })
     }
-  };
+  }
+
+  handleCloseEntryMenu = (event) => {
+    this.setState({ anchorEl: null })
+  }
 
   handleEntryTitleChange = ({ target: { value } }) => {
     this.setState({ newEntryTitle: value })
@@ -113,7 +116,8 @@ class Entries extends Component {
     this.setState({
       confirmDeleteEntryOpen: true,
       editingId: this.state.menuEntryId,
-      deletingEntry: true
+      deletingEntry: true,
+      anchorEl: null
     })
   };
 
@@ -124,7 +128,7 @@ class Entries extends Component {
     this.setState({
       editingId: this.state.menuEntryId,
       menuEntryId: null,
-      anchorPosition: null,
+      anchorEl: null,
       updatedTitle: entry.title
     })
   };
@@ -156,19 +160,13 @@ class Entries extends Component {
   handleRemoveListEntry = () => {
     const { dispatch, list } = this.props
     dispatch(removeEntry({ listId: list.listId, entId: this.state.editingId }))
-    this.setState({ confirmDeleteEntryOpen: false, menuEntryId: null })
-  };
-
-  handleClickAway = () => {
-    this.setState({ anchorPosition: null })
+    this.setState({ confirmDeleteEntryOpen: false, menuEntryId: null, deletingEntry: false })
   };
 
   handleDropdownOpen = (event) => {
-    const { x: left, y: top } = event.currentTarget.getBoundingClientRect()
-    const anchorPosition = { left, top }
     this.setState({
       menuEntryId: event.currentTarget.id,
-      anchorPosition
+      anchorEl: event.currentTarget
     })
   };
 
@@ -238,79 +236,77 @@ class Entries extends Component {
         )
 
     return (
-      <ClickAwayListener onClickAway={this.handleClickAway}>
-        <div>
-          <List className={classes.list}>
-            {entries.map((entry, index) => (
-              <ExtListItem key={index}>
-                <Button
-                  className={classes.deleteEntryBtn}
-                  onClick={this.handleDropdownOpen}
-                  name={entry.title}
-                  id={entry.entId}
+      <div>
+        <List className={classes.list}>
+          {entries.map((entry, index) => (
+            <ExtListItem key={index}>
+              <Button
+                className={classes.deleteEntryBtn}
+                onClick={this.handleDropdownOpen}
+                name={entry.title}
+                id={entry.entId}
+              >
+                <MoreVert />
+              </Button>
+              {this.state.editingId === entry.entId &&
+              !this.state.deletingEntry
+                ? (
+                <form
+                  autoComplete="off"
+                  onSubmit={this.handleEntryUpdateSubmit}
                 >
-                  <MoreVert />
-                </Button>
-                {this.state.editingId === entry.entId &&
-                !this.state.deletingEntry
-                  ? (
-                  <form
-                    autoComplete="off"
-                    onSubmit={this.handleEntryUpdateSubmit}
-                  >
-                    <TextField
-                      name="edit-entry"
-                      id="edit-entry"
-                      onChange={this.onUpdateTitleChange}
-                      value={this.state.updatedTitle}
-                    />
-                    <Button color="primary" id="save-btn" type="submit">
-                      Save
-                    </Button>
-                  </form>
-                    )
-                  : (
-                  <ListItemText>{entry.title}</ListItemText>
-                    )}
-                <ListItemSecondaryAction>
-                  <Checkbox
-                    color="primary"
-                    onChange={this.handleEntryValueChange}
-                    id={entry.entId}
-                    name={'checkbox-entry-'.concat(index)}
-                    checked={!!entry.value}
+                  <TextField
+                    name="edit-entry"
+                    id="edit-entry"
+                    onChange={this.onUpdateTitleChange}
+                    value={this.state.updatedTitle}
                   />
-                </ListItemSecondaryAction>
-              </ExtListItem>
-            ))}
+                  <Button color="primary" id="save-btn" type="submit">
+                    Save
+                  </Button>
+                </form>
+                  )
+                : (
+                <ListItemText>{entry.title}</ListItemText>
+                  )}
+              <ListItemSecondaryAction>
+                <Checkbox
+                  color="primary"
+                  onChange={this.handleEntryValueChange}
+                  id={entry.entId}
+                  name={'checkbox-entry-'.concat(index)}
+                  checked={!!entry.value}
+                />
+              </ListItemSecondaryAction>
+            </ExtListItem>
+          ))}
 
-            <form
-              id="new-item-form"
-              onSubmit={this.handleEntrySubmit}
-              autoComplete="off"
-            >
-              {newItemEntry}
-            </form>
-            {errorItem}
-          </List>
-          <Menu
-            open={!!this.state.anchorPosition}
-            anchorReference="anchorPosition"
-            anchorPosition={this.state.anchorPosition}
+          <form
+            id="new-item-form"
+            onSubmit={this.handleEntrySubmit}
+            autoComplete="off"
           >
-            <MenuItem onClick={this.handleEntryUpdateRequest} id="edit-entry">
-              Edit
-            </MenuItem>
-            <MenuItem
-              id="delete-entry"
-              onClick={this.handleEntryRemovalRequest}
-            >
-              Delete
-            </MenuItem>
-          </Menu>
-          {deleteEntryDialog}
-        </div>
-      </ClickAwayListener>
+            {newItemEntry}
+          </form>
+          {errorItem}
+        </List>
+        <Menu
+          open={!!this.state.anchorEl}
+          anchorEl={this.state.anchorEl}
+          onClose={this.handleCloseEntryMenu}
+        >
+          <MenuItem onClick={this.handleEntryUpdateRequest} id="edit-entry">
+            Edit
+          </MenuItem>
+          <MenuItem
+            id="delete-entry"
+            onClick={this.handleEntryRemovalRequest}
+          >
+            Delete
+          </MenuItem>
+        </Menu>
+        {deleteEntryDialog}
+      </div>
     )
   }
 }

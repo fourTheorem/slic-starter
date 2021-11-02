@@ -149,12 +149,12 @@ class EditChecklist extends Component {
     )
 
     return (
-      <Grid container layout="row" justify="center">
+      <Grid container layout="row" justifyContent="center">
         <Grid item xs={12} sm={10} md={8} lg={6}>
           {confirmDeleteDialog}
           <Card>
             <CardContent>
-              <Grid container direction="row" justify="flex-end">
+              <Grid container direction="row" justifyContent="flex-end">
                 <Grid item>
                   <IconButton onClick={this.handleCancel} aria-label="Cancel">
                     <Clear />
@@ -198,7 +198,7 @@ class EditChecklist extends Component {
                   container
                   item
                   direction="row"
-                  justify="flex-end"
+                  justifyContent="flex-end"
                   spacing={16}
                 >
                   <Grid item>
@@ -214,7 +214,7 @@ class EditChecklist extends Component {
                 </Grid>
                 {errorItem}
                 {createListError}
-                <Grid item container direction="row" justify="center">
+                <Grid item container direction="row" justifyContent="center">
                   <Grid xs={12} sm={12} md={6} lg={4} item>
                     {deleteListButton}
                   </Grid>

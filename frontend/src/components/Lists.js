@@ -43,7 +43,7 @@ class Lists extends Component {
           container
           layout="row"
           className={classes.padded}
-          justify="flex-start"
+          justifyContent="flex-start"
           alignItems="flex-start"
         >
           {body}

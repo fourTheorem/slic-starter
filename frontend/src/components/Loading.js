@@ -19,7 +19,7 @@ class Loading extends Component {
         className={classes.root}
         direction="column"
         alignItems="center"
-        justify="center"
+        justifyContent="center"
       >
         <Grid item>
           <CircularProgress className="spinner" />

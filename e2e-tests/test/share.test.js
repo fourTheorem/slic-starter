@@ -7,9 +7,6 @@ const config = require('../lib/config')
 const { generateUser } = require('../lib/user')
 
 const page = new Page()
-const baseUrl = config.getBaseURL()
-
-console.log('Base URL', baseUrl)
 
 const users = [{}, {}]
 
@@ -18,7 +15,7 @@ const getLocation = ClientFunction(() => document.location.href)
 for (const index in users) {
   const user = users[index]
   Object.assign(user, generateUser())
-  user.role = Role(
+  user.rolePromise = config.getBaseUrl().then(baseUrl => Role(
     `${baseUrl}/login`,
     async t => {
       await waitForReact()
@@ -38,20 +35,20 @@ for (const index in users) {
         .typeText(page.passInput, user.password)
         .click(page.loginBtn)
       await t.wait(1000)
-      await t.expect(Selector('#new-list-button', { timeout: 155000 })).exists
+      await t.expect(Selector('#new-list-button', { timeout: 155000 }).exists).ok()
     },
     { preserveUrl: true }
-  )
+  ))
 }
 
-fixture('Login')
-  .page(baseUrl)
-  .beforeEach(() => waitForReact())
+fixture('Sharing test')
 
 let invitationCodeLink
 test('User can share a list after creation', async t => {
+  const role = await users[0].rolePromise
+
   await t
-    .useRole(users[0].role)
+    .useRole(role)
     .click(Selector('#new-list-button', { timeout: 5000 }))
 
   const listNameInput = Selector('#name')
@@ -66,7 +63,6 @@ test('User can share a list after creation', async t => {
     .click(Selector('#share-list-btn'))
     .typeText(Selector('#email-textfield'), users[1].email)
     .click('#share-btn')
-    .expect(Selector('p').withText('List shared successfully!')).exists
   await t.wait(15000)
   const content = await retrieveEmail(users[1].email, 'Invitation to join')
   invitationCodeLink = content.text.links[0].href
@@ -74,17 +70,18 @@ test('User can share a list after creation', async t => {
 })
 
 test('Second user can confirm and access the shared list', async t => {
+  const baseUrl = await config.getBaseUrl()
+  const role = await users[1].rolePromise
   await t
-    .useRole(users[1].role)
+    .useRole(role)
     .navigateTo(invitationCodeLink)
-    .expect(Selector('#accept', { timeout: 5000 })).exists
+    .expect(Selector('#accept', { timeout: 5000 }).exists).ok()
   await t
     .click('#accept')
-    .expect(Selector('p', { timeout: 5000 }).withText('You now have access to'))
-    .exists
+    .expect(Selector('p', { timeout: 5000 }).withText('You now have access to').exists).ok()
   await t.wait(10000) // Await for list share action to settle
   await t
     .navigateTo(baseUrl)
-    .expect(Selector('#new-list-button', { timeout: 5000 })).exists
-  await t.expect(Selector('a').withText('List to Share')).exists
+    .expect(Selector('#new-list-button', { timeout: 5000 }).exists).ok()
+  await t.expect(Selector('a').withText('List to Share').exists).ok()
 })

@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Sharing Service",
   "scripts": {
-    "start": "sls offline start",
+    "start": "AWS_DEFAULT_REGION=us-east-1 AWS_REGION=us-east-1 AWS_ACCESS_KEY_ID=DUMMY_KEY_ID AWS_SECRET_ACCESS_KEY=DUMMY_KEY AWS_XRAY_CONTEXT_MISSING=LOG_ERROR SLIC_NS_DOMAIN=sliclists.com SLIC_STAGE=local sls offline start --region us-east-1",
     "lint": "eslint .",
     "format": "eslint --cache --fix \"**/*.js\"",
     "coverage": "npm run test -- --cov --coverage-report=html",
@@ -25,7 +25,6 @@
     "serverless-slic-watch-plugin": "^1.0.4-rc2",
     "serverless-webpack": "^5.5.4",
     "tap": "^15.0.10",
-    "webpack": "^5.25.0",
     "yamljs": "^0.3.0"
   },
   "dependencies": {

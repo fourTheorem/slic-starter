@@ -36,9 +36,7 @@ class Home extends Component {
     }
 
     const body = loading
-      ? (
-      <Loading />
-        )
+      ? <Loading />
       : (
       <Switch>
         <Route exact path="/new-list" component={EditChecklist} />
