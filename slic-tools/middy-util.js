@@ -27,6 +27,7 @@ function middify (exports, options = {}) {
       .use(autoProxyResponse())
       .use(httpErrorHandler())
 
+    /* istanbul ignore next */
     if (options.ssmParameters && process.env.SLIC_STAGE !== 'test') {
       handler.use(
         ssm({

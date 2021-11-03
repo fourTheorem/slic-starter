@@ -2,8 +2,8 @@
 
 const { middify } = require('slic-tools/middy-util')
 
-const AWS = require('aws-sdk')
-const awsXray = require('aws-xray-sdk')
+const { AWS } = require('slic-tools/aws')
+const awsXray = require('aws-xray-sdk-core')
 
 const log = require('slic-tools/log')
 

@@ -1,4 +1,0 @@
-emailQueue:
-  Type: AWS::SQS::Queue
-  Properties:
-    QueueName: ${self:custom.emailQueueName}

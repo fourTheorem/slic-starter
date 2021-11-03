@@ -6,6 +6,7 @@ plugins:
   - serverless-offline
   - serverless-iam-roles-per-function
   - serverless-slic-watch-plugin
+  - serverless-bundle
 
 provider:
   name: aws
@@ -29,6 +30,9 @@ provider:
 
 custom:
   common: ${file(../slic-config.json)}
+  bundle:
+    esbuild: true
+    linting: false
   nsDomain: ${self:custom.common.domainConfig.nsDomain}
   serverless-offline:
     httpPort: 4006

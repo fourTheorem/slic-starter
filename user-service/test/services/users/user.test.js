@@ -4,7 +4,7 @@ const path = require('path')
 const awsMock = require('aws-sdk-mock')
 const { test } = require('tap')
 
-awsMock.setSDK(path.resolve('./node_modules/aws-sdk'))
+awsMock.setSDK(path.resolve(__dirname, '../../../../node_modules/aws-sdk'))
 process.env.USER_POOL_ID = 'User_pool123'
 
 const testEmail = 'email@example.com'

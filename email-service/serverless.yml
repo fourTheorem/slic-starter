@@ -3,12 +3,12 @@ variablesResolutionMode: 20210326
 projectDir: ..
 
 plugins:
-  - serverless-webpack
   - serverless-offline
   - serverless-offline-sqs
   - serverless-prune-plugin
   - serverless-iam-roles-per-function
   - serverless-slic-watch-plugin
+  - serverless-bundle
 
 provider:
   name: aws
@@ -25,8 +25,9 @@ provider:
 
 custom:
   common: ${file(../slic-config.json)}
-  webpack:
-    keepOutputDirectory: true
+  bundle:
+    esbuild: true
+    linting: false
   emailQueueName: ${self:provider.stage}-email-queue
   prune:
     automatic: true
@@ -50,4 +51,8 @@ custom:
 functions: ${file(./sls-functions.yml)}
 
 resources:
-  Resources: ${file(./sls-resources.yml)}
+  Resources:
+    emailQueue:
+      Type: AWS::SQS::Queue
+      Properties:
+        QueueName: ${self:custom.emailQueueName}

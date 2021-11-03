@@ -24,19 +24,17 @@
     "babel-loader": "^8.0.6",
     "babel-plugin-source-map-support": "^2.1.1",
     "proxyquire": "^2.1.0",
+    "serverless-bundle": "^5.0.2",
     "serverless-iam-roles-per-function": "^3.2.0",
     "serverless-offline": "^8.2.0",
     "serverless-prune-plugin": "^1.6.0",
     "serverless-slic-watch-plugin": "^1.0.4-rc2",
-    "serverless-webpack": "^5.5.4",
     "tap": "^15.0.10",
     "yamljs": "^0.3.0"
   },
   "dependencies": {
     "aws-embedded-metrics": "^1.0.1",
-    "pino": "^7.0.5",
     "slic-tools": "file:../slic-tools",
-    "source-map-support": "^0.5.13",
     "uuid": "^3.3.3"
   },
   "nyc": {

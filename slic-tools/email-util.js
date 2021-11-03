@@ -1,6 +1,6 @@
 'use strict'
 
-const awsXray = require('aws-xray-sdk')
+const awsXray = require('aws-xray-sdk-core')
 const coreAws = require('aws-sdk')
 const AWS = process.env.IS_OFFLINE ? coreAws : awsXray.captureAWS(coreAws) // TODO - Revisit this to enable XRay always
 

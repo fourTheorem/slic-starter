@@ -170,8 +170,6 @@ addCollaborator:
   events:
     - cloudwatchEvent:
         event:
-          source:
-            - 'sharing-service'
           detail-type:
             - 'COLLABORATOR_ACCEPTED_EVENT'
   iamRoleStatementsInherit: true

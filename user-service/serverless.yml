@@ -3,11 +3,11 @@ variablesResolutionMode: 20210326
 projectDir: ..
 
 plugins:
-  - serverless-webpack
   - serverless-offline
   - serverless-prune-plugin
   - serverless-iam-roles-per-function
   - serverless-slic-watch-plugin
+  - serverless-bundle
 
 provider:
   name: aws
@@ -26,9 +26,9 @@ provider:
 
 custom:
   common: ${file(../slic-config.json)}
-  webpack:
-    keepOutputDirectory: true
-  stage: ${opt:stage, 'dev'}
+  bundle:
+    esbuild: true
+    linting: false
   serverless-offline:
     httpPort: 4009
     lambdaPort: 4011
@@ -39,8 +39,6 @@ custom:
   prune:
     automatic: true
     number: 3
-  logForwarding:
-    destinationARN: !ImportValue ${self:provider.stage}-log-forwarder-function-arn
   slicWatch: ${self:custom.common.slicWatch}
 
 functions: ${file(./sls-functions.yml)}

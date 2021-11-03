@@ -3,10 +3,11 @@
   "version": "1.0.0",
   "description": "A complete serverless starter application",
   "scripts": {
-    "coverage": "npm run test -- --cov --coverage-report=html",
+    "coverage": "npm run test:packages -- --cov --coverage-report=html",
     "format": "eslint --cache --fix .",
     "test:lint": "eslint .",
-    "test:packages": "tap \"*/test/**/*.test.js\" --branches=100 --statements=100 --functions=100 --lines=100",
+    "tap": "AWS_XRAY_CONTEXT_MISSING=LOG_ERROR AWS_XRAY_LOG_LEVEL=silent tap",
+    "test:packages": "npm run tap -- --branches=100 --statements=100 --functions=100 --lines=100",
     "test": "npm run test:lint && npm run test:packages"
   },
   "repository": {
@@ -25,7 +26,7 @@
   },
   "homepage": "https://github.com/fourTheorem/slic-starter#readme",
   "devDependencies": {
-    "aws-sdk-mock": "^4.3.0",
+    "aws-sdk-mock": "^5.4.0",
     "awscred": "^1.4.2",
     "eslint": "^7.26.0",
     "eslint-config-standard": "^16.0.2",
@@ -43,12 +44,12 @@
     "@hapi/bourne": "^2.0.0",
     "aws-sdk": "^2.867.0",
     "aws-signed-axios": "^1.1.0",
-    "aws-xray-sdk": "^3.2.0",
+    "aws-xray-sdk-core": "^3.3.3",
     "lambda-logger-middleware": "^1.0.3",
     "lodash": "^4.17.21",
     "middy": "^0.36.0",
     "middy-autoproxyresponse": "^0.1.0",
-    "pino": "^6.11.2"
+    "pino": "^6.13.3"
   },
   "lint-staged": {
     "*.js": [
