@@ -5,7 +5,7 @@ process.env.AWS_LAMBDA_FUNCTION_NAME = 'unknown_unit_test'
 const path = require('path')
 const { test } = require('tap')
 const awsMock = require('aws-sdk-mock')
-awsMock.setSDK(path.resolve('../node_modules/aws-sdk'))
+awsMock.setSDK(path.resolve(__dirname, '../../../../../node_modules/aws-sdk'))
 
 const entries = require('../../../../services/checklists/entries/entries')
 

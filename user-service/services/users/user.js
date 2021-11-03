@@ -1,13 +1,13 @@
 'use strict'
 
-const AWS = require('aws-sdk')
-const awsXray = require('aws-xray-sdk')
+const { AWS } = require('slic-tools/aws')
+const awsXray = require('aws-xray-sdk-core')
 
 const log = require('slic-tools/log')
 
-const cognito = awsXray.captureAWSClient(
-  new AWS.CognitoIdentityServiceProvider()
-)
+const cognitoCore = new AWS.CognitoIdentityServiceProvider()
+/* istanbul ignore next */
+const cognito = process.env.SLIC_STAGE === 'test' ? cognitoCore : awsXray.captureAWSClient(cognitoCore)
 
 async function get ({ userId }) {
   const params = {

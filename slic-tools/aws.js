@@ -1,8 +1,9 @@
 'use strict'
 
-const awsXray = require('aws-xray-sdk')
+const awsXray = require('aws-xray-sdk-core')
 const coreAws = require('aws-sdk')
-const AWS = process.env.IS_OFFLINE ? coreAws : awsXray.captureAWS(coreAws) // TODO - Revisit this to enable XRay always
+/* istanbul ignore next */
+const AWS = process.env.IS_OFFLINE || process.env.SLIC_STAGE === 'test' ? coreAws : awsXray.captureAWS(coreAws) // TODO - Revisit this to enable XRay always
 
 const defaultOptions = {
   convertEmptyValues: true // If this is not set, empty strings cause an error. This converts them automatically to NULL
@@ -27,5 +28,6 @@ function dynamoDocClient () {
 }
 
 module.exports = {
-  dynamoDocClient
+  dynamoDocClient,
+  AWS
 }

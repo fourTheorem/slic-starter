@@ -7,7 +7,7 @@
     "lint": "eslint .",
     "format": "eslint --cache --fix \"**/*.js\"",
     "coverage": "npm run test -- --cov --coverage-report=html",
-    "test": "tap \"test/**/*.test.js\" --branches=100 --statements=100 --functions=100 --lines=100"
+    "test": "SLIC_STAGE=test AWS_XRAY_CONTEXT_MISSING=LOG_ERROR AWS_XRAY_LOG_LEVEL=silent tap \"test/**/*.test.js\" --branches=100 --statements=100 --functions=100 --lines=100"
   },
   "author": "Eoin Shanaghy <eoin.shanaghy@fourtheorem.com>",
   "license": "MIT",
@@ -21,21 +21,16 @@
     "aws-sdk": "^2.548.0",
     "aws-sdk-mock": "^4.5.0",
     "awscred": "^1.4.2",
-    "babel-loader": "^8.0.6",
     "mock-amplify-auth": "^2.1.0",
     "proxyquire": "^2.1.3",
+    "serverless-bundle": "^5.0.2",
     "serverless-iam-roles-per-function": "^3.2.0",
     "serverless-offline": "^8.2.0",
     "serverless-prune-plugin": "^1.6.0",
-    "serverless-slic-watch-plugin": "^1.0.4-rc2",
-    "serverless-webpack": "^5.5.4",
-    "tap": "^15.0.10",
-    "webpack": "^5.25.0"
+    "serverless-slic-watch-plugin": "^1.0.4-rc2"
   },
   "dependencies": {
     "aws-xray-sdk": "^2.5.0",
-    "babel-plugin-source-map-support": "^2.1.1",
-    "pino": "^5.13.5",
     "slic-tools": "file:../slic-tools"
   },
   "nyc": {

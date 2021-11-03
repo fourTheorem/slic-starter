@@ -19,21 +19,17 @@
     "@babel/core": "^7.6.4",
     "@babel/preset-env": "^7.6.3",
     "babel-loader": "^8.0.6",
+    "serverless-bundle": "^5.0.2",
     "serverless-iam-roles-per-function": "^3.2.0",
     "serverless-offline": "^8.2.0",
     "serverless-prune-plugin": "^1.6.0",
     "serverless-slic-watch-plugin": "^1.0.4-rc2",
-    "serverless-webpack": "^5.5.4",
     "tap": "^15.0.10",
     "yamljs": "^0.3.0"
   },
   "dependencies": {
     "aws-signed-axios": "^1.1.0",
-    "babel-plugin-source-map-support": "^2.1.1",
-    "bourne": "^1.1.2",
     "lambda-logger-middleware": "^1.0.3",
-    "middy": "^0.28.4",
-    "pino": "^7.0.5",
     "proxyquire": "^2.1.1",
     "signed-objectid": "^1.0.1",
     "slic-tools": "file:../slic-tools"

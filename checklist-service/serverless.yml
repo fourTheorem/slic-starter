@@ -10,6 +10,7 @@ plugins:
   - serverless-prune-plugin
   - serverless-iam-roles-per-function
   - serverless-slic-watch-plugin
+  - serverless-bundle
 
 provider:
   name: aws
@@ -35,8 +36,9 @@ provider:
 
 custom:
   common: ${file(../slic-config.json)}
-  webpack:
-    keepOutputDirectory: true
+  bundle:
+    esbuild: true
+    linting: false
   checklistTableName: ${self:provider.stage}Checklists
   nsDomain: ${self:custom.common.domainConfig.nsDomain}
   checklistApiUrl:

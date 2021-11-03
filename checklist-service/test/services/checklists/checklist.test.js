@@ -3,7 +3,7 @@
 const path = require('path')
 const proxyquire = require('proxyquire')
 const awsMock = require('aws-sdk-mock')
-awsMock.setSDK(path.resolve('../node_modules/aws-sdk'))
+awsMock.setSDK(path.resolve(__dirname, '../../../../node_modules/aws-sdk'))
 
 const { test } = require('tap')
 

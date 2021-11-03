@@ -8,7 +8,7 @@ const { test } = require('tap')
 const fromAddress = 'noreply@example.com'
 process.env.EMAIL_FROM_ADDRESS = fromAddress
 
-awsMock.setSDK(path.resolve('./node_modules/aws-sdk'))
+awsMock.setSDK(path.resolve(__dirname, '../../../../node_modules/aws-sdk'))
 const received = {
   SES: {}
 }
