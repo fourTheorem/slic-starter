@@ -9,7 +9,7 @@ This setup is faster than the full, domain-based, multi-account setup because:
 
 # Prerequisites
 
-- Node v10 should be installed locally. A later version should also be perfectly acceptable. NPM v6 or later is recommended because it supports relative path modules better. (Like `test-common`, included as a relative dependency by `e2e-tests` and `integration-tests`)
+- Node v12 or later should be installed locally.
 - The Serverless Framework v2 should be installed:
 
 ```
@@ -48,16 +48,16 @@ aws codebuild import-source-credentials --generate-cli-skeleton > /tmp/skeleton.
 
 ## 4. Configure your target AWS account
 
-1. Copy `slic-config.json.sample` to `slic-config.json`.
-2. Edit it to specify the target AWS account ID for all accounts.
-3. Remove `nsDomain`
-4. Specify a new value for `siteBucketPrefix`. This should be unique to your deployment! If the `siteBucketPrefix` value is `my-slic-app`, the bucket name created to host the production site will be `my-slic-app-prod`.
-5. Change repository owner and name to point to _your_ fork of the SLIC Starter repo. This is important if you want your application to be continuously deployed from your code!
+Edit `app.yml` carefully, reading all the instructions and ensuring the values match your GitHub repo and setup.
+1. Set `nsDomain` to an empty 'string'
+2. Specify a new value for `siteBucketPrefix`. This should be unique to your deployment! If the `siteBucketPrefix` value is `my-slic-app`, the bucket name created to host the production site will be `my-slic-app-prod`.
+3. Change repository owner and name to point to _your_ fork of the SLIC Starter repo. This is important if you want your application to be continuously deployed from your code!
+4. Set `slicWatch.enabled` to `false`.
 
 ## 5. Configure secrets and parameters
 If you wish, this step can be defered until you have problems with deployment and tests failing due to missing configuration.
 
-1. Create an account on mailosaur.com and grab the API key and server ID. Mailosaur is used for testing that emails have been sent by the system during automated integration tests. 
+1. Create an account on mailosaur.com and grab the API key and server ID. Mailosaur is used for testing that emails have been sent by the system during automated integration tests.
 2. Run `cp util/ssm-params-template.json /tmp/ssm-params.json`
 3. Edit `/tmp/ssm-params.json` and fill out all parameters for the system. You can enter your Mailosaur keys here.
 4. The code secret for the sharing service should be a randomly-generated secret. This is used to sign and verify invitation codes.

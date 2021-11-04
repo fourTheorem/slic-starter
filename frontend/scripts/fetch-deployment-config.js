@@ -2,7 +2,7 @@ const fs = require('fs')
 
 const awscred = require('awscred')
 const { CloudFormation } = require('aws-sdk')
-const { domainConfig: { nsDomain } } = require('../../slic-config.json')
+const { domainConfig: { nsDomain } } = require('../../app.yml')
 
 const stage = process.env.SLIC_STAGE
 

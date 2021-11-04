@@ -1,4 +1,4 @@
-Update slic-config.json setup and slic-deploy.json setup
+Update app.yml setup and slic-deploy.json setup
 
 Add SSM parameter setup:
 - CICD:

@@ -1,17 +1,21 @@
-let customConfig
+const fs = require('fs')
+const path = require('path')
+
+const yaml = require('js-yaml')
+
+let appConfig
 try {
-  customConfig = require('../slic-config.json')
+  appConfig = yaml.load(fs.readFileSync(path.resolve(__dirname, '..', 'app.yml'), 'utf8'));
 } catch (err) {
   console.log(err)
-  throw new Error(
-    `SLIC must be configured in slic-config.json first.  Copy slic-config.json.sample to get started!`)
+  throw new Error(`The application must be configured in app.yml`)
 }
 
 export default {
-  nsDomain: customConfig.domainConfig.nsDomain,
+  nsDomain: appConfig.domainConfig.nsDomain,
   runtime: 'nodejs14.x',
-  sourceRepoOwner: customConfig.sourceRepo.owner,
-  sourceRepoName: customConfig.sourceRepo.name,
-  sourceBranch: customConfig.sourceRepo.branch,
-  siteBucketPrefix: customConfig.domainConfig.siteBucketPrefix
+  sourceRepoOwner: appConfig.sourceRepo.owner,
+  sourceRepoName: appConfig.sourceRepo.name,
+  sourceBranch: appConfig.sourceRepo.branch,
+  siteBucketPrefix: appConfig.domainConfig.siteBucketPrefix
 }
