@@ -54,8 +54,9 @@ resources:
             - Action:
                 - 's3:GetObject'
               Effect: 'Allow'
-              Principal: '*'
-              Resource: arn:aws:s3:::${self:custom.siteConfig.bucketName}/*'
+              Principal:
+                CanonicalUser: !GetAtt originAccessIdentity.S3CanonicalUserId
+              Resource: arn:aws:s3:::${self:custom.siteConfig.bucketName}/*
 
     frontendUrl:
       Type: AWS::SSM::Parameter
@@ -73,6 +74,12 @@ resources:
                     - siteDistribution
                     - DomainName
 
+    originAccessIdentity:
+      Type: AWS::CloudFront::CloudFrontOriginAccessIdentity
+      Properties:
+        CloudFrontOriginAccessIdentityConfig:
+          Comment: Allow the CloudFront distribution access to the site bucket
+
     siteDistribution:
       Type: AWS::CloudFront::Distribution
       Properties:
@@ -84,7 +91,8 @@ resources:
                   - DomainName
               Id: ${self:custom.siteConfig.bucketName}-origin
               S3OriginConfig:
-                OriginAccessIdentity: ''
+                OriginAccessIdentity:
+                  !Sub "origin-access-identity/cloudfront/${originAccessIdentity}"
           Enabled: true
           DefaultRootObject: index.html
           HttpVersion: http2
