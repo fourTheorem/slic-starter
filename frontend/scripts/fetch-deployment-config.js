@@ -1,8 +1,13 @@
 const fs = require('fs')
+const path = require('path')
 
 const awscred = require('awscred')
 const { CloudFormation } = require('aws-sdk')
-const { domainConfig: { nsDomain } } = require('../../app.yml')
+const yaml = require('js-yaml')
+
+const appConfig = yaml.load(fs.readFileSync(path.resolve(__dirname, '..', '..', 'app.yml'), 'utf8'))
+
+const { domainConfig: { nsDomain } } = appConfig
 
 const stage = process.env.SLIC_STAGE
 

@@ -53,8 +53,5 @@
     "string-to-color": "^2.0.1",
     "typescript": "^3.7.5",
     "yaml": "^1.7.2"
-  },
-  "dependencies": {
-    "pino": "^7.0.5"
   }
 }
