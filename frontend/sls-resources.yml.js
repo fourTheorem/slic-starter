@@ -1,5 +1,5 @@
 /* eslint-disable no-template-curly-in-string, no-useless-escape */
-const { domainConfig: { nsDomain } } = require('../slic-config.json')
+const { domainConfig: { nsDomain } } = require('../app.yml')
 
 module.exports = () =>
   require('yaml').parse(`

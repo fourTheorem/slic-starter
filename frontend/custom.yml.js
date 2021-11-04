@@ -2,11 +2,11 @@
 module.exports = async ({ options, resolveVariable }) => {
   const stage = await resolveVariable('sls:stage')
 
-  const { domainConfig: { domainPrefixes, nsDomain, siteBucketPrefix } } = require('../slic-config.json')
+  const { domainConfig: { domainPrefixes, nsDomain, siteBucketPrefix } } = require('../app.yml')
 
   if (!nsDomain && !siteBucketPrefix) {
     throw new Error(
-      'Either nsDomain or siteBucketPrefix must be specified in slic-config.json'
+      'Either nsDomain or siteBucketPrefix must be specified in app.yml'
     )
   }
   const siteDomainName = nsDomain && `${domainPrefixes[stage]}${nsDomain}`

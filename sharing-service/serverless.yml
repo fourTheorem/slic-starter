@@ -29,11 +29,11 @@ provider:
   logRetentionInDays: 7
 
 custom:
-  common: ${file(../slic-config.json)}
+  app: ${file(../app.yml)}
   bundle:
     esbuild: true
     linting: false
-  nsDomain: ${self:custom.common.domainConfig.nsDomain}
+  nsDomain: ${self:custom.app.domainConfig.nsDomain}
   serverless-offline:
     httpPort: 4006
     lambdaPort: 4008
@@ -44,7 +44,7 @@ custom:
   prune:
     automatic: true
     number: 3
-  slicWatch: ${self:custom.common.slicWatch}
+  slicWatch: ${self:custom.app.slicWatch}
 
 functions: ${file(./sls-functions.yml)}
 
@@ -52,7 +52,7 @@ resources:
   Parameters:
     NsDomainParameter:
       Type: String
-      Default: ${self:custom.common.domainConfig.nsDomain}
+      Default: ${self:custom.app.domainConfig.nsDomain}
 
     UserPoolArnParameter:
       Type: AWS::SSM::Parameter::Value<String>
@@ -102,7 +102,7 @@ resources:
         BasePath: 'share'
         RestApiId:
           Ref: ApiGatewayRestApi
-        DomainName: api.${self:custom.common.domainConfig.domainPrefixes.${self:provider.stage}}${self:custom.nsDomain}
+        DomainName: api.${self:custom.app.domainConfig.domainPrefixes.${self:provider.stage}}${self:custom.nsDomain}
         Stage: ${self:provider.stage}
       DependsOn: resApiGatewayDeployment
 
