@@ -55,8 +55,6 @@ build-artifacts/
 _GIT_REPO/
 .vscode/
 pipeline-state.env\
-aws-accounts.json
-slic-deploy.json
 *.gitignored
 
 .webpack/
