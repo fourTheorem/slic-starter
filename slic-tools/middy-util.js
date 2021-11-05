@@ -12,7 +12,7 @@ const { autoProxyResponse } = require('./middlewares/auto-proxy-response')
 const loggerMiddleware = require('lambda-logger-middleware')
 const log = require('./log')
 
-function middify(exports, options = {}) {
+function middify (exports, options = {}) {
   const result = {}
   Object.keys(exports).forEach(key => {
     const handler = middy(exports[key])
@@ -27,6 +27,7 @@ function middify(exports, options = {}) {
       .use(autoProxyResponse())
       .use(httpErrorHandler())
 
+    /* istanbul ignore next */
     if (options.ssmParameters && process.env.SLIC_STAGE !== 'test') {
       handler.use(
         ssm({

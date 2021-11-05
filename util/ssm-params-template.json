@@ -1,42 +1,47 @@
 [
   {
-    "name": "test/mailosaur/serverId",
+    "name": "/test/mailosaur/serverId",
     "value": "TODO",
     "type": "SecureString"
   },
   {
-    "name": "test/mailosaur/apiKey",
+    "name": "/test/mailosaur/apiKey",
     "value": "TODO",
     "type": "SecureString"
   },
   {
     "name": "/stg/email-service/from-address",
-    "value": "TODO",
+    "value": "name@example.com",
     "type": "String"
   },
   {
     "name": "/prod/email-service/from-address",
-    "value": "TODO",
+    "value": "name@example.com",
     "type": "String"
   },
   {
-    "name": "/stg/logging/logzio/token",
-    "value": "TODO",
-    "type": "SecureString"
-  },
-  {
-    "name": "/prod/logging/logzio/token",
-    "value": "TODO",
-    "type": "SecureString"
-  },
-  {
     "name": "/stg/sharing-service/code-secret",
-    "value": "TODO",
+    "value": "a-secure-random-string",
     "type": "SecureString"
   },
   {
     "name": "/prod/sharing-service/code-secret",
-    "value": "TODO",
+    "value": "a-secure-random-string",
     "type": "SecureString"
+  },
+  {
+    "name": "/prod/sharing-service/code-secret",
+    "value": "a-secure-random-string",
+    "type": "SecureString"
+  },
+  {
+    "name": "/shared/accounts/stg",
+    "value": "ACCOUNT_ID",
+    "type": "String"
+  },
+  {
+    "name": "/shared/accounts/prod",
+    "value": "ACCOUNT_ID",
+    "type": "String"
   }
 ]

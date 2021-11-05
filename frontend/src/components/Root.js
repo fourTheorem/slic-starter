@@ -13,11 +13,11 @@ import { checkAuthentication } from '../actions/auth'
 import ConfirmSignup from './ConfirmSignup'
 
 class Root extends Component {
-  componentDidMount() {
+  componentDidMount () {
     this.props.dispatch(checkAuthentication())
   }
 
-  render() {
+  render () {
     const { authenticated } = this.props
 
     if (typeof authenticated === 'undefined') {
@@ -37,11 +37,11 @@ class Root extends Component {
 
 Root.propTypes = {
   authenticated: PropTypes.bool,
-  dispatch: PropTypes.func.isRequired,
+  dispatch: PropTypes.func.isRequired
 }
 
 const mapStateToProps = ({ auth: { authenticated } }) => ({
-  authenticated,
+  authenticated
 })
 
 export default withRouter(connect(mapStateToProps)(Root))

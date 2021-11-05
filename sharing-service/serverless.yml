@@ -1,35 +1,39 @@
 service: sharing-service
+variablesResolutionMode: 20210326
+projectDir: ..
 
 plugins:
-  - serverless-webpack
   - serverless-offline
-  - serverless-pseudo-parameters
   - serverless-iam-roles-per-function
+  - serverless-slic-watch-plugin
+  - serverless-bundle
 
 provider:
   name: aws
   runtime: nodejs10.x
   stage: ${opt:stage, 'local'}
-  region: ${opt:region, '${env:TARGET_REGION}'}
+  region: ${opt:region}
   tracing:
     apiGateway: true
     lambda: true
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - xray:PutTraceSegments
+        - xray:PutTelemetryRecords
+      Resource:
+        - '*'
   environment:
     SLIC_STAGE: ${self:provider.stage}
     EMAIL_QUEUE_NAME: ${self:custom.emailQueueName}
-  resourcePolicy:
-    - Effect: Allow
-      Principal: '*'
-      Action: 'execute-api:Invoke'
-      Resource:
-        - execute-api:/*/*/*
   logRetentionInDays: 7
 
 custom:
-  webpack:
-    keepOutputDirectory: true
-  domainPrefixes: ${file(../common-config.json):domainPrefixes}
-  cloudFrontHostedZoneId: Z2FDTNDATAQYW2
+  app: ${file(../app.yml)}
+  bundle:
+    esbuild: true
+    linting: false
+  nsDomain: ${self:custom.app.domainConfig.nsDomain}
   serverless-offline:
     httpPort: 4006
     lambdaPort: 4008
@@ -40,8 +44,65 @@ custom:
   prune:
     automatic: true
     number: 3
+  slicWatch: ${self:custom.app.slicWatch}
 
 functions: ${file(./sls-functions.yml)}
 
 resources:
-  Resources: ${file(./sls-resources.yml.js)}
+  Parameters:
+    NsDomainParameter:
+      Type: String
+      Default: ${self:custom.app.domainConfig.nsDomain}
+
+    UserPoolArnParameter:
+      Type: AWS::SSM::Parameter::Value<String>
+      Default: /${self:provider.stage}/user-service/user-pool-arn
+
+  Conditions:
+    HasDomain: !Not [!Equals [!Ref NsDomainParameter, '']]
+
+  Resources:
+    cognitoAuthorizer:
+      Type: AWS::ApiGateway::Authorizer
+      Properties:
+        IdentitySource: method.request.header.Authorization
+        Name: slic-user-pool-authorizer-sharing-service
+        RestApiId:
+          Ref: ApiGatewayRestApi
+        Type: COGNITO_USER_POOLS
+        ProviderARNs:
+          - !Ref UserPoolArnParameter
+
+    # The service's generated API Gateway URL is only used when no domain is defined
+    sharingServiceUrlParameter:
+      Type: AWS::SSM::Parameter
+      Properties:
+        Name: /${self:provider.stage}/sharing-service/url
+        Type: String
+        Value:
+          Fn::Join:
+            - ''
+            - ['https://', {'Ref': 'ApiGatewayRestApi'}, '.execute-api.${self:provider.region}.amazonaws.com/${self:provider.stage}']
+
+    # Workaround for "Invalid stage identifier specified"
+    # See https://github.com/serverless/serverless/issues/4029
+    resApiGatewayDeployment:
+      Type: AWS::ApiGateway::Deployment
+      Condition: HasDomain
+      DependsOn: ApiGatewayMethodPost
+      Properties:
+        StageName: ${self:provider.stage}
+        RestApiId:
+          Ref: ApiGatewayRestApi
+
+    apiCustomDomainPathMappings:
+      Type: AWS::ApiGateway::BasePathMapping
+      Condition: HasDomain
+      Properties:
+        BasePath: 'share'
+        RestApiId:
+          Ref: ApiGatewayRestApi
+        DomainName: api.${self:custom.app.domainConfig.domainPrefixes.${self:provider.stage}}${self:custom.nsDomain}
+        Stage: ${self:provider.stage}
+      DependsOn: resApiGatewayDeployment
+

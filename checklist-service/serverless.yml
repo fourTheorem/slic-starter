@@ -1,19 +1,22 @@
 service: checklist-service
+variablesResolutionMode: 20210326
+projectDir: ..
 
 plugins:
-  - serverless-webpack
   # Order of plugins is important for dynamodb-local
   # Using fork of serverless-dynamodb-local due to https://github.com/99xt/dynamodb-localhost/issues/25
   - '@dathuis/serverless-dynamodb-local'
   - serverless-offline
   - serverless-prune-plugin
   - serverless-iam-roles-per-function
+  - serverless-slic-watch-plugin
+  - serverless-bundle
 
 provider:
   name: aws
   runtime: nodejs10.x
   stage: ${opt:stage, 'local'}
-  region: ${opt:region, '${env:TARGET_REGION}'}
+  region: ${opt:region}
   tracing:
     apiGateway: true
     lambda: true
@@ -32,11 +35,12 @@ provider:
   logRetentionInDays: 7
 
 custom:
-  webpack:
-    keepOutputDirectory: true
+  app: ${file(../app.yml)}
+  bundle:
+    esbuild: true
+    linting: false
   checklistTableName: ${self:provider.stage}Checklists
-  nsDomain: ${env:SLIC_NS_DOMAIN}
-  domainPrefixes: ${file(../common-config.json):domainPrefixes}
+  nsDomain: ${self:custom.app.domainConfig.nsDomain}
   checklistApiUrl:
     Fn::Join:
       - ''
@@ -55,10 +59,82 @@ custom:
   prune:
     automatic: true
     number: 3
-  logForwarding:
-    destinationARN: !ImportValue ${self:provider.stage}-log-forwarder-function-arn
+  slicWatch: ${self:custom.app.slicWatch}
 
 functions: ${file(./sls-functions.yml)}
 
 resources:
-  Resources: ${file(./sls-resources.yml.js)}
+  Parameters:
+    NsDomainParameter:
+      Type: String
+      Default: ${self:custom.app.domainConfig.nsDomain}
+
+    UserPoolArnParameter:
+      Type: AWS::SSM::Parameter::Value<String>
+      Default: /${self:provider.stage}/user-service/user-pool-arn
+
+  Conditions:
+    HasDomain: !Not [!Equals [!Ref NsDomainParameter, '']]
+
+  Resources:
+    cognitoAuthorizer:
+      Type: AWS::ApiGateway::Authorizer
+      Properties:
+        IdentitySource: method.request.header.Authorization
+        Name: slic-user-pool-authorizer-checklist-service
+        RestApiId:
+          Ref: ApiGatewayRestApi
+        Type: COGNITO_USER_POOLS
+        ProviderARNs:
+          - !Ref UserPoolArnParameter
+
+    slicTable:
+      Type: AWS::DynamoDB::Table
+      DeletionPolicy: Retain
+      Properties:
+        TableName: ${self:custom.checklistTableName}
+        AttributeDefinitions:
+          - AttributeName: userId
+            AttributeType: S
+          - AttributeName: listId
+            AttributeType: S
+        KeySchema:
+          - AttributeName: userId
+            KeyType: HASH
+          - AttributeName: listId
+            KeyType: RANGE
+        ProvisionedThroughput:
+          ReadCapacityUnits: 2
+          WriteCapacityUnits: 2
+
+    checklistServiceNameParameter:
+      Type: AWS::SSM::Parameter
+      Properties:
+        Name: /${self:provider.stage}/checklist-service/url
+        Type: String
+        Value:
+          Fn::Join:
+            - ''
+            - ['https://', {'Ref': 'ApiGatewayRestApi'}, '.execute-api.${self:provider.region}.amazonaws.com/${self:provider.stage}']
+
+    # Workaround for "Invalid stage identifier specified"
+    # See https://github.com/serverless/serverless/issues/4029
+    resApiGatewayDeployment:
+      Type: AWS::ApiGateway::Deployment
+      Condition: HasDomain
+      DependsOn: ApiGatewayMethodPost
+      Properties:
+        StageName: ${self:provider.stage}
+        RestApiId:
+          Ref: ApiGatewayRestApi
+
+    apiCustomDomainPathMappings:
+      Type: AWS::ApiGateway::BasePathMapping
+      Condition: HasDomain
+      Properties:
+        BasePath: 'checklist'
+        RestApiId:
+          Ref: ApiGatewayRestApi
+        DomainName: api.${self:custom.app.domainConfig.domainPrefixes.${self:provider.stage}}${self:custom.nsDomain}
+        Stage: ${self:provider.stage}
+      DependsOn: resApiGatewayDeployment

@@ -4,9 +4,9 @@
   "description": "Checklist Service",
   "scripts": {
     "sls": "../node_modules/serverless/bin/serverless",
-    "start": "AWS_XRAY_CONTEXT_MISSING=LOG_ERROR SLIC_NS_DOMAIN=sliclists.com SLIC_STAGE=local sls offline start",
-    "lint": "prettier-standard --lint --ignore-pattern \"scripts/**\" .",
-    "format": "prettier-standard --format \"**/*.js\"",
+    "start": "source ../localstack.env && sls offline start --region us-east-1",
+    "lint": "eslint .",
+    "format": "eslint --cache --fix \"**/*.js\"",
     "coverage": "npm run test -- --cov --coverage-report=html",
     "test": "AWS_XRAY_CONTEXT_MISSING=LOG_ERROR AWS_XRAY_LOG_LEVEL=silent tap \"test/**/*.test.js\" --branches=100 --statements=100 --functions=100 --lines=100"
   },
@@ -23,27 +23,19 @@
     "aws-sdk-mock": "^4.5.0",
     "babel-loader": "^8.0.6",
     "babel-plugin-source-map-support": "^2.1.1",
-    "husky": "^1.1.3",
-    "prettier-standard": "^16.4.1",
     "proxyquire": "^2.1.0",
-    "serverless-iam-roles-per-function": "^3.1.0",
-    "serverless-offline": "^6.8.0",
-    "serverless-prune-plugin": "^1.4.4",
-    "serverless-webpack": "^5.3.5",
-    "tap": "^14.11.0",
-    "webpack": "^5.25.0",
+    "serverless-bundle": "^5.0.2",
+    "serverless-iam-roles-per-function": "^3.2.0",
+    "serverless-offline": "^8.2.0",
+    "serverless-prune-plugin": "^1.6.0",
+    "serverless-slic-watch-plugin": "^1.0.4",
+    "tap": "^15.0.10",
     "yamljs": "^0.3.0"
   },
   "dependencies": {
     "aws-embedded-metrics": "^1.0.1",
     "slic-tools": "file:../slic-tools",
-    "source-map-support": "^0.5.13",
     "uuid": "^3.3.3"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "prettier-standard --staged"
-    }
   },
   "nyc": {
     "exclude": [

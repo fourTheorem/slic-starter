@@ -9,9 +9,9 @@
  * MODIFICATIONS:
  * - The onError handler has been removed as it swallows errors
  */
-exports.autoProxyResponse = function() {
+exports.autoProxyResponse = function () {
   return {
-    after: function(handler, next) {
+    after: function (handler, next) {
       if (!handler.response) {
         // Default response is empty object
         handler.response = {}

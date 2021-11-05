@@ -55,8 +55,7 @@ build-artifacts/
 _GIT_REPO/
 .vscode/
 pipeline-state.env\
-aws-accounts.json
-slic-config.json
 *.gitignored
 
 .webpack/
+.eslintcache

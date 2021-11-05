@@ -10,7 +10,6 @@ testaccount1@example.com UserId: mock-auth-dGVzdGFjY291bnQxQGV4YW1wbGUuY29t
 
 listId: ,"result":,"msg":"Result received","v":1}
 
-
 testaccount2@example.com mock-auth-dGVzdGFjY291bnQyQGV4YW1wbGUuY29t
 
 "result":,"msg":"Result received","v":1}
@@ -38,7 +37,7 @@ const records = [
   }
 ]
 
-async function run() {
+async function run () {
   console.log('Querying records')
   await Promise.all(
     records.map(record =>

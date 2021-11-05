@@ -10,38 +10,40 @@ import ListSummary from './ListSummary'
 
 const styles = (theme) => ({
   padded: {
-    padding: theme.spacing(2),
+    padding: theme.spacing(2)
   },
   fab: {
     position: 'absolute',
     bottom: theme.spacing(4),
-    right: theme.spacing(4),
-  },
+    right: theme.spacing(4)
+  }
 })
 
 class Lists extends Component {
-  render() {
+  render () {
     const { classes, listIds } = this.props
 
     const body =
-      listIds.length === 0 ? (
+      listIds.length === 0
+        ? (
         <Typography variant="subtitle1">
           You don't have any lists. Click the button to create one!
         </Typography>
-      ) : (
-        listIds.map((listId) => (
+          )
+        : (
+            listIds.map((listId) => (
           <Grid item key={listId} xl={3} lg={4} md={6} xs={12}>
             <ListSummary listId={listId} />
           </Grid>
-        ))
-      )
+            ))
+          )
     return (
       <React.Fragment>
         <Grid
           container
           layout="row"
           className={classes.padded}
-          justify="flex-start"
+          justifyContent="flex-start"
           alignItems="flex-start"
         >
           {body}
@@ -62,11 +64,11 @@ class Lists extends Component {
 
 Lists.propTypes = {
   classes: PropTypes.object.isRequired,
-  listIds: PropTypes.array.isRequired,
+  listIds: PropTypes.array.isRequired
 }
 
 const mapStateToProps = ({ checklists: { listIds } }) => ({
-  listIds,
+  listIds
 })
 
 export default connect(mapStateToProps)(withStyles(styles)(Lists))

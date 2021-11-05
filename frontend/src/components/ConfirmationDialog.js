@@ -7,11 +7,11 @@ import {
   DialogActions,
   DialogTitle,
   DialogContent,
-  DialogContentText,
+  DialogContentText
 } from '@material-ui/core'
 
 export default class ConfirmationDialog extends Component {
-  render() {
+  render () {
     const { id, title, message, open, onConfirm, onClose } = this.props
 
     return (
@@ -48,5 +48,5 @@ ConfirmationDialog.propTypes = {
   message: PropTypes.string.isRequired,
   onClose: PropTypes.func.isRequired,
   onConfirm: PropTypes.func.isRequired,
-  open: PropTypes.bool.isRequired,
+  open: PropTypes.bool.isRequired
 }

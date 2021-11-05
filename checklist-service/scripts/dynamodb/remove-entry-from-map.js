@@ -1,4 +1,4 @@
-var params = {
+const params = {
   TableName: 'checklists',
   Key: {
     userId: 'eoin',
@@ -11,7 +11,7 @@ var params = {
   },
   ReturnValues: 'ALL_NEW'
 }
-docClient.update(params, function(err, data) {
+docClient.update(params, function (err, data) {
   if (err) ppJson(err)
   // an error occurred
   else ppJson(data) // successful response

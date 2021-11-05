@@ -4,8 +4,8 @@
   "description": "Email Service for SLIC Starter",
   "scripts": {
     "start": "SLIC_STAGE=local sls offline start --migrate true",
-    "lint": "prettier-standard --lint --ignore-pattern \"scripts/**\" .",
-    "format": "prettier-standard --format \"**/*.js\"",
+    "lint": "eslint .",
+    "format": "eslint --cache --fix \"**/*.js\"",
     "coverage": "npm run test -- --cov --coverage-report=html",
     "test": "SLIC_STAGE=test tap \"test/**/*.test.js\" --branches=100 --statements=100 --functions=100 --lines=100"
   },
@@ -16,35 +16,17 @@
     "url": "https://github.com/fourTheorem/slic-starter"
   },
   "devDependencies": {
-    "@babel/core": "^7.6.4",
-    "@babel/preset-env": "^7.6.3",
-    "aws-sdk": "^2.339.0",
     "aws-sdk-mock": "^4.3.0",
     "awscred": "^1.4.2",
-    "babel-loader": "^8.0.6",
-    "husky": "^1.1.3",
-    "prettier-standard": "^16.4.1",
-    "proxyquire": "^2.1.0",
-    "serverless-iam-roles-per-function": "^3.1.0",
-    "serverless-offline": "^6.8.0",
-    "serverless-offline-sqs": "^4.1.1",
-    "serverless-prune-plugin": "^1.3.2",
-    "serverless-pseudo-parameters": "^2.5.0",
-    "serverless-webpack": "^5.3.5",
-    "tap": "^14.11.0",
-    "webpack": "^5.25.0"
+    "serverless-bundle": "^5.0.2",
+    "serverless-iam-roles-per-function": "^3.2.0",
+    "serverless-offline": "^8.2.0",
+    "serverless-offline-sqs": "^5.0.0",
+    "serverless-prune-plugin": "^1.6.0",
+    "serverless-slic-watch-plugin": "^1.0.4"
   },
   "dependencies": {
-    "aws-xray-sdk": "^2.5.0",
-    "babel-plugin-source-map-support": "^2.1.1",
-    "bourne": "^1.1.2",
-    "pino": "^5.8.1",
     "slic-tools": "file:../slic-tools"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "prettier-standard --staged"
-    }
   },
   "nyc": {
     "exclude": [

@@ -1,4 +1,4 @@
-var params = {
+const params = {
   TableName: 'checklists',
   KeySchema: [
     // The type of of schema.  Must start with a HASH type, with an optional second RANGE.
@@ -31,7 +31,7 @@ var params = {
   }
 }
 
-dynamodb.createTable(params, function(err, data) {
+dynamodb.createTable(params, function (err, data) {
   if (err) ppJson(err)
   else ppJson(data)
 })

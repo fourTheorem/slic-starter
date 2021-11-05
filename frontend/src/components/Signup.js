@@ -3,9 +3,8 @@ import PropTypes from 'prop-types'
 
 import { withStyles } from '@material-ui/core/styles'
 import { Button, Grid, Paper, TextField, Typography } from '@material-ui/core'
-import { Redirect } from 'react-router-dom'
+import { Redirect, Link } from 'react-router-dom'
 import { connect } from 'react-redux'
-import { Link } from 'react-router-dom'
 
 import ErrorMessage from './ErrorMessage'
 import { signUp } from '../actions/auth'
@@ -18,48 +17,51 @@ const styles = (theme) => ({
     minWidth: '100%',
     minHeight: '100vh',
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'center'
   },
   paper: {
     minWidth: '340px',
-    padding: theme.spacing.unit * 2,
+    padding: theme.spacing.unit * 2
   },
   input: {
-    width: '100%',
+    width: '100%'
   },
   button: {
     width: '100%',
-    marginTop: theme.spacing.unit,
-  },
+    marginTop: theme.spacing.unit
+  }
 })
 
 class Signup extends Component {
   state = {
     email: '',
-    password: '',
-  }
+    password: ''
+  };
 
-  validate = () => this.state.email.length > 0 && this.state.password.length > 5
+  validate = () =>
+    this.state.email.length > 0 && this.state.password.length > 5;
 
-  handleChange = ({ target: { id, value } }) => this.setState({ [id]: value })
+  handleChange = ({ target: { id, value } }) => this.setState({ [id]: value });
 
   handleSubmit = (event) => {
     event.preventDefault()
     this.props.dispatch(signUp(this.state))
-  }
+  };
 
-  render() {
+  render () {
     const { classes } = this.props
 
     const { signingUp, signupError, signedUp, userConfirmed } = this.props.auth
 
-    const errorItem = signupError ? (
+    const errorItem = signupError
+      ? (
       <Grid item>
         <Typography className={classes.error}>
           <ErrorMessage messageId={signupError.id} />
         </Typography>
       </Grid>
-    ) : null
+        )
+      : null
 
     const confirmSection =
       signedUp && !userConfirmed ? <Redirect to="/confirm-signup" /> : null
@@ -71,7 +73,7 @@ class Signup extends Component {
             <Grid
               container
               direction="column"
-              justify="center"
+              justifyContent="center"
               alignItems="stretch"
               spacing={8}
             >
@@ -127,7 +129,7 @@ class Signup extends Component {
 Signup.propTypes = {
   auth: PropTypes.object.isRequired,
   classes: PropTypes.object.isRequired,
-  dispatch: PropTypes.func.isRequired,
+  dispatch: PropTypes.func.isRequired
 }
 
 const mapStateToProps = ({ auth }) => ({ auth })

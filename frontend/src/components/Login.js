@@ -16,63 +16,70 @@ const styles = (theme) => ({
     minWidth: '100%',
     minHeight: '100vh',
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'center'
   },
   paper: {
     minWidth: '300px',
-    padding: theme.spacing.unit * 2,
+    padding: theme.spacing.unit * 2
   },
   input: {
-    width: '100%',
+    width: '100%'
   },
   button: {
     width: '100%',
-    marginTop: theme.spacing.unit,
-  },
+    marginTop: theme.spacing.unit
+  }
 })
 
 class Login extends Component {
   state = {
     email: '',
-    password: '',
-  }
+    password: ''
+  };
 
-  validate = () => this.state.email.length > 0 && this.state.password.length > 0
+  validate = () =>
+    this.state.email.length > 0 && this.state.password.length > 0;
 
-  handleChange = ({ target: { id, value } }) => this.setState({ [id]: value })
+  handleChange = ({ target: { id, value } }) => this.setState({ [id]: value });
 
   handleSubmit = (event) => {
     event.preventDefault()
     this.props.dispatch(logIn(this.state))
-  }
+  };
 
-  render() {
+  render () {
     const {
       classes,
-      auth: { userUnconfirmed },
+      auth: { userUnconfirmed }
     } = this.props
 
     const {
       loggingIn,
       loginError,
       authenticated,
-      preAuthenticatedPath,
+      preAuthenticatedPath
     } = this.props.auth
 
     const errorItem =
-      !loggingIn && loginError ? (
+      !loggingIn && loginError
+        ? (
         <Grid item>
           <ErrorMessage messageId={loginError.id} />
         </Grid>
-      ) : null
+          )
+        : null
 
-    const signedIn = authenticated ? (
+    const signedIn = authenticated
+      ? (
       <Redirect to={preAuthenticatedPath || '/'} />
-    ) : null
+        )
+      : null
 
-    const unconfirmed = userUnconfirmed ? (
+    const unconfirmed = userUnconfirmed
+      ? (
       <Redirect to="/confirm-signup" />
-    ) : null
+        )
+      : null
 
     return (
       <div className={classes.root}>
@@ -81,7 +88,7 @@ class Login extends Component {
             <Grid
               container
               direction="column"
-              justify="center"
+              justifyContent="center"
               alignItems="stretch"
               spacing={8}
             >
@@ -139,7 +146,7 @@ class Login extends Component {
 Login.propTypes = {
   auth: PropTypes.object.isRequired,
   classes: PropTypes.object.isRequired,
-  dispatch: PropTypes.func.isRequired,
+  dispatch: PropTypes.func.isRequired
 }
 
 const mapStateToProps = ({ auth }) => ({ auth })

@@ -6,7 +6,7 @@ import {
   TextField,
   Button,
   CardContent,
-  Grid,
+  Grid
 } from '@material-ui/core'
 import { Clear } from '@material-ui/icons'
 
@@ -21,44 +21,44 @@ import { createList, removeList, updateList } from '../actions/checklists'
 
 const styles = (theme) => ({
   main: {
-    padding: theme.spacing(4),
+    padding: theme.spacing(4)
   },
   deleteBtn: {
     color: theme.palette.error.main,
     borderColor: theme.palette.error.main,
-    width: '100%',
+    width: '100%'
   },
   textField: {
-    width: '100%',
-  },
+    width: '100%'
+  }
 })
 
 class EditChecklist extends Component {
   state = {
     name: '',
-    confirmDeleteListOpen: false,
-  }
+    confirmDeleteListOpen: false
+  };
 
   handleCancel = () => {
     window.history.back()
-  }
+  };
 
   handleChange = ({ target: { id, value } }) => {
     this.setState({ [id]: value })
-  }
+  };
 
   handleRemoveListRequest = () => {
     this.setState({ confirmDeleteListOpen: true })
-  }
+  };
 
   handleListRemovalClose = () => {
     this.setState({ confirmDeleteListOpen: false })
-  }
+  };
 
   handleRemoveList = () => {
     const { dispatch, list } = this.props
     dispatch(removeList({ listId: list.listId }))
-  }
+  };
 
   handleSubmission = (event) => {
     const { dispatch, list } = this.props
@@ -67,7 +67,7 @@ class EditChecklist extends Component {
       dispatch(
         createList({
           name: this.state.name,
-          description: this.state.description,
+          description: this.state.description
         })
       )
     } else {
@@ -75,13 +75,13 @@ class EditChecklist extends Component {
         updateList({
           listId: list.listId,
           name: this.state.name || list.name,
-          description: this.state.description || list.description,
+          description: this.state.description || list.description
         })
       )
     }
-  }
+  };
 
-  render() {
+  render () {
     const {
       creating,
       createdListId,
@@ -90,7 +90,7 @@ class EditChecklist extends Component {
       updatedListId,
       updateError,
       list,
-      classes,
+      classes
     } = this.props
 
     if (!list) {
@@ -105,19 +105,24 @@ class EditChecklist extends Component {
       return <Redirect to={`/list/${updatedListId}`} />
     }
 
-    const errorItem = updateError ? (
+    const errorItem = updateError
+      ? (
       <Grid item>
         <ErrorMessage messageId={updateError.id} />
       </Grid>
-    ) : null
+        )
+      : null
 
-    const createListError = creationError ? (
+    const createListError = creationError
+      ? (
       <Grid item>
         <ErrorMessage messageId={creationError.id} />
       </Grid>
-    ) : null
+        )
+      : null
 
-    const deleteListButton = list.listId ? (
+    const deleteListButton = list.listId
+      ? (
       <Button
         className={classes.deleteBtn}
         variant="outlined"
@@ -126,7 +131,8 @@ class EditChecklist extends Component {
       >
         Delete List
       </Button>
-    ) : null
+        )
+      : null
 
     // ConfirmationDialog
     const confirmDeleteDialog = (
@@ -143,12 +149,12 @@ class EditChecklist extends Component {
     )
 
     return (
-      <Grid container layout="row" justify="center">
+      <Grid container layout="row" justifyContent="center">
         <Grid item xs={12} sm={10} md={8} lg={6}>
           {confirmDeleteDialog}
           <Card>
             <CardContent>
-              <Grid container direction="row" justify="flex-end">
+              <Grid container direction="row" justifyContent="flex-end">
                 <Grid item>
                   <IconButton onClick={this.handleCancel} aria-label="Cancel">
                     <Clear />
@@ -192,7 +198,7 @@ class EditChecklist extends Component {
                   container
                   item
                   direction="row"
-                  justify="flex-end"
+                  justifyContent="flex-end"
                   spacing={16}
                 >
                   <Grid item>
@@ -208,7 +214,7 @@ class EditChecklist extends Component {
                 </Grid>
                 {errorItem}
                 {createListError}
-                <Grid item container direction="row" justify="center">
+                <Grid item container direction="row" justifyContent="center">
                   <Grid xs={12} sm={12} md={6} lg={4} item>
                     {deleteListButton}
                   </Grid>
@@ -231,14 +237,14 @@ EditChecklist.propTypes = {
   creationError: PropTypes.object,
   updating: PropTypes.bool.isRequired,
   updatedListId: PropTypes.string,
-  updateError: PropTypes.object,
+  updateError: PropTypes.object
 }
 
 const makeMapStateToProps = (initialState, ownProps) => {
   const {
     match: {
-      params: { id: listId },
-    },
+      params: { id: listId }
+    }
   } = ownProps
 
   return ({
@@ -249,8 +255,8 @@ const makeMapStateToProps = (initialState, ownProps) => {
       creating,
       updatedListId,
       updating,
-      updateError,
-    },
+      updateError
+    }
   }) => {
     const list = listId ? listsById[listId] : {}
     return {
@@ -260,7 +266,7 @@ const makeMapStateToProps = (initialState, ownProps) => {
       creationError,
       updating,
       updatedListId,
-      updateError,
+      updateError
     }
   }
 }

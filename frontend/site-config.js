@@ -1,33 +1,37 @@
-module.exports = serverless => {
-  const { stage } = serverless.providers.aws.options
-  const region = 'us-east-1'
-  const stackName = `certs-${stage}`
-  const exports = {
-    [`${stage}-site-cert`]: 'siteCert',
-    [`${stage}-public-hosted-zone`]: 'publicHostedZone'
+/* eslint-disable no-template-curly-in-string */
+module.exports = async ({ options, resolveVariable }) => {
+  const stage = await resolveVariable('sls:stage')
+  const domainConfig = await resolveVariable('file(../app.yml):domainConfig')
+  const { nsDomain } = domainConfig
+  const siteDomainName = nsDomain && domainConfig.domainPrefixes[stage] + nsDomain
+  if (!nsDomain && !domainConfig.siteBucketPrefix) {
+    throw new Error(
+      'Either nsDomain or siteBucketPrefix must be specified in app.yml'
+    )
   }
 
-  const provider = serverless.getProvider('aws')
-  const { credentials } = provider.getCredentials()
+  const bucketName = siteDomainName
+    ? `slic-starter-site-assets-${siteDomainName}`
+    : `${domainConfig.siteBucketPrefix}-${stage}`
 
-  const cf = new provider.sdk.CloudFormation({ credentials, region })
-
-  const values = {}
-  return cf
-    .describeStacks({ StackName: stackName })
-    .promise()
-    .then(data => {
-      if (data.Stacks && data.Stacks[0]) {
-        data.Stacks[0].Outputs.filter(
-          output => exports[output.ExportName]
-        ).forEach(({ ExportName: exportName, OutputValue: value }) => {
-          values[exports[exportName]] = value
-        })
-
-        console.log('Using site config', values)
-        return values
-      } else {
-        throw new Error(`No stack found with name ${stackName}`)
+  // The certificate ARN and Route53 HostedZone for custom domain deployments require deployment in us-east-1
+  // The only way to look these up conveniently is to use Serverless Framework cross-region `cf` variables
+  // This will fail to resolve if the deployment is not using custom domains, so we use JS to avoid them in that case.
+  const siteCertificateArn = nsDomain && await resolveVariable(`cf(us-east-1):certs-${stage}.siteCert`)
+  const distributionViewerCertficate = siteCertificateArn
+    ? {
+        AcmCertificateArn: siteCertificateArn,
+        SslSupportMethod: 'sni-only'
       }
-    })
+    : {
+        CloudFrontDefaultCertificate: true
+      }
+  const siteHostedZone = nsDomain && await resolveVariable(`cf(us-east-1):certs-${stage}.publicHostedZone`)
+
+  return {
+    bucketName,
+    siteDomainName,
+    distributionViewerCertficate,
+    siteHostedZone
+  }
 }

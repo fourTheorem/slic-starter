@@ -3,7 +3,7 @@ pull_request_rules:
     conditions:
       - author~=^dependabot(|-preview)\[bot\]$
       # - check-success=Travis CI - Pull Request
-      - base=master
+      - base=main
     actions:
       merge:
         method: merge

@@ -2,8 +2,8 @@
 
 const { middify } = require('slic-tools/middy-util')
 
-const AWS = require('aws-sdk')
-const awsXray = require('aws-xray-sdk')
+const { AWS } = require('slic-tools/aws')
+const awsXray = require('aws-xray-sdk-core')
 
 const log = require('slic-tools/log')
 
@@ -14,7 +14,7 @@ const ses = awsXray.captureAWSClient(
   })
 )
 
-async function sendEmail(message) {
+async function sendEmail (message) {
   log.info({ message }, 'sendEmail')
 
   const { to, subject, body } = JSON.parse(message.Records[0].body)

@@ -7,10 +7,7 @@ const log = require('slic-tools/log')
 
 const invitation = require('../../lib/invitation')
 
-const stage = process.env.SLIC_STAGE
-const nsDomain = process.env.SLIC_NS_DOMAIN
-
-async function create({ email, listId, listName, userId }) {
+async function create ({ email, listId, listName, userId }) {
   const baseLink = `${process.env.FRONTEND_URL}/invitation/`
 
   const { email: sharerEmail } = await getUser(userId)
@@ -36,7 +33,7 @@ SLIC Lists
   await sendEmail(message)
 }
 
-async function confirm({ code, userId }) {
+async function confirm ({ code, userId }) {
   const { parseCode } = invitation(process.env.CODE_SECRET)
   let parsedCode
   try {

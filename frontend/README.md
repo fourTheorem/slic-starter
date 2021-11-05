@@ -3,7 +3,7 @@
 ## Building
 
 ```
-NODE_ENV=dev AWS_PROFILE=<profile_name> AWS_REGION=eu-west-1 npm run build
+AWS_PROFILE=<profile_name> SLIC_STAGE=<stage> npm run build
 ```
 
 ---

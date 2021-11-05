@@ -4,7 +4,7 @@ const path = require('path')
 const awsMock = require('aws-sdk-mock')
 const { test } = require('tap')
 
-awsMock.setSDK(path.resolve('./node_modules/aws-sdk'))
+awsMock.setSDK(path.resolve(__dirname, '../../../../node_modules/aws-sdk'))
 process.env.USER_POOL_ID = 'User_pool123'
 
 const testEmail = 'email@example.com'
@@ -13,11 +13,11 @@ const user = {
   Users: [{ Username: '123' }]
 }
 
-awsMock.mock('SSM', 'getParameter', function(params, callback) {
+awsMock.mock('SSM', 'getParameter', function (params, callback) {
   callback(null, { Parameter: { Value: 'test-user-pool-id' } })
 })
 
-awsMock.mock('CognitoIdentityServiceProvider', 'adminGetUser', function(
+awsMock.mock('CognitoIdentityServiceProvider', 'adminGetUser', function (
   params,
   callback
 ) {
@@ -25,7 +25,7 @@ awsMock.mock('CognitoIdentityServiceProvider', 'adminGetUser', function(
   callback(null, { UserAttributes })
 })
 
-awsMock.mock('CognitoIdentityServiceProvider', 'listUsers', function(
+awsMock.mock('CognitoIdentityServiceProvider', 'listUsers', function (
   params,
   callback
 ) {

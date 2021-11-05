@@ -3,7 +3,7 @@
 const path = require('path')
 const proxyquire = require('proxyquire')
 const awsMock = require('aws-sdk-mock')
-awsMock.setSDK(path.resolve('../node_modules/aws-sdk'))
+awsMock.setSDK(path.resolve(__dirname, '../../../../node_modules/aws-sdk'))
 
 const { test } = require('tap')
 
@@ -16,7 +16,7 @@ const list1 = {
   listId: 'list1',
   name: 'List One',
   description: 'List One Description',
-  entries: {},
+  entries: {}
 }
 const testLists = {
   ownerA: [
@@ -26,8 +26,8 @@ const testLists = {
       listId: 'list2',
       name: 'List Two',
       description: 'List Two Description',
-      entries: {},
-    },
+      entries: {}
+    }
   ],
   ownerB: [
     {
@@ -35,19 +35,19 @@ const testLists = {
       listId: 'list3',
       name: 'List Three',
       description: 'List three Description',
-      entries: {},
+      entries: {}
     },
 
     {
       userId: 'ownerB',
       listId: 'list1',
-      sharedListOwner: 'ownerA',
-    },
-  ],
+      sharedListOwner: 'ownerA'
+    }
+  ]
 }
 
 const received = {
-  dynamoDb: {},
+  dynamoDb: {}
 }
 
 awsMock.mock('DynamoDB.DocumentClient', 'put', function (params, callback) {
@@ -65,7 +65,7 @@ awsMock.mock('DynamoDB.DocumentClient', 'get', function (params, callback) {
   const userId = params.Key.userId
   const listId = params.Key.listId
   callback(null, {
-    Item: testLists[userId].find(list => list.listId === listId),
+    Item: testLists[userId].find(list => list.listId === listId)
   })
 })
 
@@ -85,7 +85,7 @@ awsMock.mock('DynamoDB.DocumentClient', 'query', function (params, callback) {
   received.dynamoDb.query = params
   const userId = params.ExpressionAttributeValues[':userId']
   callback(null, {
-    Items: testLists[userId],
+    Items: testLists[userId]
   })
 })
 
@@ -93,7 +93,7 @@ test('create puts a dynamodb item', async t => {
   const record = {
     userId,
     name: 'Test List',
-    description: 'Test Description',
+    description: 'Test Description'
   }
 
   const checklist = proxyquire('../../../services/checklists/checklist', {
@@ -101,8 +101,8 @@ test('create puts a dynamodb item', async t => {
       dispatchEvent: (...args) => {
         received.eventArgs = args
         return Promise.resolve()
-      },
-    },
+      }
+    }
   })
 
   const response = await checklist.create(record)
@@ -125,7 +125,7 @@ test('update function updates current checklists', async t => {
     listId: '1234',
     userId,
     name: 'New title',
-    description: 'New Description',
+    description: 'New Description'
   }
 
   const checklist = require('../../../services/checklists/checklist')
@@ -142,7 +142,7 @@ test('update function updates current checklists', async t => {
 test('update function updates current checklists when name not specified', async t => {
   const record = {
     listId: '1234',
-    userId,
+    userId
   }
 
   const checklist = require('../../../services/checklists/checklist')
@@ -163,7 +163,7 @@ test('update function updates current checklists when name not specified', async
 test('Get a checklist based on a listId and userId', async t => {
   const record = {
     listId: list1.listId,
-    userId: list1.userId,
+    userId: list1.userId
   }
 
   const checklist = require('../../../services/checklists/checklist')
@@ -181,7 +181,7 @@ test('remove a checklist', async t => {
 
   const record = {
     listId: '1234',
-    userId,
+    userId
   }
 
   await checklist.remove(record)
@@ -195,7 +195,7 @@ test('list all checklists', async t => {
   const checklist = require('../../../services/checklists/checklist')
 
   const record = {
-    userId,
+    userId
   }
 
   const response = await checklist.list(record)
@@ -213,16 +213,16 @@ test('list all checklists including shared lists', async t => {
   const checklist = require('../../../services/checklists/checklist')
 
   const record = {
-    userId: 'ownerB',
+    userId: 'ownerB'
   }
 
   const response = await checklist.list(record)
 
-  t.match(response, testLists['ownerB'])
+  t.match(response, testLists.ownerB)
 
   const shared = response.find(share => share.sharedListOwner)
 
-  const originalList = testLists['ownerB'].find(
+  const originalList = testLists.ownerB.find(
     list => list.listId === shared.listId
   )
 
@@ -238,7 +238,7 @@ test('add a collaborator', async t => {
   const record = {
     sharedListOwner: 'list-owner',
     listId: 'list-shared',
-    userId,
+    userId
   }
 
   await checklist.addCollaborator(record)

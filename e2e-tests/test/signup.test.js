@@ -1,4 +1,4 @@
-import { ClientFunction, Selector } from 'testcafe'
+import { ClientFunction, Role, Selector } from 'testcafe'
 import { waitForReact } from 'testcafe-react-selectors'
 import Page from './PageModels/page-model'
 
@@ -6,14 +6,20 @@ const config = require('../lib/config')
 
 const page = new Page()
 
-const baseUrl = config.getBaseURL()
 const email = config.getEmail()
 
-fixture(`Signup test`)
-  .page(baseUrl + '/signup') //use env variables
-  .beforeEach(() => waitForReact())
+const rolePromise = config.getBaseUrl().then((baseUrl) => Role(
+  `${baseUrl}/signup`,
+  async t => {
+    await waitForReact()
+  },
+  { preserveUrl: true }
+))
+
+fixture('Signup test')
 
 test('User can sign up for a new account', async t => {
+  await t.useRole(await rolePromise)
   await t.typeText(page.emailInput, email)
   await t.typeText(page.passInput, 'Slic123@')
   await t.click(Selector('#signup-btn'))
@@ -31,6 +37,7 @@ test('User can sign up for a new account', async t => {
 })
 
 test('User can have a valid confirmation code resent', async t => {
+  await t.useRole(await rolePromise)
   const email = config.getEmail()
   await t.typeText(page.emailInput, email)
   await t.typeText(page.passInput, 'Slic123@')

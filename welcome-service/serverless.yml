@@ -1,11 +1,13 @@
 service: welcome-service
+variablesResolutionMode: 20210326
+projectDir: ..
 
 plugins:
-  - serverless-webpack
   - serverless-offline
   - serverless-prune-plugin
-  - serverless-pseudo-parameters
   - serverless-iam-roles-per-function
+  - serverless-slic-watch-plugin
+  - serverless-bundle
 
 provider:
   name: aws
@@ -19,8 +21,10 @@ provider:
   logRetentionInDays: 7
 
 custom:
-  webpack:
-    keepOutputDirectory: true
+  app: ${file(../app.yml)}
+  bundle:
+    esbuild: true
+    linting: false
   emailQueueName: ${self:provider.stage}-email-queue
   prune:
     automatic: true
@@ -31,5 +35,6 @@ custom:
     websocketPort: 4013
     stage: local
     region: ${self:provider.region}
+  slicWatch: ${self:custom.app.slicWatch}
 
 functions: ${file(./sls-functions.yml)}

@@ -152,7 +152,7 @@ test('checklist tests', async t => {
   })
 })
 
-function entriesToArray(entriesObj) {
+function entriesToArray (entriesObj) {
   return Object.entries(entriesObj).map(([prop, value]) => ({
     entId: prop,
     ...value

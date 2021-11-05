@@ -10,48 +10,50 @@ import ErrorMessage from './ErrorMessage'
 const styles = (theme) => ({
   root: {
     padding: theme.spacing.unit * 2,
-    height: '100%',
+    height: '100%'
   },
   textField: {
-    width: '100%',
+    width: '100%'
   },
   form: {
-    height: 'calc(100% - 64px)',
+    height: 'calc(100% - 64px)'
   },
   error: {
-    color: theme.palette.error.main,
-  },
+    color: theme.palette.error.main
+  }
 })
 
 class NewList extends Component {
   state = {
     name: '',
-    description: '',
-  }
+    description: ''
+  };
 
   handleSubmit = (event) => {
     event.preventDefault()
     this.props.dispatch(createList(this.state))
-  }
+  };
 
-  validate = () => this.state.name.trim().length > 0
+  validate = () => this.state.name.trim().length > 0;
 
   handleChange = ({ target: { id, value } }) => {
     this.setState({ [id]: value })
-  }
+  };
 
-  render() {
+  render () {
     const { creating, createdListId, creationError, classes } = this.props
 
     if (createdListId && !creating) {
       return <Redirect to={`/list/${createdListId}`} />
     }
 
-    const errorItem = creationError ? (
+    const errorItem = creationError
+      ? (
       <Grid item>
         <ErrorMessage messageId={creationError.id} />
       </Grid>
-    ) : null
+        )
+      : null
 
     return (
       <form
@@ -63,7 +65,7 @@ class NewList extends Component {
           container
           direction="row"
           className={classes.root}
-          justify="center"
+          justifyContent="center"
           alignItems="center"
         >
           <Grid
@@ -107,7 +109,7 @@ class NewList extends Component {
 
             {errorItem}
 
-            <Grid item container layout="row" justify="flex-end">
+            <Grid item container layout="row" justifyContent="flex-end">
               <Grid item>
                 <Button
                   variant="contained"
@@ -132,15 +134,15 @@ NewList.propTypes = {
   createdListId: PropTypes.string,
   creationError: PropTypes.object,
   dispatch: PropTypes.func.isRequired,
-  classes: PropTypes.object.isRequired,
+  classes: PropTypes.object.isRequired
 }
 
 const mapStateToProps = ({
-  checklists: { creationError, createdListId, creating },
+  checklists: { creationError, createdListId, creating }
 }) => ({
   createdListId,
   creating,
-  creationError,
+  creationError
 })
 
 export default connect(mapStateToProps)(withStyles(styles)(NewList))

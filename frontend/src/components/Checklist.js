@@ -10,12 +10,10 @@ import {
   Grid,
   IconButton,
   Typography,
-} from '@material-ui/core'
-import {
   CircularProgress,
-  ExpansionPanel,
-  ExpansionPanelSummary,
-  ExpansionPanelDetails,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails
 } from '@material-ui/core'
 import { withStyles } from '@material-ui/core/styles'
 import Loading from './Loading'
@@ -25,38 +23,38 @@ import { editShare, cancelShare } from '../actions/share'
 
 const dateFns = require('date-fns')
 
-const ExtExpansionPanelSummary = withStyles({
+const ExtAccordionSummary = withStyles({
   content: {
-    width: '100%',
-  },
-})(ExpansionPanelSummary)
+    width: '100%'
+  }
+})(AccordionSummary)
 
 const styles = (theme) => ({
   typography: {
-    whiteSpace: 'pre-line',
+    whiteSpace: 'pre-line'
   },
   list: {
-    width: '100%',
+    width: '100%'
   },
   listItem: {
-    width: '100%',
+    width: '100%'
   },
   description: {
-    whiteSpace: 'pre-line',
+    whiteSpace: 'pre-line'
   },
   title: {
     overflow: 'hidden',
     textOverflow: 'ellipsis',
-    whiteSpace: 'nowrap',
+    whiteSpace: 'nowrap'
   },
   hiddenButton: {
-    visibility: 'hidden',
+    visibility: 'hidden'
   },
   expansionPanel: {
     '&:before': {
-      display: 'none',
-    },
-  },
+      display: 'none'
+    }
+  }
 })
 
 class Checklist extends Component {
@@ -66,22 +64,22 @@ class Checklist extends Component {
     description: '',
     isPanelExpanded: false,
     editingId: null,
-    updatedTitle: '',
-  }
+    updatedTitle: ''
+  };
 
   handlePanelExpansion = () => {
     this.setState({ isPanelExpanded: !this.state.isPanelExpanded })
-  }
+  };
 
   handleOpen = () => {
     this.props.dispatch(editShare())
-  }
+  };
 
   handleShareClose = () => {
     this.props.dispatch(cancelShare())
-  }
+  };
 
-  render() {
+  render () {
     const { removing, classes, list } = this.props
 
     if (!list) {
@@ -89,47 +87,48 @@ class Checklist extends Component {
       return <Redirect to="/" />
     }
 
-    const date = `Created ${dateFns.distanceInWords(
+    const date = `Created ${dateFns.formatDistance(
       Date.now(),
       list.createdAt
     )} ago`
 
     const expansionPanel = (
-      <ExpansionPanel
+      <Accordion
         elevation={0}
         className={classes.expansionPanel}
         expanded={this.state.isPanelExpanded}
         onChange={this.handlePanelExpansion}
       >
-        <ExtExpansionPanelSummary
+        <ExtAccordionSummary
           id="expansion-summary"
           expandIcon={<ExpandMore />}
         >
-          <Typography variant="h4" className={classes.title}>
+          <Typography variant="h4" className={classes.title} id="list-name">
             {list.name}
           </Typography>
-        </ExtExpansionPanelSummary>
-        <ExpansionPanelDetails>
+        </ExtAccordionSummary>
+        <AccordionDetails>
           <Grid container direction="column" spacing={2}>
             <Grid item>
               <Typography variant="caption">{date}</Typography>
             </Grid>
             <Grid item>
-              <Typography variant="h6" className={classes.description}>
+              <Typography variant="h6" className={classes.description} id="list-description">
                 {list.description}
               </Typography>
             </Grid>
           </Grid>
-        </ExpansionPanelDetails>
-      </ExpansionPanel>
+        </AccordionDetails>
+      </Accordion>
     )
 
-    return list ? (
-      <Grid container layout="row" justify="center">
+    return list
+      ? (
+      <Grid container layout="row" justifyContent="center">
         <Grid item xs={12} sm={10} md={8} lg={6}>
           <Card>
             <CardContent>
-              <Grid container direction="row" justify="flex-end">
+              <Grid container direction="row" justifyContent="flex-end">
                 <Grid item>
                   <IconButton
                     id="share-list-btn"
@@ -160,9 +159,10 @@ class Checklist extends Component {
           />
         </Grid>
       </Grid>
-    ) : (
+        )
+      : (
       <Loading />
-    )
+        )
   }
 }
 
@@ -175,18 +175,18 @@ Checklist.propTypes = {
   updatingList: PropTypes.bool,
   listUpdated: PropTypes.bool,
   editingShare: PropTypes.bool,
-  updatedAt: PropTypes.any,
+  updatedAt: PropTypes.any
 }
 
 const makeMapStateToProps = (initialState, ownProps) => {
   const {
     match: {
-      params: { id: listId },
-    },
+      params: { id: listId }
+    }
   } = ownProps
 
   return ({
-    checklists: { editingShare, listsById, removing, removalError },
+    checklists: { editingShare, listsById, removing, removalError }
   }) => {
     const list = listId ? listsById[listId] : {}
     return {
@@ -194,7 +194,7 @@ const makeMapStateToProps = (initialState, ownProps) => {
       list,
       listsById,
       removing,
-      error: removalError,
+      error: removalError
     }
   }
 }

@@ -10,7 +10,7 @@ services:
       - DEFAULT_REGION=us-east-1
       - SERVICES=sqs,sns,events,ssm
 
-  create_localstack_resources:
+  create-localstack-resources:
     image: anigeo/awscli
     entrypoint: '/root/localstack/create_localstack_resources.sh'
     volumes:

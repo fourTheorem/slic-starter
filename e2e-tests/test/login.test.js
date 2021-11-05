@@ -1,17 +1,18 @@
-import { ClientFunction, Selector } from 'testcafe'
+import { Selector } from 'testcafe'
 import { waitForReact } from 'testcafe-react-selectors'
 import Page from './PageModels/page-model'
 
 const config = require('../lib/config.js')
 
 const page = new Page()
-const baseUrl = config.getBaseURL()
 const email = config.getEmail()
 
-fixture(`Login test`)
-  .page(baseUrl + '/login')
-  .beforeEach(() => waitForReact())
+fixture('Login test')
+
 test('Login tests', async t => {
+  const baseUrl = await config.getBaseUrl()
+  await t.navigateTo(baseUrl)
+  await waitForReact()
   await t.click(Selector('a'))
   await t.typeText(page.emailInput, email)
   await t.typeText(page.passInput, 'Slic123@')
@@ -24,6 +25,9 @@ test('Login tests', async t => {
 })
 
 test('User can Log in after signing up', async t => {
+  const baseUrl = await config.getBaseUrl()
+  await t.navigateTo(baseUrl)
+  await waitForReact()
   await t.typeText(page.emailInput, email)
   await t.typeText(page.passInput, 'Slic123@')
 
@@ -31,11 +35,8 @@ test('User can Log in after signing up', async t => {
   await t.expect(page.passInput.value).contains('Slic123@')
   await t.click(page.loginBtn)
 
-  const getLocation = ClientFunction(() => document.location.href)
   const h6 = Selector('h6')
-  await t.expect(
-    h6.withText("You don't have any lists. Click the button to create one!")
-  ).exists
-  await t.expect(Selector('#new-list-button')).exists
-  await t.expect(Selector('#logout-btn')).exists
+  await t.expect(h6.withText("You don't have any lists. Click the button to create one!").exists).ok()
+  await t.expect(Selector('#new-list-button').exists).ok()
+  await t.expect(Selector('#logout-btn').exists).ok()
 })

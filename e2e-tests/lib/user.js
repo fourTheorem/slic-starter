@@ -7,7 +7,7 @@ module.exports = {
   generateUser
 }
 
-function generateUser() {
+function generateUser () {
   const user = {}
   user.email = config.getEmail() // Generate a unique address for each user
   user.password = `${nid(4).toUpperCase()}${nid(6)}${Math.floor(

@@ -13,8 +13,7 @@ import {
   TextField,
   ListItemSecondaryAction,
   Checkbox,
-  ClickAwayListener,
-  List,
+  List
 } from '@material-ui/core'
 
 import { withStyles } from '@material-ui/core/styles'
@@ -27,22 +26,22 @@ import {
   loadEntries,
   addEntry,
   setEntryValue,
-  removeEntry,
+  removeEntry
 } from '../actions/entries'
 
 const styles = {
   hiddenButton: {
-    visibility: 'hidden',
+    visibility: 'hidden'
   },
   textField: {
-    width: '100%',
-  },
+    width: '100%'
+  }
 }
 
 const ExtListItem = withStyles({
   container: {
-    width: '100%',
-  },
+    width: '100%'
+  }
 })(ListItem)
 
 class Entries extends Component {
@@ -52,13 +51,13 @@ class Entries extends Component {
     isEditingList: false,
     name: '',
     description: '',
-    anchorPosition: null,
+    anchorEl: null,
     editingId: null,
     updatedTitle: null,
-    newEntryTitle: '',
-  }
+    newEntryTitle: ''
+  };
 
-  componentDidUpdate(prevProps) {
+  componentDidUpdate (prevProps) {
     if (prevProps.list && !this.props.list) {
       // The list was deleted - go back home
       this.props.dispatch(push('/'))
@@ -68,9 +67,9 @@ class Entries extends Component {
     }
   }
 
-  validate = () => this.state.newEntryTitle.trim().length > 0
+  validate = () => this.state.newEntryTitle.trim().length > 0;
 
-  componentDidMount() {
+  componentDidMount () {
     this.setState({ newEntryTitle: '' })
     const { list, dispatch } = this.props
     if (this.props.list) {
@@ -85,16 +84,20 @@ class Entries extends Component {
         addEntry({
           listId: this.props.list.listId,
           title: this.state.newEntryTitle,
-          value: false,
+          value: false
         })
       )
       this.setState({ newEntryTitle: '' })
     }
   }
 
+  handleCloseEntryMenu = (event) => {
+    this.setState({ anchorEl: null })
+  }
+
   handleEntryTitleChange = ({ target: { value } }) => {
     this.setState({ newEntryTitle: value })
-  }
+  };
 
   handleEntryValueChange = ({ target: { id, checked } }) => {
     const { dispatch, list, entries, updatingEntryValue } = this.props
@@ -103,19 +106,20 @@ class Entries extends Component {
       dispatch(
         setEntryValue({
           listId: list.listId,
-          entry: { ...entry, value: checked },
+          entry: { ...entry, value: checked }
         })
       )
     }
-  }
+  };
 
   handleEntryRemovalRequest = (event) => {
     this.setState({
       confirmDeleteEntryOpen: true,
       editingId: this.state.menuEntryId,
       deletingEntry: true,
+      anchorEl: null
     })
-  }
+  };
 
   handleEntryUpdateRequest = () => {
     const { entries } = this.props
@@ -124,10 +128,10 @@ class Entries extends Component {
     this.setState({
       editingId: this.state.menuEntryId,
       menuEntryId: null,
-      anchorPosition: null,
-      updatedTitle: entry.title,
+      anchorEl: null,
+      updatedTitle: entry.title
     })
-  }
+  };
 
   handleEntryUpdateSubmit = () => {
     const { dispatch, list, entries } = this.props
@@ -135,44 +139,38 @@ class Entries extends Component {
     dispatch(
       setEntryValue({
         listId: list.listId,
-        entry: { ...entry, title: this.state.updatedTitle },
+        entry: { ...entry, title: this.state.updatedTitle }
       })
     )
     this.setState({
       editingId: null,
       menuEntryId: null,
-      updatedTitle: null,
+      updatedTitle: null
     })
-  }
+  };
 
   onUpdateTitleChange = ({ target: { value } }) => {
     this.setState({ updatedTitle: value })
-  }
+  };
 
   handleEntryRemovalRequestClose = () => {
     this.setState({ confirmDeleteEntryOpen: false })
-  }
+  };
 
   handleRemoveListEntry = () => {
     const { dispatch, list } = this.props
     dispatch(removeEntry({ listId: list.listId, entId: this.state.editingId }))
-    this.setState({ confirmDeleteEntryOpen: false, menuEntryId: null })
-  }
-
-  handleClickAway = () => {
-    this.setState({ anchorPosition: null })
-  }
+    this.setState({ confirmDeleteEntryOpen: false, menuEntryId: null, deletingEntry: false })
+  };
 
   handleDropdownOpen = (event) => {
-    const { x: left, y: top } = event.currentTarget.getBoundingClientRect()
-    const anchorPosition = { left, top }
     this.setState({
       menuEntryId: event.currentTarget.id,
-      anchorPosition,
+      anchorEl: event.currentTarget
     })
-  }
+  };
 
-  render() {
+  render () {
     const {
       addingEntry,
       gettingListEntries,
@@ -182,7 +180,7 @@ class Entries extends Component {
       error,
       entries,
       list,
-      updatingEntryValue,
+      updatingEntryValue
     } = this.props
 
     if (!list) {
@@ -206,15 +204,19 @@ class Entries extends Component {
       !updatingList &&
       !removingEntry &&
       !updatingEntryValue &&
-      error ? (
+      error
+        ? (
         <ExtListItem>
           <ErrorMessage messageId={error.id} />
         </ExtListItem>
-      ) : null
+          )
+        : null
 
-    const newItemEntry = addingEntry ? (
+    const newItemEntry = addingEntry
+      ? (
       <Loading />
-    ) : (
+        )
+      : (
       <ExtListItem>
         <IconButton className={classes.hiddenButton}>
           <Clear />
@@ -231,80 +233,80 @@ class Entries extends Component {
         </ListItemText>
         <ListItemSecondaryAction />
       </ExtListItem>
-    )
+        )
 
     return (
-      <ClickAwayListener onClickAway={this.handleClickAway}>
-        <div>
-          <List className={classes.list}>
-            {entries.map((entry, index) => (
-              <ExtListItem key={index}>
-                <Button
-                  className={classes.deleteEntryBtn}
-                  onClick={this.handleDropdownOpen}
-                  name={entry.title}
-                  id={entry.entId}
+      <div>
+        <List className={classes.list}>
+          {entries.map((entry, index) => (
+            <ExtListItem key={index}>
+              <Button
+                className={classes.deleteEntryBtn}
+                onClick={this.handleDropdownOpen}
+                name={entry.title}
+                id={entry.entId}
+              >
+                <MoreVert />
+              </Button>
+              {this.state.editingId === entry.entId &&
+              !this.state.deletingEntry
+                ? (
+                <form
+                  autoComplete="off"
+                  onSubmit={this.handleEntryUpdateSubmit}
                 >
-                  <MoreVert />
-                </Button>
-                {this.state.editingId === entry.entId &&
-                !this.state.deletingEntry ? (
-                  <form
-                    autoComplete="off"
-                    onSubmit={this.handleEntryUpdateSubmit}
-                  >
-                    <TextField
-                      name="edit-entry"
-                      id="edit-entry"
-                      onChange={this.onUpdateTitleChange}
-                      value={this.state.updatedTitle}
-                    />
-                    <Button color="primary" id="save-btn" type="submit">
-                      Save
-                    </Button>
-                  </form>
-                ) : (
-                  <ListItemText>{entry.title}</ListItemText>
-                )}
-                <ListItemSecondaryAction>
-                  <Checkbox
-                    color="primary"
-                    onChange={this.handleEntryValueChange}
-                    id={entry.entId}
-                    name={'checkbox-entry-'.concat(index)}
-                    checked={!!entry.value}
+                  <TextField
+                    name="edit-entry"
+                    id="edit-entry"
+                    onChange={this.onUpdateTitleChange}
+                    value={this.state.updatedTitle}
                   />
-                </ListItemSecondaryAction>
-              </ExtListItem>
-            ))}
+                  <Button color="primary" id="save-btn" type="submit">
+                    Save
+                  </Button>
+                </form>
+                  )
+                : (
+                <ListItemText>{entry.title}</ListItemText>
+                  )}
+              <ListItemSecondaryAction>
+                <Checkbox
+                  color="primary"
+                  onChange={this.handleEntryValueChange}
+                  id={entry.entId}
+                  name={'checkbox-entry-'.concat(index)}
+                  checked={!!entry.value}
+                />
+              </ListItemSecondaryAction>
+            </ExtListItem>
+          ))}
 
-            <form
-              id="new-item-form"
-              onSubmit={this.handleEntrySubmit}
-              autoComplete="off"
-            >
-              {newItemEntry}
-            </form>
-            {errorItem}
-          </List>
-          <Menu
-            open={!!this.state.anchorPosition}
-            anchorReference="anchorPosition"
-            anchorPosition={this.state.anchorPosition}
+          <form
+            id="new-item-form"
+            onSubmit={this.handleEntrySubmit}
+            autoComplete="off"
           >
-            <MenuItem onClick={this.handleEntryUpdateRequest} id="edit-entry">
-              Edit
-            </MenuItem>
-            <MenuItem
-              id="delete-entry"
-              onClick={this.handleEntryRemovalRequest}
-            >
-              Delete
-            </MenuItem>
-          </Menu>
-          {deleteEntryDialog}
-        </div>
-      </ClickAwayListener>
+            {newItemEntry}
+          </form>
+          {errorItem}
+        </List>
+        <Menu
+          open={!!this.state.anchorEl}
+          anchorEl={this.state.anchorEl}
+          onClose={this.handleCloseEntryMenu}
+        >
+          <MenuItem onClick={this.handleEntryUpdateRequest} id="edit-entry">
+            Edit
+          </MenuItem>
+          <MenuItem
+            id="delete-entry"
+            onClick={this.handleEntryRemovalRequest}
+          >
+            Delete
+          </MenuItem>
+        </Menu>
+        {deleteEntryDialog}
+      </div>
     )
   }
 }
@@ -322,7 +324,7 @@ Entries.propTypes = {
   error: PropTypes.object,
   updatingList: PropTypes.bool,
   listUpdated: PropTypes.bool,
-  updatedAt: PropTypes.any,
+  updatedAt: PropTypes.any
 }
 
 const makeMapStateToProps = (initialState, ownProps) => {
@@ -337,8 +339,8 @@ const makeMapStateToProps = (initialState, ownProps) => {
       addEntryError,
       listEntriesError,
       entryValueUpdateError,
-      removeEntryError,
-    },
+      removeEntryError
+    }
   }) => {
     const list = listId ? listsById[listId] : {}
     const entries = entriesByListId[listId] || []
@@ -353,7 +355,7 @@ const makeMapStateToProps = (initialState, ownProps) => {
         addEntryError ||
         listEntriesError ||
         entryValueUpdateError ||
-        removeEntryError,
+        removeEntryError
     }
   }
 }

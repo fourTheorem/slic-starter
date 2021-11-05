@@ -15,17 +15,17 @@ import { loadLists } from '../actions/checklists'
 import { setPreAuthenticatedPath } from '../actions/auth'
 
 class Home extends Component {
-  componentDidMount() {
+  componentDidMount () {
     if (this.props.auth.authenticated) {
       this.props.dispatch(loadLists())
     }
   }
 
-  render() {
+  render () {
     const {
       auth: { authenticated, preAuthenticatedPath },
       dispatch,
-      loading,
+      loading
     } = this.props
 
     let authCheck = null
@@ -35,9 +35,9 @@ class Home extends Component {
       authCheck = <Redirect to="/login" />
     }
 
-    const body = loading ? (
-      <Loading />
-    ) : (
+    const body = loading
+      ? <Loading />
+      : (
       <Switch>
         <Route exact path="/new-list" component={EditChecklist} />
         <Route exact path="/list/:id" component={Checklist} />
@@ -45,7 +45,7 @@ class Home extends Component {
         <Route path="/invitation/:code" component={AcceptShare} />
         <Route path="/" component={Lists} />
       </Switch>
-    )
+        )
 
     return (
       <div style={{ height: '100%', overflowX: 'hidden' }}>
@@ -61,12 +61,12 @@ Home.propTypes = {
   auth: PropTypes.object.isRequired,
   dispatch: PropTypes.func.isRequired,
   loading: PropTypes.bool.isRequired,
-  location: PropTypes.object.isRequired,
+  location: PropTypes.object.isRequired
 }
 
 const mapStateToProps = ({ checklists: { loading }, auth }) => ({
   loading,
-  auth,
+  auth
 })
 
 export default connect(mapStateToProps)(Home)
