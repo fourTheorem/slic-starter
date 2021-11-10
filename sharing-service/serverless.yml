@@ -7,6 +7,7 @@ plugins:
   - serverless-iam-roles-per-function
   - serverless-slic-watch-plugin
   - serverless-bundle
+  - serverless-api-gateway-throttling
 
 provider:
   name: aws
@@ -45,6 +46,9 @@ custom:
     automatic: true
     number: 3
   slicWatch: ${self:custom.app.slicWatch}
+  apiGatewayThrottling:
+    maxRequestsPerSecond: 50
+    maxConcurrentRequests: 25
 
 functions: ${file(./sls-functions.yml)}
 
