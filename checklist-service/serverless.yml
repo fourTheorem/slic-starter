@@ -32,6 +32,8 @@ provider:
     SERVICE_NAME: ${file(./package.json):name}
     SERVICE_VERSION: ${file(./package.json):version}
     CHECKLIST_TABLE_NAME: ${self:custom.checklistTableName}
+  logs:
+    restApi: true
   logRetentionInDays: 7
 
 custom:
