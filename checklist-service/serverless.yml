@@ -11,6 +11,7 @@ plugins:
   - serverless-iam-roles-per-function
   - serverless-slic-watch-plugin
   - serverless-bundle
+  - serverless-api-gateway-throttling
 
 provider:
   name: aws
@@ -62,6 +63,9 @@ custom:
     automatic: true
     number: 3
   slicWatch: ${self:custom.app.slicWatch}
+  apiGatewayThrottling:
+    maxRequestsPerSecond: 50
+    maxConcurrentRequests: 25
 
 functions: ${file(./sls-functions.yml)}
 
@@ -105,9 +109,7 @@ resources:
             KeyType: HASH
           - AttributeName: listId
             KeyType: RANGE
-        ProvisionedThroughput:
-          ReadCapacityUnits: 2
-          WriteCapacityUnits: 2
+        BillingMode: PAY_PER_REQUEST
 
     checklistServiceNameParameter:
       Type: AWS::SSM::Parameter
