@@ -6,7 +6,11 @@ const coreAws = require('aws-sdk')
 const AWS = process.env.IS_OFFLINE || process.env.SLIC_STAGE === 'test' ? coreAws : awsXray.captureAWS(coreAws) // TODO - Revisit this to enable XRay always
 
 const defaultOptions = {
-  convertEmptyValues: true // If this is not set, empty strings cause an error. This converts them automatically to NULL
+  // If this is not set, empty strings cause an error. This converts them automatically to NULL
+  convertEmptyValues: true,
+  // Prevent long-running retry loops caused by the default SDK DDB retry count of 10 with
+  // exponential backoff with dealys up to 25 seconds
+  maxRetries: 3
 }
 
 /*
