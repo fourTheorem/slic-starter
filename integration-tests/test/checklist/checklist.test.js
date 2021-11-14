@@ -1,9 +1,8 @@
 'use strict'
 
-const Promise = require('bluebird')
 const faker = require('faker')
 const random = require('random')
-const { test } = require('tap')
+const t = require('tap')
 const { getUser, removeUser } = require('../../lib/user-util')
 
 const numEntriesPoisson = random.poisson(7)
@@ -19,35 +18,39 @@ const testLists = [
   }
 ]
 
-test('checklist tests', async t => {
-  const { userId } = await getUser()
+t.beforeEach(async t => {
+  t.context.user = await getUser()
+})
 
-  test('empty checklist set can be read', async t => {
-    const response = await httpClient.get('')
-    t.equal(response.status, 200)
-    t.same(response.data, [])
-  })
+t.teardown(removeUser)
 
-  let listId1, listId2
-  test('checklists can be added', async t => {
-    const response = await httpClient.post('', testLists[0])
+t.afterEach(async t => {
+  const lists = (await httpClient.get('')).data
+  await Promise.all(lists, list => httpClient.delete(`/${list.listId}`))
+})
 
-    const { data, status } = response
-    t.equal(status, 201)
-    t.match(data, { ...testLists[0], userId })
-    t.ok(data.createdAt)
-    const { listId } = data
-    t.ok(listId)
-    listId1 = data.listId
+t.test('no lists are returned', async t => {
+  const emptyGetResponse = await httpClient.get('')
+  t.equal(emptyGetResponse.status, 200)
+  t.equal(emptyGetResponse.data.length, 0)
+})
 
-    const { data: data2 } = await httpClient.post('', testLists[1])
-    listId2 = data2.listId
+t.test('lists can be added', async t => {
+  const response = await httpClient.post('', testLists[0])
+  const { data, status } = response
+  t.equal(status, 201)
+  const userId = t.context.user.userId
+  t.match(data, { ...testLists[0], userId })
+  t.ok(data.createdAt)
+  const listId1 = data.listId
+  t.ok(listId1)
+  await httpClient.post('', testLists[1])
 
-    const { data: lists } = await httpClient.get('')
-    t.match(lists.sort((a, b) => (a.name > b.name ? 1 : -1)), testLists)
-  })
+  const lists = (await httpClient.get('')).data.sort((a, b) => (a.name > b.name ? 1 : -1))
+  t.equal(lists.length, 2)
+  const listId2 = lists[1].listId
 
-  test('checklists can be read by ID', async t => {
+  t.test('checklists can be read by ID', async t => {
     const response = await httpClient.get(`/${listId2}`)
     const { data, status } = response
     t.equal(status, 200)
@@ -55,7 +58,7 @@ test('checklist tests', async t => {
     t.equal(data.listId, listId2)
   })
 
-  test('checklist can be updated', async t => {
+  t.test('checklist can be updated', async t => {
     const newName = 'New List Name'
     const newDescription = 'New Description'
 
@@ -68,67 +71,66 @@ test('checklist tests', async t => {
     t.equal(data.description, newDescription)
   })
 
-  test('checklist can be deleted', async t => {
+  t.test('checklist can be deleted', async t => {
     const { status } = await httpClient.delete(`/${listId1}`)
     t.equal(status, 200)
     const { data } = await httpClient.get('')
     t.match(data, testLists.slice(1))
   })
 
-  const entries = [...new Array(9)].map((val, idx) => ({
-    title: `Entry ${idx + 1}`
-  }))
+  const entries = [...new Array(9)].map((val, idx) => ({ title: `Entry ${idx + 1}` }))
 
-  test('entries can be added', async t => {
-    const results = await Promise.map(entries, entry =>
+  t.test('entries can be added', async t => {
+    const results = await Promise.all(entries.map(entry =>
       httpClient.post(`/${listId2}/entries`, entry)
-    )
+    ))
+
     results.forEach(({ status, data: { entId } }) => {
       t.equal(status, 201)
       t.ok(entId)
     })
+
+    let sortedEntries
+    t.test('entries can be read back', async t => {
+      const { status, data } = await httpClient.get(`/${listId2}/entries`)
+      t.equal(status, 200)
+      t.equal(Object.keys(data).length, entries.length)
+      sortedEntries = entriesToArray(data).sort((a, b) =>
+        a.title > b.title ? 1 : -1
+      )
+      t.match(sortedEntries, entries)
+    })
+
+    t.test('entry can be removed', async t => {
+      const { status } = await httpClient.delete(
+        `/${listId2}/entries/${sortedEntries[0].entId}`
+      )
+      t.equal(status, 200)
+
+      const { data } = await httpClient.get(`/${listId2}/entries`)
+      t.match(
+        Object.values(data).sort((a, b) => (a.title > b.title ? 1 : -1)),
+        entries.splice(1)
+      )
+    })
+
+    t.test('entry can be updated', async t => {
+      const newTitle = 'A changed title'
+      const { status } = await httpClient.put(
+        `/${listId2}/entries/${sortedEntries[1].entId}`,
+        { title: newTitle, value: 'YES' }
+      )
+      t.equal(status, 200)
+
+      const { data } = await httpClient.get(`/${listId2}/entries`)
+      t.match(entriesToArray(data).sort((a, b) => (a.title > b.title ? 1 : -1)), [
+        { ...sortedEntries[1], value: 'YES', title: newTitle },
+        ...sortedEntries.splice(2)
+      ])
+    })
   })
 
-  let sortedEntries
-  test('entries can be read back', async t => {
-    const { status, data } = await httpClient.get(`/${listId2}/entries`)
-    t.equal(status, 200)
-    t.equal(Object.keys(data).length, entries.length)
-    sortedEntries = entriesToArray(data).sort((a, b) =>
-      a.title > b.title ? 1 : -1
-    )
-    t.match(sortedEntries, entries)
-  })
-
-  test('entry can be removed', async t => {
-    const { status } = await httpClient.delete(
-      `/${listId2}/entries/${sortedEntries[0].entId}`
-    )
-    t.equal(status, 200)
-
-    const { data } = await httpClient.get(`/${listId2}/entries`)
-    t.match(
-      Object.values(data).sort((a, b) => (a.title > b.title ? 1 : -1)),
-      entries.splice(1)
-    )
-  })
-
-  test('entry can be updated', async t => {
-    const newTitle = 'A changed title'
-    const { status } = await httpClient.put(
-      `/${listId2}/entries/${sortedEntries[1].entId}`,
-      { title: newTitle, value: 'YES' }
-    )
-    t.equal(status, 200)
-
-    const { data } = await httpClient.get(`/${listId2}/entries`)
-    t.match(entriesToArray(data).sort((a, b) => (a.title > b.title ? 1 : -1)), [
-      { ...sortedEntries[1], value: 'YES', title: newTitle },
-      ...sortedEntries.splice(2)
-    ])
-  })
-
-  test('many entries can be added with varying title lengths', async t => {
+  t.test('many entries can be added with varying title lengths', async t => {
     const numEntries = numEntriesPoisson()
 
     const entries = [...new Array(numEntries)].map(() => ({
@@ -137,18 +139,9 @@ test('checklist tests', async t => {
         .join(' ')
     }))
     console.log('Adding entries', JSON.stringify(entries, null, '  '))
-    await Promise.map(entries, entry =>
+    await Promise.all(entries.map(entry =>
       httpClient.post(`/${listId2}/entries`, entry)
-    )
-  })
-
-  test('tear down - delete checklist', async t => {
-    const lists = (await httpClient.get('')).data
-    await Promise.each(lists, list => httpClient.delete(`/${list.listId}`))
-  })
-
-  test('tear down - delete user', async () => {
-    await removeUser()
+    ))
   })
 })
 
