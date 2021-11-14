@@ -24,9 +24,11 @@ t.test('When a checklist is created, an email is sent to the user', async t => {
   t.ok(data.createdAt)
   t.ok(data.listId)
 
-  // t.equal(
-  //   message.text.body,
-  //   `Congratulations! You created the list ${testList.name}`
-  // )
+  const message = await retrieveEmail(email, subject)
+
+  t.equal(
+    message.text.body,
+    `Congratulations! You created the list ${testList.name}`
+  )
   t.end()
 })
