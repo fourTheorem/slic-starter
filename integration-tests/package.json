@@ -21,7 +21,7 @@
     "faker": "^4.1.0",
     "jsonwebtoken": "^8.5.0",
     "lodash": "^4.17.21",
-    "mailosaur": "^5.0.8",
+    "mailosaur": "^7.5.0",
     "random": "^2.1.1",
     "random-words": "^1.1.0",
     "rword": "^3.0.0",
