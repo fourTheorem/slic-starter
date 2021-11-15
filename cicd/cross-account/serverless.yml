@@ -107,6 +107,10 @@ resources:
                 - cloudfront:UpdateDistribution
                 - cloudfront:ListTagsForResource
                 - cloudfront:TagResource
+                - cloudfront:CreateCloudFrontOriginAccessIdentity
+                - cloudfront:UpdateCloudFrontOriginAccessIdentity
+                - cloudfront:DeleteCloudFrontOriginAccessIdentity
+                - cloudfront:GetCloudFrontOriginAccessIdentity
               Resource:
                 - '*'
             - Effect: Allow
