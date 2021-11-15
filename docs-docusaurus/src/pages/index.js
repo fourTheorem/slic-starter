@@ -1,11 +1,17 @@
+// eslint-disable-next-line no-unused-vars
 import React from 'react'
 import clsx from 'clsx'
+// eslint-disable-next-line no-unused-vars
 import Layout from '@theme/Layout'
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext'
+// eslint-disable-next-line no-unused-vars
+import Link from '@docusaurus/Link'
 import styles from './index.module.css'
+// eslint-disable-next-line no-unused-vars
 import HomepageFeatures from '../components/HomepageFeatures'
 
-function HomepageHeader() {
+// eslint-disable-next-line no-unused-vars
+function HomepageHeader () {
   const { siteConfig } = useDocusaurusContext()
   return (
     <header className={clsx('hero hero--primary', styles.heroBanner)}>
@@ -16,7 +22,7 @@ function HomepageHeader() {
           <Link
             className="button button--secondary button--lg"
             to="/docs/intro">
-            Docusaurus Tutorial - 5min ⏱️
+            QUICK START
           </Link>
         </div>
       </div>
