@@ -19,6 +19,7 @@
     "@babel/core": "^7.6.4",
     "@babel/preset-env": "^7.6.3",
     "babel-loader": "^8.0.6",
+    "serverless-api-gateway-throttling": "^1.1.1",
     "serverless-bundle": "^5.0.2",
     "serverless-iam-roles-per-function": "^3.2.0",
     "serverless-offline": "^8.2.0",
