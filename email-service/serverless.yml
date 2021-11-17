@@ -12,7 +12,7 @@ plugins:
 
 provider:
   name: aws
-  runtime: nodejs10.x
+  runtime: nodejs12.x
   stage: ${opt:stage, 'local'}
   region: ${opt:region, '${env:TARGET_REGION}'}
   sesRegion: ${self:custom.sesRegions.${self:provider.region}, 'us-east-1'}

@@ -42,13 +42,19 @@
   },
   "dependencies": {
     "@hapi/bourne": "^2.0.0",
+    "@middy/core": "^2.5.3",
+    "@middy/http-cors": "^2.5.3",
+    "@middy/http-error-handler": "^2.5.3",
+    "@middy/http-event-normalizer": "^2.5.3",
+    "@middy/http-json-body-parser": "^2.5.3",
+    "@middy/http-response-serializer": "^2.5.3",
+    "@middy/input-output-logger": "^2.5.3",
+    "@middy/ssm": "^2.5.3",
     "aws-sdk": "^2.867.0",
     "aws-signed-axios": "^1.1.0",
     "aws-xray-sdk-core": "^3.3.3",
-    "lambda-logger-middleware": "^1.0.3",
     "lodash": "^4.17.21",
     "middy": "^0.36.0",
-    "middy-autoproxyresponse": "^0.1.0",
     "pino": "^6.13.3"
   },
   "lint-staged": {

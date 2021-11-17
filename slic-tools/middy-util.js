@@ -1,41 +1,38 @@
 'use strict'
 
-const middy = require('middy')
-const {
-  cors,
-  jsonBodyParser,
-  httpEventNormalizer,
-  httpErrorHandler,
-  ssm
-} = require('middy/middlewares')
-const { autoProxyResponse } = require('./middlewares/auto-proxy-response')
-const loggerMiddleware = require('lambda-logger-middleware')
+const middy = require('@middy/core')
+const httpCors = require('@middy/http-cors')
+const httpEventNormalizer = require('@middy/http-event-normalizer')
+const httpJsonBodyParser = require('@middy/http-json-body-parser')
+const httpErrorHandler = require('@middy/http-error-handler')
+const ssm = require('@middy/ssm')
+const inputOutputLogger = require('@middy/input-output-logger')
+
 const log = require('./log')
 
 function middify (exports, options = {}) {
   const result = {}
   Object.keys(exports).forEach(key => {
     const handler = middy(exports[key])
-      .use(
-        loggerMiddleware({
-          logger: log
-        })
-      )
+      .use(inputOutputLogger({
+        logger: (request) => {
+          log.debug({ request }, 'request')
+        }
+      }))
       .use(httpEventNormalizer())
-      .use(jsonBodyParser())
-      .use(cors())
-      .use(autoProxyResponse())
+      .use(httpJsonBodyParser())
+      .use(httpCors())
       .use(httpErrorHandler())
 
     /* istanbul ignore next */
     if (options.ssmParameters && process.env.SLIC_STAGE !== 'test') {
       handler.use(
         ssm({
-          cache: true,
-          names: options.ssmParameters,
-          awsSdkOptions: {
+          fetchData: options.ssmParameters,
+          awsClientOptions: {
             endpoint: process.env.SSM_ENDPOINT_URL
-          }
+          },
+          setToContext: true
         })
       )
     }

@@ -7,15 +7,15 @@ const log = require('slic-tools/log')
 
 const invitation = require('../../lib/invitation')
 
-async function create ({ email, listId, listName, userId }) {
-  const baseLink = `${process.env.FRONTEND_URL}/invitation/`
-
-  const { email: sharerEmail } = await getUser(userId)
+async function create ({ email, listId, listName, userId }, codeSecret, userServiceUrl, frontendUrl) {
+  const { email: sharerEmail } = await getUser(userId, userServiceUrl)
   log.info({ email, userId, listId })
 
-  const { createCode } = invitation(process.env.CODE_SECRET)
+  const { createCode } = invitation(codeSecret)
   const code = createCode({ listId, listName, userId, email })
   log.info({ code })
+
+  const baseLink = `${frontendUrl}/invitation/`
   const fullLink = baseLink + code
 
   const message = {
@@ -33,8 +33,8 @@ SLIC Lists
   await sendEmail(message)
 }
 
-async function confirm ({ code, userId }) {
-  const { parseCode } = invitation(process.env.CODE_SECRET)
+async function confirm ({ code, userId }, codeSecret) {
+  const { parseCode } = invitation(codeSecret)
   let parsedCode
   try {
     parsedCode = parseCode(code)

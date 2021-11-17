@@ -59,3 +59,4 @@ pipeline-state.env\
 
 .webpack/
 .eslintcache
+*.nocommit
