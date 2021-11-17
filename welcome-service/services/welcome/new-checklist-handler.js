@@ -3,12 +3,14 @@
 const { middify } = require('slic-tools/middy-util')
 const { getUser } = require('slic-tools/user-util')
 const { sendEmail } = require('slic-tools/email-util')
+const log = require('slic-tools/log')
 
-async function handleNewChecklist (event) {
+async function handleNewChecklist (event, context) {
   const checklist = event.detail
   const { userId, name } = checklist
 
-  const { email } = await getUser(userId)
+  log.info({ context }, 'context')
+  const { email } = await getUser(userId, context.userServiceUrl)
   const message = {
     to: email,
     subject: 'Your SLIC List',
@@ -22,7 +24,7 @@ module.exports = middify(
   { handleNewChecklist },
   {
     ssmParameters: {
-      USER_SERVICE_URL: `/${process.env.SLIC_STAGE}/user-service/url`
+      userServiceUrl: `/${process.env.SLIC_STAGE}/user-service/url`
     }
   }
 )
