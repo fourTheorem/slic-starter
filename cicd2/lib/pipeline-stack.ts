@@ -15,7 +15,8 @@ export class PipelineStack extends Stack {
         input: pipelines.CodePipelineSource.gitHub(
           `${config.sourceRepoOwner}/${config.sourceRepoName}`, config.sourceBranch
         ),
-        commands: ['cd cicd2', 'npm ci', 'npm run build', 'npm run cdk --synth']
+        commands: ['cd cicd2', 'npm ci', 'npm run build', 'npm run cdk --synth'],
+        primaryOutputDirectory: 'cicd2/cdk.out',
       }),
     })
   }
