@@ -29,3 +29,8 @@ It creates a CloudFormation stack ("CDKToolkit") with:
 - A CloudFormation Execution Role
 - An SSM Parameter with a CDK Bootstrap version
 
+# Troubleshooting
+
+Pipeline deployment fails with CREATE_FAILED: Internal failure.
+
+-> Check that the secret, `github-token` is in place
