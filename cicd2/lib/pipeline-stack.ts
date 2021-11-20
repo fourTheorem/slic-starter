@@ -21,7 +21,7 @@ export class PipelineStack extends Stack {
         primaryOutputDirectory: 'cicd2/cdk.out',
       })
     })
-    pipeline.addWave('Unit Tests', {
+    pipeline.addWave('UnitTests', {
       pre: [
         new pipelines.CodeBuildStep('UnitTest', {
           installCommands: [
