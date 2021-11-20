@@ -1,8 +1,10 @@
 import { Construct, SecretValue, Stack, StackProps } from '@aws-cdk/core';
 
 import * as pipelines from '@aws-cdk/pipelines';
+import * as codebuild from '@aws-cdk/aws-codebuild'
 
 import config from '../config';
+import { CodeBuildStep } from '@aws-cdk/pipelines';
 
 export class PipelineStack extends Stack {
 
@@ -21,19 +23,31 @@ export class PipelineStack extends Stack {
         primaryOutputDirectory: 'cicd2/cdk.out',
       })
     })
-    pipeline.addWave('UnitTests', {
-      pre: [
-        new pipelines.CodeBuildStep('UnitTest', {
-          installCommands: [
-            'bash util/install-packages.sh'
-          ],
-          commands: [
-            'npm test'
-          ]
-        })
-      ]
-
+    const unitTestStep = new pipelines.CodeBuildStep('UnitTest', {
+      installCommands: [
+        'bash util/install-packages.sh'
+      ],
+      commands: [
+        'npm test'
+      ],
+      partialBuildSpec: codebuild.BuildSpec.fromObject({
+        cache: {
+          paths: ['/root/.npm/**/*', 'node_modules/**/*']
+        },
+      })
     })
+
+    pipeline.addWave('UnitTests', {
+      pre: [unitTestStep]
+    })
+
+    pipeline.buildPipeline()
+
+    const cbStep = unitTestStep.project.node.defaultChild as codebuild.CfnProject
+    cbStep.cache = {
+      type: 'S3',
+      location: 'mebucket/mefiles'
+    }
   }
 
 }
