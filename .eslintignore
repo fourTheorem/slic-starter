@@ -8,5 +8,6 @@ cicd/*.yml
 **/.webpack
 frontend/build/static/
 cicd/**/*.js
+cicd2/**/*.js
 **/scripts/*
 **/*.json
