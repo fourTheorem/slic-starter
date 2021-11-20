@@ -1,2 +1,2 @@
-test-ignore: (integration-tests|e2e-tests|test-common|frontend|fixtures.js)
+test-ignore: (integration-tests|e2e-tests|test-common|frontend|fixtures.js|cicd|cicd2)
 test-env: SLIC_STAGE=test
