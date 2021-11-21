@@ -19,7 +19,7 @@ awsMock.mock('SES', 'sendEmail', function (params, callback) {
 })
 
 test('email sends an email', async t => {
-  process.env.EMAIL_FROM_ADDRESS = 'noreply@example.com'
+  const emailFromAddress = 'noreply@example.com'
   const emailHandler = require('../../../services/email/email-handler')
 
   const message = {
@@ -31,7 +31,7 @@ test('email sends an email', async t => {
     ]
   }
 
-  await emailHandler.sendEmail(message, {}, () => {})
+  await emailHandler.sendEmail(message, { emailFromAddress }, () => {})
 
   const expected = {
     Destination: {
