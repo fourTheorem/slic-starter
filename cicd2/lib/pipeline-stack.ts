@@ -43,10 +43,12 @@ export class PipelineStack extends Stack {
 
     pipeline.buildPipeline()
 
-    const cbStep = unitTestStep.project.node.defaultChild as codebuild.CfnProject
-    cbStep.cache = {
+    const artifactBucketName = pipeline.pipeline.artifactBucket.bucketName
+
+    const cbProject = unitTestStep.project.node.defaultChild as codebuild.CfnProject
+    cbProject.cache = {
       type: 'S3',
-      location: 'mebucket/mefiles'
+      location: `${artifactBucketName}/codeBuildCache`
     }
   }
 
