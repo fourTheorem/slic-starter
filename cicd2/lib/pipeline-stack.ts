@@ -14,9 +14,9 @@ export class PipelineStack extends Stack {
 
     const cacheBucket = new s3.Bucket(this, 'CodeBuildCache')
     const cacheAccessStatement = new iam.PolicyStatement({
-      actions: ['s3:GetObject', 's3:PutObject'],
+      actions: ['s3:GetObject*', 's3:PutObject', 's3:DeleteObject*', 's3:GetBucket*', 's3:ListBucket'],
       effect: iam.Effect.ALLOW,
-      resources: [`${cacheBucket.bucketArn}/codeBuildCache/*`]
+      resources: [`${cacheBucket.bucketArn}/codeBuildCache/*`, cacheBucket.bucketArn]
     })
 
     const synthStep = new pipelines.CodeBuildStep('Synth', {
@@ -59,7 +59,7 @@ export class PipelineStack extends Stack {
 
     pipeline.buildPipeline() // Build so we can access the CfnProject to inject cache property
 
-    const synthProject = unitTestStep.project.node.defaultChild as codebuild.CfnProject
+    const synthProject = synthStep.project.node.defaultChild as codebuild.CfnProject
     const utProject = unitTestStep.project.node.defaultChild as codebuild.CfnProject
     synthProject.cache = {
       type: 'S3',
