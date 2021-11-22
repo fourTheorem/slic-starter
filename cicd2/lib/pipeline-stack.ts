@@ -59,14 +59,16 @@ export class PipelineStack extends Stack {
 
     pipeline.buildPipeline() // Build so we can access the CfnProject to inject cache property
 
-    const projectCacheConfig = {
-      type: 'S3',
-      location: `${cacheBucket.bucketName}/codeBuildCache`
-    }
     const synthProject = unitTestStep.project.node.defaultChild as codebuild.CfnProject
     const utProject = unitTestStep.project.node.defaultChild as codebuild.CfnProject
-    synthProject.cache = projectCacheConfig
-    utProject.cache = projectCacheConfig
+    synthProject.cache = {
+      type: 'S3',
+      location: `${cacheBucket.bucketName}/codeBuildCache/synth`
+    }
+    utProject.cache = {
+      type: 'S3',
+      location: `${cacheBucket.bucketName}/codeBuildCache/unitTest`
+    }
   }
 
 }
