@@ -4,11 +4,14 @@ import * as pipelines from '@aws-cdk/pipelines';
 import * as codebuild from '@aws-cdk/aws-codebuild'
 
 import config from '../config';
+import * as ssmParams from '../ssm-params'
 
 export class PipelineStack extends Stack {
 
   constructor(scope: Construct, id: string, props?: StackProps) {
     super(scope, id, props);
+
+    const stage = 'dev' // TODO - change
 
     const synthStep = new pipelines.CodeBuildStep('Synth', {
       // This relies on the presence of a Secrets Manager secret named 'github-token'
@@ -41,10 +44,26 @@ export class PipelineStack extends Stack {
     })
 
     const deployStep = new pipelines.CodeBuildStep('Deploy', {
-      env: {
-        MODULE_NAME: 'checklist-service',
-        SLIC_STAGE: 'dev',
-        TARGET_REGION: this.region
+      buildEnvironment: {
+        computeType: codebuild.ComputeType.LARGE,
+        environmentVariables: {
+          MODULE_NAME: {
+            type: codebuild.BuildEnvironmentVariableType.PLAINTEXT,
+            value: 'checklist-service'
+          },
+          SLIC_STAGE: {
+            type: codebuild.BuildEnvironmentVariableType.PLAINTEXT,
+            value: stage
+          },
+          TARGET_REGION: {
+            type: codebuild.BuildEnvironmentVariableType.PLAINTEXT,
+            value: this.region
+          },
+          CROSS_ACCOUNT_ID: {
+            type: codebuild.BuildEnvironmentVariableType.PARAMETER_STORE,
+            value: ssmParams.Accounts[stage]
+          }
+        }
       },
       installCommands: ['bash build-scripts/build-module.sh'],
       commands: ['bash build-scripts/deploy-module.sh']
