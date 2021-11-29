@@ -2,12 +2,8 @@ import { Construct, SecretValue, Stack, StackProps } from '@aws-cdk/core';
 
 import * as pipelines from '@aws-cdk/pipelines';
 import * as codebuild from '@aws-cdk/aws-codebuild'
-import * as codepipeline from '@aws-cdk/aws-codepipeline'
-import * as cpa from '@aws-cdk/aws-codepipeline-actions'
 
 import config from '../config';
-import { CodeBuildStep } from '@aws-cdk/pipelines';
-import { CpuInfo } from 'os';
 
 export class PipelineStack extends Stack {
 
@@ -45,49 +41,19 @@ export class PipelineStack extends Stack {
     })
 
     const deployStep = new pipelines.CodeBuildStep('Deploy', {
-      partialBuildSpec: codebuild.BuildSpec.fromObject({
-        batch: {
-          'fast-fail': false,
-          'build-graph':  [
-            {
-              identifier: 'certs',
-              'ignore-failure': false,
-              env: {
-                'compute-type': 'BUILD_GENERAL1_LARGE',
-                variables: {
-                  MODULE_NAME: 'api-service',
-                  SLIC_STAGE: 'dev',
-                  TARGET_REGION: this.region
-                }
-              }
-            },
-            {
-              identifier: 'checklist-service',
-              'ignore-failure': false,
-              env: {
-                'compute-type': 'BUILD_GENERAL1_LARGE',
-                variables: {
-                  MODULE_NAME: 'checklist-service',
-                  SLIC_STAGE: 'dev',
-                  TARGET_REGION: this.region
-                }
-              },
-              'depend-on': ['certs']
-            }
-          ]
-        },
-      }),
-      commands: ['bash scripts/build.sh']
+      env: {
+        MODULE_NAME: 'checklist-service',
+        SLIC_STAGE: 'dev',
+        TARGET_REGION: this.region
+      },
+      installCommands: ['bash build-scripts/build-module.sh'],
+      commands: ['bash build-scripts/deploy-module.sh']
     })
 
     pipeline.addWave('Deploy', {
       pre: [deployStep]
     })
 
-    pipeline.buildPipeline()
-
-    const deployProject = pipeline.pipeline.node.defaultChild as codebuild.PipelineProject
-    deployProject.enableBatchBuilds
   }
 
 }
