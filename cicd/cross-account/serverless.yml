@@ -123,6 +123,7 @@ resources:
                 - dynamodb:PutItem
                 - dynamodb:UpdateItem
                 - dynamodb:DeleteItem
+                - dynamodb:UpdateTable
               Resource: 'arn:aws:dynamodb:${self:provider.region}:*:*'
             - Effect: Allow
               Action: 'sqs:*'
