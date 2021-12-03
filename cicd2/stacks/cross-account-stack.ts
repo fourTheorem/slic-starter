@@ -27,6 +27,8 @@ export class CrossAccountStack extends Stack {
       'route53',
       'cognito-idp',
       'cognito-identity',
+      'ses',
+      'sqs',
       'ssm',
     ]
     for (const service of services) {
