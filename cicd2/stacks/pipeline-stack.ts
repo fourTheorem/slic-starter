@@ -40,7 +40,7 @@ export class PipelineStack extends Stack {
       output: sourceOutput,
       oauthToken: SecretValue.secretsManager('github-token')
     })
-  
+
     pipeline.addStage({
       stageName: 'Source',
       actions: [sourceAction],
@@ -63,7 +63,7 @@ export class PipelineStack extends Stack {
           'files': ['cicd2/**/*', 'app.yml'],
           'name': `synth-${stage}-$(date +%Y%m%d%H%M%S)-$BUILD_ID`,
           'enable-symlinks': true,
-        } 
+        }
       }),
       environment: codeBuildEnvironment
     })
@@ -95,11 +95,13 @@ export class PipelineStack extends Stack {
       buildSpec: codeBuild.BuildSpec.fromObject({
         version: '0.2',
         phases: {
-          build: { commands: [
-            'cd cicd2',
-            `npm run cdk -- deploy --require-approval=never --verbose ${cdkContextArgs} CrossAccountStack`,
-            `npm run cdk -- deploy --require-approval=never --verbose ${cdkContextArgs} PipelineStack`
-          ] },
+          build: {
+            commands: [
+              'cd cicd2',
+              `npm run cdk -- deploy --require-approval=never --verbose ${cdkContextArgs} CrossAccountStack`,
+              `npm run cdk -- deploy --require-approval=never --verbose ${cdkContextArgs} PipelineStack`
+            ]
+          },
         },
       }),
       environment: codeBuildEnvironment,
@@ -137,7 +139,7 @@ export class PipelineStack extends Stack {
           install: { commands: ['bash util/install-packages.sh'] },
           build: { commands: ['npm test'] },
         },
-        artifacts: { files: '**/*'} 
+        artifacts: { files: '**/*' }
       }),
       environment: codeBuildEnvironment
     })
@@ -153,51 +155,55 @@ export class PipelineStack extends Stack {
       })]
     })
 
-  const deployActions = modules.moduleNames.map(moduleName => {
-      const moduleDeployProject = new codeBuild.PipelineProject(
-        this,
-        `${moduleName}_${stage}_deploy`, {
-        projectName: `${moduleName}-${stage}-deploy`,
-        buildSpec: codeBuild.BuildSpec.fromObject({
-          version: '0.2',
-          phases: {
-            install: { commands: ['bash build-scripts/build-module.sh'] },
-            build: { commands: ['bash build-scripts/deploy-module.sh'] },
+    const deployActions: codePipelineActions.CodeBuildAction[] = []
+    modules.moduleOrder.forEach((moduleNames, index) => {
+      moduleNames.forEach(moduleName => {
+        const moduleDeployProject = new codeBuild.PipelineProject(
+          this,
+          `${moduleName}_${stage}_deploy`, {
+          projectName: `${moduleName}-${stage}-deploy`,
+          buildSpec: codeBuild.BuildSpec.fromObject({
+            version: '0.2',
+            phases: {
+              install: { commands: ['bash build-scripts/build-module.sh'] },
+              build: { commands: ['bash build-scripts/deploy-module.sh'] },
+            },
+            artifacts: { files: '**/*' }
+          }),
+          environment: codeBuildEnvironment,
+          environmentVariables: {
+            MODULE_NAME: {
+              type: codeBuild.BuildEnvironmentVariableType.PLAINTEXT,
+              value: moduleName
+            },
+            SLIC_STAGE: {
+              type: codeBuild.BuildEnvironmentVariableType.PLAINTEXT,
+              value: stage
+            },
+            TARGET_REGION: {
+              type: codeBuild.BuildEnvironmentVariableType.PLAINTEXT,
+              value: this.region // TODO use target region in context
+            },
+            ROLE_ARN: {
+              type: codeBuild.BuildEnvironmentVariableType.PLAINTEXT,
+              value: props.crossAccountDeployRole.roleArn
+            }
           },
-          artifacts: { files: '**/*' }
-        }),
-        environment: codeBuildEnvironment,
-        environmentVariables: {
-          MODULE_NAME: {
-            type: codeBuild.BuildEnvironmentVariableType.PLAINTEXT,
-            value: moduleName
-          },
-          SLIC_STAGE: {
-            type: codeBuild.BuildEnvironmentVariableType.PLAINTEXT,
-            value: stage
-          },
-          TARGET_REGION: {
-            type: codeBuild.BuildEnvironmentVariableType.PLAINTEXT,
-            value: this.region // TODO use target region in context
-          },
-          ROLE_ARN: {
-            type: codeBuild.BuildEnvironmentVariableType.PLAINTEXT,
-            value: props.crossAccountDeployRole.roleArn
-          }
-        },
-      })
-      moduleDeployProject.role?.addToPrincipalPolicy(new iam.PolicyStatement({
-        effect: iam.Effect.ALLOW,
-        actions: ['sts:AssumeRole'],
-        resources: [props.crossAccountDeployRole.roleArn]
-      }))
+        })
+        moduleDeployProject.role?.addToPrincipalPolicy(new iam.PolicyStatement({
+          effect: iam.Effect.ALLOW,
+          actions: ['sts:AssumeRole'],
+          resources: [props.crossAccountDeployRole.roleArn]
+        }))
 
-      const moduleDeployAction = new codePipelineActions.CodeBuildAction({
-        actionName: `${moduleName}_${stage}_deploy`,
-        project: moduleDeployProject,
-        input: sourceOutput,
+        const moduleDeployAction = new codePipelineActions.CodeBuildAction({
+          actionName: `${moduleName}_${stage}_deploy`,
+          project: moduleDeployProject,
+          input: sourceOutput,
+          runOrder: index + 1
+        })
+        deployActions.push(moduleDeployAction)
       })
-      return moduleDeployAction
     })
     pipeline.addStage({
       stageName: 'DeployModules',
