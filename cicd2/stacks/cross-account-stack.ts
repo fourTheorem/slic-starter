@@ -1,4 +1,4 @@
-import { Construct, Stack, StackProps } from '@aws-cdk/core'
+import { Construct, PhysicalName, Stack, StackProps } from '@aws-cdk/core'
 
 import * as iam from '@aws-cdk/aws-iam'
 
@@ -11,6 +11,7 @@ export class CrossAccountStack extends Stack {
     const stage = 'dev' // TODO - change
 
     this.crossAccountDeployRole = new iam.Role(this, `${stage}CrossAccountDeployRole`, {
+      roleName: `${stage}CrossAccountDeployRole`,
       assumedBy: new iam.AccountPrincipal(this.node.tryGetContext('deploy-account') || this.account),
     })
     const services = [
@@ -28,7 +29,7 @@ export class CrossAccountStack extends Stack {
       'ssm',
     ]
     for (const service of services) {
-      this.crossAccountDeployRole.addToPolicy(new iam.PolicyStatement({
+      this.crossAccountDeployRole.addToPrincipalPolicy(new iam.PolicyStatement({
         actions: [`${service}:*`],
         resources: ['*']
       }))
