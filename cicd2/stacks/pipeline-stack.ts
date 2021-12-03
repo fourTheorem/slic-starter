@@ -4,6 +4,7 @@ import * as pipelines from '@aws-cdk/pipelines';
 import * as codebuild from '@aws-cdk/aws-codebuild'
 
 import config from '../config';
+import modules from '../modules';
 import * as ssmParams from '../ssm-params'
 
 export class PipelineStack extends Stack {
@@ -36,20 +37,22 @@ export class PipelineStack extends Stack {
       installCommands: [
         'bash util/install-packages.sh'
       ],
-      commands: ['npm test']
+      commands: ['npm test'],
+
     })
 
     pipeline.addWave('UnitTests', {
-      pre: [unitTestStep]
+      pre: [unitTestStep],
     })
 
-    const deployStep = new pipelines.CodeBuildStep('Deploy', {
+    const deploySteps = modules.moduleNames.map(moduleName => new pipelines.CodeBuildStep(
+      `${moduleName}_deploy`, {
       buildEnvironment: {
         computeType: codebuild.ComputeType.LARGE,
         environmentVariables: {
           MODULE_NAME: {
             type: codebuild.BuildEnvironmentVariableType.PLAINTEXT,
-            value: 'checklist-service'
+            value: moduleName
           },
           SLIC_STAGE: {
             type: codebuild.BuildEnvironmentVariableType.PLAINTEXT,
@@ -67,10 +70,10 @@ export class PipelineStack extends Stack {
       },
       installCommands: ['bash build-scripts/build-module.sh'],
       commands: ['bash build-scripts/deploy-module.sh']
-    })
+    }))
 
     pipeline.addWave('Deploy', {
-      pre: [deployStep]
+      pre: deploySteps
     })
 
   }
