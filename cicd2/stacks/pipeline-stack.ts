@@ -142,7 +142,7 @@ export class PipelineStack extends Stack {
         buildSpec: codeBuild.BuildSpec.fromObject({
           version: '0.2',
           phases: {
-            build: { commands: ['bash scripts/deploy-module.sh'] },
+            build: { commands: ['bash build-scripts/deploy-module.sh'] },
           },
           artifacts: { files: '**/*' }
         }),
