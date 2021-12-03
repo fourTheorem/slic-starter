@@ -1,10 +1,10 @@
 #!/usr/bin/env node
 import 'source-map-support/register';
 import * as cdk from '@aws-cdk/core';
-import { Cicd2Stack } from '../lib/cicd2-stack';
+import { PipelineStack } from '../stacks/pipeline-stack';
 
 const app = new cdk.App();
-new Cicd2Stack(app, 'Cicd2Stack', {
+new PipelineStack(app, 'PipelineStack', {
   /* If you don't specify 'env', this stack will be environment-agnostic.
    * Account/Region-dependent features and context lookups will not work,
    * but a single synthesized template can be deployed anywhere. */
