@@ -13,7 +13,6 @@ fi
 cd ${MODULE_NAME}
 if [ -e package.json ]; then
   npm ci
-  npm test
 else
   echo No module package.json, skipping npm ci
 fi

@@ -1,7 +1,9 @@
 import { Construct, SecretValue, Stack, StackProps } from '@aws-cdk/core';
 
-import * as pipelines from '@aws-cdk/pipelines';
-import * as codebuild from '@aws-cdk/aws-codebuild'
+import * as codeBuild from '@aws-cdk/aws-codebuild'
+import * as codePipeline from '@aws-cdk/aws-codepipeline'
+import * as codePipelineActions from '@aws-cdk/aws-codepipeline-actions'
+import * as s3 from '@aws-cdk/aws-s3'
 
 import config from '../config';
 import modules from '../modules';
@@ -14,68 +16,151 @@ export class PipelineStack extends Stack {
 
     const stage = 'dev' // TODO - change
 
-    const synthStep = new pipelines.CodeBuildStep('Synth', {
-      // This relies on the presence of a Secrets Manager secret named 'github-token'
-      input: pipelines.CodePipelineSource.gitHub(
-        `${config.sourceRepoOwner}/${config.sourceRepoName}`, config.sourceBranch, {
-        authentication: SecretValue.secretsManager('github-token')
-      }),
-      commands: ['cd cicd2', 'npm ci', 'npm run build', 'npm run cdk -- synth'],
-      primaryOutputDirectory: 'cicd2/cdk.out'
+    const codeBuildEnvironment = {
+      computeType: codeBuild.ComputeType.LARGE,
+      buildImage: codeBuild.LinuxBuildImage.STANDARD_5_0
+    }
+
+    const artifactBucket = new s3.Bucket(this, 'ArtifactBucket')
+    const pipeline = new codePipeline.Pipeline(this, 'Pipeline', {
+      pipelineName: `${config.sourceRepoName}-${stage}`,
+      artifactBucket,
+      restartExecutionOnUpdate: true // Allow the pipeline to restart if it mutates during CDK deploy
     })
 
-    const pipeline = new pipelines.CodePipeline(this, 'Pipeline', {
-      synth: synthStep,
-      codeBuildDefaults: {
-        buildEnvironment: {
-          computeType: codebuild.ComputeType.LARGE
+    const sourceOutput = new codePipeline.Artifact('SourceOutput')
+    const sourceAction = new codePipelineActions.GitHubSourceAction({
+      actionName: 'GitHub',
+      owner: config.sourceRepoOwner,
+      repo: config.sourceRepoName,
+      branch: config.sourceBranch,
+      output: sourceOutput,
+      oauthToken: SecretValue.secretsManager('github-token')
+    })
+  
+    pipeline.addStage({
+      stageName: 'Source',
+      actions: [sourceAction],
+    })
+
+    const synthArtifact = new codePipeline.Artifact()
+    const synthProject = new codeBuild.PipelineProject(this, 'CdkSynthPipeline', {
+      projectName: `${config.appName}-${stage}-cdk-synth`,
+      buildSpec: codeBuild.BuildSpec.fromObject({
+        version: '0.2',
+        phases: {
+          install: {
+            commands: ['cd cicd2', 'npm ci']
+          },
+          build: {
+            commands: ['npm run build', 'npm run cdk -- synth']
+          },
+        },
+        artifacts: {
+          'base-directory': 'cicd2',
+          'files': ['**/*'],
+          'name': `synth-${stage}-$(date +%Y%m%d%H%M%S)-$BUILD_ID`
         } 
-      }
+      }),
+      environment: codeBuildEnvironment
     })
 
-    const unitTestStep = new pipelines.CodeBuildStep('UnitTest', {
-      installCommands: [
-        'bash util/install-packages.sh'
-      ],
-      commands: ['npm test'],
-
+    pipeline.addStage({
+      stageName: 'CdkSynth',
+      actions: [new codePipelineActions.CodeBuildAction({
+        actionName: 'CdkSynth',
+        project: synthProject,
+        input: sourceOutput,
+        outputs: [synthArtifact]
+      })]
     })
 
-    pipeline.addWave('UnitTests', {
-      pre: [unitTestStep],
+    const cdkDeployProject = new codeBuild.PipelineProject(this, 'CdkDeployPipeline', {
+      projectName: `${config.appName}-${stage}-cdk-deploy`,
+      buildSpec: codeBuild.BuildSpec.fromObject({
+        version: '0.2',
+        phases: {
+          build: { commands: ['npm run cdk -- deploy --all --require-approval=never --verbose'] },
+        },
+      }),
+      environment: codeBuildEnvironment,
     })
 
-    const deploySteps = modules.moduleNames.map(moduleName => new pipelines.CodeBuildStep(
-      `${moduleName}_deploy`, {
-      buildEnvironment: {
-        computeType: codebuild.ComputeType.LARGE,
+    pipeline.addStage({
+      stageName: 'SelfMutate',
+      actions: [new codePipelineActions.CodeBuildAction({
+        actionName: 'CdkDeploy',
+        project: cdkDeployProject,
+        input: synthArtifact,
+      })]
+    })
+
+    const unitTestProject = new codeBuild.PipelineProject(this, 'UnitTests', {
+      projectName: `${config.appName}-${stage}-unit-tests`,
+      buildSpec: codeBuild.BuildSpec.fromObject({
+        version: '0.2',
+        phases: {
+          install: { commands: ['bash util/install-packages.sh'] },
+          build: { commands: ['npm test'] },
+        },
+        artifacts: { files: '**/*'} 
+      }),
+      environment: codeBuildEnvironment
+    })
+
+    const unitTestOutput = new codePipeline.Artifact()
+    pipeline.addStage({
+      stageName: 'UnitTests',
+      actions: [new codePipelineActions.CodeBuildAction({
+        actionName: 'UnitTests',
+        project: unitTestProject,
+        input: sourceOutput,
+        outputs: [unitTestOutput]
+      })]
+    })
+
+    const deployActions = modules.moduleNames.map(moduleName => {
+      const moduleDeployProject = new codeBuild.PipelineProject(
+        this,
+        `${moduleName}_${stage}_deploy`, {
+        projectName: `${moduleName}-${stage}-deploy`,
+        buildSpec: codeBuild.BuildSpec.fromObject({
+          version: '0.2',
+          phases: {
+            build: { commands: ['bash scripts/deploy-module.sh'] },
+          },
+          artifacts: { files: '**/*' }
+        }),
+        environment: codeBuildEnvironment,
         environmentVariables: {
           MODULE_NAME: {
-            type: codebuild.BuildEnvironmentVariableType.PLAINTEXT,
+            type: codeBuild.BuildEnvironmentVariableType.PLAINTEXT,
             value: moduleName
           },
           SLIC_STAGE: {
-            type: codebuild.BuildEnvironmentVariableType.PLAINTEXT,
+            type: codeBuild.BuildEnvironmentVariableType.PLAINTEXT,
             value: stage
           },
           TARGET_REGION: {
-            type: codebuild.BuildEnvironmentVariableType.PLAINTEXT,
+            type: codeBuild.BuildEnvironmentVariableType.PLAINTEXT,
             value: this.region
           },
           CROSS_ACCOUNT_ID: {
-            type: codebuild.BuildEnvironmentVariableType.PARAMETER_STORE,
+            type: codeBuild.BuildEnvironmentVariableType.PARAMETER_STORE,
             value: ssmParams.Accounts[stage]
           }
-        }
-      },
-      installCommands: ['bash build-scripts/build-module.sh'],
-      commands: ['bash build-scripts/deploy-module.sh']
-    }))
-
-    pipeline.addWave('Deploy', {
-      pre: deploySteps
+        },
+      })
+      const moduleDeployAction = new codePipelineActions.CodeBuildAction({
+        actionName: `${moduleName}_${stage}_deploy`,
+        project: moduleDeployProject,
+        input: unitTestOutput,
+      })
+      return moduleDeployAction
     })
-
+    pipeline.addStage({
+      stageName: 'DeployModules',
+      actions: deployActions
+    })
   }
-
 }
