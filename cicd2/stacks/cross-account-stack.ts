@@ -19,6 +19,7 @@ export class CrossAccountStack extends Stack {
       'apigateway',
       'lambda',
       'cloudfront',
+      'iam',
       's3',
       'logs',
       'events',
