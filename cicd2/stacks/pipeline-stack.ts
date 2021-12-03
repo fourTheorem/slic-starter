@@ -10,9 +10,13 @@ import config from '../config'
 import modules from '../modules'
 import * as ssmParams from '../ssm-params'
 
+interface PipelineStackProps extends StackProps {
+  crossAccountDeployRole: iam.IRole  
+}
+
 export class PipelineStack extends Stack {
 
-  constructor(scope: Construct, id: string, props?: StackProps) {
+  constructor(scope: Construct, id: string, props: PipelineStackProps) {
     super(scope, id, props)
     const stage = 'dev' // TODO - change
 
@@ -75,12 +79,25 @@ export class PipelineStack extends Stack {
       })]
     })
 
+    const targetAccount = this.node.tryGetContext('target-account') || this.account
+    const targetRegion = this.node.tryGetContext('target-region') || this.region
+    const cdkContextArgs = [
+      `--context target-account=${targetAccount}`,
+      `--context target-region=${targetRegion}`,
+      `--context deploy-account=${targetAccount}`,
+      `--context deploy-region=${targetRegion}`,
+    ].join(' ')
+
     const cdkDeployProject = new codeBuild.PipelineProject(this, 'CdkDeployPipeline', {
       projectName: `${config.appName}-${stage}-cdk-deploy`,
       buildSpec: codeBuild.BuildSpec.fromObject({
         version: '0.2',
         phases: {
-          build: { commands: ['cd cicd2', 'npm run cdk -- deploy --all --require-approval=never --verbose'] },
+          build: { commands: [
+            'cd cicd2',
+            `npm run cdk -- deploy --require-approval=never --verbose ${cdkContextArgs} --role-arn ${props.crossAccountDeployRole.roleArn} CrossAccountStack`,
+            `npm run cdk -- deploy --require-approval=never --verbose ${cdkContextArgs} PipelineStack`
+          ] },
         },
       }),
       environment: codeBuildEnvironment,
@@ -110,29 +127,29 @@ export class PipelineStack extends Stack {
       })]
     })
 
-    const unitTestProject = new codeBuild.PipelineProject(this, 'UnitTests', {
-      projectName: `${config.appName}-${stage}-unit-tests`,
-      buildSpec: codeBuild.BuildSpec.fromObject({
-        version: '0.2',
-        phases: {
-          install: { commands: ['bash util/install-packages.sh'] },
-          build: { commands: ['npm test'] },
-        },
-        artifacts: { files: '**/*'} 
-      }),
-      environment: codeBuildEnvironment
-    })
+    // const unitTestProject = new codeBuild.PipelineProject(this, 'UnitTests', {
+    //   projectName: `${config.appName}-${stage}-unit-tests`,
+    //   buildSpec: codeBuild.BuildSpec.fromObject({
+    //     version: '0.2',
+    //     phases: {
+    //       install: { commands: ['bash util/install-packages.sh'] },
+    //       build: { commands: ['npm test'] },
+    //     },
+    //     artifacts: { files: '**/*'} 
+    //   }),
+    //   environment: codeBuildEnvironment
+    // })
 
-    const unitTestOutput = new codePipeline.Artifact()
-    pipeline.addStage({
-      stageName: 'UnitTests',
-      actions: [new codePipelineActions.CodeBuildAction({
-        actionName: 'UnitTests',
-        project: unitTestProject,
-        input: sourceOutput,
-        outputs: [unitTestOutput]
-      })]
-    })
+    // const unitTestOutput = new codePipeline.Artifact()
+    // pipeline.addStage({
+    //   stageName: 'UnitTests',
+    //   actions: [new codePipelineActions.CodeBuildAction({
+    //     actionName: 'UnitTests',
+    //     project: unitTestProject,
+    //     input: sourceOutput,
+    //     outputs: [unitTestOutput]
+    //   })]
+    // })
 
     const deployActions = modules.moduleNames.map(moduleName => {
       const moduleDeployProject = new codeBuild.PipelineProject(
@@ -142,6 +159,7 @@ export class PipelineStack extends Stack {
         buildSpec: codeBuild.BuildSpec.fromObject({
           version: '0.2',
           phases: {
+            install: { commands: ['bash build-scripts/build-module.sh'] },
             build: { commands: ['bash build-scripts/deploy-module.sh'] },
           },
           artifacts: { files: '**/*' }
@@ -158,18 +176,24 @@ export class PipelineStack extends Stack {
           },
           TARGET_REGION: {
             type: codeBuild.BuildEnvironmentVariableType.PLAINTEXT,
-            value: this.region
+            value: this.region // TODO use target region in context
           },
-          CROSS_ACCOUNT_ID: {
-            type: codeBuild.BuildEnvironmentVariableType.PARAMETER_STORE,
-            value: ssmParams.Accounts[stage]
+          ROLE_ARN: {
+            type: codeBuild.BuildEnvironmentVariableType.PLAINTEXT,
+            value: props.crossAccountDeployRole.roleArn
           }
         },
       })
+      moduleDeployProject.role?.addToPrincipalPolicy(new iam.PolicyStatement({
+        effect: iam.Effect.ALLOW,
+        actions: ['sts:AssumeRole'],
+        resources: [props.crossAccountDeployRole.roleArn]
+      }))
+
       const moduleDeployAction = new codePipelineActions.CodeBuildAction({
         actionName: `${moduleName}_${stage}_deploy`,
         project: moduleDeployProject,
-        input: unitTestOutput,
+        input: sourceOutput,
       })
       return moduleDeployAction
     })
