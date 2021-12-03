@@ -8,7 +8,6 @@ import * as s3 from '@aws-cdk/aws-s3'
 
 import config from '../config'
 import modules from '../modules'
-import * as ssmParams from '../ssm-params'
 
 interface PipelineStackProps extends StackProps {
   crossAccountDeployRole: iam.IRole  
@@ -81,11 +80,14 @@ export class PipelineStack extends Stack {
 
     const targetAccount = this.node.tryGetContext('target-account') || this.account
     const targetRegion = this.node.tryGetContext('target-region') || this.region
+    const deployAccount = this.node.tryGetContext('deploy-account') || this.account
+    const deployRegion = this.node.tryGetContext('deploy-region') || this.region
+
     const cdkContextArgs = [
       `--context target-account=${targetAccount}`,
       `--context target-region=${targetRegion}`,
-      `--context deploy-account=${targetAccount}`,
-      `--context deploy-region=${targetRegion}`,
+      `--context deploy-account=${deployAccount}`,
+      `--context deploy-region=${deployRegion}`,
     ].join(' ')
 
     const cdkDeployProject = new codeBuild.PipelineProject(this, 'CdkDeployPipeline', {
@@ -95,7 +97,7 @@ export class PipelineStack extends Stack {
         phases: {
           build: { commands: [
             'cd cicd2',
-            `npm run cdk -- deploy --require-approval=never --verbose ${cdkContextArgs} --role-arn ${props.crossAccountDeployRole.roleArn} CrossAccountStack`,
+            `npm run cdk -- deploy --require-approval=never --verbose ${cdkContextArgs} CrossAccountStack`,
             `npm run cdk -- deploy --require-approval=never --verbose ${cdkContextArgs} PipelineStack`
           ] },
         },
@@ -110,7 +112,7 @@ export class PipelineStack extends Stack {
     // cdk deploy needs to assume the CDK deployment role (https://docs.aws.amazon.com/cdk/v2/guide/bootstrapping.html)
     cdkDeployProject.role?.addToPrincipalPolicy(new iam.PolicyStatement({
       actions: ['sts:AssumeRole'],
-      resources: [`arn:*:iam::${this.account}:role/*`],
+      resources: [`arn:*:iam::${this.account}:role/*`, `arn:*:iam::${targetAccount}:role/*`],
       conditions: {
         'ForAnyValue:StringEquals': {
           'iam:ResourceTag/aws-cdk:bootstrap-role': ['image-publishing', 'file-publishing', 'deploy'],
@@ -151,7 +153,7 @@ export class PipelineStack extends Stack {
     //   })]
     // })
 
-    const deployActions = modules.moduleNames.map(moduleName => {
+  const deployActions = modules.moduleNames.map(moduleName => {
       const moduleDeployProject = new codeBuild.PipelineProject(
         this,
         `${moduleName}_${stage}_deploy`, {
