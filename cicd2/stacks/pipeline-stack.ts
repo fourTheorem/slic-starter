@@ -1,19 +1,19 @@
-import { Construct, SecretValue, Stack, StackProps } from '@aws-cdk/core';
+import { Construct, SecretValue, Stack, StackProps } from '@aws-cdk/core'
 
+import * as iam from '@aws-cdk/aws-iam'
 import * as codeBuild from '@aws-cdk/aws-codebuild'
 import * as codePipeline from '@aws-cdk/aws-codepipeline'
 import * as codePipelineActions from '@aws-cdk/aws-codepipeline-actions'
 import * as s3 from '@aws-cdk/aws-s3'
 
-import config from '../config';
-import modules from '../modules';
+import config from '../config'
+import modules from '../modules'
 import * as ssmParams from '../ssm-params'
 
 export class PipelineStack extends Stack {
 
   constructor(scope: Construct, id: string, props?: StackProps) {
-    super(scope, id, props);
-
+    super(scope, id, props)
     const stage = 'dev' // TODO - change
 
     const codeBuildEnvironment = {
@@ -57,9 +57,9 @@ export class PipelineStack extends Stack {
           },
         },
         artifacts: {
-          'base-directory': 'cicd2',
-          'files': ['**/*'],
-          'name': `synth-${stage}-$(date +%Y%m%d%H%M%S)-$BUILD_ID`
+          'files': ['cicd2/**/*', 'app.yml'],
+          'name': `synth-${stage}-$(date +%Y%m%d%H%M%S)-$BUILD_ID`,
+          'enable-symlinks': true,
         } 
       }),
       environment: codeBuildEnvironment
@@ -80,11 +80,26 @@ export class PipelineStack extends Stack {
       buildSpec: codeBuild.BuildSpec.fromObject({
         version: '0.2',
         phases: {
-          build: { commands: ['npm run cdk -- deploy --all --require-approval=never --verbose'] },
+          build: { commands: ['cd cicd2', 'npm run cdk -- deploy --all --require-approval=never --verbose'] },
         },
       }),
       environment: codeBuildEnvironment,
     })
+    cdkDeployProject.role?.addToPrincipalPolicy(new iam.PolicyStatement({
+      actions: ['cloudformation:DescribeStacks'],
+      resources: ['*'],
+      effect: iam.Effect.ALLOW,
+    }))
+    // cdk deploy needs to assume the CDK deployment role (https://docs.aws.amazon.com/cdk/v2/guide/bootstrapping.html)
+    cdkDeployProject.role?.addToPrincipalPolicy(new iam.PolicyStatement({
+      actions: ['sts:AssumeRole'],
+      resources: [`arn:*:iam::${this.account}:role/*`],
+      conditions: {
+        'ForAnyValue:StringEquals': {
+          'iam:ResourceTag/aws-cdk:bootstrap-role': ['image-publishing', 'file-publishing', 'deploy'],
+        },
+      },
+    }))
 
     pipeline.addStage({
       stageName: 'SelfMutate',
