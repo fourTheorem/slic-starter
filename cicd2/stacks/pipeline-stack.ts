@@ -129,29 +129,29 @@ export class PipelineStack extends Stack {
       })]
     })
 
-    // const unitTestProject = new codeBuild.PipelineProject(this, 'UnitTests', {
-    //   projectName: `${config.appName}-${stage}-unit-tests`,
-    //   buildSpec: codeBuild.BuildSpec.fromObject({
-    //     version: '0.2',
-    //     phases: {
-    //       install: { commands: ['bash util/install-packages.sh'] },
-    //       build: { commands: ['npm test'] },
-    //     },
-    //     artifacts: { files: '**/*'} 
-    //   }),
-    //   environment: codeBuildEnvironment
-    // })
+    const unitTestProject = new codeBuild.PipelineProject(this, 'UnitTests', {
+      projectName: `${config.appName}-${stage}-unit-tests`,
+      buildSpec: codeBuild.BuildSpec.fromObject({
+        version: '0.2',
+        phases: {
+          install: { commands: ['bash util/install-packages.sh'] },
+          build: { commands: ['npm test'] },
+        },
+        artifacts: { files: '**/*'} 
+      }),
+      environment: codeBuildEnvironment
+    })
 
-    // const unitTestOutput = new codePipeline.Artifact()
-    // pipeline.addStage({
-    //   stageName: 'UnitTests',
-    //   actions: [new codePipelineActions.CodeBuildAction({
-    //     actionName: 'UnitTests',
-    //     project: unitTestProject,
-    //     input: sourceOutput,
-    //     outputs: [unitTestOutput]
-    //   })]
-    // })
+    const unitTestOutput = new codePipeline.Artifact()
+    pipeline.addStage({
+      stageName: 'UnitTests',
+      actions: [new codePipelineActions.CodeBuildAction({
+        actionName: 'UnitTests',
+        project: unitTestProject,
+        input: sourceOutput,
+        outputs: [unitTestOutput]
+      })]
+    })
 
   const deployActions = modules.moduleNames.map(moduleName => {
       const moduleDeployProject = new codeBuild.PipelineProject(
