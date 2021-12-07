@@ -1,6 +1,7 @@
-import { Construct, PhysicalName, Stack, StackProps } from '@aws-cdk/core'
+import { Stack, StackProps } from 'aws-cdk-lib/core'
+import { Construct } from 'constructs'
 
-import * as iam from '@aws-cdk/aws-iam'
+import * as iam from 'aws-cdk-lib/aws-iam'
 
 interface CrossAccountStackProps extends StackProps {
   stage: string
@@ -21,7 +22,7 @@ export class CrossAccountStack extends Stack {
       trustPrincipals.push(new iam.AccountPrincipal(this.account))
     }
 
-    const deployAccount = this.node.tryGetContext('deploy-account')
+    const deployAccount = this.node.tryGetContext('deploy-account') || this.account
     if (deployAccount) {
       trustPrincipals.push(new iam.AccountPrincipal(deployAccount))
     }
