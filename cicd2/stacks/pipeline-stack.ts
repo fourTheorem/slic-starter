@@ -1,12 +1,12 @@
-import { Construct, SecretValue, Stack, StackProps } from '@aws-cdk/core'
+import { SecretValue, Stack, StackProps } from 'aws-cdk-lib/core'
+import { Construct } from 'constructs'
 
-import * as iam from '@aws-cdk/aws-iam'
-import * as codeBuild from '@aws-cdk/aws-codebuild'
-import * as codePipeline from '@aws-cdk/aws-codepipeline'
-import * as codePipelineActions from '@aws-cdk/aws-codepipeline-actions'
-import * as notifications from '@aws-cdk/aws-codestarnotifications'
-import * as sns from '@aws-cdk/aws-sns'
-import * as s3 from '@aws-cdk/aws-s3'
+import * as iam from 'aws-cdk-lib/aws-iam'
+import * as codeBuild from 'aws-cdk-lib/aws-codebuild'
+import * as codePipeline from 'aws-cdk-lib/aws-codepipeline'
+import * as codePipelineActions from 'aws-cdk-lib/aws-codepipeline-actions'
+import * as sns from 'aws-cdk-lib/aws-sns'
+import * as s3 from 'aws-cdk-lib/aws-s3'
 
 import config from '../config'
 import modules from '../modules'
@@ -57,7 +57,27 @@ export class PipelineStack extends Stack {
       actions: [sourceAction],
     })
 
-    const commonCdkArgs = [`--context stages=${stages.join(',')}`]
+
+    const deployAccount = this.node.tryGetContext('deploy-account') || this.account
+    const deployRegion = this.node.tryGetContext('deploy-region') || this.region
+
+    const cdkContextArgs = [
+      `--context stages=${stages.join(',')}`,
+      `--context deploy-account=${deployAccount}`,
+      `--context deploy-region=${deployRegion}`,
+    ]
+
+    const targetAccounts = new Set()
+    for (const stage of stages) {
+      const targetAccount = this.node.tryGetContext(`${stage}-account`) || this.account
+      targetAccounts.add(targetAccount)
+      const targetRegion = this.node.tryGetContext(`${stage}-region`) || this.region
+      cdkContextArgs.push(...[
+        `--context ${stage}-account=${targetAccount}`,
+        `--context ${stage}-region=${targetRegion}`,
+      ])
+    }
+
     const synthArtifact = new codePipeline.Artifact()
     const synthProject = new codeBuild.PipelineProject(this, 'CdkSynthPipeline', {
       projectName: `${config.appName}-${lastStage}-cdk-synth`,
@@ -68,7 +88,7 @@ export class PipelineStack extends Stack {
             commands: ['cd cicd2', 'npm ci']
           },
           build: {
-            commands: ['npm run build', `npm run cdk -- synth ${commonCdkArgs.join(' ')}`]
+            commands: ['npm run build', `npm run cdk -- synth ${cdkContextArgs.join(' ')}`]
           },
         },
         artifacts: {
@@ -88,26 +108,6 @@ export class PipelineStack extends Stack {
         outputs: [synthArtifact]
       })]
     })
-
-    const deployAccount = this.node.tryGetContext('deploy-account') || this.account
-    const deployRegion = this.node.tryGetContext('deploy-region') || this.region
-
-    const cdkContextArgs = [
-      ...commonCdkArgs,
-      `--context deploy-account=${deployAccount}`,
-      `--context deploy-region=${deployRegion}`,
-    ]
-
-    const targetAccounts = new Set()
-    for (const stage of stages) {
-      const targetAccount = this.node.tryGetContext(`${stage}-account`) || this.account
-      targetAccounts.add(targetAccount)
-      const targetRegion = this.node.tryGetContext(`${stage}-region`) || this.region
-      cdkContextArgs.push(...[
-        `--context ${stage}-account=${targetAccount}`,
-        `--context ${stage}-region=${targetRegion}`,
-      ])
-    }
 
     const cdkDeployProject = new codeBuild.PipelineProject(this, 'CdkDeployPipeline', {
       projectName: `${config.appName}-${lastStage}-cdk-deploy`,
