@@ -35,11 +35,12 @@ export class PipelineStack extends Stack {
       artifactBucket,
       restartExecutionOnUpdate: true // Allow the pipeline to restart if it mutates during CDK deploy
     })
-    const topicArn = this.node.tryGetContext('notifications-topic')
-    if (topicArn) {
-      const topic = sns.Topic.fromTopicArn(this, `${id}TopicArn`, topicArn)
-      pipeline.notifyOnExecutionStateChange(`${id}NotifyExecState`, topic)
-    }
+
+    const topic = new sns.Topic(this, `${id}TopicArn`, {
+      topicName: `${lastStage}PipelineNotifications`
+    })
+
+    pipeline.notifyOnExecutionStateChange(`${id}NotifyExecState`, topic)
 
     const sourceOutput = new codePipeline.Artifact('SourceOutput')
     const sourceAction = new codePipelineActions.GitHubSourceAction({
@@ -56,8 +57,7 @@ export class PipelineStack extends Stack {
       actions: [sourceAction],
     })
 
-    const commonArgs = [`--context stages=${stages.join(',')}`]
-    commonArgs.push(`--context notifications-topic=${topicArn}`)
+    const commonCdkArgs = [`--context stages=${stages.join(',')}`]
     const synthArtifact = new codePipeline.Artifact()
     const synthProject = new codeBuild.PipelineProject(this, 'CdkSynthPipeline', {
       projectName: `${config.appName}-${lastStage}-cdk-synth`,
@@ -68,7 +68,7 @@ export class PipelineStack extends Stack {
             commands: ['cd cicd2', 'npm ci']
           },
           build: {
-            commands: ['npm run build', `npm run cdk -- synth ${commonArgs.join(' ')}`]
+            commands: ['npm run build', `npm run cdk -- synth ${commonCdkArgs.join(' ')}`]
           },
         },
         artifacts: {
@@ -93,7 +93,7 @@ export class PipelineStack extends Stack {
     const deployRegion = this.node.tryGetContext('deploy-region') || this.region
 
     const cdkContextArgs = [
-      ...commonArgs,
+      ...commonCdkArgs,
       `--context deploy-account=${deployAccount}`,
       `--context deploy-region=${deployRegion}`,
     ]
