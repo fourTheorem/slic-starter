@@ -2,7 +2,7 @@
 # SLIC Starter-based application deployment to work
 sourceRepo:
   # This should be changed to match your own repo and branch
-  owner: direnakkocdemir
+  owner: fourTheorem
   name: slic-starter
   branch: docs-build
 
