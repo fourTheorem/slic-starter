@@ -9,7 +9,9 @@ import * as sns from 'aws-cdk-lib/aws-sns'
 import * as s3 from 'aws-cdk-lib/aws-s3'
 
 import config from '../config'
+import * as ssmParams from '../ssm-params'
 import modules from '../modules'
+import { BuildEnvironmentVariableType, BuildSpec } from 'aws-cdk-lib/aws-codebuild'
 
 interface PipelineStackProps extends StackProps {
   crossAccountDeployRoles: {[key: string]: iam.IRole},
@@ -67,10 +69,10 @@ export class PipelineStack extends Stack {
       `--context deploy-region=${deployRegion}`,
     ]
 
-    const targetAccounts = new Set()
+    const targetAccounts: {[stage: string]: string} = {}
     for (const stage of stages) {
       const targetAccount = this.node.tryGetContext(`${stage}-account`) || this.account
-      targetAccounts.add(targetAccount)
+      targetAccounts[stage] = targetAccount
       const targetRegion = this.node.tryGetContext(`${stage}-region`) || this.region
       cdkContextArgs.push(...[
         `--context ${stage}-account=${targetAccount}`,
@@ -138,7 +140,7 @@ export class PipelineStack extends Stack {
       actions: ['sts:AssumeRole'],
       resources: [
         `arn:*:iam::${this.account}:role/*`,
-        ...([...targetAccounts].map(accountId => `arn:*:iam::${accountId}:role/*`))
+        ...([...Object.values(targetAccounts)].map(accountId => `arn:*:iam::${accountId}:role/*`))
       ],
       conditions: {
         'ForAnyValue:StringEquals': {
@@ -227,7 +229,7 @@ export class PipelineStack extends Stack {
           const moduleDeployAction = new codePipelineActions.CodeBuildAction({
             actionName: `${moduleName}_${stage}_deploy`,
             project: moduleDeployProject,
-            input: sourceOutput,
+            input: unitTestOutput,
             runOrder: index + 1
           })
           deployActions.push(moduleDeployAction)
@@ -240,11 +242,59 @@ export class PipelineStack extends Stack {
 
       if (index < stages.length - 1) {
         const nextStage = stages[index + 1]
+
+        const testEnvironmentVariables = {
+          SLIC_STAGE: {
+            type: BuildEnvironmentVariableType.PLAINTEXT,
+            value: stage
+          },
+          CROSS_ACCOUNT_ID: {
+            type: BuildEnvironmentVariableType.PARAMETER_STORE,
+            value: targetAccounts[stage]
+          },
+          MAILOSAUR_API_KEY: {
+            type: BuildEnvironmentVariableType.PARAMETER_STORE,
+            value: ssmParams.Test.MAILOSAUR_API_KEY
+          },
+          MAILOSAUR_SERVER_ID: {
+            type: BuildEnvironmentVariableType.PARAMETER_STORE,
+            value: ssmParams.Test.MAILOSAUR_SERVER_ID
+          }
+        }
+
+        const e2eTestProject = new codeBuild.PipelineProject(this, `${stage}E2ETests`, {
+          projectName: `${stage}-e2e-tests`,
+          environmentVariables: testEnvironmentVariables,
+          buildSpec: BuildSpec.fromSourceFilename('e2e-tests/buildspec.yml'),
+        })
+
+        const apiTestProject = new codeBuild.PipelineProject(this, `${stage}ApiTests`, {
+          projectName: `${stage}-api-tests`,
+          environmentVariables: testEnvironmentVariables,
+          buildSpec: BuildSpec.fromSourceFilename('e2e-tests/buildspec.yml'),
+        })
+        
+        pipeline.addStage({
+          stageName: `${stage}Testing`,
+          actions: [
+            new codePipelineActions.CodeBuildAction({
+              actionName: `${stage}E2ETests`,
+              project: e2eTestProject,
+              input: unitTestOutput,
+            }),
+            new codePipelineActions.CodeBuildAction({
+              actionName: `${stage}ApiTests`,
+              project: apiTestProject,
+              input: unitTestOutput,
+            })
+          ]
+        })
+
         pipeline.addStage({
           stageName: `${nextStage}Approve`,
           actions: [new codePipelineActions.ManualApprovalAction({
             actionName: `${nextStage}Approve`,
-            // notificationTopic: TBD
+            notificationTopic: topic
           })]
         })
       }
