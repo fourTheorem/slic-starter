@@ -166,7 +166,10 @@ export class PipelineStack extends Stack {
           install: { commands: ['bash util/install-packages.sh'] },
           build: { commands: ['npm test'] },
         },
-        artifacts: { files: '**/*' }
+        artifacts: {
+           files: '**/*',
+          'enable-symlinks': true,
+        }
       }),
       environment: codeBuildEnvironment
     })
