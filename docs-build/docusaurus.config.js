@@ -12,7 +12,7 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula')
 const config = {
   title: 'SLIC Starter',
   tagline: 'SLIC Starter is a complete starter project for production-grade serverless applications on AWS.',
-  url: 'https://direnakkocdemir.github.io',
+  url: 'https://fourTheorem.github.io',
   baseUrl: '/slic-starter/',
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
