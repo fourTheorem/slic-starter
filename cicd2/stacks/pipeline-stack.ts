@@ -198,7 +198,6 @@ export class PipelineStack extends Stack {
             buildSpec: codeBuild.BuildSpec.fromObject({
               version: '0.2',
               phases: {
-                install: { commands: ['bash build-scripts/build-module.sh'] },
                 build: { commands: ['bash build-scripts/deploy-module.sh'] },
               },
               artifacts: { files: '**/*' }
@@ -252,7 +251,7 @@ export class PipelineStack extends Stack {
             value: stage
           },
           CROSS_ACCOUNT_ID: {
-            type: BuildEnvironmentVariableType.PARAMETER_STORE,
+            type: BuildEnvironmentVariableType.PLAINTEXT,
             value: targetAccounts[stage]
           },
           MAILOSAUR_API_KEY: {
