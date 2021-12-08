@@ -262,6 +262,10 @@ export class PipelineStack extends Stack {
           MAILOSAUR_SERVER_ID: {
             type: BuildEnvironmentVariableType.PARAMETER_STORE,
             value: ssmParams.Test.MAILOSAUR_SERVER_ID
+          },
+          ROLE_ARN: {
+            type: codeBuild.BuildEnvironmentVariableType.PLAINTEXT,
+            value: props.crossAccountDeployRoles[stage].roleArn
           }
         }
 
