@@ -5,7 +5,7 @@ name: docs-build
 
 on:
   push:
-    branches: [ docs-build ]
+    branches: [ main ]
 
 jobs:
   build:
@@ -41,8 +41,8 @@ jobs:
       env:
         CI: true   
 
-    - name: Release to GH pages if on docs-build
-      if: github.ref == 'refs/heads/docs-build'
+    - name: Release to GH pages if on main
+      if: github.ref == 'refs/heads/main'
       uses: crazy-max/ghaction-github-pages@v2
       with:
         target_branch: gh-pages
