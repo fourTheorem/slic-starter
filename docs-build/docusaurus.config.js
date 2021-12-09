@@ -17,7 +17,7 @@ const config = {
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
   favicon: 'img/favicon.ico',
-  organizationName: 'direnakkocdemir', // Usually your GitHub org/user name.
+  organizationName: 'fourTheorem', // Usually your GitHub org/user name.
   projectName: 'slic-starter', // Usually your repo name.
   trailingSlash: false,
 
@@ -29,13 +29,13 @@ const config = {
         docs: {
           sidebarPath: require.resolve('./sidebars.js'),
           // Please change this to your repo.
-          editUrl: 'https://github.com/direnakkocdemir/slic-starter/tree/docs-build'
+          editUrl: 'https://github.com/fourTheorem/slic-starter/tree/main'
         },
         blog: {
           showReadingTime: true,
           // Please change this to your repo.
           editUrl:
-            'https://github.com/direnakkocdemir/slic-starter/tree/docs-build'
+            'https://github.com/fourTheorem/slic-starter/tree/main'
         },
         theme: {
           customCss: require.resolve('./src/css/custom.css')
