@@ -13,6 +13,7 @@ const config = {
   title: 'SLIC Starter',
   tagline: 'SLIC Starter is a complete starter project for production-grade serverless applications on AWS.',
   url: 'https://fourTheorem.github.io',
+  url: 'https://direnakkocdemir.github.io',
   baseUrl: '/slic-starter/',
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
@@ -34,8 +35,7 @@ const config = {
         blog: {
           showReadingTime: true,
           // Please change this to your repo.
-          editUrl:
-            'https://github.com/fourTheorem/slic-starter/tree/main'
+          editUrl: 'https://github.com/fourTheorem/slic-starter/tree/main'
         },
         theme: {
           customCss: require.resolve('./src/css/custom.css')
