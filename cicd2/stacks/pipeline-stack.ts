@@ -164,7 +164,7 @@ export class PipelineStack extends Stack {
         version: '0.2',
         phases: {
           install: { commands: ['bash util/install-packages.sh'] },
-          build: { commands: ['echo npm test'] }, // TODO - remove echo
+          build: { commands: ['npm test'] },
         },
         artifacts: {
            files: '**/*',
@@ -198,10 +198,9 @@ export class PipelineStack extends Stack {
             buildSpec: codeBuild.BuildSpec.fromObject({
               version: '0.2',
               phases: {
-                install: { commands: ['echo bash build-scripts/build-module.sh'] },  // TODO - remove echos
-                build: { commands: ['echo bash build-scripts/deploy-module.sh'] },
-              },
-              artifacts: { files: '**/*' }
+                install: { commands: ['bash build-scripts/build-module.sh'] },
+                build: { commands: ['ash build-scripts/deploy-module.sh'] },
+              }
             }),
             environment: codeBuildEnvironment,
             environmentVariables: {
