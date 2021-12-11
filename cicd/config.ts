@@ -17,5 +17,6 @@ export default {
   sourceRepoOwner: appConfig.sourceRepo.owner,
   sourceRepoName: appConfig.sourceRepo.name,
   sourceBranch: appConfig.sourceRepo.branch,
-  siteBucketPrefix: appConfig.domainConfig.siteBucketPrefix
+  siteBucketPrefix: appConfig.domainConfig.siteBucketPrefix,
+  appName: appConfig.sourceRepo.name
 }
