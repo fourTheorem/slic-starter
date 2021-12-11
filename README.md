@@ -173,17 +173,13 @@ To set up deployment to your own accounts, first run through these steps.
  * Update to point to your correct repository (Change `owner` and `name` under `sourceRepo`)
  * Edit `domainConfig` to point to your domain. Use a domain you own so you can update DNS entries to point to your deployed environment. When the deployment process runs, the domain owner will be sent an email to verify ownership before the deployment completes.
  * Disable SLIC Watch, unless you need alarms and dashboards out of the box. If you aren't sure what to do, or don't want to incur the cost of additional dashboards and alarms, disable it. If you want nice alarms and dashboards, set up an SNS Topic as your alarms destination. Ensure that this topic it is accessible from all accounts by updating the SNS Topic Access Policy.
-5. Create SSM parameters in your CICD account, pointing to the accounts of your staging (`stg`) and production(`prod`).
- * `/shared/accounts/stg: <staging account ID>`
- * `/shared/accounts/prod: <production account ID>`
- For single account deployment the Account IDs of CICD, Production and Staging would all be the same.
-6. (Optional). Set up GitHub authentication for your repo. Create a GitHub Personal Access Token and add it as an secret with the name `GitHubPersonalAccessToken` in Secrets Manager _in the CICD account_. See [this post](https://medium.com/@eoins/securing-github-tokens-in-a-serverless-codepipeline-dc3a24ddc356) for more detail on this approach.
-7. Create a [Mailosaur](https://mailosaur.com) account. This is required for integration and end-to-end tests to verify that the application is sending emails as expected. Take the Mailosaur server ID and API key and add them in your CICD account to the Parameter Store as `SecretString` values with the following names
-- `/test/mailosaur/serverId`
+5. (Optional). Set up GitHub authentication for your repo. Create a GitHub Personal Access Token and add it as an secret with the name `GitHubPersonalAccessToken` in Secrets Manager _in the CICD account_. See [this post](https://medium.com/@eoins/securing-github-tokens-in-a-serverless-codepipeline-dc3a24ddc356) for more detail on this approach.
+6. Create a [Mailosaur](https://mailosaur.com) account. This is required for integration and end-to-end tests to verify that the application is sending emails as expected. Take the Mailosaur server ID and API key and add them in your CICD account to the Parameter Store as `SecretString` values with the following names
+-`/test/mailosaur/serverId`
 - `/test/mailosaur/apiKey`
   These are picked up by the integration and end-to-end test CodeBuild projects.
-8. Create a secret string in System Manager Parameter store for each target account (e.g, stg or prod) with a value used to sign and verify verification codes - the parameter name should be `/STAGE/sharing-service/code-secret` where STAGE is the stage you are deploying to (dev, stg or prod).
-9. Give permissions for your CICD account to deploy to staging and production accounts.
+7. Create a secret string in System Manager Parameter store for each target account (e.g, stg or prod) with a value used to sign and verify verification codes - the parameter name should be `/STAGE/sharing-service/code-secret` where STAGE is the stage you are deploying to (dev, stg or prod).
+8. Give permissions for your CICD account to deploy to staging and production accounts.
 
 ```
 npm install -g serverless
@@ -191,7 +187,7 @@ cd cicd/cross-account
 CICD_ACCOUNT_ID=<your-cicd-account-id> AWS_PROFILE=<your-staging-account> serverless deploy --region <target-region>
 CICD_ACCOUNT_ID=<your-cicd-account-id> AWS_PROFILE=<your-production-account> serverless deploy --region <target-region>
 ```
-10. Deploy the CI/CD pipeline to your CICD account.
+9. Deploy the CI/CD pipeline to your CICD account.
 
 ```
 cd cicd
@@ -200,9 +196,9 @@ npm run build
 AWS_PROFILE=<your-cicd-account-profile> npm run cdk -- bootstrap
 AWS_PROFILE=<your-cicd-account-profile> npm run deploy
 ```
-11. Trigger your pipeline by commiting your changes to the repository
-12. Monitor your deployment by viewing the orchestrator pipeline in the AWS Console CodePipeline page.
-13. Wait for your deployment to fail! _Wait, what?_ Yes, your first deployment will fail. This is expected and all part of the process. Read on to find out more!
+10. Trigger your pipeline by commiting your changes to the repository
+11. Monitor your deployment by viewing the orchestrator pipeline in the AWS Console CodePipeline page.
+12. Wait for your deployment to fail! _Wait, what?_ Yes, your first deployment will fail. This is expected and all part of the process. Read on to find out more!
 
 ## Getting to your First Successful Deployment
 
