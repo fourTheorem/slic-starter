@@ -87,14 +87,15 @@ export class PipelineStack extends Stack {
         version: '0.2',
         phases: {
           install: {
-            commands: ['cd cicd2', 'npm ci']
+            commands: ['cd cicd', 'npm ci']
           },
           build: {
             commands: ['npm run build', `npm run cdk -- synth ${cdkContextArgs.join(' ')}`]
           },
         },
         artifacts: {
-          'files': ['cicd2/**/*', 'app.yml'],
+          'base-directory': 'cicd/cdk.out',
+          'files': ['**/*'],
           'enable-symlinks': true,  // important for node_modules/.bin links, like `cdk` itself!
         }
       }),
@@ -118,8 +119,8 @@ export class PipelineStack extends Stack {
         phases: {
           build: {
             commands: [
-              'cd cicd2',
-              `npm run cdk -- deploy --require-approval=never --verbose ${cdkContextArgs.join(' ')} PipelineStack`
+              'npm install -g aws-cdk',
+              `cdk deploy -a . --require-approval=never --verbose ${cdkContextArgs.join(' ')} "*"`
             ]
           },
         },
