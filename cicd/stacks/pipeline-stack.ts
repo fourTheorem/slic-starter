@@ -129,8 +129,11 @@ export class PipelineStack extends Stack {
     })
 
     cdkDeployProject.role?.addToPrincipalPolicy(new iam.PolicyStatement({
-      actions: ['cloudformation:DescribeStacks'],
-      resources: ['*'],
+      actions: [
+        'cloudformation:DescribeStacks',
+        'cloudformation:GetTemplate',
+      ],
+      resources: [`arn:aws:cloudformation:${deployRegion}:${deployAccount}:stack/*`],
       effect: iam.Effect.ALLOW,
     }))
 
