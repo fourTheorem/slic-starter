@@ -2,6 +2,7 @@ import { SecretValue, Stack, StackProps } from 'aws-cdk-lib'
 import { Construct } from 'constructs'
 
 import * as iam from 'aws-cdk-lib/aws-iam'
+import * as codeStarConnections from 'aws-cdk-lib/aws-codestarconnections'
 import * as codeBuild from 'aws-cdk-lib/aws-codebuild'
 import * as codePipeline from 'aws-cdk-lib/aws-codepipeline'
 import * as codePipelineActions from 'aws-cdk-lib/aws-codepipeline-actions'
@@ -44,14 +45,19 @@ export class PipelineStack extends Stack {
 
     pipeline.notifyOnExecutionStateChange(`${id}NotifyExecState`, topic)
 
+    const bitbucketConnection = new codeStarConnections.CfnConnection(this, `${id}CodeStarConnection`, {
+      connectionName: `${lastStage}CodeStarConnection`,
+      providerType: 'Bitbucket'
+    })
+
     const sourceOutput = new codePipeline.Artifact('SourceOutput')
-    const sourceAction = new codePipelineActions.GitHubSourceAction({
-      actionName: 'GitHub',
+    const sourceAction = new codePipelineActions.CodeStarConnectionsSourceAction({
+      actionName: 'ButBucket',
       owner: config.sourceRepoOwner,
       repo: config.sourceRepoName,
       branch: config.sourceBranch,
       output: sourceOutput,
-      oauthToken: SecretValue.secretsManager('github-token')
+      connectionArn: bitbucketConnection.ref
     })
 
     pipeline.addStage({

@@ -2,9 +2,9 @@
 # SLIC Starter-based application deployment to work
 sourceRepo:
   # This should be changed to match your own repo and branch
-  owner: fourTheorem
-  name: slic-starter
-  branch: cicd2
+  owner: eoinshanaghy
+  name: slic-starter-bb
+  branch: bb
 
 domainConfig:
   # Set 'nsDomain' to an empty string ('') if you are not using custom domains. Do not remove it.
