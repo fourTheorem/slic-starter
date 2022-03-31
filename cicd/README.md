@@ -1,4 +1,4 @@
-# CICD2
+# CICD
 
 ## GitHub Authentication.
 
@@ -12,7 +12,7 @@ The following commands use AdministratorAccess for future CloudFormation deploym
 ```
 --cloudformation-execution-policies arn:aws:iam::aws:policy/AdministratorAccess
 ```
-(Good to implement permissions boundaries in the execution role by bootstrapping with a custom template
+(It is good to implement permissions boundaries in the execution role by bootstrapping with a custom template
 https://github.com/aws-samples/aws-bootstrap-kit-examples/blob/ba28a97d289128281bc9483bcba12c1793f2c27a/source/1-SDLC-organization/lib/cdk-bootstrap-template.yml#L395)
 
 #### Bootstrap the _target_ accounts
@@ -60,6 +60,6 @@ It creates a CloudFormation stack ("CDKToolkit") with:
 
 # Troubleshooting
 
-Pipeline deployment fails with CREATE_FAILED: Internal failure.
+Pipeline deployment fails with `CREATE_FAILED: Internal failure`.
 
 -> Check that the secret, `github-token` is in place

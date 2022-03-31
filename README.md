@@ -115,11 +115,11 @@ SLIC Starter has a front-end web application. It uses React, Redux and [Material
 
 Getting continuous integration and deployment (CI/CD) right is one of the most important things in your microservice or serverless project. Having a good foundation here allows you to keep making changes fast. It's also fairly difficult to get right. SLIC Starter has made key choices to help you here.
 
-1. SLIC Starter uses multiple AWS accounts for secure isolation of environments. We assume a production, test(staging) and cicd account exist. We have made sure that you can use the same account ID for each of these in case you are restricted to one account and a multi-account setup is not feasible.
+1. SLIC Starter uses multiple AWS accounts for secure isolation of environments. If you are getting started, or just restricted to one account for any reason, you can always use the same account for everything. In the ideal case, you will have a separate account for development, staging, and production. ![Multiple accounts diagram ](./multiple-accounts.png)
 1. CodePipeline and CodeBuild are used, so the CI/CD process is deployed using Infrastructure-as-Code, just like the serverless application itself. For this, we use the [CDK](https://github.com/awslabs/aws-cdk).
-1. The process dynamically creates a pipeline for _each module_(service) in the application. An **orchestrator pipeline** detects which modules need to be built, monitors their pipelines and triggers deployment to the staging account.
+1. The process dynamically creates a CodePipeline pipeline for each target environment, and CodeBuild projects for _each module_(service) in the application
 1. Integration (API) and end-to-end UI tests are run before deployment to production. A manual approval step before deployment to production is included too.
-1. The entire pipeline is started by a CodeBuild job. CodeBuild is used because it can monitor changes on any branch. This will enable feature branch deployments in the future. This _source_ CodeBuild job also runs a change detection script to determine which services need to be built and deployed. Unchanged services are skipped throughtout the deployment process.
+1. The entire pipeline is started by a CodeBuild job. CodeBuild is used because it can monitor changes on any branch. This will enable feature branch deployments in the future. This _source_ CodeBuild job also runs a change detection script to determine which services need to be built and deployed. Unchanged services are skipped throughout the deployment process.
 1. The CICD stack also include the Pipeline Dashboard application from the [Serverless Application Repository](https://serverlessrepo.aws.amazon.com/applications/arn:aws:serverlessrepo:us-east-1:923120264911:applications~pipeline-dashboard), giving you an automatic CloudWatch dashboard of the performance of all pipelines. (Credit to @heitorlessa for the idea and helping to get this working).
 
 ![CI/CD Architecture](./cicd-architecture.png)
@@ -139,12 +139,6 @@ For details on integration (API) tests, see the [README.md in integration-tests]
 ### Monitoring
 
 X-Ray is enabled for all services and centralized logging is supported. This is pretty basic in terms of monitoring support so much more is planned and [contributions](./CONTRIBUTING.md) are welcomed.
-
-### Logging
-
-As a default log centralization solution, SLIC Starter publishes logs to [logz.io](https://logz.io). The [logging](./logging) module handles this using the logz.io forwarder. This is integrated into each service's Lambda function using the [serverless-log-forwarding](https://github.com/amplify-education/serverless-log-forwarding) plugin.
-
-For further details, see the [logging README](./logging/README.md)
 
 ### Secret Management
 
@@ -179,34 +173,10 @@ To set up deployment to your own accounts, first run through these steps.
 - `/test/mailosaur/apiKey`
   These are picked up by the integration and end-to-end test CodeBuild projects.
 7. Create a secret string in System Manager Parameter store for each target account (e.g, stg or prod) with a value used to sign and verify verification codes - the parameter name should be `/STAGE/sharing-service/code-secret` where STAGE is the stage you are deploying to (dev, stg or prod).
-8. Give permissions for your CICD account to deploy to staging and production accounts.
-
-```
-npm install -g serverless
-cd cicd/cross-account
-CICD_ACCOUNT_ID=<your-cicd-account-id> AWS_PROFILE=<your-staging-account> serverless deploy --region <target-region>
-CICD_ACCOUNT_ID=<your-cicd-account-id> AWS_PROFILE=<your-production-account> serverless deploy --region <target-region>
-```
-9. Deploy the CI/CD pipeline to your CICD account.
-
-```
-cd cicd
-npm install
-npm run build
-AWS_PROFILE=<your-cicd-account-profile> npm run cdk -- bootstrap
-AWS_PROFILE=<your-cicd-account-profile> npm run deploy
-```
-10. Trigger your pipeline by commiting your changes to the repository
-11. Monitor your deployment by viewing the orchestrator pipeline in the AWS Console CodePipeline page.
-12. Wait for your deployment to fail! _Wait, what?_ Yes, your first deployment will fail. This is expected and all part of the process. Read on to find out more!
+8. Set up the CICD pipeline according to [cicd/README.md](./cicd/README.md)
+10. Trigger your pipeline by committing your changes to the repository
 
 ## Getting to your First Successful Deployment
-
-The CICD process attempts to build and deploy each service in parallel. This is done so you get quick feedback and to improve the overall deployment speed. It also means that deployment can fail if there are dependencies between services. Out of the box, SLIC Starter has a `certs` module that sets up a Route 53 Hosted Zone and some certificates. These are required by the `frontend` and `checklist-service` services, so those builds will fail if the cerificates aren't ready yet. This is just one example. There are other services that depend on common resources so it will require a few retries in both staging and production before everything is deployed.
-
-_Note_ that deployment of some services can take quite some time! In particular, `frontend` deployment will wait until the CloudFront distribution has been created. This can take _at least_ 15 minutes.
-
-You can inspect the failures in the Orchestrator Pipeline view in the CodePipeline console of your CICD account. You can retry the `stgDeploy` phase by clicking the _Retry_ button in the pipeline.
 
 Once you get all services in staging successfully deployed, you might find that the test stage fails. This is likely to do with the front end being inaccessible. As we already mentioned, your DNS entries will need to be set up. Let's understand how this all works better!
 
