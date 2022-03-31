@@ -14,7 +14,7 @@
   },
   "keywords": [],
   "devDependencies": {
-    "aws-sdk": "^2.409.0",
+    "aws-sdk": "^2.1104.0",
     "awscred": "^1.4.2",
     "axios": "^0.23.0",
     "chance": "^1.0.18",
