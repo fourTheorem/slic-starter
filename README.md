@@ -101,7 +101,7 @@ Upon first deploying SLIC Starter, the API Service will create Record Sets and a
 
 A major goal of SLIC Starter is to provide a realistic, working examples for event-driven messaging, including a scalable and real-time message bus.
 
-Following the KISS principle, SLIC Starter only requires the simplest messaging possible _for now_, so we use CloudWatch Events as inspired by [this article](https://aws.amazon.com/blogs/aws/building-serverless-pipelines-with-amazon-cloudwatch-events/).
+Following the KISS principle, SLIC Starter only requires the simplest messaging possible _for now_, so we use EventBridge (originally inspired by [this article](https://aws.amazon.com/blogs/aws/building-serverless-pipelines-with-amazon-cloudwatch-events/)!)
 
 ### Front End
 
@@ -257,21 +257,10 @@ There are many other amazing resources to help you get started, learn and evolve
 - [Serverless Stack Tutorial](https://serverless-stack.com/) - A really well-crafted, step-by-step tutorial covering many best practices
 - [AWS Serverless Airline Booking](https://github.com/aws-samples/aws-serverless-airline-booking) - A complete web application built on Serverless AWS with Amplify and GraphQL. The Twitch videos covering the architecture and build of this project are available [here on YouTube](https://www.youtube.com/watch?v=qBN98Co_0aw&list=PLhr1KZpdzukcYWC1xD-vidMZf2uilGkor&index=7)
 
-## Troubleshooting
-
-1. I get this error in the CodeBuild source project:
-
-```
-87/101 | 1:05:21 PM | CREATE_FAILED | AWS::CodeBuild::Project |
-sourceProject (sourceProjectBCA86C81) Failed to call CreateWebhook, reason: Repository not found or permission denied.
-```
-
-- This is because your CodeBuild configuration does not have access to your GitHub account. To grant access, create a CodeBuild project manually in the AWS Console and grant access to your repository. This project can be safely deleted afterwards once CodeBuild has been granted access.
-
 ## Contributing
 
 See [CONTRIBUTING.md](CONTRIBUTING.md)
 
 ## License
 
-Copyright fourTheorem Ltd. 2018-2021. Distributed under the MIT License. See [LICENCE](LICENCE)
+Copyright fourTheorem Ltd. 2018-2022. Distributed under the MIT License. See [LICENCE](LICENCE)
