@@ -57,8 +57,9 @@ custom:
     stage: local
     region: ${self:provider.region}
   dynamodb:
-    start:
-      migrate: true
+    stages:
+      - local
+    migrate: true
   prune:
     automatic: true
     number: 3
