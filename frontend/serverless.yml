@@ -100,7 +100,7 @@ resources:
             Fn::If:
               - HasDomain
               - ["${self:custom.siteConfig.siteDomainName}"]
-              - AWS::NoValue
+              - Ref: AWS::NoValue
           DefaultCacheBehavior:
             AllowedMethods:
               - DELETE
