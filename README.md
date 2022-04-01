@@ -238,14 +238,16 @@ Work on a more seamless local development environment is _in progress_. In the m
 In backend services:
 
 ```
-sls dynamodb install
+sls dynamodb install --region us-east-1
 ```
 
 Ensure that your AWS credentials are set to _some reasonable values_. For local development, any dummy value for `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY` is sufficient. You can also opt to use an AWS profile if that's your preferred method for specifying AWS credentials.
 
 ```
-SLIC_STAGE=local sls offline start --migrate true
+npm start
 ```
+
+You can do this for each service individually (sharing-service, welcome-service, etc.)
 
 ## Backend configuration for front end
 

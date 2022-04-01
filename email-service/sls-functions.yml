@@ -10,7 +10,7 @@ sendEmail:
     - Effect: Allow
       Action:
         - sqs:ReceiveMessage
-      Resource: arn:aws:sqs:*:${aws:accountId}:${self:custom.emailQueueName}
+      Resource: !Sub arn:aws:sqs:*:${AWS::AccountId}:${self:custom.emailQueueName}
     - Effect: Allow
       Action:
         - ses:SendEmail
@@ -27,4 +27,4 @@ sendEmail:
         - ssm:GetParameters
         - ssm:GetParametersByPath
       Resource:
-        - arn:aws:ssm:${aws:region}:${aws:accountId}:parameter/${self:provider.stage}/email-service/from-address
+        - !Sub arn:aws:ssm:${AWS::region}:${AWS::accountId}:parameter/${self:provider.stage}/email-service/from-address
