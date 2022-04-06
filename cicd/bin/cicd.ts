@@ -9,7 +9,7 @@ const app = new cdk.App();
 const stagesInput = app.node.tryGetContext('stages')
 if (!stagesInput) {
   throw new Error('Stages need to be specified in CDK context. ' +
-                  'Pass -c stages=dev or -c stages=stg,prd to cdk deploy. ' +
+                  'Pass -c stages=dev or -c stages=stg,prod to cdk deploy. ' +
                   'CDK context variables can also be passed in cdk.json. ' +
                   'See https://docs.aws.amazon.com/cdk/latest/guide/get_context_var.html')
 }
