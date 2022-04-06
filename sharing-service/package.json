@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Sharing Service",
   "scripts": {
-    "start": "AWS_DEFAULT_REGION=us-east-1 AWS_REGION=us-east-1 AWS_ACCESS_KEY_ID=DUMMY_KEY_ID AWS_SECRET_ACCESS_KEY=DUMMY_KEY AWS_XRAY_CONTEXT_MISSING=LOG_ERROR SLIC_NS_DOMAIN=sliclists.com SLIC_STAGE=local sls offline start --region us-east-1",
+    "start": "source ../localstack.env && sls offline start --region us-east-1 --migrate true",
     "lint": "eslint .",
     "format": "eslint --cache --fix \"**/*.js\"",
     "coverage": "npm run test -- --cov --coverage-report=html",
@@ -22,7 +22,7 @@
     "serverless-api-gateway-throttling": "^1.1.1",
     "serverless-bundle": "^5.0.2",
     "serverless-iam-roles-per-function": "^3.2.0",
-    "serverless-offline": "^8.2.0",
+    "serverless-offline": "^8.5.0",
     "serverless-prune-plugin": "^1.6.0",
     "serverless-slic-watch-plugin": "^1.0.4",
     "tap": "^15.0.10",

@@ -33,7 +33,7 @@
 - [Getting Started](#getting-started)
 - [Getting to your First Successful Deployment](#getting-to-your-first-successful-deployment)
   - [Set up your domain for email](#set-up-your-domain-for-email)
-- [Local Development](#local-development)
+- [Local Execution](#local-execution)
 - [Backend configuration for front end](#backend-configuration-for-front-end)
 - [Demo](#demo)
 - [Code Style and Syntax](#code-style-and-syntax)
@@ -231,21 +231,39 @@ If you are using SLIC with a domain configuration, the verification process is q
 
 By default, SES will require validation of each email address to which emails are being sent. To avoid this, you can [request a sending limit increase](https://docs.aws.amazon.com/ses/latest/DeveloperGuide/request-production-access.html), which will remove your account/region from the SES Sandbox.
 
-## Local Development
+## Local Execution
 
-Work on a more seamless local development environment is _in progress_. In the meantime, here's an introduction to running the `checklist-service` locally:
+It is possible to run much of the application functionality locally and get a reasonable simulation of what the fully-deployed application does. Of course, every local simulation of an AWS service has limitations, so this mode should not be relied on for pre-production testing. It allows for fast feedback on simple API and frontend changes.
 
-In backend services:
+Local execution support utilises [Localstack](https://github.com/localstack/localstack), [serverless-offline](https://www.npmjs.com/package/serverless-offline) and [serverless-dynamodb-local](https://www.serverless.com/plugins/serverless-dynamodb-local)
 
+Prerequisites:
+- The Localstack configuration requires [docker-compose](https://docs.docker.com/compose/)
+- `serverless-dynamodb-local` installs and runs [DynamoDB Local](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/DynamoDBLocal.html) so it requires a Java Runtime
+
+
+1. Start Localstack:
 ```
-sls dynamodb install
+docker-compose up -d
+```
+2. Set up the DynamoDB Local server and table in the checklist service:
+```
+cd checklist-service
+sls dynamodb install --region us-east-1
+```
+3. Start the checklist service:
+```
+cd checklist-service
+npm start
+```
+4. Start the front end in local mode:
+```
+cd frontend
+npm start
 ```
 
-Ensure that your AWS credentials are set to _some reasonable values_. For local development, any dummy value for `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY` is sufficient. You can also opt to use an AWS profile if that's your preferred method for specifying AWS credentials.
+You can run all other backend services using `npm start` in each directory.
 
-```
-SLIC_STAGE=local sls offline start --migrate true
-```
 
 ## Backend configuration for front end
 
