@@ -12,6 +12,7 @@ import config from '../config'
 import * as ssmParams from '../ssm-params'
 import modules from '../modules'
 import { BuildEnvironmentVariableType, BuildSpec } from 'aws-cdk-lib/aws-codebuild'
+import { BlockPublicAccess } from 'aws-cdk-lib/aws-s3'
 
 interface PipelineStackProps extends StackProps {
   crossAccountDeployRoles: {[key: string]: iam.IRole},
@@ -31,7 +32,11 @@ export class PipelineStack extends Stack {
       buildImage: codeBuild.LinuxBuildImage.STANDARD_5_0
     }
 
-    const artifactBucket = new s3.Bucket(this, 'ArtifactBucket')
+    const artifactBucket = new s3.Bucket(this, 'ArtifactBucket', {
+      encryption: s3.BucketEncryption.S3_MANAGED,
+      blockPublicAccess: BlockPublicAccess.BLOCK_ALL
+    })
+
     const pipeline = new codePipeline.Pipeline(this, `pipeline_${lastStage}`, {
       pipelineName: `${config.appName}-${lastStage}`,
       artifactBucket,

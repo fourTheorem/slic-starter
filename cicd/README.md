@@ -40,12 +40,20 @@ Then run CDK deploy to create the cross-account deployment role in your target a
 
 ```
 npm run cdk -- -c stages=dev -c deploy-account=DEPLOYMENT_ACCOUNT_ID deploy CrossAccountStack
+npm run cdk -- -c stages=stg -c deploy-account=DEPLOYMENT_ACCOUNT_ID deploy CrossAccountStack
+npm run cdk -- -c stages=prod -c deploy-account=DEPLOYMENT_ACCOUNT_ID deploy CrossAccountStack
 ```
 
 # Deploy the Pipeline
 
+To deploy a development CICD pipeline that targets the development account only:
 ```
 npm run build && npm run cdk -- -c stages=dev -c dev-account=TARGET_ACCOUNT_ID deploy PipelineStack
+```
+
+To deploy a production CICD pipeline that targets the staging and production accounts:
+```
+npm run cdk -- -c stages=stg,prod -c stg-account=${STG_ACCOUNT} -c prd-account=${PROD_ACCOUNT} -c deploy-account=${DEPLOY_ACCOUNT} deploy PipelineStack
 ```
 
 ### What does Bootstrapping do?
