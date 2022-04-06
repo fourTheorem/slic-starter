@@ -14,38 +14,35 @@
 
 <!-- TOC -->
 
-- [How does SLIC starter help you?](#how-does-slic-starter-help-you)
-- [Application Architecture](#application-architecture)
-- [What does it provide?](#what-does-it-provide)
-  - [Structure](#structure)
-  - [Tooling Choice](#tooling-choice)
-  - [Authentication](#authentication)
-  - [Data Access with a RESTful API](#data-access-with-a-restful-api)
-  - [Messaging](#messaging)
-  - [Front End](#front-end)
-  - [CI/CD](#cicd)
-  - [Testing](#testing)
-  - [Monitoring](#monitoring)
-  - [Logging](#logging)
-  - [Secret Management](#secret-management)
-  - [User Accounts and Authorization](#user-accounts-and-authorization)
-- [Before you Begin!](#before-you-begin)
-- [Getting Started](#getting-started)
-- [Getting to your First Successful Deployment](#getting-to-your-first-successful-deployment)
-  - [Set up your domain for email](#set-up-your-domain-for-email)
-- [Local Execution](#local-execution)
-- [Backend configuration for front end](#backend-configuration-for-front-end)
-- [Demo](#demo)
-- [Code Style and Syntax](#code-style-and-syntax)
-- [Who is behind it?](#who-is-behind-it)
-- [Other Resources](#other-resources)
-- [Troubleshooting](#troubleshooting)
-- [Contributing](#contributing)
-- [License](#license)
+- [1. How does SLIC starter help you?](#1-how-does-slic-starter-help-you)
+- [2. Application Architecture](#2-application-architecture)
+- [3. What does it provide?](#3-what-does-it-provide)
+  - [3.1. Structure](#31-structure)
+  - [3.2. Tooling Choice](#32-tooling-choice)
+  - [3.3. Authentication](#33-authentication)
+  - [3.4. Data Access with a RESTful API](#34-data-access-with-a-restful-api)
+  - [3.5. Messaging](#35-messaging)
+  - [3.6. Front End](#36-front-end)
+  - [3.7. CI/CD](#37-cicd)
+  - [3.8. Testing](#38-testing)
+  - [3.9. Monitoring](#39-monitoring)
+  - [3.10. Secret Management](#310-secret-management)
+- [4. Before you Begin!](#4-before-you-begin)
+- [5. Getting Started](#5-getting-started)
+- [6. Getting to your First Successful Deployment](#6-getting-to-your-first-successful-deployment)
+  - [6.1. Set up your domain for email](#61-set-up-your-domain-for-email)
+- [7. Local Execution](#7-local-execution)
+- [8. Frontend development with a real back end](#8-frontend-development-with-a-real-back-end)
+- [9. Demo](#9-demo)
+- [10. Code Style and Syntax](#10-code-style-and-syntax)
+- [11. Who is behind it?](#11-who-is-behind-it)
+- [12. Other Resources](#12-other-resources)
+- [13. Contributing](#13-contributing)
+- [14. License](#14-license)
 
 <!-- /TOC -->
 
-## How does SLIC starter help you?
+## 1. How does SLIC starter help you?
 
 1. Serverless development involves a lot of decisions around which approach to take for a multitude of issues. It aims to remove 80% of this decision making and let you focus on building valuable features.
 1. It is deployable _out of the box_. Without making any code changes, you have a cloud-hosted production-grade app as a starting point for your product.
@@ -54,13 +51,13 @@
 
 This project is free to use by enterprise, startups, students, educators, enthusiasts and skeptics alike. We actively encourage contributions, suggestions and questions from _anyone_.
 
-## Application Architecture
+## 2. Application Architecture
 
 ![SLIC Starter Architecture](./architecture.png)
 
 For the CICD pipeline architecture, see [CI/CD](#cicd)
 
-## What does it provide?
+## 3. What does it provide?
 
 SLIC Starter is a complete, working application. By including all the aspects of a real application, SLIC Starter goes beyond a typical demo project. You are encouraged to:
 
@@ -69,7 +66,7 @@ SLIC Starter is a complete, working application. By including all the aspects of
 - Build your own production application
 - Contribute ideas and feedback!
 
-### Structure
+### 3.1. Structure
 
 We chose a _monorepo_ approach. Every serverless module (service) is a folder at the parent level of the repo. The monorepo/multirepo decision is always a tricky one but we think monorepo works best here for these reasons.
 
@@ -79,7 +76,7 @@ We chose a _monorepo_ approach. Every serverless module (service) is a folder at
 1. Changes across multiple services are managed and tracked in the same commits, PRs and merges.
 1. End-to-end tests exist in the same place as the code under test.
 
-### Tooling Choice
+### 3.2. Tooling Choice
 
 SLIC Starter uses:
 
@@ -88,22 +85,22 @@ SLIC Starter uses:
 1. [CDK](https://github.com/awslabs/aws-cdk) for managing and deploying the CI/CD pipeline
 1. [Node.js](http://nodejs.org/) for service implementation. This can be replaced with the language of your choice!
 
-### Authentication
+### 3.3. Authentication
 
 Authentication is a difficult problem with constantly-evolving security requirements. SLIC Starter uses [Cognito](https://aws.amazon.com/cognito/) and the [Amplify](https://aws-amplify.github.io/) SDK to remove the burden. Cognito can still be complex when getting started. SLIC Starter provides a complete setup with user pool and identity pool, sign-up and login. Amplify is used to authenticate in the web client. There is even a Cognito/Amplify simulation that allows you to work in local development mode, avoiding the need for a real Cognito backend in all cases.
 
-### Data Access with a RESTful API
+### 3.4. Data Access with a RESTful API
 
 SLIC Starter includes useful, working examples of typical CRUD (create, read, update and delete) actions with a REST API. Currently, these APIs are implemented with DynamoDB and the `DocumentClient` API. For an example of this, look at the implementation of the [Checklist](./checklist-service) service.
 Upon first deploying SLIC Starter, the API Service will create Record Sets and an API Domain Name for your API. APIGateway and Route53 handles the creation of these resources for us.
 
-### Messaging
+### 3.5. Messaging
 
 A major goal of SLIC Starter is to provide a realistic, working examples for event-driven messaging, including a scalable and real-time message bus.
 
 Following the KISS principle, SLIC Starter only requires the simplest messaging possible _for now_, so we use EventBridge (originally inspired by [this article](https://aws.amazon.com/blogs/aws/building-serverless-pipelines-with-amazon-cloudwatch-events/)!)
 
-### Front End
+### 3.6. Front End
 
 SLIC Starter has a front-end web application. It uses React, Redux and [Material UI](http://material-ui.com/). Out of the box, the front end is configured, built, packaged and deployed to S3 and CloudFront with a domain and HTTPS certificate.
 
@@ -111,7 +108,7 @@ SLIC Starter has a front-end web application. It uses React, Redux and [Material
 1. The build process automatically looks up the Cognito parameters so you don't have to
 1. The API domain name is set by convention (The API for `sliclists.com` is `api.sliclists.com`)
 
-### CI/CD
+### 3.7. CI/CD
 
 Getting continuous integration and deployment (CI/CD) right is one of the most important things in your microservice or serverless project. Having a good foundation here allows you to keep making changes fast. It's also fairly difficult to get right. SLIC Starter has made key choices to help you here.
 
@@ -124,7 +121,7 @@ Getting continuous integration and deployment (CI/CD) right is one of the most i
 
 ![CI/CD Architecture](./cicd-architecture.png)
 
-### Testing
+### 3.8. Testing
 
 SLIC Starter covers automated testing with:
 
@@ -136,15 +133,15 @@ All tests can be run in local development mode as well as against a fully-deploy
 
 For details on integration (API) tests, see the [README.md in integration-tests](./integration-tests/README.md)
 
-### Monitoring
+### 3.9. Monitoring
 
 X-Ray is enabled for all services and centralized logging is supported. This is pretty basic in terms of monitoring support so much more is planned and [contributions](./CONTRIBUTING.md) are welcomed.
 
-### Secret Management
+### 3.10. Secret Management
 
 We use AWS Secrets Manager for storing the GitHub personal access token and AWS Systems Manager Parameter Store for storing other secrets, such as API access tokens.
 
-## Before you Begin!
+## 4. Before you Begin!
 
 SLIC Starter is designed to get you up in running with a real-world application as quickly as possible. The fact that we go beyond the average sample application, there is a bit more involved in getting to production. For example:
 
@@ -154,7 +151,7 @@ SLIC Starter is designed to get you up in running with a real-world application 
 4. When your application is automatically deploying as part of the CICD process and HTTPS certificates are being created, you (the domain owner) will be sent an email by Amazon Route53 to verify that you are the domain owner.
 5. You will also have to validate your domains with SES in order to have permissions for emails to be sent.
 
-## Getting Started
+## 5. Getting Started
 
 This section covers a full deployment using multiple accounts with domain names and HTTPS certificates. It takes quite a bit longer than your average sample app since there is DNS and certificate approval involved. If you want to try SLIC Starter out in a single account without domains, go to the [QUICK_START.md](./QUICK_START.md)]
 
@@ -176,7 +173,7 @@ To set up deployment to your own accounts, first run through these steps.
 8. Set up the CICD pipeline according to [cicd/README.md](./cicd/README.md)
 10. Trigger your pipeline by committing your changes to the repository
 
-## Getting to your First Successful Deployment
+## 6. Getting to your First Successful Deployment
 
 Once you get all services in staging successfully deployed, you might find that the test stage fails. This is likely to do with the front end being inaccessible. As we already mentioned, your DNS entries will need to be set up. Let's understand how this all works better!
 
@@ -187,7 +184,7 @@ Once you get all services in staging successfully deployed, you might find that 
 
 Once you have set up the required DNS configuration and it has propagated, your front end staging application should be available at `https://stg.YOUR-DOMAIN.TLD` and you can click _Retry_ on the test phase of the pipeline!
 
-### Set up your domain for email
+### 6.1. Set up your domain for email
 
 For the `email-service` to send emails, you must choose a 'From:' address and set it in parameter store. The paramter name is `/<STAGE>/email-service/from-address`. `<STAGE>` should be replaced with `stg` or `prod` as appropriate.
 
@@ -197,7 +194,7 @@ If you are using SLIC with a domain configuration, the verification process is q
 
 By default, SES will require validation of each email address to which emails are being sent. To avoid this, you can [request a sending limit increase](https://docs.aws.amazon.com/ses/latest/DeveloperGuide/request-production-access.html), which will remove your account/region from the SES Sandbox.
 
-## Local Execution
+## 7. Local Execution
 
 It is possible to run much of the application functionality locally and get a reasonable simulation of what the fully-deployed application does. Of course, every local simulation of an AWS service has limitations, so this mode should not be relied on for pre-production testing. It allows for fast feedback on simple API and frontend changes.
 
@@ -230,37 +227,52 @@ npm start
 
 You can run all other backend services using `npm start` in each directory.
 
+## 8. Frontend development with a real back end
 
-## Backend configuration for front end
+Normally, when you run `npm start` in the `frontend` folder, it will use `localhost` for APIs and mock Amplify/Cognito configuration values.
+To run the front end locally with a _real backend_ deployed to AWS, you need to generate a `.env` file that will be picked up by [Create React App](https://create-react-app.dev/docs/adding-custom-environment-variables/).
 
-When working in local development, the backend configuration is pulled from [.env.local](./frontend/.env.local). When building the production frontend for any deployed _stage_, `npm run build` will, by default, generate a `.env.production` file. This file is `.gitignore`d so it will not be committed. The values for this file are dynamically generated using the CloudFormation outputs retrieved from the stage specified using the `SLIC_STAGE` environment variable.
+For example, to use the development environment deployed to AWS, you can generate an `env` file. Your AWS credentials need to be configured to talk to the development account in order for this to work.
 
-## Demo
+```
+SLIC_STAGE=dev node scripts/fetch-deployment-config.js
+cp .env.production .env.test.local
+```
+
+
+Then you can restart the front end:
+```
+npm start
+```
+
+`.env.test.local` will be picked up before the default `.env.development` file and will ensure your front end is configured against the development back end.
+
+## 9. Demo
 
 SLIC Starter provides a fully-featured application for managing checklists called _SLIC Lists_. SLIC Starter is self hosting, so SLIC Lists is continuously deployed to [sliclists.com](https://sliclists.com) from _this repository!_
 
-## Code Style and Syntax
+## 10. Code Style and Syntax
 
 SLIC Starter uses [Standard](https://standardjs.com/) with [ESLint](https://eslint.org/).
 
 - ESLint is configured to format the code on commit (run manually with `npm run format`).
 - Linting can be run with `npm run lint`.
 
-## Who is behind it?
+## 11. Who is behind it?
 
 SLIC Starter is open source and contributions are welcome from everyone. It was started by the team at [fourTheorem](https://fourtheorem.com), also the authors of the book, [AI as a Service](https://www.aiasaservicebook.com/), a [Manning publication](https://www.manning.com/books/ai-as-a-service) on Serverless, AI-enabled applications.
 
-## Other Resources
+## 12. Other Resources
 
 There are many other amazing resources to help you get started, learn and evolve your Serverless practice. Here are a few recommendations!
 
 - [Serverless Stack Tutorial](https://serverless-stack.com/) - A really well-crafted, step-by-step tutorial covering many best practices
 - [AWS Serverless Airline Booking](https://github.com/aws-samples/aws-serverless-airline-booking) - A complete web application built on Serverless AWS with Amplify and GraphQL. The Twitch videos covering the architecture and build of this project are available [here on YouTube](https://www.youtube.com/watch?v=qBN98Co_0aw&list=PLhr1KZpdzukcYWC1xD-vidMZf2uilGkor&index=7)
 
-## Contributing
+## 13. Contributing
 
 See [CONTRIBUTING.md](CONTRIBUTING.md)
 
-## License
+## 14. License
 
 Copyright fourTheorem Ltd. 2018-2022. Distributed under the MIT License. See [LICENCE](LICENCE)
