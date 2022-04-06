@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Welcome Service for SLIC Starter",
   "scripts": {
-    "start": "SLIC_STAGE=local sls offline start --migrate true",
+    "start": "source ../localstack.env && sls offline start --region us-east-1 --migrate true",
     "lint": "eslint .",
     "format": "eslint --cache --fix \"**/*.js\"",
     "coverage": "npm run test -- --cov --coverage-report=html",
