@@ -14,7 +14,7 @@ provider:
   name: aws
   runtime: nodejs12.x
   stage: ${opt:stage, 'local'}
-  region: ${opt:region, '${env:TARGET_REGION}'}
+  region: ${opt:region}
   sesRegion: ${self:custom.sesRegions.${self:provider.region}, 'us-east-1'}
   tracing:
     lambda: true
@@ -41,7 +41,6 @@ custom:
     lambdaPort: 4005
     websocketPort: 4004
     stage: local
-    region: ${opt:region, '${env:TARGET_REGION}'}
   serverless-offline-sqs:
     endpoint: ${env:SQS_ENDPOINT_URL,'http://0.0.0.0:4576'}
     autoCreate: true

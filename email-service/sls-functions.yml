@@ -27,4 +27,4 @@ sendEmail:
         - ssm:GetParameters
         - ssm:GetParametersByPath
       Resource:
-        - !Sub arn:aws:ssm:${AWS::region}:${AWS::accountId}:parameter/${self:provider.stage}/email-service/from-address
+        - !Sub arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/${self:provider.stage}/email-service/from-address
