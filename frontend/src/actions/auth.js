@@ -91,7 +91,7 @@ export function resendConfirmationCode (email) {
   return function (dispatch) {
     dispatch({ type: RESEND_CODE_REQUEST })
     Auth.resendSignUp(email).then(
-      () => dispatch({ type: RESEND_CODE_SUCCESS }),
+      () => dispatch({ type: RESEND_CODE_SUCCESS, payload: { email } }),
       (err) =>
         dispatch({
           type: RESEND_CODE_FAILURE,
