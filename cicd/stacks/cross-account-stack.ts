@@ -39,6 +39,7 @@ export class CrossAccountStack extends Stack {
       'iam',
       's3',
       'logs',
+      'dynamodb',
       'events',
       'acm',
       'route53',
