@@ -20,7 +20,8 @@ const style = (theme) => ({
   },
   paper: {
     alignItems: 'center',
-    minWidth: '460px',
+    minWidth: '340px',
+    whiteSpace: 'nowrap',
     padding: theme.spacing.unit * 2
   },
   input: {

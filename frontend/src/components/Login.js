@@ -19,7 +19,7 @@ const styles = (theme) => ({
     justifyContent: 'center'
   },
   paper: {
-    minWidth: '300px',
+    minWidth: '340px',
     padding: theme.spacing.unit * 2
   },
   input: {
@@ -132,7 +132,7 @@ class Login extends Component {
               </Grid>
               <Grid item>
                 <Typography>
-                  Forgot password? <Link to="/forgot-password">Next</Link>
+                  Forgot password? <Link to="/forgot-password">Click here</Link>
                 </Typography>
               </Grid>
               <Grid item>

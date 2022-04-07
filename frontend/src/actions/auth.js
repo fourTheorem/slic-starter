@@ -101,12 +101,12 @@ export function resendConfirmationCode (email) {
   }
 }
 
-export const RESET_CODE_REQUEST = 'RESET_CODE_REQUEST'
+export const SEND_RESET_CODE_REQUEST = 'SEND_RESET_CODE_REQUEST'
 export const SEND_RESET_CODE_SUCCESS = 'SEND_RESET_CODE_SUCCESS'
 export const SEND_RESET_CODE_FAILURE = 'SEND_RESET_CODE_FAILURE'
 export function forgotPassword (email) {
   return function (dispatch) {
-    dispatch({ type: RESET_CODE_REQUEST })
+    dispatch({ type: SEND_RESET_CODE_REQUEST })
     Auth.forgotPassword(email).then(
       () => dispatch({ type: SEND_RESET_CODE_SUCCESS, payload: { email } }),
       (err) =>

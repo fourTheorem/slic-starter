@@ -15,7 +15,7 @@ import {
   RESEND_CODE_SUCCESS,
   SET_PRE_AUTHENTICATED_PATH,
   RESEND_CODE_FAILURE,
-  RESET_CODE_REQUEST,
+  SEND_RESET_CODE_REQUEST,
   SEND_RESET_CODE_SUCCESS,
   SEND_RESET_CODE_FAILURE,
   NEW_PASSWORD_REGUEST,
@@ -144,7 +144,7 @@ const reducer = (state = defaultState, { type, meta, payload, error }) => {
         codeSent: false
       }
 
-    case RESET_CODE_REQUEST:
+    case SEND_RESET_CODE_REQUEST:
       return {
         ...state,
         sendingResetCode: true,

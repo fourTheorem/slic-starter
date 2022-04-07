@@ -19,6 +19,7 @@ const styles = (theme) => ({
   },
   paper: {
     minWidth: '340px',
+    whiteSpace: 'nowrap',
     padding: theme.spacing.unit * 2
   },
   input: {
@@ -78,7 +79,7 @@ class ConfirmForgotPassword extends Component {
               spacing={8}
             >
               <Grid item>
-                <Typography variant="h4">Confirm Forgot Password</Typography>
+                <Typography variant="h4">Choose a New Password</Typography>
               </Grid>
 
               <Grid item>
