@@ -236,7 +236,7 @@ For example, to use the development environment deployed to AWS, you can generat
 
 ```
 SLIC_STAGE=dev node scripts/fetch-deployment-config.js
-cp .env.production .env.test.local
+cp .env.production .env.local
 ```
 
 
@@ -245,7 +245,7 @@ Then you can restart the front end:
 npm start
 ```
 
-`.env.test.local` will be picked up before the default `.env.development` file and will ensure your front end is configured against the development back end.
+`.env.local` will be picked up before the default `.env.development` file and will ensure your front end is configured against the development back end.
 
 ## 9. Demo
 
