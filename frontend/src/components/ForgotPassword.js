@@ -72,7 +72,6 @@ class ForgotPassword extends Component {
         <form onSubmit={this.handleSubmit}>
           <Paper className={classes.paper}>
             <Grid
-              className={classes.input}
               container
               direction="column"
               justifyContent="center"
