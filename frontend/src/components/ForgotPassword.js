@@ -96,9 +96,8 @@ class ForgotPassword extends Component {
               </Grid>
               {errorItem}
               <Grid item>
-                {sendingResetCode}
                 <Button
-                  ariant="contained"
+                  variant="contained"
                   color="secondary"
                   type="submit"
                   className={classes.button}
