@@ -63,21 +63,21 @@ class Login extends Component {
     const errorItem =
       !loggingIn && loginError
         ? (
-        <Grid item>
-          <ErrorMessage messageId={loginError.id} />
-        </Grid>
+          <Grid item>
+            <ErrorMessage messageId={loginError.id} />
+          </Grid>
           )
         : null
 
     const signedIn = authenticated
       ? (
-      <Redirect to={preAuthenticatedPath || '/'} />
+        <Redirect to={preAuthenticatedPath || '/'} />
         )
       : null
 
     const unconfirmed = userUnconfirmed
       ? (
-      <Redirect to="/confirm-signup" />
+        <Redirect to="/confirm-signup" />
         )
       : null
 
@@ -129,6 +129,11 @@ class Login extends Component {
                 >
                   {loggingIn ? 'Logging in...' : 'Log In'}
                 </Button>
+              </Grid>
+              <Grid item>
+                <Typography>
+                  Forgot password? <Link to="/forgot-password">Next</Link>
+                </Typography>
               </Grid>
               <Grid item>
                 <Typography>

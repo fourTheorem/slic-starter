@@ -8,9 +8,11 @@ import Home from './Home'
 import Loading from './Loading'
 import Login from './Login'
 import Signup from './Signup'
+import ConfirmForgotPassword from './ConfirmForgotPassword'
 
 import { checkAuthentication } from '../actions/auth'
 import ConfirmSignup from './ConfirmSignup'
+import ForgotPassword from './ForgotPassword'
 
 class Root extends Component {
   componentDidMount () {
@@ -29,6 +31,8 @@ class Root extends Component {
         <Route exact path="/login" component={Login} />
         <Route exact path="/signup" component={Signup} />
         <Route exact path="/confirm-signup" component={ConfirmSignup} />
+        <Route path="/confirm-forgot-password" component={ConfirmForgotPassword} />
+        <Route path="/forgot-password" component={ForgotPassword} />
         <Route path="/" component={Home} />
       </Switch>
     )

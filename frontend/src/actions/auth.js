@@ -101,6 +101,34 @@ export function resendConfirmationCode (email) {
   }
 }
 
+export const RESET_CODE_REQUEST = 'RESET_CODE_REQUEST'
+export const SEND_RESET_CODE_SUCCESS = 'SEND_RESET_CODE_SUCCESS'
+export const SEND_RESET_CODE_FAILURE = 'SEND_RESET_CODE_FAILURE'
+export function forgotPassword (email) {
+  return function (dispatch) {
+    dispatch({ type: RESET_CODE_REQUEST })
+    Auth.forgotPassword(email).then(
+      () => dispatch({ type: SEND_RESET_CODE_SUCCESS, payload: { email } }),
+      (err) =>
+        dispatch({ type: SEND_RESET_CODE_FAILURE, error: translateCognitoError(err) })
+    )
+  }
+}
+
+export const NEW_PASSWORD_REGUEST = 'NEW_PASSWORD_REGUEST'
+export const NEW_PASSWORD_SUCCESS = 'NEW_PASSWORD_SUCCESS'
+export const NEW_PASSWORD_FAILURE = 'NEW_PASSWORD_FAILURE'
+export function forgotPasswordSubmit (email, code, newPassword) {
+  return function (dispatch) {
+    dispatch({ type: NEW_PASSWORD_REGUEST })
+    Auth.forgotPasswordSubmit(email, code, newPassword).then(
+      () => dispatch({ type: NEW_PASSWORD_SUCCESS, payload: { email } }),
+      (err) =>
+        dispatch({ type: NEW_PASSWORD_FAILURE, error: translateCognitoError(err) })
+    )
+  }
+}
+
 function translateCognitoError (cognitoErr) {
   let errorId
 
