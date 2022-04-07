@@ -19,10 +19,12 @@ const style = (theme) => ({
     justifyContent: 'center'
   },
   paper: {
-    alignItems: 'center',
     minWidth: '340px',
-    whiteSpace: 'nowrap',
+    maxWidth: '500px',
     padding: theme.spacing.unit * 2
+  },
+  title: {
+    whiteSpace: 'nowrap'
   },
   input: {
     width: '100%'
@@ -78,13 +80,12 @@ class ForgotPassword extends Component {
               spacing={8}
             >
               <Grid item>
-                <Typography variant="h3">Password Reset</Typography>
+                <Typography variant="h3" className={classes.title}>Password Reset</Typography>
               </Grid>
               <Grid item>
-              <Grid item>
-                <Typography variant="string">NOTE: When you reset your password, we will send a code to the email address you provide. Once you enter this code, you will be able to select a new password.</Typography>
+                <Typography>NOTE: When you reset your password, we will send a code to the email address you provide. Once you enter this code, you will be able to select a new password.</Typography>
               </Grid>
-              <Grid item></Grid>
+              <Grid item>
                 <TextField
                   className={classes.input}
                   id="email"
