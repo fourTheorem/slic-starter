@@ -24,7 +24,7 @@ domainConfig:
 slicWatch:
   # To create dashboards alarms for all stacks, configure
   # an SNS Topic that is accessible from your target account(s).
-  topicArn: ${ssm:/${self:provider.stage}/slicWatch/topicArn}
+  topicArn: ''
   # If you are not sure what to do, or don't want the additional
   # cost of alarms and dashboards, set 'enabled' to false
-  enabled: true
+  enabled: false

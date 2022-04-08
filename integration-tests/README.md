@@ -6,7 +6,7 @@ This package contains API integration tests. These tests exercise the external e
 
 ## Preparing Integration tests
 
-Ensure you have created a Mailosaur account as documented in the [README](../README.md). This allows the integratin tests to receive signup and verification emails. Once you have done that, set the following environment variables in your shell. The values can be retrieved from your mailosaur account.
+Ensure you have created a Mailosaur account as documented in the [README](../README.md). This allows the integration tests to receive signup and verification emails. Once you have done that, set the following environment variables in your shell. The values can be retrieved from your mailosaur account.
 
 ```
 export MAILOSAUR_API_KEY=<api_key_value>

@@ -132,6 +132,7 @@ SLIC Starter covers automated testing with:
 All tests can be run in local development mode as well as against a fully-deployed environment. The API and E2E tests are executed against a staging environment before deployment to production.
 
 For details on integration (API) tests, see the [README.md in integration-tests](./integration-tests/README.md)
+For details on end-to-end (E2E) tests, see the [README.md in e2e-tests](./e2e-tests/README.md)
 
 ### 3.9. Monitoring
 
