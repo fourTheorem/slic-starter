@@ -33,6 +33,7 @@ export class CrossAccountStack extends Stack {
     })
     const services = [
       'cloudformation',
+      'cloudwatch',
       'apigateway',
       'lambda',
       'cloudfront',
