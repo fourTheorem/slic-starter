@@ -91,7 +91,7 @@ class ConfirmForgotPassword extends Component {
 
               <Grid item>
                 <TextField
-                  id="confirmationCode"
+                  id="confirmation-code"
                   label="Confirmation Code"
                   onChange={this.handleChange}
                   className={classes.input}
@@ -101,7 +101,7 @@ class ConfirmForgotPassword extends Component {
               <Grid item>
                 <TextField
                   className={classes.input}
-                  id="newPassword"
+                  id="new-password"
                   label="New Password"
                   type="password"
                   autoComplete="new-password"

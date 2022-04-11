@@ -96,6 +96,7 @@ class ForgotPassword extends Component {
               {errorItem}
               <Grid item>
                 <Button
+                  id="reset-password-btn"
                   variant="contained"
                   color="secondary"
                   type="submit"

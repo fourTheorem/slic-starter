@@ -13,7 +13,7 @@ test('Login tests', async t => {
   const baseUrl = await config.getBaseUrl()
   await t.navigateTo(baseUrl)
   await waitForReact()
-  await t.click(Selector('a'))
+  await t.click(Selector('#signup-link'))
   await t.typeText(page.emailInput, email)
   await t.typeText(page.passInput, 'Slic123@')
 

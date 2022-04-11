@@ -132,12 +132,12 @@ class Login extends Component {
               </Grid>
               <Grid item>
                 <Typography>
-                  Forgot password? <Link to="/forgot-password">Click here</Link>
+                  Forgot password? <Link id="forgot-password-link" to="/forgot-password">Click here</Link>
                 </Typography>
               </Grid>
               <Grid item>
                 <Typography>
-                  Not registered? <Link to="/signup">Sign up here</Link>
+                  Not registered? <Link id="signup-link" to="/signup">Sign up here</Link>
                 </Typography>
               </Grid>
             </Grid>
