@@ -9,7 +9,7 @@ const email = config.getEmail()
 
 fixture('Login test')
 
-test('Login tests', async t => {
+test('Sign up before login', async t => {
   const baseUrl = await config.getBaseUrl()
   await t.navigateTo(baseUrl)
   await waitForReact()
