@@ -113,10 +113,9 @@ SLIC Starter has a front-end web application. It uses React, Redux and [Material
 Getting continuous integration and deployment (CI/CD) right is one of the most important things in your microservice or serverless project. Having a good foundation here allows you to keep making changes fast. It's also fairly difficult to get right. SLIC Starter has made key choices to help you here.
 
 1. SLIC Starter uses multiple AWS accounts for secure isolation of environments. If you are getting started, or just restricted to one account for any reason, you can always use the same account for everything. In the ideal case, you will have a separate account for development, staging, and production. ![Multiple accounts diagram ](./multiple-accounts.png)
-1. CodePipeline and CodeBuild are used, so the CI/CD process is deployed using Infrastructure-as-Code, just like the serverless application itself. For this, we use the [CDK](https://github.com/awslabs/aws-cdk).
+1. CodePipeline and CodeBuild are used, so the CI/CD process is deployed using Infrastructure-as-Code, just like the application itself. For this, we use the [CDK](https://github.com/awslabs/aws-cdk).
 1. The process dynamically creates a CodePipeline pipeline for each target environment, and CodeBuild projects for _each module_(service) in the application
 1. Integration (API) and end-to-end UI tests are run before deployment to production. A manual approval step before deployment to production is included too.
-1. The entire pipeline is started by a CodeBuild job. CodeBuild is used because it can monitor changes on any branch. This will enable feature branch deployments in the future. This _source_ CodeBuild job also runs a change detection script to determine which services need to be built and deployed. Unchanged services are skipped throughout the deployment process.
 1. The CICD stack also include the Pipeline Dashboard application from the [Serverless Application Repository](https://serverlessrepo.aws.amazon.com/applications/arn:aws:serverlessrepo:us-east-1:923120264911:applications~pipeline-dashboard), giving you an automatic CloudWatch dashboard of the performance of all pipelines. (Credit to @heitorlessa for the idea and helping to get this working).
 
 ![CI/CD Architecture](./cicd-architecture.png)
@@ -134,9 +133,13 @@ All tests can be run in local development mode as well as against a fully-deploy
 For details on integration (API) tests, see the [README.md in integration-tests](./integration-tests/README.md)
 For details on end-to-end (E2E) tests, see the [README.md in e2e-tests](./e2e-tests/README.md)
 
-### 3.9. Monitoring
+### 3.9. Observability
 
-X-Ray is enabled for all services and centralized logging is supported. This is pretty basic in terms of monitoring support so much more is planned and [contributions](./CONTRIBUTING.md) are welcomed.
+SLIC Starter provides a basis for observability including:
+
+- Alarms and Dashboards are provided using the [SLIC Watch serverless plugin](https://github.com/fourTheorem/slic-watch).
+- [X-Ray](https://docs.aws.amazon.com/xray/latest/devguide/xray-concepts.html) is enabled for all services.
+- CloudWatch Logs is used for all log output and can be queried with [CloudWatch Logs Insights](https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/AnalyzingLogData.html)
 
 ### 3.10. Secret Management
 
@@ -159,18 +162,18 @@ This section covers a full deployment using multiple accounts with domain names 
 To set up deployment to your own accounts, first run through these steps.
 
 1. Fork the repository into your own account or organization on GitHub. If you don't use GitHub, you will have to tweak the source project in the CICD module ([source-project.ts](./cicd/lib/project/source-project.ts))
-2. Enable CodeBuild to access your GitHub repo. The most reliable way to do this is to use a Personal Access Token with access to create webhooks on your repository. The guide from AWS on how to do this is [here](https://docs.aws.amazon.com/codebuild/latest/userguide/sample-access-tokens.html).
-3. Decide when DNS name you will use for your application. If you need to register one, the best place to do this is probably in your production account using [Amazon Route 53](https://aws.amazon.com/route53/).
-4. Edit `app.yml`. This is an important step, so ensure you change all values to suit your needs.
+2. Decide when DNS name you will use for your application. If you need to register one, the best place to do this is probably in your production account using [Amazon Route 53](https://aws.amazon.com/route53/). If you don't want to use a domain for the frontend application and API, you can follow the simpler [QUICK_START.md](./QUICK_START.md) guide.
+3. Edit `app.yml`. This is an important step, so ensure you change all values to suit your needs.
  * Update to point to your correct repository (Change `owner` and `name` under `sourceRepo`)
  * Edit `domainConfig` to point to your domain. Use a domain you own so you can update DNS entries to point to your deployed environment. When the deployment process runs, the domain owner will be sent an email to verify ownership before the deployment completes.
  * Disable SLIC Watch, unless you need alarms and dashboards out of the box. If you aren't sure what to do, or don't want to incur the cost of additional dashboards and alarms, disable it. If you want nice alarms and dashboards, set up an SNS Topic as your alarms destination. Ensure that this topic it is accessible from all accounts by updating the SNS Topic Access Policy.
-5. (Optional). Set up GitHub authentication for your repo. Create a GitHub Personal Access Token and add it as an secret with the name `GitHubPersonalAccessToken` in Secrets Manager _in the CICD account_. See [this post](https://medium.com/@eoins/securing-github-tokens-in-a-serverless-codepipeline-dc3a24ddc356) for more detail on this approach.
-6. Create a [Mailosaur](https://mailosaur.com) account. This is required for integration and end-to-end tests to verify that the application is sending emails as expected. Take the Mailosaur server ID and API key and add them in your CICD account to the Parameter Store as `SecretString` values with the following names
+4. Allow the pipeline to access your GitHub repository.  Within GitHub, go to your Settings and then Developer Settings. Follow the link to "Personal Access Token" and create a token with  admin:repo_hook and repo access. Copy the token and store it in AWS Secrets Manager within your CICD account under the name, `github-token`.  (For more information on generating this token, see
+https://docs.aws.amazon.com/codepipeline/latest/userguide/appendix-github-oauth.html#GitHub-create-personal-token-CLI)
+5. Create a [Mailosaur](https://mailosaur.com) account. This is required for integration and end-to-end tests to verify that the application is sending emails as expected. Take the Mailosaur server ID and API key and add them in your CICD account to the Parameter Store as `SecretString` values with the following names
 -`/test/mailosaur/serverId`
 - `/test/mailosaur/apiKey`
   These are picked up by the integration and end-to-end test CodeBuild projects.
-7. Create a secret string in System Manager Parameter store for each target account (e.g, stg or prod) with a value used to sign and verify verification codes - the parameter name should be `/STAGE/sharing-service/code-secret` where STAGE is the stage you are deploying to (dev, stg or prod).
+6. Create a secret string in System Manager Parameter store for each target account (e.g, stg or prod) with a value used to sign and verify verification codes - the parameter name should be `/STAGE/sharing-service/code-secret` where STAGE is the stage you are deploying to (dev, stg or prod). You can choose any secure password for this, since it's a shared secret. The important thing is that it is not stored in plaintext anywhere.
 8. Set up the CICD pipeline according to [cicd/README.md](./cicd/README.md)
 10. Trigger your pipeline by committing your changes to the repository
 
@@ -186,12 +189,11 @@ Once you get all services in staging successfully deployed, you might find that 
 Once you have set up the required DNS configuration and it has propagated, your front end staging application should be available at `https://stg.YOUR-DOMAIN.TLD` and you can click _Retry_ on the test phase of the pipeline!
 
 ### 6.1. Set up your domain for email
+For the `email-service` to send emails, you must choose a 'From:' address and set it in parameter store. The parameter name is `/<STAGE>/email-service/from-address`. `<STAGE>` should be replaced with `stg` or `prod` as appropriate.
 
-For the `email-service` to send emails, you must choose a 'From:' address and set it in parameter store. The paramter name is `/<STAGE>/email-service/from-address`. `<STAGE>` should be replaced with `stg` or `prod` as appropriate.
+In order for the email service to send requests to SES, either the email address or the domain needs to be verified. This is not automatically done as part of the SLIC Starter deployment.
 
-order for the email service to send requests to SES, either the email address or the domain needs to be verified. This is not automatically done as part of the SLIC Starter deployment.
-
-If you are using SLIC with a domain configuration, the verification process is quite straightforward because we use Route 53 for our DNS records. See [here](https://docs.aws.amazon.com/ses/latest/DeveloperGuide/receiving-email-getting-started-verify.html) for documentation on how to achieve domain verification throught the AWS Management Console.
+If you are using SLIC with a domain configuration, the verification process is quite straightforward because we use Route 53 for our DNS records. See [here](https://docs.aws.amazon.com/ses/latest/DeveloperGuide/receiving-email-getting-started-verify.html) for documentation on how to achieve domain verification through the AWS Management Console.
 
 By default, SES will require validation of each email address to which emails are being sent. To avoid this, you can [request a sending limit increase](https://docs.aws.amazon.com/ses/latest/DeveloperGuide/request-production-access.html), which will remove your account/region from the SES Sandbox.
 
