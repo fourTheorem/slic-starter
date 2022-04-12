@@ -5,6 +5,8 @@ SCRIPTS_DIR=$(realpath $(dirname $0))
 
 sls deploy --stage $STAGE --region ${TARGET_REGION}
 
-aws cloudfront list-distributions --query "DistributionList.Items[*].{id:Id,origin:Origins.Items[0].Id}[?origin=='S3-BUCKET_NAME'].id" --output text
+export DISTRIBUTION_ID=$(aws cloudfront list-distributions --query 'DistributionList.Items[0].Id' --output text)
+export INVALIDATION_ID=$(aws cloudfront create-invalidation --distribution-id=$DISTRIBUTION_ID --paths '/*' --query 'Invalidation.Id' --output text)
+aws cloudfront wait invalidation-completed --distribution-id=$DISTRIBUTION_ID --id=$INVALIDATION_ID --no-cli-pager
 
 echo frontend deploy.sh
