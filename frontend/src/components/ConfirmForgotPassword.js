@@ -40,7 +40,18 @@ class ConfirmForgotPassword extends Component {
 
   validate = () => this.state.confirmationCode.length > 5 && this.state.newPassword.length > 5;
 
-  handleChange = ({ target: { id, value } }) => this.setState({ [id]: value });
+  handleChange = ({ target: { id, value } }) => {
+    switch (id) {
+      case 'confirmation-code':
+        this.setState({ confirmationCode: value })
+        break
+      case 'new-password':
+        this.setState({ newPassword: value })
+        break
+      default:
+        this.setState({ [id]: value })
+    }
+  }
 
   resendCodeConfirmation = (event) => {
     event.preventDefault()
