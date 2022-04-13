@@ -39,9 +39,9 @@ test('User can Reset Password after signing up', async t => {
   const getLocation = ClientFunction(() => document.location.href)
   await t.expect(getLocation()).contains('/confirm-forgot-password', { timeout: 5000 })
   const confirmationInput = Selector('#confirmation-code')
-  await t.typeText(Selector('#new-password'), 'Slic1234@')
 
   await t.typeText(confirmationInput, confirmationCode)
+  await t.typeText(Selector('#new-password'), 'Slic1234@')
   await t.click(Selector('#confirm-password-btn'))
   await t.expect(getLocation()).contains('/login')
 })
