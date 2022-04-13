@@ -16,7 +16,7 @@ const rolePromise = config.getBaseUrl().then((baseUrl) => Role(
   async t => {
     await waitForReact()
     await t
-      .click(Selector('a'))
+      .click(Selector('#signup-link'))
       .typeText(page.emailInput, user.email)
       .typeText(page.passInput, user.password)
       .click('#signup-btn')
