@@ -44,7 +44,15 @@ class ConfirmSignup extends Component {
 
   validate = () => this.state.confirmationCode.length > 5;
 
-  handleChange = ({ target: { id, value } }) => this.setState({ [id]: value });
+  handleChange = ({ target: { id, value } }) => {
+    switch (id) {
+      case 'confirmation-code':
+        this.setState({ confirmationCode: value })
+        break
+      default:
+        this.setState({ [id]: value })
+    }
+  }
 
   resendConfirmation = (event) => {
     event.preventDefault()
@@ -114,7 +122,7 @@ class ConfirmSignup extends Component {
 
               <Grid item>
                 <TextField
-                  id="confirmationCode"
+                  id="confirmation-code"
                   label="Confirmation Code"
                   onChange={this.handleChange}
                   className={classes.input}

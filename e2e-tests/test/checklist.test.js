@@ -23,7 +23,7 @@ const rolePromise = config.getBaseUrl().then((baseUrl) => Role(
 
     const code = await config.getCode(user.email)
     await t
-      .typeText(Selector('#confirmationCode'), code)
+      .typeText(Selector('#confirmation-code'), code)
       .click(Selector('#confirm-signup-btn'))
 
     await t

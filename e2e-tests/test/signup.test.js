@@ -28,7 +28,7 @@ test('User can sign up for a new account', async t => {
 
   const getLocation = ClientFunction(() => document.location.href)
   await t.expect(getLocation()).contains('/confirm-signup', { timeout: 5000 })
-  const confirmationInput = Selector('#confirmationCode')
+  const confirmationInput = Selector('#confirmation-code')
 
   await t.typeText(confirmationInput, confirmationCode)
   await t.expect(confirmationInput.value).eql(confirmationCode)

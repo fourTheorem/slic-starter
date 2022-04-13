@@ -20,7 +20,7 @@ test('Reset Password tests', async t => {
   await t.click(Selector('#signup-btn', { timeout: 1000 }))
 
   const code = await config.getCode(email)
-  await t.typeText(Selector('#confirmationCode'), code)
+  await t.typeText(Selector('#confirmation-code'), code)
   await t.click(Selector('#confirm-signup-btn'))
 })
 
