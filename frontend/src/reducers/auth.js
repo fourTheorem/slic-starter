@@ -14,7 +14,13 @@ import {
   RESEND_CODE_REQUEST,
   RESEND_CODE_SUCCESS,
   SET_PRE_AUTHENTICATED_PATH,
-  RESEND_CODE_FAILURE
+  RESEND_CODE_FAILURE,
+  SEND_RESET_CODE_REQUEST,
+  SEND_RESET_CODE_SUCCESS,
+  SEND_RESET_CODE_FAILURE,
+  NEW_PASSWORD_REGUEST,
+  NEW_PASSWORD_SUCCESS,
+  NEW_PASSWORD_FAILURE
 } from '../actions/auth'
 import * as errors from '../errors'
 
@@ -126,7 +132,8 @@ const reducer = (state = defaultState, { type, meta, payload, error }) => {
         ...state,
         resendingCode: false,
         resendError: null,
-        codeSent: true
+        codeSent: true,
+        email: payload.email
       }
 
     case RESEND_CODE_FAILURE:
@@ -135,6 +142,56 @@ const reducer = (state = defaultState, { type, meta, payload, error }) => {
         resendingCode: false,
         resendError: error,
         codeSent: false
+      }
+
+    case SEND_RESET_CODE_REQUEST:
+      return {
+        ...state,
+        sendingResetCode: true,
+        resetCodeError: null,
+        resetCodeSent: false
+      }
+
+    case SEND_RESET_CODE_SUCCESS:
+      return {
+        ...state,
+        sendingResetCode: false,
+        resetCodeError: null,
+        resetCodeSent: true,
+        email: payload.email
+      }
+
+    case SEND_RESET_CODE_FAILURE:
+      return {
+        ...state,
+        sendingResetCode: false,
+        resetCodeError: error,
+        resetCodeSent: false
+      }
+
+    case NEW_PASSWORD_REGUEST:
+      return {
+        ...state,
+        sendingNewPassword: true,
+        newPasswordError: null,
+        newPasswordSent: false
+      }
+
+    case NEW_PASSWORD_SUCCESS:
+      return {
+        ...state,
+        sendingNewPassword: false,
+        newPasswordError: null,
+        newPasswordSent: true,
+        email: payload.email
+      }
+
+    case NEW_PASSWORD_FAILURE:
+      return {
+        ...state,
+        sendingNewPassword: false,
+        newPasswordError: error,
+        newPasswordSent: false
       }
 
     default:

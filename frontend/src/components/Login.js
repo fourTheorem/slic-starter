@@ -19,7 +19,7 @@ const styles = (theme) => ({
     justifyContent: 'center'
   },
   paper: {
-    minWidth: '300px',
+    minWidth: '340px',
     padding: theme.spacing.unit * 2
   },
   input: {
@@ -63,21 +63,21 @@ class Login extends Component {
     const errorItem =
       !loggingIn && loginError
         ? (
-        <Grid item>
-          <ErrorMessage messageId={loginError.id} />
-        </Grid>
+          <Grid item>
+            <ErrorMessage messageId={loginError.id} />
+          </Grid>
           )
         : null
 
     const signedIn = authenticated
       ? (
-      <Redirect to={preAuthenticatedPath || '/'} />
+        <Redirect to={preAuthenticatedPath || '/'} />
         )
       : null
 
     const unconfirmed = userUnconfirmed
       ? (
-      <Redirect to="/confirm-signup" />
+        <Redirect to="/confirm-signup" />
         )
       : null
 
@@ -132,7 +132,12 @@ class Login extends Component {
               </Grid>
               <Grid item>
                 <Typography>
-                  Not registered? <Link to="/signup">Sign up here</Link>
+                  Forgot password? <Link id="forgot-password-link" to="/forgot-password">Click here</Link>
+                </Typography>
+              </Grid>
+              <Grid item>
+                <Typography>
+                  Not registered? <Link id="signup-link" to="/signup">Sign up here</Link>
                 </Typography>
               </Grid>
             </Grid>
