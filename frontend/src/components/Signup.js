@@ -39,7 +39,9 @@ class Signup extends Component {
   };
 
   validate = () =>
-    this.state.email.length > 0 && this.state.password.length > 5;
+    this.state.email.length > 0 && <input type={this.state.password}
+    pattern="(?=.*\d)(?=.*[a-z])(?=.*[^$*.[]{}()?!@#%/\,><':;|_~`=+-])(?=.*[A-Z]).{6,}"
+    title="Must contain at least one number and one lowercase and uppercase letter and at least a special character, and at least 6 or more characters" required></input>;
 
   handleChange = ({ target: { id, value } }) => this.setState({ [id]: value });
 
@@ -55,11 +57,11 @@ class Signup extends Component {
 
     const errorItem = signupError
       ? (
-      <Grid item>
-        <Typography className={classes.error}>
-          <ErrorMessage messageId={signupError.id} />
-        </Typography>
-      </Grid>
+        <Grid item>
+          <Typography className={classes.error}>
+            <ErrorMessage messageId={signupError.id} />
+          </Typography>
+        </Grid>
         )
       : null
 

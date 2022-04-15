@@ -38,7 +38,9 @@ class ConfirmForgotPassword extends Component {
     newPassword: ''
   };
 
-  validate = () => this.state.confirmationCode.length > 5 && this.state.newPassword.length > 5;
+  validate = () => this.state.confirmationCode.length > 5 && <input type={this.state.newPassword}
+  pattern="(?=.*\d)(?=.*[a-z])(?=.*[^$*.[]{}()?!@#%/\,><':;|_~`=+-])(?=.*[A-Z]).{6,}"
+  title="Must contain at least one number and one lowercase and uppercase letter and at least a special character, and at least 6 or more characters" required></input>;
 
   handleChange = ({ target: { id, value } }) => {
     switch (id) {
