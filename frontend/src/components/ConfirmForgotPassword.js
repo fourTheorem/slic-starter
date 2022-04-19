@@ -38,7 +38,7 @@ class ConfirmForgotPassword extends Component {
     newPassword: ''
   };
 
-  validate = () => this.state.confirmationCode.length > 5 && this.state.newPassword.length > 5;
+  validate = () => this.state.confirmationCode.length > 5;
 
   handleChange = ({ target: { id, value } }) => {
     switch (id) {
@@ -115,6 +115,7 @@ class ConfirmForgotPassword extends Component {
                   id="new-password"
                   label="New Password"
                   type="password"
+                  pattern="(?=.*\d)(?=.*[^$*.[]{}()?!@#%/\,><':;|_~`=+-])(?=.*[a-z])(?=.*[A-Z]).{6,}"
                   autoComplete="new-password"
                   onChange={this.handleChange}
                 />

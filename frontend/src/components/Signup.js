@@ -39,7 +39,7 @@ class Signup extends Component {
   };
 
   validate = () =>
-    this.state.email.length > 0 && this.state.password.length > 5;
+    this.state.email.length > 0 ;
 
   handleChange = ({ target: { id, value } }) => this.setState({ [id]: value });
 
@@ -55,11 +55,11 @@ class Signup extends Component {
 
     const errorItem = signupError
       ? (
-      <Grid item>
-        <Typography className={classes.error}>
-          <ErrorMessage messageId={signupError.id} />
-        </Typography>
-      </Grid>
+        <Grid item>
+          <Typography className={classes.error}>
+            <ErrorMessage messageId={signupError.id} />
+          </Typography>
+        </Grid>
         )
       : null
 
@@ -95,6 +95,7 @@ class Signup extends Component {
                   id="password"
                   label="Password"
                   type="password"
+                  pattern="(?=.*\d)(?=.*[^$*.[]{}()?!@#%/\,><':;|_~`=+-])(?=.*[a-z])(?=.*[A-Z]).{6,}"
                   autoComplete="new-password"
                   onChange={this.handleChange}
                 />
