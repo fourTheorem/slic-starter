@@ -33,8 +33,16 @@ const styles = (theme) => ({
   button: {
     width: '100%',
     marginTop: theme.spacing.unit
+  },
+  helperText: {
+    maxWidth: '275px'
   }
 })
+
+/**
+ * TODO: Update this regular expression to check _exactly_ the password policy enforced by the Cognito User Pool
+ */
+const PASSWORD_REGEX = /\w{12,}/
 
 class Signup extends Component {
   state = {
@@ -42,8 +50,31 @@ class Signup extends Component {
     password: ''
   };
 
-  validate = () =>
-    this.state.email.length > 0 ;
+  validate = () => {
+    const emailValid = this.state.email.length > 3
+    const passwordValid = PASSWORD_REGEX.test(this.state.password)
+
+    const result = {
+      valid: emailValid && passwordValid
+    }
+
+    // Only provide field-specific errors if a value has been entered.
+    // We do not want to show any error if the user hasn't started typing yet
+    result.email = {
+      showError: !emailValid && this.state.email.length > 0
+    }
+    result.password = {
+      showError: !passwordValid && this.state.password.length > 0
+    }
+    if (result.email.showError) {
+      result.email.message = 'Email is required'
+    }
+    if (result.password.showError) {
+      result.password.message = 'Password must contain at least one number, a special character, one lowercase and uppercase letter, and at least 6 characters'
+    }
+
+    return result
+  }
 
   handleChange = ({ target: { id, value } }) => this.setState({ [id]: value });
 
@@ -57,6 +88,10 @@ class Signup extends Component {
 
     const { signingUp, signupError, signedUp, userConfirmed } = this.props.auth
 
+    // Perform client-side validation
+    const validation = this.validate()
+
+    // Render component for server-side errors if present
     const errorItem = signupError
       ? (
         <Grid item>
@@ -91,6 +126,13 @@ class Signup extends Component {
                   label="Email"
                   autoComplete="username"
                   onChange={this.handleChange}
+                  error={validation.email.showError}
+                  helperText={validation.email.message}
+                  FormHelperTextProps={{
+                    classes: {
+                      root: classes.helperText
+                    }
+                  }}
                 />
               </Grid>
               <Grid item>
@@ -99,10 +141,15 @@ class Signup extends Component {
                   id="password"
                   label="Password"
                   type="password"
-                  pattern="[(?=.*\d)(?=.*[^$*.[]{}()?!@#%/[\],><':;|_~`=+-])(?=.*[a-z])(?=.*[A-Z]).{6,}]"
-                  title="Must contain at least one number and a special character, one lowercase and uppercase letter, and at least 6 or more characters"
                   autoComplete="new-password"
                   onChange={this.handleChange}
+                  error={validation.password.showError}
+                  helperText={validation.password.message}
+                  FormHelperTextProps={{
+                    classes: {
+                      root: classes.helperText
+                    }
+                  }}
                 />
               </Grid>
               {errorItem}
@@ -113,7 +160,7 @@ class Signup extends Component {
                   color="secondary"
                   type="submit"
                   className={classes.button}
-                  disabled={signingUp || !this.validate()}
+                  disabled={signingUp || !validation.valid}
                 >
                   {signingUp ? 'Signing up...' : 'Sign Up'}
                 </Button>
