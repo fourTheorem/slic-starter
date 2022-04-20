@@ -21,7 +21,11 @@ const styles = (theme) => ({
   },
   paper: {
     minWidth: '340px',
+    maxWidth: '500px',
     padding: theme.spacing.unit * 2
+  },
+  title: {
+    whiteSpace: 'nowrap'
   },
   input: {
     width: '100%'
@@ -78,7 +82,7 @@ class Signup extends Component {
               spacing={8}
             >
               <Grid item>
-                <Typography variant="h3">Sign Up</Typography>
+                <Typography variant="h3" className={classes.title}>Sign Up</Typography>
               </Grid>
               <Grid item>
                 <TextField
@@ -95,7 +99,7 @@ class Signup extends Component {
                   id="password"
                   label="Password"
                   type="password"
-                  pattern="/(?=.*\d)(?=.*[^$*.[]{}()?!@#%/\,><':;|_~`=+-])(?=.*[a-z])(?=.*[A-Z]).{6,}/"
+                  pattern="[(?=.*\d)(?=.*[^$*.[]{}()?!@#%/[\],><':;|_~`=+-])(?=.*[a-z])(?=.*[A-Z]).{6,}]"
                   title="Must contain at least one number and a special character, one lowercase and uppercase letter, and at least 6 or more characters"
                   autoComplete="new-password"
                   onChange={this.handleChange}

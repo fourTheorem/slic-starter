@@ -73,7 +73,9 @@ class ConfirmForgotPassword extends Component {
     const errorItem = newPasswordError
       ? (
         <Grid item>
-          <ErrorMessage messageId={newPasswordError.id} />
+          <Typography className={classes.error}>
+            <ErrorMessage messageId={newPasswordError.id} />
+          </Typography>
         </Grid>
         )
       : null
@@ -115,7 +117,7 @@ class ConfirmForgotPassword extends Component {
                   id="new-password"
                   label="New Password"
                   type="password"
-                  pattern="/(?=.*\d)(?=.*[^$*.[]{}()?!@#%/\,><':;|_~`=+-])(?=.*[a-z])(?=.*[A-Z]).{6,}/"
+                  pattern="[(?=.*\d)(?=.*[^$*.[]{}()?!@#%/[\],><':;|_~`=+-])(?=.*[a-z])(?=.*[A-Z]).{6,}]"
                   title="Must contain at least one number and a special character, one lowercase and uppercase letter, and at least 6 or more characters"
                   autoComplete="new-password"
                   onChange={this.handleChange}
