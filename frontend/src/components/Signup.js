@@ -42,7 +42,7 @@ const styles = (theme) => ({
 /**
  * TODO: Update this regular expression to check _exactly_ the password policy enforced by the Cognito User Pool
  */
-const PASSWORD_REGEX = /\w{12,}/
+const PASSWORD_REGEX = /^(?=.*\d)(?=.*[\^$*.\[\]{}\(\)?\-\"!@#%&\/,><\':;|_~``=+-])(?=.*[a-z])(?=.*[A-Z]).{6,99}$/
 
 class Signup extends Component {
   state = {
