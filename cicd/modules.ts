@@ -1,21 +1,26 @@
-const { nsDomain } = require('./config')
+import config from './config'
+const { nsDomain } = config
 
 export interface Modules {
-  moduleNames: string[]
+  moduleOrder: string[][]
 }
 
-const moduleNames = [
-  'frontend',
-  'checklist-service',
-  'user-service',
-  'email-service',
-  'welcome-service',
-  'sharing-service',
-  ...(nsDomain ? ['certs', 'api-service'] : [])
+
+const nsModules =  [['certs'], ['api-service']] // Only used in domain and HTTPS cert is required
+
+const standardModules = [
+  ['user-service'],
+  ['checklist-service', 'email-service', 'welcome-service', 'sharing-service'],
+  ['frontend']
+]
+
+const moduleOrder = [
+  ...(nsDomain ? nsModules : []),
+  ...standardModules
 ]
 
 const modules: Modules = {
-  moduleNames
+  moduleOrder
 }
 
 export default modules

@@ -15,6 +15,7 @@
 .DS_Store
 .env.development*
 .env.test.local
+.env.local
 .env.production*
 
 npm-debug.log*

@@ -13,7 +13,7 @@ domainConfig:
   # Set 'siteBucketPrefix' if you are not using custom domains
   # It will be used, along with the stage value as a bucket name
   # for frontend assets so it should be unique.
-  # siteBucketPrefix: define-this-if-not-using-nsDomain,
+  # siteBucketPrefix: define-this-if-not-using-nsDomain
 
   domainPrefixes:
     dev: dev.

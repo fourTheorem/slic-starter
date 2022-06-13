@@ -13,7 +13,7 @@ const testUser = {
 
 const received = {}
 
-test('handleNewChecklist sends an email message', t => {
+test('handleNewChecklist sends an email message', async t => {
   const event = {
     detail: {
       userId,
@@ -38,16 +38,11 @@ test('handleNewChecklist sends an email message', t => {
     }
   )
 
-  checklistHandler.handleNewChecklist(event, {}, err => {
-    if (err) {
-      t.fail(err)
-    } else {
-      t.match(received.sendEmailArgs[0], {
-        to: testUser.email,
-        subject: 'Your SLIC List'
-      })
-      t.ok(received.sendEmailArgs[0].body)
-      t.end()
-    }
+  await checklistHandler.handleNewChecklist(event, {})
+  t.match(received.sendEmailArgs[0], {
+    to: testUser.email,
+    subject: 'Your SLIC List'
   })
+  t.ok(received.sendEmailArgs[0].body)
+  t.end()
 })

@@ -9,11 +9,9 @@ const { userId } = require('../../fixtures')
 process.env.EMAIL_QUEUE_NAME = 'test-email-queue'
 process.env.SLIC_STAGE = 'dev'
 process.env.SLIC_NS_DOMAIN = 'localhost.localhost'
-process.env.CODE_SECRET = 'p@ssw0rd'
+const codeSecret = 'p@ssw0rd'
 
-const { createCode } = require('../../../lib/invitation')(
-  process.env.CODE_SECRET
-)
+const { createCode } = require('../../../lib/invitation')(codeSecret)
 
 const testUser = {
   userId,
@@ -53,7 +51,7 @@ test('An email is sent when a list is shared', async t => {
     listName
   }
 
-  await shareService.create(payload)
+  await shareService.create(payload, codeSecret)
   t.match(received.sendEmailParams[0].to, testUser.email)
   t.ok(received.sendEmailParams[0].subject)
   t.ok(received.sendEmailParams[0].body.indexOf(payload.listName) > -1)
@@ -69,7 +67,7 @@ test('An event is dispatched when a code is confirmed', async t => {
   const code = createCode(params)
 
   const collaboratorUserId = uuid.v4()
-  await shareService.confirm({ code, userId: collaboratorUserId })
+  await shareService.confirm({ code, userId: collaboratorUserId }, codeSecret)
   t.same(received.dispatchEventParams, [
     'COLLABORATOR_ACCEPTED_EVENT',
     {
@@ -84,7 +82,7 @@ test('An error is thrown when an invalid code is provided', async t => {
   const code = 'blah'
 
   try {
-    await shareService.confirm({ code, userId: uuid.v4() })
+    await shareService.confirm({ code, userId: uuid.v4() }, codeSecret)
     t.fail('Error excepted for invalid code')
   } catch (err) {
     t.equal(err.statusCode, 400)

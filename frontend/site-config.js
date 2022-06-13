@@ -18,7 +18,7 @@ module.exports = async ({ options, resolveVariable }) => {
   // The only way to look these up conveniently is to use Serverless Framework cross-region `cf` variables
   // This will fail to resolve if the deployment is not using custom domains, so we use JS to avoid them in that case.
   const siteCertificateArn = nsDomain && await resolveVariable(`cf(us-east-1):certs-${stage}.siteCert`)
-  const distributionViewerCertficate = siteCertificateArn
+  const distributionViewerCertificate = siteCertificateArn
     ? {
         AcmCertificateArn: siteCertificateArn,
         SslSupportMethod: 'sni-only'
@@ -31,7 +31,7 @@ module.exports = async ({ options, resolveVariable }) => {
   return {
     bucketName,
     siteDomainName,
-    distributionViewerCertficate,
+    distributionViewerCertificate,
     siteHostedZone
   }
 }

@@ -3,9 +3,7 @@ variablesResolutionMode: 20210326
 projectDir: ..
 
 plugins:
-  # Order of plugins is important for dynamodb-local
-  # Using fork of serverless-dynamodb-local due to https://github.com/99xt/dynamodb-localhost/issues/25
-  - '@dathuis/serverless-dynamodb-local'
+  - serverless-dynamodb-local
   - serverless-offline
   - serverless-prune-plugin
   - serverless-iam-roles-per-function
@@ -15,7 +13,7 @@ plugins:
 
 provider:
   name: aws
-  runtime: nodejs10.x
+  runtime: nodejs12.x
   stage: ${opt:stage, 'local'}
   region: ${opt:region}
   tracing:

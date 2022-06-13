@@ -14,7 +14,7 @@ const ses = awsXray.captureAWSClient(
   })
 )
 
-async function sendEmail (message) {
+async function sendEmail (message, context) {
   log.info({ message }, 'sendEmail')
 
   const { to, subject, body } = JSON.parse(message.Records[0].body)
@@ -35,7 +35,7 @@ async function sendEmail (message) {
         Data: subject
       }
     },
-    Source: process.env.EMAIL_FROM_ADDRESS
+    Source: context.emailFromAddress
   }
 
   const result = await ses.sendEmail(params).promise()
@@ -46,7 +46,7 @@ module.exports = middify(
   { sendEmail },
   {
     ssmParameters: {
-      EMAIL_FROM_ADDRESS: `/${process.env.SLIC_STAGE}/email-service/from-address`
+      emailFromAddress: `/${process.env.SLIC_STAGE}/email-service/from-address`
     }
   }
 )

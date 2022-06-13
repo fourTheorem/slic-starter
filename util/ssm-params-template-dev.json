@@ -1,0 +1,22 @@
+[
+  {
+    "name": "/test/mailosaur/serverId",
+    "value": "TODO",
+    "type": "SecureString"
+  },
+  {
+    "name": "/test/mailosaur/apiKey",
+    "value": "TODO",
+    "type": "SecureString"
+  },
+  {
+    "name": "/dev/email-service/from-address",
+    "value": "name@example.com",
+    "type": "String"
+  },
+  {
+    "name": "/dev/sharing-service/code-secret",
+    "value": "any-secure-random-string",
+    "type": "SecureString"
+  }
+]

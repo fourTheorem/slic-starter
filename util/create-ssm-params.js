@@ -19,7 +19,8 @@ Promise.all(
       .putParameter({
         Name: name,
         Type: type,
-        Value: value
+        Value: value,
+        Overwrite: true
       })
       .promise()
       .then(() => name)

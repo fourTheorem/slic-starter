@@ -7,30 +7,21 @@
   "scripts": {
     "build": "tsc",
     "watch": "tsc -w",
-    "cdk": "cdk",
-    "deploy": "npm run build && npm run cdk -- deploy",
-    "synth": "npm run build && npm run cdk -- synth"
+    "test": "jest",
+    "cdk": "cdk"
   },
   "devDependencies": {
-    "@aws-cdk/aws-codebuild": "^1.125.0",
-    "@aws-cdk/aws-codepipeline": "^1.125.0",
-    "@aws-cdk/aws-codepipeline-actions": "^1.125.0",
-    "@aws-cdk/aws-iam": "^1.125.0",
-    "@aws-cdk/aws-lambda": "^1.125.0",
-    "@aws-cdk/aws-s3": "^1.125.0",
-    "@aws-cdk/aws-sam": "^1.125.0",
-    "@aws-cdk/aws-secretsmanager": "^1.125.0",
-    "@aws-cdk/aws-ssm": "^1.125.0",
-    "@aws-cdk/aws-stepfunctions": "^1.125.0",
-    "@aws-cdk/core": "^1.125.0",
-    "@types/node": "^16.10.2",
-    "aws-cdk": "^1.125.0",
-    "aws-sdk": "^2.998.0",
-    "js-yaml": "^4.1.0",
-    "tsort": "0.0.1",
-    "typescript": "^4.4.3"
+    "@types/jest": "^26.0.10",
+    "@types/node": "10.17.27",
+    "aws-cdk": "^2.27.0",
+    "jest": "^26.4.2",
+    "ts-jest": "^26.2.0",
+    "ts-node": "^9.0.0",
+    "typescript": "~3.9.7"
   },
   "dependencies": {
-    "source-map-support": "^0.5.20"
+    "aws-cdk-lib": "^2.27.0",
+    "constructs": "^10.1.37",
+    "source-map-support": "^0.5.16"
   }
 }

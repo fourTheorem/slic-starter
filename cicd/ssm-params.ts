@@ -1,4 +1,5 @@
 export const Accounts = {
+  dev: '/shared/accounts/dev',
   stg: '/shared/accounts/stg',
   prod: '/shared/accounts/prod'
 }
