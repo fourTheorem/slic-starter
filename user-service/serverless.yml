@@ -23,6 +23,7 @@ provider:
   logs:
     restApi: true
   logRetentionInDays: 7
+  lambdaHashingVersion: 20201221
 
 custom:
   app: ${file(../app.yml)}
