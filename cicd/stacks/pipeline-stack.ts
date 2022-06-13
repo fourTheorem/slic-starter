@@ -5,6 +5,8 @@ import * as iam from 'aws-cdk-lib/aws-iam'
 import * as codeBuild from 'aws-cdk-lib/aws-codebuild'
 import * as codePipeline from 'aws-cdk-lib/aws-codepipeline'
 import * as codePipelineActions from 'aws-cdk-lib/aws-codepipeline-actions'
+import * as codeStarConnections from 'aws-cdk-lib/aws-codestarconnections'
+
 import * as sns from 'aws-cdk-lib/aws-sns'
 import * as s3 from 'aws-cdk-lib/aws-s3'
 
@@ -43,20 +45,29 @@ export class PipelineStack extends Stack {
       restartExecutionOnUpdate: true // Allow the pipeline to restart if it mutates during CDK deploy
     })
 
+    /*
+    Uncomment the following section and the manual approval topic property below to support CodePipeline notifications
+    The first time you deploy, this may fail as it takes up to 15 minutes for the service-linked role
+    to be created
     const topic = new sns.Topic(this, `${id}TopicArn`, {
       topicName: `${lastStage}PipelineNotifications`
     })
 
     pipeline.notifyOnExecutionStateChange(`${id}NotifyExecState`, topic)
+    */
+    const gitHubConnection = new codeStarConnections.CfnConnection(this, `${id}CodeStarConnection`, {
+      connectionName: `${lastStage}CodeStarConnection`,
+      providerType: 'GitHub'
+    })
 
     const sourceOutput = new codePipeline.Artifact('SourceOutput')
-    const sourceAction = new codePipelineActions.GitHubSourceAction({
-      actionName: 'GitHub',
+    const sourceAction = new codePipelineActions.CodeStarConnectionsSourceAction({
+      actionName: 'Source',
       owner: config.sourceRepoOwner,
       repo: config.sourceRepoName,
       branch: config.sourceBranch,
       output: sourceOutput,
-      oauthToken: SecretValue.secretsManager('github-token')
+      connectionArn: gitHubConnection.ref,
     })
 
     pipeline.addStage({
@@ -322,7 +333,7 @@ export class PipelineStack extends Stack {
           stageName: `${nextStage}Approve`,
           actions: [new codePipelineActions.ManualApprovalAction({
             actionName: `${nextStage}Approve`,
-            notificationTopic: topic
+            // notificationTopic: topic
           })]
         })
       }

@@ -166,16 +166,14 @@ To set up deployment to your own accounts, first run through these steps.
 3. Edit `app.yml`. This is an important step, so ensure you change all values to suit your needs.
  * Update to point to your correct repository (Change `owner` and `name` under `sourceRepo`)
  * Edit `domainConfig` to point to your domain. Use a domain you own so you can update DNS entries to point to your deployed environment. When the deployment process runs, the domain owner will be sent an email to verify ownership before the deployment completes.
- * Disable SLIC Watch, unless you need alarms and dashboards out of the box. If you aren't sure what to do, or don't want to incur the cost of additional dashboards and alarms, disable it. If you want nice alarms and dashboards, set up an SNS Topic as your alarms destination. Ensure that this topic it is accessible from all accounts by updating the SNS Topic Access Policy.
-4. Allow the pipeline to access your GitHub repository.  Within GitHub, go to your Settings and then Developer Settings. Follow the link to "Personal Access Token" and create a token with  admin:repo_hook and repo access. Copy the token and store it in AWS Secrets Manager within your CICD account under the name, `github-token`.  (For more information on generating this token, see
-https://docs.aws.amazon.com/codepipeline/latest/userguide/appendix-github-oauth.html#GitHub-create-personal-token-CLI)
-5. Create a [Mailosaur](https://mailosaur.com) account. This is required for integration and end-to-end tests to verify that the application is sending emails as expected. Take the Mailosaur server ID and API key and add them in your CICD account to the Parameter Store as `SecretString` values with the following names
--`/test/mailosaur/serverId`
+ * Disable [SLIC Watch](https://github.com/fourtheorem/slic-watch]) by setting `enabled` to `false` and the topic ARN to `''`, unless you need alarms and dashboards out of the box. If you aren't sure what to do, or don't want to incur the cost of additional dashboards and alarms, disable it. If you want nice alarms and dashboards, set up an SNS Topic as your alarms destination. Ensure that this topic it is accessible from all accounts by updating the SNS Topic Access Policy.
+4. Create a [Mailosaur](https://mailosaur.com) account. This is required for integration and end-to-end tests to verify that the application is sending emails as expected. Take the Mailosaur server ID and API key and add them in your CICD account to the Parameter Store as `SecretString` values with the following names
+- `/test/mailosaur/serverId`
 - `/test/mailosaur/apiKey`
   These are picked up by the integration and end-to-end test CodeBuild projects.
-6. Create a secret string in System Manager Parameter store for each target account (e.g, stg or prod) with a value used to sign and verify verification codes - the parameter name should be `/STAGE/sharing-service/code-secret` where STAGE is the stage you are deploying to (dev, stg or prod). You can choose any secure password for this, since it's a shared secret. The important thing is that it is not stored in plaintext anywhere.
-8. Set up the CICD pipeline according to [cicd/README.md](./cicd/README.md)
-10. Trigger your pipeline by committing your changes to the repository
+5. Create a secret string in System Manager Parameter store for each target account (e.g, stg or prod) with a value used to sign and verify verification codes - the parameter name should be `/STAGE/sharing-service/code-secret` where STAGE is the stage you are deploying to (dev, stg or prod). You can choose any secure password for this, since it's a shared secret. The important thing is that it is not stored in plaintext anywhere.
+6. Set up the CICD pipeline according to [cicd/README.md](./cicd/README.md)
+7. Trigger your pipeline by committing your changes to the repository
 
 ## 6. Getting to your First Successful Deployment
 

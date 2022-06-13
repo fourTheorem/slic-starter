@@ -88,7 +88,7 @@ resources:
             - DomainName:
                 Fn::GetAtt:
                   - siteBucket
-                  - DomainName
+                  - RegionalDomainName
               Id: ${self:custom.siteConfig.bucketName}-origin
               S3OriginConfig:
                 OriginAccessIdentity:
@@ -116,7 +116,7 @@ resources:
               Cookies:
                 Forward: none
             ViewerProtocolPolicy: redirect-to-https
-          ViewerCertificate: ${self:custom.siteConfig.distributionViewerCertficate}
+          ViewerCertificate: ${self:custom.siteConfig.distributionViewerCertificate}
           CustomErrorResponses:
             - ErrorCode: 403
               ResponseCode: 200

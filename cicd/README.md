@@ -16,7 +16,7 @@ AWS CDK (v2) should be installed in advance:
 npm install --global aws-cdk@latest
 ```
 
-The `codepipeline` project needs to have its modules installed:
+The `cicd` project needs to have its modules installed:
 ```
 npm install
 ```
@@ -25,11 +25,6 @@ Lastly, the TypeScript source needs to be compiled:
 ```
 npm run build
 ```
-
-## GitHub Authentication.
-
-Add a secret in Secrets Manager with `github-token` as the name.
-https://docs.aws.amazon.com/cdk/api/latest/docs/pipelines-readme.html
 
 ## Deploying the pipelines
 
@@ -138,25 +133,25 @@ Then run CDK deploy to create the cross-account deployment role in that target a
 
 ```
 # Using development account credentials
-npm run cdk -- -c stages=dev -c deploy-account=${DEPLOY_ACCOUNT} deploy devCrossAccountStack
+npx cdk -c stages=dev -c deploy-account=${DEPLOY_ACCOUNT} deploy devCrossAccountStack
 
 # Using staging account credentials
-npm run cdk -- -c stages=stg -c deploy-account=${DEPLOY_ACCOUNT} deploy stgCrossAccountStack
+npx cdk -c stages=stg -c deploy-account=${DEPLOY_ACCOUNT} deploy stgCrossAccountStack
 
 # Using production account credentials
-npm run cdk -- -c stages=prod -c deploy-account=${DEPLOY_ACCOUNT} deploy prodCrossAccountStack
+npx cdk -c stages=prod -c deploy-account=${DEPLOY_ACCOUNT} deploy prodCrossAccountStack
 ```
 
 ## Deploy the Pipelines
 
 To deploy a development CICD pipeline that targets the development account only:
 ```
-npm run build && npm run cdk -- -c stages=dev -c dev-account=${DEV_ACCOUNT} deploy PipelineStack
+npx cdk -c stages=dev -c dev-account=${DEV_ACCOUNT} deploy PipelineStack
 ```
 
 To deploy a production CICD pipeline that targets the staging and production accounts:
 ```
-npm run cdk -- -c stages=stg,prod -c stg-account=${STG_ACCOUNT} -c prod-account=${PROD_ACCOUNT} -c deploy-account=${DEPLOY_ACCOUNT} deploy PipelineStack
+npx cdk -c stages=stg,prod -c stg-account=${STG_ACCOUNT} -c prod-account=${PROD_ACCOUNT} -c deploy-account=${DEPLOY_ACCOUNT} deploy PipelineStack
 ```
 
 
@@ -164,8 +159,9 @@ Provided everything has gone to plan, you will not have to re-run these commands
 
 To deploy a separate pipeline for another development account, such as `dev2`, the same steps can be run, but the context variables will only include one target account (`--context dev2-account=${SANDBOX_ACCOUNT}`).
 
-# Troubleshooting
+## Configure the Source Connection
+Since we are using CodeStar Connections to fetch the source, this needs to be connected to your GitHub account. Until you do this, the pipeline will show that the source stage has failed.
+In the AWS Management Console, navigate to `Developer Tools -> Connections -> devCodeStarConnection`. The connection status should show the value `Pending`. Select `Update Pending Connection` and connect to your GitHub account. You will need to select "Install a new app" and ensure it has the permissions to read the correct organisation/account and repository.
+Once you click 'Connect', the connection status should show the value `Available`.
 
-Pipeline deployment fails with `CREATE_FAILED: Internal failure`.
-
--> Check that the secret, `github-token` is in place
+At this point, you can run the pipeline by browsing to the dev pipeline in the CodePipeline console and selecting 'Release Change'.

@@ -33,15 +33,5 @@
     "name": "/prod/sharing-service/code-secret",
     "value": "a-secure-random-string",
     "type": "SecureString"
-  },
-  {
-    "name": "/shared/accounts/stg",
-    "value": "ACCOUNT_ID",
-    "type": "String"
-  },
-  {
-    "name": "/shared/accounts/prod",
-    "value": "ACCOUNT_ID",
-    "type": "String"
   }
 ]
