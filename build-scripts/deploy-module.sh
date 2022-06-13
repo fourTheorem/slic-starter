@@ -9,4 +9,5 @@ if [ "${MODULE_NAME}" == "certs" ]; then
   TARGET_REGION="us-east-1"
 fi
 
-../node_modules/serverless/bin/serverless.js deploy --stage ${SLIC_STAGE} --region ${TARGET_REGION} --force
+../node_modules/serverless/bin/serverless.js deploy --stage ${SLIC_STAGE} --region ${TARGET_REGION} --force --enforce-hash-update --verbose
+../node_modules/serverless/bin/serverless.js deploy --stage ${SLIC_STAGE} --region ${TARGET_REGION} --force --verbose

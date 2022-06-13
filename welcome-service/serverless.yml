@@ -19,6 +19,7 @@ provider:
   environment:
     SLIC_STAGE: ${self:provider.stage}
   logRetentionInDays: 7
+  lambdaHashingVersion: 20201221
 
 custom:
   app: ${file(../app.yml)}

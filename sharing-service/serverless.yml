@@ -28,6 +28,7 @@ provider:
     SLIC_STAGE: ${self:provider.stage}
     EMAIL_QUEUE_NAME: ${self:custom.emailQueueName}
   logRetentionInDays: 7
+  lambdaHashingVersion: 20201221
 
 custom:
   app: ${file(../app.yml)}

@@ -22,6 +22,7 @@ provider:
     SLIC_STAGE: ${self:provider.stage}
     SES_REGION: ${self:provider.sesRegion}
   logRetentionInDays: 7
+  lambdaHashingVersion: 20201221
 
 custom:
   app: ${file(../app.yml)}
