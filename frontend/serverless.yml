@@ -1,5 +1,5 @@
 service: frontend
-variablesResolutionMode: 20210326
+frameworkVersion: '3'
 projectDir: ..
 
 plugins:
@@ -10,11 +10,11 @@ package:
     - 'node_modules/.cache/**'
 provider:
   name: aws
-  runtime: nodejs12.x
+  runtime: nodejs16.x
   stage: ${opt:stage, 'local'}
   region: ${opt:region}
 
-custom: 
+custom:
   app: ${file(../app.yml)}
   siteConfig: ${file(./site-config.js)}
   domainConfig: ${self:custom.app.domainConfig}
@@ -22,7 +22,7 @@ custom:
   # See http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-route53-aliastarget.html
   # AND http://docs.aws.amazon.com/general/latest/gr/rande.html
   cloudFrontHostedZoneId: Z2FDTNDATAQYW2
-  s3Sync: 
+  s3Sync:
     - bucketName: ${self:custom.siteConfig.bucketName}
       localDir: build
 
