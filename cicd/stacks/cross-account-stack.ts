@@ -26,7 +26,7 @@ export class CrossAccountStack extends Stack {
     if (deployAccount) {
       trustPrincipals.push(new iam.AccountPrincipal(deployAccount))
     }
-    
+
     this.crossAccountDeployRole = new iam.Role(this, `${stage}CrossAccountDeployRole`, {
       roleName: `${stage}CrossAccountDeployRole`,
       assumedBy: new iam.CompositePrincipal(...trustPrincipals)

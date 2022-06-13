@@ -2,6 +2,9 @@
   "name": "slic-starter",
   "version": "1.0.0",
   "description": "A complete serverless starter application",
+  "engines": {
+    "node": ">=16.15"
+  },
   "scripts": {
     "coverage": "npm run test:packages -- --cov --coverage-report=html",
     "format": "eslint --cache --fix .",
@@ -26,11 +29,11 @@
   },
   "homepage": "https://github.com/fourTheorem/slic-starter#readme",
   "devDependencies": {
-    "aws-sdk-mock": "^5.4.0",
-    "awscred": "^1.4.2",
+    "aws-sdk-mock": "^5.7.0",
+    "awscred": "^1.5.0",
     "eslint": "^7.26.0",
     "eslint-config-standard": "^16.0.2",
-    "eslint-plugin-import": "^2.25.3",
+    "eslint-plugin-import": "^2.26.0",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^5.1.1",
     "eslint-plugin-standard": "^5.0.0",
@@ -41,12 +44,12 @@
     "tap": "^15.1.5"
   },
   "dependencies": {
-    "@aws-cdk/aws-iam": "^1.134.0",
-    "@aws-cdk/core": "^1.134.0",
-    "@hapi/bourne": "^2.0.0",
-    "aws-sdk": "^2.1039.0",
+    "@aws-cdk/aws-iam": "^1.159.0",
+    "@aws-cdk/core": "^1.159.0",
+    "@hapi/bourne": "^3.0.0",
+    "aws-sdk": "^2.1152.0",
     "aws-signed-axios": "^1.1.0",
-    "aws-xray-sdk-core": "^3.3.4",
+    "aws-xray-sdk-core": "^3.3.6",
     "@middy/core": "^2.5.3",
     "@middy/http-cors": "^2.5.3",
     "@middy/http-error-handler": "^2.5.3",
