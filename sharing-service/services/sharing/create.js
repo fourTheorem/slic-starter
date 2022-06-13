@@ -25,6 +25,7 @@ module.exports = middify(
       codeSecret: `/${process.env.SLIC_STAGE}/sharing-service/code-secret`,
       userServiceUrl: `/${process.env.SLIC_STAGE}/user-service/url`,
       frontendUrl: `/${process.env.SLIC_STAGE}/frontend/url`
-    }
+    },
+    isHttpHandler: true
   }
 )

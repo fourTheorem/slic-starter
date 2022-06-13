@@ -4,7 +4,7 @@ const proxyquire = require('proxyquire')
 const { test } = require('tap')
 const uuid = require('uuid')
 
-const { userId, userRequestContext } = require('../../fixtures')
+const { userId, userRequestContext, commonEventProps } = require('../../fixtures')
 const { createCode } = require('../../../lib/invitation')('p@ssw0rd')
 
 const params = {
@@ -41,6 +41,7 @@ test('An invitation can be confirmed', async t => {
     code
   }
   const event = {
+    ...commonEventProps,
     requestContext: userRequestContext,
     pathParameters
   }

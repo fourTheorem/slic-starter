@@ -12,7 +12,13 @@ const userRequestContext = {
   }
 }
 
+const commonEventProps = {
+  httpMethod: 'GET',
+  headers: {}
+}
+
 module.exports = {
   userId,
-  userRequestContext
+  userRequestContext,
+  commonEventProps
 }

@@ -16,6 +16,7 @@ module.exports = middify(
   {
     ssmParameters: {
       codeSecret: `/${process.env.SLIC_STAGE}/sharing-service/code-secret`
-    }
+    },
+    isHttpHandler: true
   }
 )

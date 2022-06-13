@@ -19,18 +19,15 @@ function middify (exports, options = {}) {
           log.debug({ request }, 'request')
         }
       }))
-      .before(async (request) => {
-        const { event } = request
-        const isHttpEvent = event.httpMethod !== undefined || event.requestContext?.http?.method !== undefined
-        if (isHttpEvent) {
-          const { before } = httpEventNormalizer()
-          before(request)
-        }
-      }).use([
+
+    if (options.isHttpHandler) {
+      handler.use([
+        httpEventNormalizer(),
         httpJsonBodyParser(),
         httpCors(),
         httpErrorHandler()
       ])
+    }
 
     /* istanbul ignore next */
     if (options.ssmParameters && process.env.SLIC_STAGE !== 'test') {

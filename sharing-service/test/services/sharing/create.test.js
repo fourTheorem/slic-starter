@@ -2,7 +2,7 @@
 
 const proxyquire = require('proxyquire')
 const { test } = require('tap')
-const { userId, userRequestContext } = require('../../fixtures')
+const { userId, userRequestContext, commonEventProps } = require('../../fixtures')
 const uuid = require('uuid')
 
 const received = {}
@@ -25,6 +25,7 @@ const createHandler = proxyquire('../../../services/sharing/create', {
 
 test('A checklist can be shared with another user', async t => {
   const event = {
+    ...commonEventProps,
     requestContext: userRequestContext,
     body: JSON.stringify(payload)
   }

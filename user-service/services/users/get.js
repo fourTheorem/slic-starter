@@ -15,4 +15,4 @@ async function main (event) {
   return createResponse(user.get({ userId }))
 }
 
-module.exports = middify({ main })
+module.exports = middify({ main }, { isHttpHandler: true })
