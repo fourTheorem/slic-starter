@@ -78,11 +78,13 @@ export class PipelineStack extends Stack {
 
     const deployAccount = this.node.tryGetContext('deploy-account') || this.account
     const deployRegion = this.node.tryGetContext('deploy-region') || this.region
+    const skipSelfMutation = Boolean(this.node.tryGetContext('skip-self-mutation') || 'false')
 
     const cdkContextArgs = [
       `--context stages=${stages.join(',')}`,
       `--context deploy-account=${deployAccount}`,
       `--context deploy-region=${deployRegion}`,
+      `--context skip-self-mutation=${skipSelfMutation}`
     ]
 
     const targetAccounts: {[stage: string]: string} = {}
@@ -118,65 +120,67 @@ export class PipelineStack extends Stack {
       environment: codeBuildEnvironment
     })
 
-    pipeline.addStage({
-      stageName: 'CdkSynth',
-      actions: [new codePipelineActions.CodeBuildAction({
-        actionName: 'CdkSynth',
-        project: synthProject,
-        input: sourceOutput,
-        outputs: [synthArtifact]
-      })]
-    })
+    if (!skipSelfMutation) {
+      pipeline.addStage({
+        stageName: 'CdkSynth',
+        actions: [new codePipelineActions.CodeBuildAction({
+          actionName: 'CdkSynth',
+          project: synthProject,
+          input: sourceOutput,
+          outputs: [synthArtifact]
+        })]
+      })
 
-    const cdkDeployProject = new codeBuild.PipelineProject(this, 'CdkDeployPipeline', {
-      projectName: `${config.appName}-${lastStage}-cdk-deploy`,
-      buildSpec: codeBuild.BuildSpec.fromObject({
-        version: '0.2',
-        phases: {
-          build: {
-            commands: [
-              'npm install -g aws-cdk',
-              `cdk deploy -a . --require-approval=never --verbose ${cdkContextArgs.join(' ')} "*"`
-            ]
+      const cdkDeployProject = new codeBuild.PipelineProject(this, 'CdkDeployPipeline', {
+        projectName: `${config.appName}-${lastStage}-cdk-deploy`,
+        buildSpec: codeBuild.BuildSpec.fromObject({
+          version: '0.2',
+          phases: {
+            build: {
+              commands: [
+                'npm install -g aws-cdk',
+                `cdk deploy -a . --require-approval=never --verbose ${cdkContextArgs.join(' ')} "*"`
+              ]
+            },
+          },
+        }),
+        environment: codeBuildEnvironment,
+      })
+
+      cdkDeployProject.role?.addToPrincipalPolicy(new iam.PolicyStatement({
+        actions: [
+          'cloudformation:DescribeStacks',
+          'cloudformation:GetTemplate',
+        ],
+        resources: [`arn:aws:cloudformation:${deployRegion}:${deployAccount}:stack/*`],
+        effect: iam.Effect.ALLOW,
+      }))
+
+      // We have more than one stack to be deployed into potentially different accounts
+      // cdk deploy needs to assume the CDK deployment role in each account
+      // (https://docs.aws.amazon.com/cdk/v2/guide/bootstrapping.html)
+      cdkDeployProject.role?.addToPrincipalPolicy(new iam.PolicyStatement({
+        actions: ['sts:AssumeRole'],
+        resources: [
+          `arn:*:iam::${this.account}:role/*`,
+          ...([...Object.values(targetAccounts)].map(accountId => `arn:*:iam::${accountId}:role/*`))
+        ],
+        conditions: {
+          'ForAnyValue:StringEquals': {
+            'iam:ResourceTag/aws-cdk:bootstrap-role': ['image-publishing', 'file-publishing', 'deploy'],
           },
         },
-      }),
-      environment: codeBuildEnvironment,
-    })
+      }))
 
-    cdkDeployProject.role?.addToPrincipalPolicy(new iam.PolicyStatement({
-      actions: [
-        'cloudformation:DescribeStacks',
-        'cloudformation:GetTemplate',
-      ],
-      resources: [`arn:aws:cloudformation:${deployRegion}:${deployAccount}:stack/*`],
-      effect: iam.Effect.ALLOW,
-    }))
-
-    // We have more than one stack to be deployed into potentially different accounts
-    // cdk deploy needs to assume the CDK deployment role in each account
-    // (https://docs.aws.amazon.com/cdk/v2/guide/bootstrapping.html)
-    cdkDeployProject.role?.addToPrincipalPolicy(new iam.PolicyStatement({
-      actions: ['sts:AssumeRole'],
-      resources: [
-        `arn:*:iam::${this.account}:role/*`,
-        ...([...Object.values(targetAccounts)].map(accountId => `arn:*:iam::${accountId}:role/*`))
-      ],
-      conditions: {
-        'ForAnyValue:StringEquals': {
-          'iam:ResourceTag/aws-cdk:bootstrap-role': ['image-publishing', 'file-publishing', 'deploy'],
-        },
-      },
-    }))
-
-    pipeline.addStage({
-      stageName: 'SelfMutate',
-      actions: [new codePipelineActions.CodeBuildAction({
-        actionName: 'CdkDeploy',
-        project: cdkDeployProject,
-        input: synthArtifact,
-      })]
-    })
+      pipeline.addStage({
+        stageName: 'SelfMutate',
+        actions: [new codePipelineActions.CodeBuildAction({
+          actionName: 'CdkDeploy',
+          project: cdkDeployProject,
+          input: synthArtifact,
+        })]
+      })
+    }
 
     const unitTestProject = new codeBuild.PipelineProject(this, 'UnitTests', {
       projectName: `${config.appName}-${lastStage}-unit-tests`,
@@ -258,14 +262,13 @@ export class PipelineStack extends Stack {
           deployActions.push(moduleDeployAction)
         })
       })
+
       pipeline.addStage({
         stageName: `${stage}Deploy`,
         actions: deployActions
       })
 
-      if (index < stages.length - 1) {
-        const nextStage = stages[index + 1]
-
+      if (index === 0) {  // Only execute tests on the first stage
         const testEnvironmentVariables = {
           SLIC_STAGE: {
             type: BuildEnvironmentVariableType.PLAINTEXT,
@@ -328,7 +331,10 @@ export class PipelineStack extends Stack {
             })
           ]
         })
+      }
 
+      if (index < stages.length - 1) {
+        const nextStage = stages[index + 1]
         pipeline.addStage({
           stageName: `${nextStage}Approve`,
           actions: [new codePipelineActions.ManualApprovalAction({
