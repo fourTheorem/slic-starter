@@ -2,14 +2,14 @@
 
 const proxyquire = require('proxyquire')
 const { test } = require('tap')
-const uuid = require('uuid')
+const { v4: uuid } = require('uuid')
 
 const { userId, userRequestContext, commonEventProps } = require('../../fixtures')
 const { createCode } = require('../../../lib/invitation')('p@ssw0rd')
 
 const params = {
   listName: 'A Test List',
-  listId: uuid.v4(),
+  listId: uuid(),
   userId,
   email: 'email@example.com'
 }

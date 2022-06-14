@@ -3,13 +3,13 @@
 const proxyquire = require('proxyquire')
 const { test } = require('tap')
 const { userId, userRequestContext, commonEventProps } = require('../../fixtures')
-const uuid = require('uuid')
+const { v4: uuid } = require('uuid')
 
 const received = {}
 
 const payload = {
   email: 'email@example.com',
-  listId: uuid.v4(),
+  listId: uuid(),
   listName: 'First Checklist'
 }
 

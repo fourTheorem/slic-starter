@@ -1,12 +1,12 @@
 'use strict'
-const uuid = require('uuid')
+const { v4: uuid } = require('uuid')
 const { test } = require('tap')
 
 const invitation = require('../../lib/invitation')
 
 const listName = 'The quick fox jumps over the lazy dog'
-const userId = uuid.v4()
-const listId = uuid.v4()
+const userId = uuid()
+const listId = uuid()
 const email = 'example@example.com'
 
 test('A code can be created and parsed', t => {
@@ -35,8 +35,8 @@ test('A code is different for a different email address', t => {
   const secret = 'passw0rd'
   const { createCode } = require('../../lib/invitation')(secret)
 
-  const userId = uuid.v4()
-  const listId = uuid.v4()
+  const userId = uuid()
+  const listId = uuid()
   const email = 'example@example.com'
 
   const code = createCode({ userId, listId, listName, email })
@@ -57,8 +57,8 @@ test('A listname can be extracted from the code', t => {
   const secret = 'passw0rd'
   const { createCode } = require('../../lib/invitation')(secret)
 
-  const userId = uuid.v4()
-  const listId = uuid.v4()
+  const userId = uuid()
+  const listId = uuid()
   const email = 'example@example.com'
 
   const code = createCode({ userId, listId, listName, email })

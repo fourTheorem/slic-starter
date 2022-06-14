@@ -1,6 +1,6 @@
 'use strict'
 
-const Uuid = require('uuid')
+const { v4: uuid } = require('uuid')
 const { dynamoDocClient } = require('slic-tools/aws')
 
 const { createMetricsLogger, Unit } = require('aws-embedded-metrics')
@@ -15,7 +15,7 @@ module.exports = {
 }
 
 async function addEntry ({ userId, listId, title, value }) {
-  const entId = Uuid.v4()
+  const entId = uuid()
   const params = {
     TableName: tableName,
 
