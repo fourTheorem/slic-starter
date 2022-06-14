@@ -1,5 +1,3 @@
-'use strict'
-
 const { middify } = require('slic-tools/middy-util')
 
 const { AWS } = require('slic-tools/aws')

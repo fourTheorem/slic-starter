@@ -1,5 +1,3 @@
-'use strict'
-
 const get = require('lodash/get')
 const bourne = require('@hapi/bourne') // Used instead of JSON.parse to protect against protype poisoning
 

@@ -1,5 +1,3 @@
-'use strict'
-
 const signedAxios = require('aws-signed-axios')
 
 const log = require('./log')

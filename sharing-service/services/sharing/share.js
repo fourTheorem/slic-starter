@@ -1,5 +1,3 @@
-'use strict'
-
 const { getUser } = require('slic-tools/user-util')
 const { sendEmail } = require('slic-tools/email-util')
 const { dispatchEvent } = require('slic-tools/event-dispatcher')

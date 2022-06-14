@@ -1,5 +1,3 @@
-'use strict'
-
 const { faker } = require('@faker-js/faker/locale/en')
 const random = require('random')
 const t = require('tap')

@@ -1,5 +1,3 @@
-'use strict'
-
 const proxyquire = require('proxyquire')
 const { test } = require('tap')
 const { userId, userRequestContext, commonEventProps } = require('../../fixtures')

@@ -1,5 +1,3 @@
-'use strict'
-
 const { v4: uuid } = require('uuid')
 
 const { dispatchEvent } = require('slic-tools/event-dispatcher')

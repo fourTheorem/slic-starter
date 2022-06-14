@@ -1,5 +1,3 @@
-'use strict'
-
 const awsXray = require('aws-xray-sdk-core')
 const { AWS } = require('./aws')
 const cwEventsCore = new AWS.CloudWatchEvents({ endpoint: process.env.EVENTS_ENDPOINT_URL })

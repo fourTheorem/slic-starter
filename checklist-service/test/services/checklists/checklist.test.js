@@ -1,5 +1,3 @@
-'use strict'
-
 const path = require('path')
 const proxyquire = require('proxyquire')
 const awsMock = require('aws-sdk-mock')

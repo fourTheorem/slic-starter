@@ -1,5 +1,3 @@
-'use strict'
-
 /**
  * Modified based on https://www.npmjs.com/package/middy-autoproxyresponse
  * MIT License.

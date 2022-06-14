@@ -1,5 +1,3 @@
-'use strict'
-
 const pick = require('lodash/pick')
 
 const suppressedProperties = ['nativeProtocols']

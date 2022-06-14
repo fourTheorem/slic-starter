@@ -1,5 +1,3 @@
-'use strict'
-
 const middy = require('@middy/core')
 const httpCors = require('@middy/http-cors')
 const httpEventNormalizer = require('@middy/http-event-normalizer')

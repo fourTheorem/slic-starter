@@ -1,5 +1,3 @@
-'use strict'
-
 const jwt = require('jsonwebtoken')
 const { rword } = require('rword')
 const { createUser, deleteUser } = require('./cognito-util')

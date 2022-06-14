@@ -1,5 +1,3 @@
-'use strict'
-
 const { test } = require('tap')
 const { v4: uuid } = require('uuid')
 

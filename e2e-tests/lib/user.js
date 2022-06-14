@@ -1,4 +1,3 @@
-'use strict'
 import nid from 'nid'
 
 const config = require('../lib/config')

@@ -1,5 +1,3 @@
-'use strict'
-
 const { middify } = require('slic-tools/middy-util')
 
 const user = process.env.IS_OFFLINE

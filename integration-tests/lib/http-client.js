@@ -1,5 +1,3 @@
-'use strict'
-
 const axios = require('axios')
 const { toneAxiosError } = require('./axios-util')
 const { loadBackendConfig } = require('./backend-config')

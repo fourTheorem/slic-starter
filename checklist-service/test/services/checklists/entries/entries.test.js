@@ -1,5 +1,3 @@
-'use strict'
-
 process.env.AWS_LAMBDA_FUNCTION_NAME = 'unknown_unit_test'
 
 const path = require('path')

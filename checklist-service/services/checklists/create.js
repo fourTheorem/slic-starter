@@ -1,5 +1,3 @@
-'use strict'
-
 const { createResponse } = require('slic-tools/response.js')
 const checklist = require('./checklist')
 const { processEvent } = require('slic-tools/event-util')

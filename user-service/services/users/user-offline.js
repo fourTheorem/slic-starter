@@ -1,5 +1,3 @@
-'use strict'
-
 const { extractEmail } = require('mock-amplify-auth')
 
 function get ({ userId }) {

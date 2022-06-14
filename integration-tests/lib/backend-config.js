@@ -1,5 +1,3 @@
-'use strict'
-
 const awscred = require('awscred')
 const { CloudFormation } = require('aws-sdk')
 

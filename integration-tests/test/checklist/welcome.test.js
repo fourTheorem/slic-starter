@@ -1,5 +1,3 @@
-'use strict'
-
 const t = require('tap')
 const httpClient = require('../../lib/http-client')
 const { getUser } = require('../../lib/user-util')
