@@ -19,6 +19,6 @@
     "nid": "^2.0.0",
     "synchronized-promise": "^0.3.1",
     "testcafe": "^1.19.0",
-    "testcafe-react-selectors": "^5.0.1"
+    "testcafe-react-selectors": "^5.0.2"
   }
 }
