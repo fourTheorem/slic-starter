@@ -299,6 +299,7 @@ export class PipelineStack extends Stack {
           projectName: `${stage}-e2e-tests`,
           environmentVariables: testEnvironmentVariables,
           buildSpec: codeBuild.BuildSpec.fromSourceFilename('e2e-tests/buildspec.yml'),
+          environment: codeBuildEnvironment
         })
         e2eTestProject.role?.addToPrincipalPolicy(
           new iam.PolicyStatement({
@@ -311,6 +312,7 @@ export class PipelineStack extends Stack {
           projectName: `${stage}-api-tests`,
           environmentVariables: testEnvironmentVariables,
           buildSpec: codeBuild.BuildSpec.fromSourceFilename('e2e-tests/buildspec.yml'),
+          environment: codeBuildEnvironment
         })
         apiTestProject.role?.addToPrincipalPolicy(
           new iam.PolicyStatement({

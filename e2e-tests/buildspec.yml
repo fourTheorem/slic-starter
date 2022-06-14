@@ -2,11 +2,8 @@
 version: 0.2
 phases:
   install:
-    runtime-versions:
-      nodejs: 16
     commands:
       - cd e2e-tests
-      - npm install -g npm@latest
       - npm install
   build:
     commands:
