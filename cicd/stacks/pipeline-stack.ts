@@ -307,7 +307,7 @@ export class PipelineStack extends Stack {
         const apiTestProject = new codeBuild.PipelineProject(this, `${stage}ApiTests`, {
           projectName: `${stage}-api-tests`,
           environmentVariables: testEnvironmentVariables,
-          buildSpec: BuildSpec.fromSourceFilename('e2e-tests/buildspec.yml'),
+          buildSpec: BuildSpec.fromSourceFilename('integration-tests/buildspec.yml'),
         })
         apiTestProject.role?.addToPrincipalPolicy(
           new iam.PolicyStatement({
