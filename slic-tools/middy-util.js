@@ -1,5 +1,3 @@
-'use strict'
-
 const middy = require('@middy/core')
 const httpCors = require('@middy/http-cors')
 const httpEventNormalizer = require('@middy/http-event-normalizer')
@@ -19,10 +17,15 @@ function middify (exports, options = {}) {
           log.debug({ request }, 'request')
         }
       }))
-      .use(httpEventNormalizer())
-      .use(httpJsonBodyParser())
-      .use(httpCors())
-      .use(httpErrorHandler())
+
+    if (options.isHttpHandler) {
+      handler.use([
+        httpEventNormalizer(),
+        httpJsonBodyParser(),
+        httpCors(),
+        httpErrorHandler()
+      ])
+    }
 
     /* istanbul ignore next */
     if (options.ssmParameters && process.env.SLIC_STAGE !== 'test') {

@@ -1,5 +1,3 @@
-'use strict'
-
 const { middify } = require('slic-tools/middy-util')
 
 const user = process.env.IS_OFFLINE
@@ -15,4 +13,4 @@ async function main (event) {
   return createResponse(user.get({ userId }))
 }
 
-module.exports = middify({ main })
+module.exports = middify({ main }, { isHttpHandler: true })

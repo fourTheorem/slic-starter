@@ -1,6 +1,4 @@
-'use strict'
-
-const faker = require('faker')
+const { faker } = require('@faker-js/faker/locale/en')
 const random = require('random')
 const t = require('tap')
 const { getUser, removeUser } = require('../../lib/user-util')

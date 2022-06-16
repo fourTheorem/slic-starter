@@ -1,5 +1,3 @@
-'use strict'
-
 const awscred = require('awscred')
 const AWS = require('aws-sdk')
 const jwt = require('jsonwebtoken')

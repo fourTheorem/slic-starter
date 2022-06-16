@@ -1,8 +1,6 @@
-'use strict'
-
 const proxyquire = require('proxyquire')
 const { test } = require('tap')
-const uuid = require('uuid')
+const { v4: uuid } = require('uuid')
 
 const { userId } = require('../../fixtures')
 
@@ -47,7 +45,7 @@ const shareService = proxyquire('../../../services/sharing/share', {
 test('An email is sent when a list is shared', async t => {
   const payload = {
     ...testUser,
-    listId: uuid.v4(),
+    listId: uuid(),
     listName
   }
 
@@ -62,11 +60,11 @@ test('An event is dispatched when a code is confirmed', async t => {
     listName,
     userId,
     email: 'invitee@example.com',
-    listId: uuid.v4()
+    listId: uuid()
   }
   const code = createCode(params)
 
-  const collaboratorUserId = uuid.v4()
+  const collaboratorUserId = uuid()
   await shareService.confirm({ code, userId: collaboratorUserId }, codeSecret)
   t.same(received.dispatchEventParams, [
     'COLLABORATOR_ACCEPTED_EVENT',
@@ -82,7 +80,7 @@ test('An error is thrown when an invalid code is provided', async t => {
   const code = 'blah'
 
   try {
-    await shareService.confirm({ code, userId: uuid.v4() }, codeSecret)
+    await shareService.confirm({ code, userId: uuid() }, codeSecret)
     t.fail('Error excepted for invalid code')
   } catch (err) {
     t.equal(err.statusCode, 400)

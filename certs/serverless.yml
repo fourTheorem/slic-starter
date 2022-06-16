@@ -1,5 +1,5 @@
 service: certs
-variablesResolutionMode: 20210326
+frameworkVersion: '3'
 projectDir: ..
 
 provider:

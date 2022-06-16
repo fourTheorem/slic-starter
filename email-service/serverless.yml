@@ -1,5 +1,5 @@
 service: email-service
-variablesResolutionMode: 20210326
+frameworkVersion: '3'
 projectDir: ..
 
 plugins:
@@ -12,7 +12,7 @@ plugins:
 
 provider:
   name: aws
-  runtime: nodejs12.x
+  runtime: nodejs16.x
   stage: ${opt:stage, 'local'}
   region: ${opt:region}
   sesRegion: ${self:custom.sesRegions.${self:provider.region}, 'us-east-1'}

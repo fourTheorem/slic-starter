@@ -1,5 +1,3 @@
-'use strict'
-
 const { AWS } = require('slic-tools/aws')
 const awsXray = require('aws-xray-sdk-core')
 

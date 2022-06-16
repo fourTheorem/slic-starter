@@ -1,5 +1,3 @@
-'use strict'
-
 const awsXray = require('aws-xray-sdk-core')
 const coreAws = require('aws-sdk')
 /* istanbul ignore next */

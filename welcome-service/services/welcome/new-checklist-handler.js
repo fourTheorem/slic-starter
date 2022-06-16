@@ -1,5 +1,3 @@
-'use strict'
-
 const { middify } = require('slic-tools/middy-util')
 const { getUser } = require('slic-tools/user-util')
 const { sendEmail } = require('slic-tools/email-util')

@@ -1,5 +1,3 @@
-'use strict'
-
 const path = require('path')
 const { test } = require('tap')
 const awsMock = require('aws-sdk-mock')

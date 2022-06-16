@@ -10,6 +10,7 @@ module.exports = {
     }
   },
   rules: {
-    'no-underscore-dangle': 0
+    'no-underscore-dangle': 'off',
+    semi: 'off'
   }
 }

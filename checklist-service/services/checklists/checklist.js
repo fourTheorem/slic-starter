@@ -1,6 +1,4 @@
-'use strict'
-
-const uuid = require('uuid')
+const { v4: uuid } = require('uuid')
 
 const { dispatchEvent } = require('slic-tools/event-dispatcher')
 const { dynamoDocClient } = require('slic-tools/aws')
@@ -22,7 +20,7 @@ async function create ({ userId, name, description }) {
     name,
     description,
     entries: {},
-    listId: uuid.v4(),
+    listId: uuid(),
     createdAt: Date.now()
   }
   await dynamoDocClient()

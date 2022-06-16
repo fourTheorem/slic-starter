@@ -1,5 +1,3 @@
-'use strict'
-
 const checklist = require('./checklist')
 
 /**

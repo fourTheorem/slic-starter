@@ -1,12 +1,10 @@
-'use strict'
-
 const { test } = require('tap')
-const uuid = require('uuid')
+const { v4: uuid } = require('uuid')
 
 const { processEvent } = require('../event-util')
 
 test('userId is extracted from the cognito lambda-proxy-mapped authorizer claims', t => {
-  const testUserId = uuid.v4()
+  const testUserId = uuid()
   const event = {
     requestContext: {
       authorizer: {
@@ -23,7 +21,7 @@ test('userId is extracted from the cognito lambda-proxy-mapped authorizer claims
 })
 
 test('body is parsed from the JSON body', t => {
-  const testUserId = uuid.v4()
+  const testUserId = uuid()
   const testBody = { a: 1, b: 2 }
   const event = {
     body: JSON.stringify(testBody),

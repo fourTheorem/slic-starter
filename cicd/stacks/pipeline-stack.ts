@@ -1,24 +1,21 @@
-import { SecretValue, Stack, StackProps } from 'aws-cdk-lib'
+import { Stack, StackProps } from 'aws-cdk-lib'
 import { Construct } from 'constructs'
-
 import * as iam from 'aws-cdk-lib/aws-iam'
 import * as codeBuild from 'aws-cdk-lib/aws-codebuild'
 import * as codePipeline from 'aws-cdk-lib/aws-codepipeline'
 import * as codePipelineActions from 'aws-cdk-lib/aws-codepipeline-actions'
 import * as codeStarConnections from 'aws-cdk-lib/aws-codestarconnections'
-
-import * as sns from 'aws-cdk-lib/aws-sns'
 import * as s3 from 'aws-cdk-lib/aws-s3'
 
 import config from '../config'
 import * as ssmParams from '../ssm-params'
 import modules from '../modules'
-import { BuildEnvironmentVariableType, BuildSpec } from 'aws-cdk-lib/aws-codebuild'
-import { BlockPublicAccess } from 'aws-cdk-lib/aws-s3'
+
+const NODE_VERSION = '16.15'
 
 interface PipelineStackProps extends StackProps {
   crossAccountDeployRoles: {[key: string]: iam.IRole},
-  stages: string[] 
+  stages: string[]
 }
 
 export class PipelineStack extends Stack {
@@ -36,7 +33,7 @@ export class PipelineStack extends Stack {
 
     const artifactBucket = new s3.Bucket(this, 'ArtifactBucket', {
       encryption: s3.BucketEncryption.S3_MANAGED,
-      blockPublicAccess: BlockPublicAccess.BLOCK_ALL
+      blockPublicAccess: s3.BlockPublicAccess.BLOCK_ALL
     })
 
     const pipeline = new codePipeline.Pipeline(this, `pipeline_${lastStage}`, {
@@ -105,7 +102,7 @@ export class PipelineStack extends Stack {
         version: '0.2',
         phases: {
           install: {
-            commands: ['cd cicd', 'npm ci']
+            commands: [`n ${NODE_VERSION}`, 'cd cicd', 'npm ci']
           },
           build: {
             commands: ['npm run build', `npm run cdk -- synth ${cdkContextArgs.join(' ')}`]
@@ -138,6 +135,7 @@ export class PipelineStack extends Stack {
           phases: {
             build: {
               commands: [
+                `n ${NODE_VERSION}`,
                 'npm install -g aws-cdk',
                 `cdk deploy -a . --require-approval=never --verbose ${cdkContextArgs.join(' ')} "*"`
               ]
@@ -187,7 +185,12 @@ export class PipelineStack extends Stack {
       buildSpec: codeBuild.BuildSpec.fromObject({
         version: '0.2',
         phases: {
-          install: { commands: ['bash util/install-packages.sh'] },
+          install: {
+            commands: [
+              `n ${NODE_VERSION}`,
+              'bash util/install-packages.sh'
+            ]
+          },
           build: { commands: ['npm test'] },
         },
         artifacts: {
@@ -222,7 +225,7 @@ export class PipelineStack extends Stack {
             buildSpec: codeBuild.BuildSpec.fromObject({
               version: '0.2',
               phases: {
-                install: { commands: ['bash build-scripts/build-module.sh'] },
+                install: { commands: [`n ${NODE_VERSION}`, 'bash build-scripts/build-module.sh'] },
                 build: { commands: ['bash build-scripts/deploy-module.sh'] },
               }
             }),
@@ -271,19 +274,19 @@ export class PipelineStack extends Stack {
       if (index === 0) {  // Only execute tests on the first stage
         const testEnvironmentVariables = {
           SLIC_STAGE: {
-            type: BuildEnvironmentVariableType.PLAINTEXT,
+            type: codeBuild.BuildEnvironmentVariableType.PLAINTEXT,
             value: stage
           },
           CROSS_ACCOUNT_ID: {
-            type: BuildEnvironmentVariableType.PLAINTEXT,
+            type: codeBuild.BuildEnvironmentVariableType.PLAINTEXT,
             value: targetAccounts[stage]
           },
           MAILOSAUR_API_KEY: {
-            type: BuildEnvironmentVariableType.PARAMETER_STORE,
+            type: codeBuild.BuildEnvironmentVariableType.PARAMETER_STORE,
             value: ssmParams.Test.MAILOSAUR_API_KEY
           },
           MAILOSAUR_SERVER_ID: {
-            type: BuildEnvironmentVariableType.PARAMETER_STORE,
+            type: codeBuild.BuildEnvironmentVariableType.PARAMETER_STORE,
             value: ssmParams.Test.MAILOSAUR_SERVER_ID
           },
           ROLE_ARN: {
@@ -295,7 +298,8 @@ export class PipelineStack extends Stack {
         const e2eTestProject = new codeBuild.PipelineProject(this, `${stage}E2ETests`, {
           projectName: `${stage}-e2e-tests`,
           environmentVariables: testEnvironmentVariables,
-          buildSpec: BuildSpec.fromSourceFilename('e2e-tests/buildspec.yml'),
+          buildSpec: codeBuild.BuildSpec.fromSourceFilename('e2e-tests/buildspec.yml'),
+          environment: codeBuildEnvironment
         })
         e2eTestProject.role?.addToPrincipalPolicy(
           new iam.PolicyStatement({
@@ -307,7 +311,8 @@ export class PipelineStack extends Stack {
         const apiTestProject = new codeBuild.PipelineProject(this, `${stage}ApiTests`, {
           projectName: `${stage}-api-tests`,
           environmentVariables: testEnvironmentVariables,
-          buildSpec: BuildSpec.fromSourceFilename('integration-tests/buildspec.yml'),
+          buildSpec: codeBuild.BuildSpec.fromSourceFilename('e2e-tests/buildspec.yml'),
+          environment: codeBuildEnvironment
         })
         apiTestProject.role?.addToPrincipalPolicy(
           new iam.PolicyStatement({
@@ -315,7 +320,7 @@ export class PipelineStack extends Stack {
             actions: ['sts:AssumeRole'],
             resources: [props.crossAccountDeployRoles[stage].roleArn]
           }))
-        
+
         pipeline.addStage({
           stageName: `${stage}Testing`,
           actions: [

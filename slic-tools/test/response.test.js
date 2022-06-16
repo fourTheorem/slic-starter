@@ -1,5 +1,3 @@
-'use strict'
-
 const { test } = require('tap')
 
 const { createResponse } = require('../response')

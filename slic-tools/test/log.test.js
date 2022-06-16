@@ -1,5 +1,3 @@
-'use strict'
-
 const { test } = require('tap')
 
 test('log at debug level', t => {

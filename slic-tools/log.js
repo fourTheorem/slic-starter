@@ -1,5 +1,3 @@
-'use strict'
-
 const pino = require('pino')
 
 const { name } = require('./service-info')

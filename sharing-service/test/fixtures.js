@@ -1,8 +1,6 @@
-'use strict'
+const { v4: uuid } = require('uuid')
 
-const uuid = require('uuid')
-
-const userId = uuid.v4()
+const userId = uuid()
 
 const userRequestContext = {
   authorizer: {
@@ -12,7 +10,13 @@ const userRequestContext = {
   }
 }
 
+const commonEventProps = {
+  httpMethod: 'GET',
+  headers: {}
+}
+
 module.exports = {
   userId,
-  userRequestContext
+  userRequestContext,
+  commonEventProps
 }

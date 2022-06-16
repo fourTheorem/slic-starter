@@ -52,7 +52,7 @@ export function acceptShareRequest (code) {
     dispatch({ type: ACCEPT_SHARE_REQUEST })
     AmplifyApi.patch('sharing-api', `/${code}`, {
       body: {
-        code: code
+        code
       }
     })
       .then((result) => {

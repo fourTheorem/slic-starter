@@ -1,11 +1,9 @@
-'use strict'
-
-const uuid = require('uuid')
+const { v4: uuid } = require('uuid')
 
 const proxyquire = require('proxyquire').noPreserveCache()
 const { test } = require('tap')
 
-const userId = uuid.v4()
+const userId = uuid()
 const testUser = {
   userId,
   email: 'test-user@example.com'

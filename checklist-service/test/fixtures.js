@@ -1,5 +1,3 @@
-'use strict'
-
 const userId = 'testUser'
 
 const userRequestContext = {

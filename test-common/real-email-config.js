@@ -1,5 +1,3 @@
-'use strict'
-
 const Mailosaur = require('mailosaur')
 const RandomWords = require('random-words')
 

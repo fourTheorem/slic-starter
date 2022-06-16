@@ -1,14 +1,16 @@
-'use strict'
-
 const { processEvent } = require('slic-tools/event-util')
 const { middify } = require('slic-tools/middy-util')
 const share = require('./share')
 
-function main (event, context) {
+async function main (event, context) {
   const { pathParameters, userId } = processEvent(event) // TODO - Remove processEvent
   const { code } = pathParameters
 
-  return share.confirm({ code, userId }, context.codeSecret).then(() => ({}))
+  await share.confirm({ code, userId }, context.codeSecret)
+
+  return {
+    statusCode: 204
+  }
 }
 
 module.exports = middify(
@@ -16,6 +18,7 @@ module.exports = middify(
   {
     ssmParameters: {
       codeSecret: `/${process.env.SLIC_STAGE}/sharing-service/code-secret`
-    }
+    },
+    isHttpHandler: true
   }
 )
