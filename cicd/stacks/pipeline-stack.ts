@@ -75,7 +75,7 @@ export class PipelineStack extends Stack {
 
     const deployAccount = this.node.tryGetContext('deploy-account') || this.account
     const deployRegion = this.node.tryGetContext('deploy-region') || this.region
-    const skipSelfMutation = Boolean(this.node.tryGetContext('skip-self-mutation') || 'false')
+    const skipSelfMutation = Boolean(this.node.tryGetContext('skip-self-mutation') || false)
 
     const cdkContextArgs = [
       `--context stages=${stages.join(',')}`,
