@@ -21,7 +21,11 @@ const styles = (theme) => ({
   },
   paper: {
     minWidth: '340px',
+    maxWidth: '500px',
     padding: theme.spacing.unit * 2
+  },
+  title: {
+    whiteSpace: 'nowrap'
   },
   input: {
     width: '100%'
@@ -29,8 +33,16 @@ const styles = (theme) => ({
   button: {
     width: '100%',
     marginTop: theme.spacing.unit
+  },
+  helperText: {
+    maxWidth: '275px'
   }
 })
+
+/**
+ * TODO: Update this regular expression to check _exactly_ the password policy enforced by the Cognito User Pool
+ */
+const PASSWORD_REGEX = /^(?=.*\d)(?=.*[\^$*.\[\]{}\(\)?\-\"!@#%&\/,><\':;|_~``=+-])(?=.*[a-z])(?=.*[A-Z]).{6,99}$/
 
 class Signup extends Component {
   state = {
@@ -38,8 +50,31 @@ class Signup extends Component {
     password: ''
   };
 
-  validate = () =>
-    this.state.email.length > 0 && this.state.password.length > 5;
+  validate = () => {
+    const emailValid = this.state.email.length > 3
+    const passwordValid = PASSWORD_REGEX.test(this.state.password)
+
+    const result = {
+      valid: emailValid && passwordValid
+    }
+
+    // Only provide field-specific errors if a value has been entered.
+    // We do not want to show any error if the user hasn't started typing yet
+    result.email = {
+      showError: !emailValid && this.state.email.length > 0
+    }
+    result.password = {
+      showError: !passwordValid && this.state.password.length > 0
+    }
+    if (result.email.showError) {
+      result.email.message = 'Email is required'
+    }
+    if (result.password.showError) {
+      result.password.message = 'Password must contain at least one number, a special character, one lowercase and uppercase letter, and at least 6 characters'
+    }
+
+    return result
+  }
 
   handleChange = ({ target: { id, value } }) => this.setState({ [id]: value });
 
@@ -53,13 +88,17 @@ class Signup extends Component {
 
     const { signingUp, signupError, signedUp, userConfirmed } = this.props.auth
 
+    // Perform client-side validation
+    const validation = this.validate()
+
+    // Render component for server-side errors if present
     const errorItem = signupError
       ? (
-      <Grid item>
-        <Typography className={classes.error}>
-          <ErrorMessage messageId={signupError.id} />
-        </Typography>
-      </Grid>
+        <Grid item>
+          <Typography className={classes.error}>
+            <ErrorMessage messageId={signupError.id} />
+          </Typography>
+        </Grid>
         )
       : null
 
@@ -78,7 +117,7 @@ class Signup extends Component {
               spacing={8}
             >
               <Grid item>
-                <Typography variant="h3">Sign Up</Typography>
+                <Typography variant="h3" className={classes.title}>Sign Up</Typography>
               </Grid>
               <Grid item>
                 <TextField
@@ -87,6 +126,13 @@ class Signup extends Component {
                   label="Email"
                   autoComplete="username"
                   onChange={this.handleChange}
+                  error={validation.email.showError}
+                  helperText={validation.email.message}
+                  FormHelperTextProps={{
+                    classes: {
+                      root: classes.helperText
+                    }
+                  }}
                 />
               </Grid>
               <Grid item>
@@ -97,6 +143,13 @@ class Signup extends Component {
                   type="password"
                   autoComplete="new-password"
                   onChange={this.handleChange}
+                  error={validation.password.showError}
+                  helperText={validation.password.message}
+                  FormHelperTextProps={{
+                    classes: {
+                      root: classes.helperText
+                    }
+                  }}
                 />
               </Grid>
               {errorItem}
@@ -107,7 +160,7 @@ class Signup extends Component {
                   color="secondary"
                   type="submit"
                   className={classes.button}
-                  disabled={signingUp || !this.validate()}
+                  disabled={signingUp || !validation.valid}
                 >
                   {signingUp ? 'Signing up...' : 'Sign Up'}
                 </Button>

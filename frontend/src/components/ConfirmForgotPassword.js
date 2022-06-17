@@ -30,6 +30,7 @@ const styles = (theme) => ({
     marginTop: theme.spacing.unit
   }
 })
+const PASSWORD_REGEX = /^(?=.*\d)(?=.*[\^$*.\[\]{}\(\)?\-\"!@#%&\/,><\':;|_~``=+-])(?=.*[a-z])(?=.*[A-Z]).{6,99}$/
 
 class ConfirmForgotPassword extends Component {
   state = {
@@ -38,7 +39,28 @@ class ConfirmForgotPassword extends Component {
     newPassword: ''
   };
 
-  validate = () => this.state.confirmationCode.length > 5 && this.state.newPassword.length > 5;
+  validate = () => {
+    const codeSent = this.state.confirmationCode.length > 5
+    const newPasswordValid = PASSWORD_REGEX.test(this.state.newPassword)
+
+    const result = {
+      valid: codeSent && newPasswordValid
+    }
+
+    result.confirmationCode = {
+      showError: !codeSent && this.state.confirmationCode.length > 0
+    }
+    result.newPassword = {
+      showError: !newPasswordValid && this.state.newPassword.length > 0
+    }
+    if (result.confirmationCode.showError) {
+      result.confirmationCode.message = 'Confirmation code is required'
+    }
+    if (result.newPassword.showError) {
+      result.newPassword.message = 'Password must contain at least one number, a special character, one lowercase and uppercase letter, and at least 6 characters'
+    }
+    return result
+  }
 
   handleChange = ({ target: { id, value } }) => {
     switch (id) {
@@ -70,10 +92,14 @@ class ConfirmForgotPassword extends Component {
 
     const sendingPasswordSucccess = newPasswordSent ? (<Redirect to="/login" />) : null
 
+    const validation = this.validate()
+
     const errorItem = newPasswordError
       ? (
         <Grid item>
-          <ErrorMessage messageId={newPasswordError.id} />
+          <Typography className={classes.error}>
+            <ErrorMessage messageId={newPasswordError.id} />
+          </Typography>
         </Grid>
         )
       : null
@@ -106,6 +132,13 @@ class ConfirmForgotPassword extends Component {
                   label="Confirmation Code"
                   onChange={this.handleChange}
                   className={classes.input}
+                  error={validation.confirmationCode.showError}
+                  helperText={validation.confirmationCode.message}
+                  FormHelperTextProps={{
+                    classes: {
+                      root: classes.helperText
+                    }
+                  }}
                 />
               </Grid>
 
@@ -117,6 +150,13 @@ class ConfirmForgotPassword extends Component {
                   type="password"
                   autoComplete="new-password"
                   onChange={this.handleChange}
+                  error={validation.newPassword.showError}
+                  helperText={validation.newPassword.message}
+                  FormHelperTextProps={{
+                    classes: {
+                      root: classes.helperText
+                    }
+                  }}
                 />
                 {errorItem}
                 {sendingPasswordSucccess}
@@ -138,7 +178,7 @@ class ConfirmForgotPassword extends Component {
                   type="submit"
                   id='confirm-password-btn'
                   className={classes.button}
-                  disabled={sendingNewPassword || !this.validate}
+                  disabled={sendingNewPassword || !validation.valid}
                 >
                   {sendingNewPassword ? 'Resetting password...' : 'Reset Password'}
                 </Button>

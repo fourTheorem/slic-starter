@@ -15,7 +15,7 @@ export const messages = {
   [USER_NOT_CONFIRMED]: 'The user account has not been confirmed',
   [USER_NOT_FOUND]: 'That user could not be found',
   [UNKNOWN_AUTHENTICATION_ERROR]: 'An error occured',
-  [INVALID_PASSWORD]: 'Invalid password',
+  [INVALID_PASSWORD]: 'Password must contain at least one number and a special character, one lowercase and uppercase letter, and at least 6 or more characters',
   [USER_ALREADY_EXISTS]: 'An account with that email already exists',
   [UNKNOWN]: 'An unexpected error occurred',
   [INVALID_EMAIL]: 'Invalid email format',
