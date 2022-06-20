@@ -298,7 +298,7 @@ export class PipelineStack extends Stack {
         const e2eTestProject = new codeBuild.PipelineProject(this, `${stage}E2ETests`, {
           projectName: `${stage}-e2e-tests`,
           environmentVariables: testEnvironmentVariables,
-          buildSpec: codeBuild.BuildSpec.fromSourceFilename('e2e-tests/buildspec.yml'),
+          buildSpec: codeBuild.BuildSpec.fromSourceFilename('packages/e2e-tests/buildspec.yml'),
           environment: codeBuildEnvironment
         })
         e2eTestProject.role?.addToPrincipalPolicy(
@@ -311,7 +311,7 @@ export class PipelineStack extends Stack {
         const apiTestProject = new codeBuild.PipelineProject(this, `${stage}ApiTests`, {
           projectName: `${stage}-api-tests`,
           environmentVariables: testEnvironmentVariables,
-          buildSpec: codeBuild.BuildSpec.fromSourceFilename('e2e-tests/buildspec.yml'),
+          buildSpec: codeBuild.BuildSpec.fromSourceFilename('packages/integration-tests/buildspec.yml'),
           environment: codeBuildEnvironment
         })
         apiTestProject.role?.addToPrincipalPolicy(
