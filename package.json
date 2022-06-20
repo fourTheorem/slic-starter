@@ -5,6 +5,20 @@
   "engines": {
     "node": ">=16.15"
   },
+  "workspaces": [
+    "packages/slic-tools",
+    "packages/checklist-service",
+    "packages/email-service",
+    "packages/sharing-service",
+    "packages/user-service",
+    "packages/welcome-service",
+    "packages/frontend",
+    "packages/docs-build",
+    "packages/cicd",
+    "packages/test-common",
+    "packages/integration-tests",
+    "packages/e2e-tests"
+  ],
   "scripts": {
     "coverage": "npm run test:packages -- --cov --coverage-report=html",
     "format": "eslint --cache --fix .",
