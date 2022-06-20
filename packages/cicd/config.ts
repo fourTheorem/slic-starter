@@ -1,11 +1,10 @@
-const fs = require('fs')
-const path = require('path')
-
-const yaml = require('js-yaml')
+import fs from 'node:fs'
+import path from 'node:path'
+import { load } from 'js-yaml'
 
 let appConfig
 try {
-  appConfig = yaml.load(fs.readFileSync(path.resolve(__dirname, '..', 'app.yml'), 'utf8'))
+  appConfig = load(fs.readFileSync(path.resolve( '../../', 'app.yml'), 'utf8')) as Record<string, any>
 } catch (err) {
   console.log(err)
   throw new Error('The application must be configured in app.yml')
