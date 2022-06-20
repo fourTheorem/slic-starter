@@ -7,10 +7,9 @@ provider:
   runtime: nodejs16.x
   stage: ${opt:stage, 'local'}
   region: ${opt:region}
-  lambdaHashingVersion: 20201221
 
 custom:
-  app: ${file(../app.yml)}
+  app: ${file(../../app.yml)}
   domainConfig: ${self:custom.app.domainConfig}
   apiDomainName: api.${self:custom.domainConfig.domainPrefixes.${self:provider.stage}}${self:custom.domainConfig.nsDomain}
   # The HostedZoneId for CloudFront distributions is always this value.

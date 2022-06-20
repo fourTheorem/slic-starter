@@ -31,7 +31,7 @@ provider:
   lambdaHashingVersion: 20201221
 
 custom:
-  app: ${file(../app.yml)}
+  app: ${file(../../app.yml)}
   bundle:
     esbuild: true
     linting: false

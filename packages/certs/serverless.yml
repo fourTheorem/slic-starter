@@ -8,7 +8,7 @@ provider:
   region: us-east-1
 
 custom:
-  domainConfig: ${file(../app.yml):domainConfig}
+  domainConfig: ${file(../../app.yml):domainConfig}
   domainPrefixes: ${self:custom.domainConfig.domainPrefixes}
   apiDomainName: api.${self:custom.domainPrefixes.${self:provider.stage}}${self:custom.domainConfig.nsDomain}
   siteDomainName: ${self:custom.domainPrefixes.${self:provider.stage}}${self:custom.domainConfig.nsDomain}

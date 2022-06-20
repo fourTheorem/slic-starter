@@ -15,7 +15,7 @@ provider:
   region: ${opt:region}
 
 custom:
-  app: ${file(../app.yml)}
+  app: ${file(../../app.yml)}
   siteConfig: ${file(./site-config.js)}
   domainConfig: ${self:custom.app.domainConfig}
   # The HostedZoneId for CloudFront distributions is always this value.
