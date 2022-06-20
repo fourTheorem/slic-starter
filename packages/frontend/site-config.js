@@ -1,7 +1,7 @@
 /* eslint-disable no-template-curly-in-string */
 module.exports = async ({ options, resolveVariable }) => {
   const stage = await resolveVariable('sls:stage')
-  const domainConfig = await resolveVariable('file(../app.yml):domainConfig')
+  const domainConfig = await resolveVariable('file(../../app.yml):domainConfig')
   const { nsDomain } = domainConfig
   const siteDomainName = nsDomain && domainConfig.domainPrefixes[stage] + nsDomain
   if (!nsDomain && !domainConfig.siteBucketPrefix) {
