@@ -10,7 +10,7 @@
   },
   "license": "MIT",
   "dependencies": {
-    "test-common": "file:../test-common"
+    "test-common": "*"
   },
   "devDependencies": {
     "aws-sdk": "^2.1153.0",

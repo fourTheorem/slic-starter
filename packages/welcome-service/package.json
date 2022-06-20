@@ -30,7 +30,7 @@
   },
   "dependencies": {
     "aws4": "^1.11.0",
-    "slic-tools": "file:../slic-tools"
+    "slic-tools": "*"
   },
   "nyc": {
     "exclude": [

@@ -8,7 +8,7 @@
     "fetch-deployment-config": "node scripts/fetch-deployment-config",
     "start": "SLIC_STAGE=local react-scripts start",
     "start-any": "react-scripts start",
-    "react-app-build": "node node_modules/react-scripts/bin/react-scripts build",
+    "react-app-build": "react-scripts build",
     "build": "npm run fetch-deployment-config && npm run react-app-build",
     "test": "npm run lint",
     "eject": "react-scripts eject"

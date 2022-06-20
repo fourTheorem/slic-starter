@@ -28,6 +28,6 @@
     "uuid": "^8.3.2"
   },
   "dependencies": {
-    "test-common": "file:../test-common"
+    "test-common": "*"
   }
 }
