@@ -5,7 +5,7 @@ const awscred = require('awscred')
 const { CloudFormation } = require('aws-sdk')
 const yaml = require('js-yaml')
 
-const appConfig = yaml.load(fs.readFileSync(path.resolve(__dirname, '..', '..', 'app.yml'), 'utf8'))
+const appConfig = yaml.load(fs.readFileSync(path.resolve(__dirname, '..', '..', '..', 'app.yml'), 'utf8'))
 
 const { domainConfig: { nsDomain } } = appConfig
 
