@@ -28,7 +28,7 @@ export class PipelineStack extends Stack {
 
     const codeBuildEnvironment = {
       computeType: codeBuild.ComputeType.LARGE,
-      buildImage: codeBuild.LinuxBuildImage.STANDARD_5_0
+      buildImage: codeBuild.LinuxBuildImage.AMAZON_LINUX_2_3
     }
 
     const artifactBucket = new s3.Bucket(this, 'ArtifactBucket', {
