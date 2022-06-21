@@ -4,9 +4,10 @@
   "description": "",
   "main": "*.test.js",
   "scripts": {
-    "testcafe": " testcafe chrome",
-    "test": " testcafe chrome \"test/**/*.test.js\"",
-    "headless": " testcafe chrome:headless \"test/**/*.test.js\""
+    "testcafe": "testcafe chrome",
+    "test": "testcafe \"chrome\" \"test/**/*.test.js\"",
+    "preheadless": "testcafe --list-browsers",
+    "headless": "testcafe \"chrome:headless\" \"test/**/*.test.js\""
   },
   "license": "MIT",
   "dependencies": {
