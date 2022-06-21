@@ -1,6 +1,6 @@
 #!/bin/bash
 set -e
 
-source ../build-scripts/assume-cross-account-role.env
+source ../../build-scripts/assume-cross-account-role.env
 npm test
 

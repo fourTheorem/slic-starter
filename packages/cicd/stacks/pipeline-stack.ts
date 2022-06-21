@@ -72,10 +72,9 @@ export class PipelineStack extends Stack {
       actions: [sourceAction],
     })
 
-
     const deployAccount = this.node.tryGetContext('deploy-account') || this.account
     const deployRegion = this.node.tryGetContext('deploy-region') || this.region
-    const skipSelfMutation = Boolean(this.node.tryGetContext('skip-self-mutation') || false)
+    const skipSelfMutation = this.node.tryGetContext('skip-self-mutation') === 'true'
 
     const cdkContextArgs = [
       `--context stages=${stages.join(',')}`,
@@ -298,7 +297,22 @@ export class PipelineStack extends Stack {
         const e2eTestProject = new codeBuild.PipelineProject(this, `${stage}E2ETests`, {
           projectName: `${stage}-e2e-tests`,
           environmentVariables: testEnvironmentVariables,
-          buildSpec: codeBuild.BuildSpec.fromSourceFilename('packages/e2e-tests/buildspec.yml'),
+          buildSpec: codeBuild.BuildSpec.fromObject({
+            version: '0.2',
+            phases: {
+              install: {
+                commands: [
+                  `n ${NODE_VERSION}`
+                ]
+              },
+              build: {
+                commands: [
+                  'cd packages/e2e-tests',
+                  'bash ./codebuild-run-tests.sh'
+                ]
+              },
+            },
+          }),
           environment: codeBuildEnvironment
         })
         e2eTestProject.role?.addToPrincipalPolicy(
@@ -311,7 +325,22 @@ export class PipelineStack extends Stack {
         const apiTestProject = new codeBuild.PipelineProject(this, `${stage}ApiTests`, {
           projectName: `${stage}-api-tests`,
           environmentVariables: testEnvironmentVariables,
-          buildSpec: codeBuild.BuildSpec.fromSourceFilename('packages/integration-tests/buildspec.yml'),
+          buildSpec: codeBuild.BuildSpec.fromObject({
+            version: '0.2',
+            phases: {
+              install: {
+                commands: [
+                  `n ${NODE_VERSION}`
+                ]
+              },
+              build: {
+                commands: [
+                  'cd packages/integration-tests',
+                  'bash ./codebuild-run-tests.sh'
+                ]
+              },
+            },
+          }),
           environment: codeBuildEnvironment
         })
         apiTestProject.role?.addToPrincipalPolicy(
