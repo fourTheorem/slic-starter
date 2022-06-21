@@ -1,0 +1,144 @@
+service: checklist-service
+frameworkVersion: '3'
+projectDir: ..
+
+plugins:
+  - serverless-dynamodb-local
+  - serverless-offline
+  - serverless-prune-plugin
+  - serverless-iam-roles-per-function
+  - serverless-slic-watch-plugin
+  - serverless-bundle
+  - serverless-api-gateway-throttling
+
+provider:
+  name: aws
+  runtime: nodejs16.x
+  stage: ${opt:stage, 'local'}
+  region: ${opt:region}
+  tracing:
+    apiGateway: true
+    lambda: true
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - xray:PutTraceSegments
+        - xray:PutTelemetryRecords
+      Resource:
+        - '*'
+  environment:
+    SLIC_STAGE: ${self:provider.stage}
+    SERVICE_NAME: ${file(./package.json):name}
+    SERVICE_VERSION: ${file(./package.json):version}
+    CHECKLIST_TABLE_NAME: ${self:custom.checklistTableName}
+  logs:
+    restApi: true
+  logRetentionInDays: 7
+  lambdaHashingVersion: 20201221
+
+custom:
+  app: ${file(../../app.yml)}
+  bundle:
+    esbuild: true
+    linting: false
+  checklistTableName: ${self:provider.stage}Checklists
+  nsDomain: ${self:custom.app.domainConfig.nsDomain}
+  checklistApiUrl:
+    Fn::Join:
+      - ''
+      - - 'https://'
+        - Ref: 'ApiGatewayRestApi'
+        - '.execute-api.${self:provider.region}.amazonaws.com/${self:provider.stage}'
+  serverless-offline:
+    httpPort: 4000
+    lambdaPort: 4002
+    websocketPort: 4001
+    stage: local
+    region: ${self:provider.region}
+  dynamodb:
+    stages:
+      - local
+    migrate: true
+  prune:
+    automatic: true
+    number: 3
+  slicWatch: ${self:custom.app.slicWatch}
+  apiGatewayThrottling:
+    maxRequestsPerSecond: 50
+    maxConcurrentRequests: 25
+
+functions: ${file(./sls-functions.yml)}
+
+resources:
+  Parameters:
+    NsDomainParameter:
+      Type: String
+      Default: ${self:custom.app.domainConfig.nsDomain}
+
+    UserPoolArnParameter:
+      Type: AWS::SSM::Parameter::Value<String>
+      Default: /${self:provider.stage}/user-service/user-pool-arn
+
+  Conditions:
+    HasDomain: !Not [!Equals [!Ref NsDomainParameter, '']]
+
+  Resources:
+    cognitoAuthorizer:
+      Type: AWS::ApiGateway::Authorizer
+      Properties:
+        IdentitySource: method.request.header.Authorization
+        Name: slic-user-pool-authorizer-checklist-service
+        RestApiId:
+          Ref: ApiGatewayRestApi
+        Type: COGNITO_USER_POOLS
+        ProviderARNs:
+          - !Ref UserPoolArnParameter
+
+    slicTable:
+      Type: AWS::DynamoDB::Table
+      DeletionPolicy: Retain
+      Properties:
+        TableName: ${self:custom.checklistTableName}
+        AttributeDefinitions:
+          - AttributeName: userId
+            AttributeType: S
+          - AttributeName: listId
+            AttributeType: S
+        KeySchema:
+          - AttributeName: userId
+            KeyType: HASH
+          - AttributeName: listId
+            KeyType: RANGE
+        BillingMode: PAY_PER_REQUEST
+
+    checklistServiceNameParameter:
+      Type: AWS::SSM::Parameter
+      Properties:
+        Name: /${self:provider.stage}/checklist-service/url
+        Type: String
+        Value:
+          Fn::Join:
+            - ''
+            - ['https://', {'Ref': 'ApiGatewayRestApi'}, '.execute-api.${self:provider.region}.amazonaws.com/${self:provider.stage}']
+
+    # Workaround for "Invalid stage identifier specified"
+    # See https://github.com/serverless/serverless/issues/4029
+    resApiGatewayDeployment:
+      Type: AWS::ApiGateway::Deployment
+      Condition: HasDomain
+      DependsOn: ApiGatewayMethodPost
+      Properties:
+        StageName: ${self:provider.stage}
+        RestApiId:
+          Ref: ApiGatewayRestApi
+
+    apiCustomDomainPathMappings:
+      Type: AWS::ApiGateway::BasePathMapping
+      Condition: HasDomain
+      Properties:
+        BasePath: 'checklist'
+        RestApiId:
+          Ref: ApiGatewayRestApi
+        DomainName: api.${self:custom.app.domainConfig.domainPrefixes.${self:provider.stage}}${self:custom.nsDomain}
+        Stage: ${self:provider.stage}
+      DependsOn: resApiGatewayDeployment

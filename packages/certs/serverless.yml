@@ -1,0 +1,53 @@
+service: certs
+frameworkVersion: '3'
+projectDir: ..
+
+provider:
+  name: aws
+  stage: ${opt:stage, 'dev'}
+  region: us-east-1
+
+custom:
+  domainConfig: ${file(../../app.yml):domainConfig}
+  domainPrefixes: ${self:custom.domainConfig.domainPrefixes}
+  apiDomainName: api.${self:custom.domainPrefixes.${self:provider.stage}}${self:custom.domainConfig.nsDomain}
+  siteDomainName: ${self:custom.domainPrefixes.${self:provider.stage}}${self:custom.domainConfig.nsDomain}
+
+resources:
+  Outputs:
+    publicHostedZone:
+      Value: !Ref publicHostedZone
+      Export:
+        Name: ${self:provider.stage}-public-hosted-zone
+    siteCert:
+      Value: !Ref siteCert
+      Export:
+        Name: ${self:provider.stage}-site-cert
+    apiCert:
+      Value: !Ref apiCert
+      Export:
+        Name: ${self:provider.stage}-api-cert
+
+  Resources:
+    publicHostedZone:
+      Type: AWS::Route53::HostedZone
+      Properties:
+        Name: ${self:custom.domainConfig.nsDomain}
+
+    siteCert:
+      Type: AWS::CertificateManager::Certificate
+      Properties:
+        DomainName: ${self:custom.siteDomainName}
+        DomainValidationOptions:
+          - DomainName: ${self:custom.siteDomainName}
+            ValidationDomain: ${self:custom.domainConfig.nsDomain}
+        ValidationMethod: EMAIL
+
+    apiCert:
+      Type: AWS::CertificateManager::Certificate
+      Properties:
+        DomainName: ${self:custom.apiDomainName}
+        DomainValidationOptions:
+          - DomainName: ${self:custom.apiDomainName}
+            ValidationDomain: ${self:custom.domainConfig.nsDomain}
+        ValidationMethod: EMAIL

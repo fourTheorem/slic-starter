@@ -1,0 +1,33 @@
+{
+  "name": "integration-tests",
+  "version": "1.0.0",
+  "description": "Integration tests",
+  "main": "index.js",
+  "scripts": {
+    "test": "tap --no-coverage \"test/**/*.test.js\""
+  },
+  "author": "Eoin Shanaghy <eoin.shanaghy@fourtheorem.com>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/fourTheorem/slic-starter"
+  },
+  "keywords": [],
+  "devDependencies": {
+    "@faker-js/faker": "^7.2.0",
+    "aws-sdk": "^2.1153.0",
+    "awscred": "^1.5.0",
+    "axios": "^0.27.2",
+    "chance": "^1.1.8",
+    "jsonwebtoken": "^8.5.1",
+    "lodash": "^4.17.21",
+    "random": "^3.0.6",
+    "random-words": "^1.1.2",
+    "rword": "^3.2.1",
+    "tap": "^16.2.0",
+    "uuid": "^8.3.2"
+  },
+  "dependencies": {
+    "test-common": "*"
+  }
+}

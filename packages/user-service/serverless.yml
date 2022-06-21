@@ -1,0 +1,66 @@
+service: user-service
+frameworkVersion: '3'
+projectDir: ..
+
+plugins:
+  - serverless-offline
+  - serverless-prune-plugin
+  - serverless-iam-roles-per-function
+  - serverless-slic-watch-plugin
+  - serverless-bundle
+
+provider:
+  name: aws
+  endpointType: REGIONAL
+  runtime: nodejs16.x
+  stage: ${opt:stage, 'local'}
+  region: ${opt:region}
+  tracing:
+    apiGateway: true
+    lambda: true
+  environment:
+    SLIC_STAGE: ${self:provider.stage}
+  logs:
+    restApi: true
+  logRetentionInDays: 7
+  lambdaHashingVersion: 20201221
+
+custom:
+  app: ${file(../../app.yml)}
+  bundle:
+    esbuild: true
+    linting: false
+  serverless-offline:
+    httpPort: 4009
+    lambdaPort: 4011
+    websocketPort: 4010
+    stage: local
+    region: ${self:provider.region}
+    noAuth: true
+  prune:
+    automatic: true
+    number: 3
+  slicWatch: ${self:custom.app.slicWatch}
+
+functions: ${file(./sls-functions.yml)}
+
+resources:
+  Outputs:
+    userPool:
+      Value: !Ref slicUserPool
+      Export:
+        Name: ${self:provider.stage}-user-pool-id
+    userPoolClient:
+      Value: !Ref slicUserPoolClient
+      Export:
+        Name: ${self:provider.stage}-user-pool-client-id
+    identityPool:
+      Value: !Ref slicIdentityPool
+      Export:
+        Name: ${self:provider.stage}-identity-pool
+    slicUserPoolArn:
+      Value: !Ref slicUserPoolArn
+      Export:
+        Name: ${self:provider.stage}-user-pool-arn
+
+  Resources: ${file(./sls-resources.yml)}

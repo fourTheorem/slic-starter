@@ -5,6 +5,9 @@
   "engines": {
     "node": ">=16.15"
   },
+  "workspaces": [
+    "packages/*"
+  ],
   "scripts": {
     "coverage": "npm run test:packages -- --cov --coverage-report=html",
     "format": "eslint --cache --fix .",

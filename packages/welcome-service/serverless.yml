@@ -1,0 +1,41 @@
+service: welcome-service
+frameworkVersion: '3'
+projectDir: ..
+
+plugins:
+  - serverless-offline
+  - serverless-prune-plugin
+  - serverless-iam-roles-per-function
+  - serverless-slic-watch-plugin
+  - serverless-bundle
+
+provider:
+  name: aws
+  runtime: nodejs16.x
+  stage: ${opt:stage, 'local'}
+  region: ${opt:region}
+  tracing:
+    lambda: true
+  environment:
+    SLIC_STAGE: ${self:provider.stage}
+  logRetentionInDays: 7
+  lambdaHashingVersion: 20201221
+
+custom:
+  app: ${file(../../app.yml)}
+  bundle:
+    esbuild: true
+    linting: false
+  emailQueueName: ${self:provider.stage}-email-queue
+  prune:
+    automatic: true
+    number: 3
+  serverless-offline:
+    httpPort: 4012
+    lambdaPort: 4014
+    websocketPort: 4013
+    stage: local
+    region: ${self:provider.region}
+  slicWatch: ${self:custom.app.slicWatch}
+
+functions: ${file(./sls-functions.yml)}
