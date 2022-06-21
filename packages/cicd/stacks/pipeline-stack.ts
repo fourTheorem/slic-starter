@@ -101,14 +101,14 @@ export class PipelineStack extends Stack {
         version: '0.2',
         phases: {
           install: {
-            commands: [`n ${NODE_VERSION}`, 'cd cicd', 'npm ci']
+            commands: [`n ${NODE_VERSION}`, 'cd packages/cicd', 'npm ci']
           },
           build: {
             commands: ['npm run build', `npm run cdk -- synth ${cdkContextArgs.join(' ')}`]
           },
         },
         artifacts: {
-          'base-directory': 'cicd/cdk.out',
+          'base-directory': 'packages/cicd/cdk.out',
           'files': ['**/*'],
           'enable-symlinks': true,  // important for node_modules/.bin links, like `cdk` itself!
         }
