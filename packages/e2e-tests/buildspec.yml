@@ -1,0 +1,14 @@
+# e2e tests CodeBuild
+version: 0.2
+phases:
+  install:
+    commands:
+      - n 16.15
+      - cd packages/e2e-tests
+#      - npm install
+  build:
+    commands:
+      - bash ./codebuild-run-tests.sh
+artifacts:
+  files:
+    - e2e-tests/**/*
