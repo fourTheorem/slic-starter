@@ -1,6 +1,5 @@
 service: frontend
 frameworkVersion: '3'
-projectDir: ..
 
 plugins:
   - serverless-s3-sync

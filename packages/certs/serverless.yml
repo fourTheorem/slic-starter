@@ -1,6 +1,5 @@
 service: certs
 frameworkVersion: '3'
-projectDir: ..
 
 provider:
   name: aws
