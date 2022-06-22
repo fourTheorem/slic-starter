@@ -32,7 +32,7 @@ This project utilises  [npm workspaces](https://docs.npmjs.com/cli/v8/using-npm/
 ## 3. Deploy the pipeline with CDK
 
 ```
-cd cicd
+cd packages/cicd
 ```
 
 We are going to deploy the pipeline and the application in one account for the Quick Start method.

@@ -4,7 +4,7 @@
 [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
 [![license](https://img.shields.io/npm/l/slic-starter.svg)](./LICENSE)
 
-**Jump to:** [Getting Started](#getting-started) | [Quick Start](./QUICK_START.md) | [CI/CD](#cicd) | [Architecture](#application-architecture) | [Contributing](./CONTRIBUTING.md)
+**Jump to:** [Getting Started](#getting-started) | [Quick Start](docs/QUICK_START.md) | [CI/CD](#cicd) | [Architecture](#application-architecture) | [Contributing](docs/CONTRIBUTING.md)
 
 ---
 
@@ -53,7 +53,7 @@ This project is free to use by enterprise, startups, students, educators, enthus
 
 ## 2. Application Architecture
 
-![SLIC Starter Architecture](./architecture.png)
+![SLIC Starter Architecture](docs/architecture.png)
 
 For the CICD pipeline architecture, see [CI/CD](#cicd)
 
@@ -112,13 +112,13 @@ SLIC Starter has a front-end web application. It uses React, Redux and [Material
 
 Getting continuous integration and deployment (CI/CD) right is one of the most important things in your microservice or serverless project. Having a good foundation here allows you to keep making changes fast. It's also fairly difficult to get right. SLIC Starter has made key choices to help you here.
 
-1. SLIC Starter uses multiple AWS accounts for secure isolation of environments. If you are getting started, or just restricted to one account for any reason, you can always use the same account for everything. In the ideal case, you will have a separate account for development, staging, and production. ![Multiple accounts diagram ](./multiple-accounts.png)
+1. SLIC Starter uses multiple AWS accounts for secure isolation of environments. If you are getting started, or just restricted to one account for any reason, you can always use the same account for everything. In the ideal case, you will have a separate account for development, staging, and production. ![Multiple accounts diagram ](docs/multiple-accounts.png)
 1. CodePipeline and CodeBuild are used, so the CI/CD process is deployed using Infrastructure-as-Code, just like the application itself. For this, we use the [CDK](https://github.com/awslabs/aws-cdk).
 1. The process dynamically creates a CodePipeline pipeline for each target environment, and CodeBuild projects for _each module_(service) in the application
 1. Integration (API) and end-to-end UI tests are run before deployment to production. A manual approval step before deployment to production is included too.
 1. The CICD stack also include the Pipeline Dashboard application from the [Serverless Application Repository](https://serverlessrepo.aws.amazon.com/applications/arn:aws:serverlessrepo:us-east-1:923120264911:applications~pipeline-dashboard), giving you an automatic CloudWatch dashboard of the performance of all pipelines. (Credit to @heitorlessa for the idea and helping to get this working).
 
-![CI/CD Architecture](./cicd-architecture.png)
+![CI/CD Architecture](docs/cicd-architecture.png)
 
 ### 3.8. Testing
 
@@ -150,19 +150,19 @@ We use AWS Secrets Manager for storing the GitHub personal access token and AWS 
 SLIC Starter is designed to get you up in running with a real-world application as quickly as possible. The fact that we go beyond the average sample application, there is a bit more involved in getting to production. For example:
 
 1. We assume that you want to keep the CICD, staging and production accounts separate in most cases. These can be set up under one root account using [AWS Organizations](https://aws.amazon.com/organizations/). SLIC Starter also now supports single account deployment, so CICD, staging and production environments can be configured to live under the one account.
-2. SLIC Starter assumes you are using a registered domain (like `sliclists.com`) and will set up DNS entries for use in production (like `api.sliclists.com`) and staging (`stg.sliclists.com`, `api.stg.sliclists.com`). If you want to get up and running with a system quickly, you can skip domains by following the [QUICK_START.md](./QUICK_START.md) guide.
+2. SLIC Starter assumes you are using a registered domain (like `sliclists.com`) and will set up DNS entries for use in production (like `api.sliclists.com`) and staging (`stg.sliclists.com`, `api.stg.sliclists.com`). If you want to get up and running with a system quickly, you can skip domains by following the [QUICK_START.md](docs/QUICK_START.md) guide.
 3. By using domains, you will have to take some steps to set up DNS records and allow these to propagate.
 4. When your application is automatically deploying as part of the CICD process and HTTPS certificates are being created, you (the domain owner) will be sent an email by Amazon Route53 to verify that you are the domain owner.
 5. You will also have to validate your domains with SES in order to have permissions for emails to be sent.
 
 ## 5. Getting Started
 
-This section covers a full deployment using multiple accounts with domain names and HTTPS certificates. It takes quite a bit longer than your average sample app since there is DNS and certificate approval involved. If you want to try SLIC Starter out in a single account without domains, go to the [QUICK_START.md](./QUICK_START.md)]
+This section covers a full deployment using multiple accounts with domain names and HTTPS certificates. It takes quite a bit longer than your average sample app since there is DNS and certificate approval involved. If you want to try SLIC Starter out in a single account without domains, go to the [QUICK_START.md](docs/QUICK_START.md)]
 
 To set up deployment to your own accounts, first run through these steps.
 
 1. Fork the repository into your own account or organization on GitHub. If you don't use GitHub, you will have to tweak the source project in the CICD module ([pipeline-stack.ts](./packages/cicd/stacks/pipeline-stack.ts))
-2. Decide when DNS name you will use for your application. If you need to register one, the best place to do this is probably in your production account using [Amazon Route 53](https://aws.amazon.com/route53/). If you don't want to use a domain for the frontend application and API, you can follow the simpler [QUICK_START.md](./QUICK_START.md) guide.
+2. Decide when DNS name you will use for your application. If you need to register one, the best place to do this is probably in your production account using [Amazon Route 53](https://aws.amazon.com/route53/). If you don't want to use a domain for the frontend application and API, you can follow the simpler [QUICK_START.md](docs/QUICK_START.md) guide.
 3. Edit `app.yml`. This is an important step, so ensure you change all values to suit your needs.
  * Update to point to your correct repository (Change `owner` and `name` under `sourceRepo`)
  * Edit `domainConfig` to point to your domain. Use a domain you own so you can update DNS entries to point to your deployed environment. When the deployment process runs, the domain owner will be sent an email to verify ownership before the deployment completes.
@@ -269,7 +269,7 @@ There are many other amazing resources to help you get started, learn and evolve
 
 ## 13. Contributing
 
-See [CONTRIBUTING.md](CONTRIBUTING.md)
+See [CONTRIBUTING.md](docs/CONTRIBUTING.md)
 
 ## 14. License
 
