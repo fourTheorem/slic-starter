@@ -4,7 +4,7 @@
 [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
 [![license](https://img.shields.io/npm/l/slic-starter.svg)](./LICENSE)
 
-**Jump to:** [Getting Started](#getting-started) | [Quick Start](docs/QUICK_START.md) | [CI/CD](#cicd) | [Architecture](#application-architecture) | [Contributing](docs/CONTRIBUTING.md)
+**Jump to:** [Getting Started](#5-getting-started) | [Quick Start](docs/QUICK_START.md) | [CI/CD](#37-cicd) | [Architecture](#2-application-architecture) | [Contributing](docs/CONTRIBUTING.md)
 
 ---
 
@@ -25,7 +25,7 @@
   - [3.6. Front End](#36-front-end)
   - [3.7. CI/CD](#37-cicd)
   - [3.8. Testing](#38-testing)
-  - [3.9. Monitoring](#39-monitoring)
+  - [3.9. Monitoring and Observability](#39-observability)
   - [3.10. Secret Management](#310-secret-management)
 - [4. Before you Begin!](#4-before-you-begin)
 - [5. Getting Started](#5-getting-started)
@@ -55,7 +55,7 @@ This project is free to use by enterprise, startups, students, educators, enthus
 
 ![SLIC Starter Architecture](docs/architecture.png)
 
-For the CICD pipeline architecture, see [CI/CD](#cicd)
+For the CICD pipeline architecture, see [CI/CD](#37-cicd)
 
 ## 3. What does it provide?
 
@@ -68,13 +68,14 @@ SLIC Starter is a complete, working application. By including all the aspects of
 
 ### 3.1. Structure
 
-We chose a _monorepo_ approach. Every serverless module (service) is a folder at the parent level of the repo. The monorepo/multirepo decision is always a tricky one but we think monorepo works best here for these reasons.
+We chose a _monorepo_ approach using [npm workspaces](https://docs.npmjs.com/cli/v8/using-npm/workspaces) . Every serverless module (service) is a package under the [packages](./packages) directory. The monorepo/multirepo decision is always a tricky one, but we think monorepo works best here for these reasons.
 
 1. Getting started and onboarding developers becomes easier when everything is in one repo.
-1. Dependencies on common code and libraries are easier when you avoid referencing.
-1. All applcation code and infrastructure-as-code exist together.
-1. Changes across multiple services are managed and tracked in the same commits, PRs and merges.
-1. End-to-end tests exist in the same place as the code under test.
+2. Dependencies on common code and libraries are easier when you avoid referencing.
+  Each package's common dependencies are also installed once and the packages are symlinked for reuse and being DRY.
+3. All application code and infrastructure-as-code exist together.
+4. Changes across multiple services are managed and tracked in the same commits, PRs and merges.
+5. End-to-end tests exist in the same place as the code under test.
 
 ### 3.2. Tooling Choice
 
@@ -91,7 +92,7 @@ Authentication is a difficult problem with constantly-evolving security requirem
 
 ### 3.4. Data Access with a RESTful API
 
-SLIC Starter includes useful, working examples of typical CRUD (create, read, update and delete) actions with a REST API. Currently, these APIs are implemented with DynamoDB and the `DocumentClient` API. For an example of this, look at the implementation of the [Checklist](./checklist-service) service.
+SLIC Starter includes useful, working examples of typical CRUD (create, read, update and delete) actions with a REST API. Currently, these APIs are implemented with DynamoDB and the `DocumentClient` API. For an example of this, look at the implementation of the [Checklist](./packages/checklist-service) service.
 Upon first deploying SLIC Starter, the API Service will create Record Sets and an API Domain Name for your API. APIGateway and Route53 handles the creation of these resources for us.
 
 ### 3.5. Messaging
@@ -157,7 +158,7 @@ SLIC Starter is designed to get you up in running with a real-world application 
 
 ## 5. Getting Started
 
-This section covers a full deployment using multiple accounts with domain names and HTTPS certificates. It takes quite a bit longer than your average sample app since there is DNS and certificate approval involved. If you want to try SLIC Starter out in a single account without domains, go to the [QUICK_START.md](docs/QUICK_START.md)]
+This section covers a full deployment using multiple accounts with domain names and HTTPS certificates. It takes quite a bit longer than your average sample app since there is DNS and certificate approval involved. If you want to try SLIC Starter out in a single account without domains, go to the [QUICK_START.md](docs/QUICK_START.md)
 
 To set up deployment to your own accounts, first run through these steps.
 
@@ -223,7 +224,7 @@ npm start --workspace=packages/checklist-service
 npm start --workspace=packages/frontend
 ```
 
-You can run all other backend services using `npm start` in each directory.
+You can run all other backend services using `npm start` in each package root.
 
 ## 8. Frontend development with a real back end
 
@@ -273,4 +274,4 @@ See [CONTRIBUTING.md](docs/CONTRIBUTING.md)
 
 ## 14. License
 
-Copyright fourTheorem Ltd. 2018-2022. Distributed under the MIT License. See [LICENCE](LICENCE)
+Copyright fourTheorem Ltd. 2018-2022. Distributed under the MIT License. See [LICENSE](LICENSE)
