@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -e
+set -Eeuox pipefail
 
 source build-scripts/assume-cross-account-role.env
 cd packages/"${MODULE_NAME}"

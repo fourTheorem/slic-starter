@@ -8,7 +8,7 @@ LOCAL_DEPLOYMENT_STATE=/tmp/deployment-state.env
 
 aws s3 cp s3://${DEPLOYMENT_STATE_BUCKET}/${DEPLOYMENT_STATE_KEY} ${LOCAL_DEPLOYMENT_STATE}
 
-set -e
+set -Eeuox pipefail
 
 REPO_URL=$1
 TARGET_VERSION=$2
