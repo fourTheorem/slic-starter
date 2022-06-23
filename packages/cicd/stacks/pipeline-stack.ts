@@ -276,10 +276,6 @@ export class PipelineStack extends Stack {
             type: codeBuild.BuildEnvironmentVariableType.PLAINTEXT,
             value: stage
           },
-          CROSS_ACCOUNT_ID: {
-            type: codeBuild.BuildEnvironmentVariableType.PLAINTEXT,
-            value: targetAccounts[stage]
-          },
           MAILOSAUR_API_KEY: {
             type: codeBuild.BuildEnvironmentVariableType.PARAMETER_STORE,
             value: ssmParams.Test.MAILOSAUR_API_KEY
