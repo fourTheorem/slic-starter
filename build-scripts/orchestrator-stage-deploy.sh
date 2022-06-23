@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -Eeuox pipefail
+set -Eeuxo pipefail
 
 echo PIPELINE STATE:
 cat pipeline-state.env

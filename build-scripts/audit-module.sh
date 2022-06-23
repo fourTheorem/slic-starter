@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -Eeuox pipefail
+set -Eeuxo pipefail
 AUDIT_ARGS="--audit-level=high"
 
 npm install -g npm@latest

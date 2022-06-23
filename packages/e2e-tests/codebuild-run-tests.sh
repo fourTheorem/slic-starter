@@ -1,5 +1,5 @@
 #!/bin/bash
-set -Eeuox pipefail
+set -Eeuxo pipefail
 
 source ../../build-scripts/assume-cross-account-role.env
 npm run headless
