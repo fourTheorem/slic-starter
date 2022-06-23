@@ -4,7 +4,7 @@
 [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
 [![license](https://img.shields.io/npm/l/slic-starter.svg)](./LICENSE)
 
-**Jump to:** [Getting Started](#getting-started) | [Quick Start](./QUICK_START.md) | [CI/CD](#cicd) | [Architecture](#application-architecture) | [Contributing](./CONTRIBUTING.md)
+**Jump to:** [Getting Started](#5-getting-started) | [Quick Start](docs/QUICK_START.md) | [CI/CD](#37-cicd) | [Architecture](#2-application-architecture) | [Contributing](docs/CONTRIBUTING.md)
 
 ---
 
@@ -25,7 +25,7 @@
   - [3.6. Front End](#36-front-end)
   - [3.7. CI/CD](#37-cicd)
   - [3.8. Testing](#38-testing)
-  - [3.9. Monitoring](#39-monitoring)
+  - [3.9. Monitoring and Observability](#39-observability)
   - [3.10. Secret Management](#310-secret-management)
 - [4. Before you Begin!](#4-before-you-begin)
 - [5. Getting Started](#5-getting-started)
@@ -53,9 +53,9 @@ This project is free to use by enterprise, startups, students, educators, enthus
 
 ## 2. Application Architecture
 
-![SLIC Starter Architecture](./architecture.png)
+![SLIC Starter Architecture](docs/architecture.png)
 
-For the CICD pipeline architecture, see [CI/CD](#cicd)
+For the CICD pipeline architecture, see [CI/CD](#37-cicd)
 
 ## 3. What does it provide?
 
@@ -68,13 +68,14 @@ SLIC Starter is a complete, working application. By including all the aspects of
 
 ### 3.1. Structure
 
-We chose a _monorepo_ approach. Every serverless module (service) is a folder at the parent level of the repo. The monorepo/multirepo decision is always a tricky one but we think monorepo works best here for these reasons.
+We chose a _monorepo_ approach using [npm workspaces](https://docs.npmjs.com/cli/v8/using-npm/workspaces) . Every serverless module (service) is a package under the [packages](./packages) directory. The monorepo/multirepo decision is always a tricky one, but we think monorepo works best here for these reasons.
 
 1. Getting started and onboarding developers becomes easier when everything is in one repo.
-1. Dependencies on common code and libraries are easier when you avoid referencing.
-1. All applcation code and infrastructure-as-code exist together.
-1. Changes across multiple services are managed and tracked in the same commits, PRs and merges.
-1. End-to-end tests exist in the same place as the code under test.
+2. Dependencies on common code and libraries are easier when you avoid referencing.
+  Each package's common dependencies are also installed once and the packages are symlinked for reuse and being DRY.
+3. All application code and infrastructure-as-code exist together.
+4. Changes across multiple services are managed and tracked in the same commits, PRs and merges.
+5. End-to-end tests exist in the same place as the code under test.
 
 ### 3.2. Tooling Choice
 
@@ -91,7 +92,7 @@ Authentication is a difficult problem with constantly-evolving security requirem
 
 ### 3.4. Data Access with a RESTful API
 
-SLIC Starter includes useful, working examples of typical CRUD (create, read, update and delete) actions with a REST API. Currently, these APIs are implemented with DynamoDB and the `DocumentClient` API. For an example of this, look at the implementation of the [Checklist](./checklist-service) service.
+SLIC Starter includes useful, working examples of typical CRUD (create, read, update and delete) actions with a REST API. Currently, these APIs are implemented with DynamoDB and the `DocumentClient` API. For an example of this, look at the implementation of the [Checklist](./packages/checklist-service) service.
 Upon first deploying SLIC Starter, the API Service will create Record Sets and an API Domain Name for your API. APIGateway and Route53 handles the creation of these resources for us.
 
 ### 3.5. Messaging
@@ -112,13 +113,13 @@ SLIC Starter has a front-end web application. It uses React, Redux and [Material
 
 Getting continuous integration and deployment (CI/CD) right is one of the most important things in your microservice or serverless project. Having a good foundation here allows you to keep making changes fast. It's also fairly difficult to get right. SLIC Starter has made key choices to help you here.
 
-1. SLIC Starter uses multiple AWS accounts for secure isolation of environments. If you are getting started, or just restricted to one account for any reason, you can always use the same account for everything. In the ideal case, you will have a separate account for development, staging, and production. ![Multiple accounts diagram ](./multiple-accounts.png)
+1. SLIC Starter uses multiple AWS accounts for secure isolation of environments. If you are getting started, or just restricted to one account for any reason, you can always use the same account for everything. In the ideal case, you will have a separate account for development, staging, and production. ![Multiple accounts diagram ](docs/multiple-accounts.png)
 1. CodePipeline and CodeBuild are used, so the CI/CD process is deployed using Infrastructure-as-Code, just like the application itself. For this, we use the [CDK](https://github.com/awslabs/aws-cdk).
 1. The process dynamically creates a CodePipeline pipeline for each target environment, and CodeBuild projects for _each module_(service) in the application
 1. Integration (API) and end-to-end UI tests are run before deployment to production. A manual approval step before deployment to production is included too.
 1. The CICD stack also include the Pipeline Dashboard application from the [Serverless Application Repository](https://serverlessrepo.aws.amazon.com/applications/arn:aws:serverlessrepo:us-east-1:923120264911:applications~pipeline-dashboard), giving you an automatic CloudWatch dashboard of the performance of all pipelines. (Credit to @heitorlessa for the idea and helping to get this working).
 
-![CI/CD Architecture](./cicd-architecture.png)
+![CI/CD Architecture](docs/cicd-architecture.png)
 
 ### 3.8. Testing
 
@@ -130,8 +131,8 @@ SLIC Starter covers automated testing with:
 
 All tests can be run in local development mode as well as against a fully-deployed environment. The API and E2E tests are executed against a staging environment before deployment to production.
 
-For details on integration (API) tests, see the [README.md in integration-tests](./integration-tests/README.md)
-For details on end-to-end (E2E) tests, see the [README.md in e2e-tests](./e2e-tests/README.md)
+For details on integration (API) tests, see the [README.md in integration-tests](./packages/integration-tests/README.md)
+For details on end-to-end (E2E) tests, see the [README.md in e2e-tests](./packages/e2e-tests/README.md)
 
 ### 3.9. Observability
 
@@ -150,19 +151,19 @@ We use AWS Secrets Manager for storing the GitHub personal access token and AWS 
 SLIC Starter is designed to get you up in running with a real-world application as quickly as possible. The fact that we go beyond the average sample application, there is a bit more involved in getting to production. For example:
 
 1. We assume that you want to keep the CICD, staging and production accounts separate in most cases. These can be set up under one root account using [AWS Organizations](https://aws.amazon.com/organizations/). SLIC Starter also now supports single account deployment, so CICD, staging and production environments can be configured to live under the one account.
-2. SLIC Starter assumes you are using a registered domain (like `sliclists.com`) and will set up DNS entries for use in production (like `api.sliclists.com`) and staging (`stg.sliclists.com`, `api.stg.sliclists.com`). If you want to get up and running with a system quickly, you can skip domains by following the [QUICK_START.md](./QUICK_START.md) guide.
+2. SLIC Starter assumes you are using a registered domain (like `sliclists.com`) and will set up DNS entries for use in production (like `api.sliclists.com`) and staging (`stg.sliclists.com`, `api.stg.sliclists.com`). If you want to get up and running with a system quickly, you can skip domains by following the [QUICK_START.md](docs/QUICK_START.md) guide.
 3. By using domains, you will have to take some steps to set up DNS records and allow these to propagate.
 4. When your application is automatically deploying as part of the CICD process and HTTPS certificates are being created, you (the domain owner) will be sent an email by Amazon Route53 to verify that you are the domain owner.
 5. You will also have to validate your domains with SES in order to have permissions for emails to be sent.
 
 ## 5. Getting Started
 
-This section covers a full deployment using multiple accounts with domain names and HTTPS certificates. It takes quite a bit longer than your average sample app since there is DNS and certificate approval involved. If you want to try SLIC Starter out in a single account without domains, go to the [QUICK_START.md](./QUICK_START.md)]
+This section covers a full deployment using multiple accounts with domain names and HTTPS certificates. It takes quite a bit longer than your average sample app since there is DNS and certificate approval involved. If you want to try SLIC Starter out in a single account without domains, go to the [QUICK_START.md](docs/QUICK_START.md)
 
 To set up deployment to your own accounts, first run through these steps.
 
-1. Fork the repository into your own account or organization on GitHub. If you don't use GitHub, you will have to tweak the source project in the CICD module ([source-project.ts](./cicd/lib/project/source-project.ts))
-2. Decide when DNS name you will use for your application. If you need to register one, the best place to do this is probably in your production account using [Amazon Route 53](https://aws.amazon.com/route53/). If you don't want to use a domain for the frontend application and API, you can follow the simpler [QUICK_START.md](./QUICK_START.md) guide.
+1. Fork the repository into your own account or organization on GitHub. If you don't use GitHub, you will have to tweak the source project in the CICD module ([pipeline-stack.ts](./packages/cicd/stacks/pipeline-stack.ts))
+2. Decide when DNS name you will use for your application. If you need to register one, the best place to do this is probably in your production account using [Amazon Route 53](https://aws.amazon.com/route53/). If you don't want to use a domain for the frontend application and API, you can follow the simpler [QUICK_START.md](docs/QUICK_START.md) guide.
 3. Edit `app.yml`. This is an important step, so ensure you change all values to suit your needs.
  * Update to point to your correct repository (Change `owner` and `name` under `sourceRepo`)
  * Edit `domainConfig` to point to your domain. Use a domain you own so you can update DNS entries to point to your deployed environment. When the deployment process runs, the domain owner will be sent an email to verify ownership before the deployment completes.
@@ -172,7 +173,7 @@ To set up deployment to your own accounts, first run through these steps.
 - `/test/mailosaur/apiKey`
   These are picked up by the integration and end-to-end test CodeBuild projects.
 5. Create a secret string in System Manager Parameter store for each target account (e.g, stg or prod) with a value used to sign and verify verification codes - the parameter name should be `/STAGE/sharing-service/code-secret` where STAGE is the stage you are deploying to (dev, stg or prod). You can choose any secure password for this, since it's a shared secret. The important thing is that it is not stored in plaintext anywhere.
-6. Set up the CICD pipeline according to [cicd/README.md](./cicd/README.md)
+6. Set up the CICD pipeline according to [cicd/packages/README.md](./packages/cicd/README.md)
 7. Trigger your pipeline by committing your changes to the repository
 
 ## 6. Getting to your First Successful Deployment
@@ -212,25 +213,22 @@ docker-compose up -d
 ```
 2. Set up the DynamoDB Local server and table in the checklist service:
 ```
-cd checklist-service
-sls dynamodb install --region us-east-1
+npm exec --workspace packages/checklist-service --call "sls dynamodb install --region us-east-1"
 ```
 3. Start the checklist service:
 ```
-cd checklist-service
-npm start
+npm start --workspace=packages/checklist-service
 ```
 4. Start the front end in local mode:
 ```
-cd frontend
-npm start
+npm start --workspace=packages/frontend
 ```
 
-You can run all other backend services using `npm start` in each directory.
+You can run all other backend services using `npm start` in each package root.
 
 ## 8. Frontend development with a real back end
 
-Normally, when you run `npm start` in the `frontend` folder, it will use `localhost` for APIs and mock Amplify/Cognito configuration values.
+Normally, when you run `npm start` in the `frontend` package, it will use `localhost` for APIs and mock Amplify/Cognito configuration values.
 To run the front end locally with a _real backend_ deployed to AWS, you need to generate a `.env` file that will be picked up by [Create React App](https://create-react-app.dev/docs/adding-custom-environment-variables/).
 
 For example, to use the development environment deployed to AWS, you can generate an `env` file. Your AWS credentials need to be configured to talk to the development account in order for this to work.
@@ -243,7 +241,7 @@ cp .env.production .env.local
 
 Then you can restart the front end:
 ```
-npm start
+npm start --workspace=packages/frontend
 ```
 
 `.env.local` will be picked up before the default `.env.development` file and will ensure your front end is configured against the development back end.
@@ -272,8 +270,8 @@ There are many other amazing resources to help you get started, learn and evolve
 
 ## 13. Contributing
 
-See [CONTRIBUTING.md](CONTRIBUTING.md)
+See [CONTRIBUTING.md](docs/CONTRIBUTING.md)
 
 ## 14. License
 
-Copyright fourTheorem Ltd. 2018-2022. Distributed under the MIT License. See [LICENCE](LICENCE)
+Copyright fourTheorem Ltd. 2018-2022. Distributed under the MIT License. See [LICENSE](LICENSE)

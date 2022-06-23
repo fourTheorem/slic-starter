@@ -9,11 +9,11 @@ This setup is faster than the full, domain-based, multi-account setup because:
 
 # Prerequisites
 
-- Node v12 or later should be installed locally.
-- The Serverless Framework v2 should be installed:
+- Node v16 or later should be installed locally.
+- The Serverless Framework v3 should be installed:
 
 ```
-npm install serverless@2 -g
+npm install serverless@3 -g
 ```
 
 # Steps
@@ -27,12 +27,12 @@ You should work within your own clone/fork of the repository so you can freely c
 
 ## 2. Install packages
 
-You should run `npm install` for all packages. Run the `./util/install-packages.sh` script to do this. The minimum requirement here is to run `npm install` in the `cicd` folder. Everything else is only really required for local development later.
+This project utilises  [npm workspaces](https://docs.npmjs.com/cli/v8/using-npm/workspaces). You should run `npm ci` in the root directory to install all package dependencies.
 
 ## 3. Deploy the pipeline with CDK
 
 ```
-cd cicd
+cd packages/cicd
 ```
 
 We are going to deploy the pipeline and the application in one account for the Quick Start method.
@@ -76,7 +76,7 @@ SLIC Starter uses SES to send and receive emails. If you want SES to be able to 
 
 Ensure that AWS credentials are configured in your environment before running the deploy commands below.
 
-1. `cd BASEDIR/cicd`
+1. `cd BASEDIR/packages/cicd`
 4. `npx cdk -c stages=${STAGES} deploy PipelineStack`
 
 

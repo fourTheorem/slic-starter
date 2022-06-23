@@ -1,6 +1,5 @@
 service: email-service
 frameworkVersion: '3'
-projectDir: ..
 
 plugins:
   - serverless-offline

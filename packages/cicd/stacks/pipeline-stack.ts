@@ -187,7 +187,7 @@ export class PipelineStack extends Stack {
           install: {
             commands: [
               `n ${NODE_VERSION}`,
-              'bash util/install-packages.sh'
+              'npm ci'
             ]
           },
           build: { commands: ['npm test'] },
