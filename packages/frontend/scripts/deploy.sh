@@ -1,5 +1,5 @@
 #!/bin/bash
-set -e
+set -Eeuox pipefail
 
 if [[ -z "${STAGE}" ]]; then
   echo STAGE must be set

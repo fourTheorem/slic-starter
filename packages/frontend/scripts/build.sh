@@ -1,7 +1,5 @@
 #!/bin/sh
-
-set -e
+set -Eeuox pipefail
 
 echo frontend build.sh
-
 npm run build

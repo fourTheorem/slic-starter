@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "description": "Email Service for SLIC Starter",
   "scripts": {
-    "start": "source ../localstack.env && sls offline start --region us-east-1 --migrate true",
+    "prestart": "source ../../localstack.env",
+    "start": "sls offline start --region us-east-1",
     "lint": "eslint .",
     "format": "eslint --cache --fix \"**/*.js\"",
     "coverage": "npm run test -- --cov --coverage-report=html",

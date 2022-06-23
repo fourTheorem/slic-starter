@@ -11,7 +11,7 @@ services:
       - SERVICES=sqs,sns,events,ssm
 
   create-localstack-resources:
-    image: anigeo/awscli
+    image: amazon/aws-cli
     entrypoint: '/root/localstack/create_localstack_resources.sh'
     volumes:
       - .:/root

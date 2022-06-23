@@ -57,7 +57,8 @@ custom:
   dynamodb:
     stages:
       - local
-    migrate: true
+    start:
+      migrate: true
   prune:
     automatic: true
     number: 3

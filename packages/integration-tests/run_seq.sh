@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -e
+set -Eeuox pipefail
 
 num=$1
 
