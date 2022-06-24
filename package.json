@@ -14,7 +14,8 @@
     "test:lint": "eslint .",
     "tap": "AWS_XRAY_CONTEXT_MISSING=LOG_ERROR AWS_XRAY_LOG_LEVEL=silent tap",
     "test:packages": "npm run tap -- --branches=100 --statements=100 --functions=100 --lines=100",
-    "test": "npm run test:lint && npm run test:packages"
+    "test": "npm run test:lint && npm run test:packages",
+    "prepare": "husky install"
   },
   "repository": {
     "type": "git",
@@ -36,6 +37,7 @@
     "@commitlint/config-conventional": "^17.0.2",
     "aws-sdk-mock": "^5.7.0",
     "awscred": "^1.5.0",
+    "cz-conventional-changelog": "^3.3.0",
     "eslint": "^8.17.0",
     "eslint-config-react-app": "^7.0.1",
     "eslint-config-standard": "^17.0.0",
@@ -72,5 +74,10 @@
     "*.js": [
       "eslint --cache --fix"
     ]
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
   }
 }
