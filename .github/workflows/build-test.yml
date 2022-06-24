@@ -1,0 +1,18 @@
+name: build-test
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+jobs:
+  lint-commits:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v3
+      - run: npm ci --dev --workspaces false --fund false
+      - name: lint-commits
+        run: ./node_modules/.bin/commitlint --from HEAD~${{ github.event.pull_request.commits }} --to HEAD --verbose

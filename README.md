@@ -2,6 +2,7 @@
 
 [![serverless](http://public.serverless.com/badges/v3.svg)](http://www.serverless.com)
 [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
+[![Commitizen friendly](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg)](http://commitizen.github.io/cz-cli/)
 [![license](https://img.shields.io/npm/l/slic-starter.svg)](./LICENSE)
 
 **Jump to:** [Getting Started](#5-getting-started) | [Quick Start](docs/QUICK_START.md) | [CI/CD](#37-cicd) | [Architecture](#2-application-architecture) | [Contributing](docs/CONTRIBUTING.md)
