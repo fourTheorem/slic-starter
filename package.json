@@ -32,6 +32,8 @@
   },
   "homepage": "https://github.com/fourTheorem/slic-starter#readme",
   "devDependencies": {
+    "@commitlint/cli": "^17.0.2",
+    "@commitlint/config-conventional": "^17.0.2",
     "aws-sdk-mock": "^5.7.0",
     "awscred": "^1.5.0",
     "eslint": "^8.17.0",

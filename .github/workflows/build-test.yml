@@ -1,0 +1,19 @@
+name: build-test
+on:
+  pull_request:
+    branches:
+      - main
+jobs:
+  lint-commits:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v3
+      - name: Install commitlint
+        run: npm i --package-lock=false @commitlint/{cli,config-conventional}
+      - name: Lint commits
+        run: ./node_modules/.bin/commitlint --from HEAD~${{ github.event.pull_request.commits }} --to HEAD --verbose
+
