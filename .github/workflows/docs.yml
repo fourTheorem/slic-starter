@@ -20,7 +20,7 @@ jobs:
           packages/docs-build/build
         key: ${{ github.sha }}-build
     - name: install
-      run: npm exec --workspace packages/docs-build --call "npm ci"
+      run: npm exec --workspace packages/docs-build --call "npm ci --ignore-scripts"
     - name: build docs
       run: npm run build --workspace packages/docs-build
   docs-release:
