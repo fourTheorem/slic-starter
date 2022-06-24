@@ -17,5 +17,6 @@ There are a number of areas where you can contribute right now.
 ## Pull Request Process
 
 1. Ensure that all test have been run and pass.
-2. Update the README.md with details of changes and documentation.
-3. You may merge the Pull Request in once you have the sign-off of another contributor or if you do not have permission to do that, you may request the second reviewer to merge it for you.
+2. This project uses [conventional commits](https://conventionalcommits.org/). Ensure that your commits follows the guidelines.
+3. Update the README.md with details of changes and documentation.
+4. You may merge the Pull Request in once you have the sign-off of another contributor or if you do not have permission to do that, you may request the second reviewer to merge it for you.
