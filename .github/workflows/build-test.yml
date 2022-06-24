@@ -4,15 +4,35 @@ on:
     branches:
       - main
   pull_request:
+concurrency: ci-${{ github.ref}}-${{ github.event_name }}
+env:
+  NODE_VERSION: 16
 jobs:
-  lint-commits:
+  release:
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    if: github.ref_name == github.event.repository.default_branch
     steps:
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0
       - uses: actions/setup-node@v3
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+      - run: npm ci --dev --workspaces false --fund false
+      - env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: npm run release
+  lint-commits:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    if: github.ref_name != github.event.repository.default_branch
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v3
+        with:
+          node-version: ${{ env.NODE_VERSION }}
       - run: npm ci --dev --workspaces false --fund false
       - name: lint-commits
         run: ./node_modules/.bin/commitlint --from HEAD~${{ github.event.pull_request.commits }} --to HEAD --verbose
