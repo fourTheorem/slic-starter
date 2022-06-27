@@ -21,6 +21,7 @@ jobs:
       - run: npm ci --dev --workspaces false --fund false
       - env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          HUSKY: 0
         run: npm run release
   lint-commits:
     runs-on: ubuntu-latest
