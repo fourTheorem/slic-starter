@@ -113,7 +113,13 @@ export class PipelineStack extends Stack {
           'enable-symlinks': true,  // important for node_modules/.bin links, like `cdk` itself!
         }
       }),
-      environment: codeBuildEnvironment
+      environment: codeBuildEnvironment,
+      environmentVariables: {
+        HUSKY: {
+          type: codeBuild.BuildEnvironmentVariableType.PLAINTEXT,
+          value: 0
+        },
+      }
     })
 
     if (!skipSelfMutation) {
@@ -197,8 +203,13 @@ export class PipelineStack extends Stack {
           'enable-symlinks': true,
         }
       }),
-      environment: codeBuildEnvironment
-    })
+      environment: codeBuildEnvironment,
+      environmentVariables: {
+        HUSKY: {
+          type: codeBuild.BuildEnvironmentVariableType.PLAINTEXT,
+          value: 0
+        }
+    }})
 
     const unitTestOutput = new codePipeline.Artifact()
     pipeline.addStage({
