@@ -1,12 +1,13 @@
 const { middify } = require('slic-tools/middy-util')
-
-const { AWS } = require('slic-tools/aws')
-const awsXray = require('aws-xray-sdk-core')
-
 const log = require('slic-tools/log')
+const {
+  SESv2Client,
+  SendEmailCommand
+} = require('@aws-sdk/client-sesv2')
+const { captureAWSv3Client } = require('aws-xray-sdk-core')
 
-const ses = awsXray.captureAWSClient(
-  new AWS.SES({
+const sesClient = captureAWSv3Client(
+  new SESv2Client({
     endpoint: process.env.SES_ENDPOINT_URL,
     region: process.env.SES_REGION
   })
@@ -21,22 +22,24 @@ async function sendEmail (message, context) {
     Destination: {
       ToAddresses: [to]
     },
-    Message: {
-      Body: {
-        Text: {
+    Content: {
+      Simple: {
+        Body: {
+          Text: {
+            Charset: 'UTF-8',
+            Data: body
+          }
+        },
+        Subject: {
           Charset: 'UTF-8',
-          Data: body
+          Data: subject
         }
-      },
-      Subject: {
-        Charset: 'UTF-8',
-        Data: subject
       }
     },
-    Source: context.emailFromAddress
+    FromEmailAddress: context.emailFromAddress
   }
 
-  const result = await ses.sendEmail(params).promise()
+  const result = await sesClient.send(new SendEmailCommand(params))
   log.info({ result }, 'Sent email')
 }
 

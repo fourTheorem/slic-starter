@@ -1,26 +1,22 @@
-const path = require('path')
+const { mockClient } = require('aws-sdk-client-mock')
+const {
+  SESv2Client,
+  SendEmailCommand
+} = require('@aws-sdk/client-sesv2')
+const t = require('tap')
 
-const awsMock = require('aws-sdk-mock')
-const { test } = require('tap')
+const emailHandler = require('../../../services/email/email-handler')
 
-const fromAddress = 'noreply@example.com'
-process.env.EMAIL_FROM_ADDRESS = fromAddress
+const sesMock = mockClient(SESv2Client)
 
-awsMock.setSDK(path.resolve(__dirname, '../../../../../node_modules/aws-sdk'))
-const received = {
-  SES: {}
-}
-
-awsMock.mock('SES', 'sendEmail', function (params, callback) {
-  received.SES.sendEmail = params
-  callback(null, { ...params })
+t.beforeEach(async function () {
+  await sesMock.reset()
+  sesMock.on(SendEmailCommand).resolves({})
 })
 
-test('email sends an email', async t => {
+t.test('email sends an email', async t => {
   const emailFromAddress = 'noreply@example.com'
-  const emailHandler = require('../../../services/email/email-handler')
-
-  const message = {
+  const event = {
     Records: [
       {
         body:
@@ -29,27 +25,29 @@ test('email sends an email', async t => {
     ]
   }
 
-  await emailHandler.sendEmail(message, { emailFromAddress }, () => {})
+  await emailHandler.sendEmail(event, { emailFromAddress })
 
-  const expected = {
+  const expectedArgs = {
     Destination: {
       ToAddresses: ['example@example.com']
     },
-    Message: {
-      Body: {
-        Text: {
-          Data: 'hello',
+    Content: {
+      Simple: {
+        Body: {
+          Text: {
+            Data: 'hello',
+            Charset: 'UTF-8'
+          }
+        },
+        Subject: {
+          Data: 'SLIC List',
           Charset: 'UTF-8'
         }
-      },
-      Subject: {
-        Data: 'SLIC List',
-        Charset: 'UTF-8'
       }
     },
-    Source: fromAddress
+    FromEmailAddress: emailFromAddress
   }
 
-  t.match(received.SES.sendEmail, expected)
-  t.end()
+  t.equal(sesMock.send.callCount, 1)
+  t.same(sesMock.send.firstCall.args[0].input, expectedArgs)
 })
