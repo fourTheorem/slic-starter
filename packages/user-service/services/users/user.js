@@ -1,11 +1,14 @@
-const { AWS } = require('slic-tools/aws')
-const awsXray = require('aws-xray-sdk-core')
+const {
+  CognitoIdentityProviderClient,
+  AdminGetUserCommand
+} = require('@aws-sdk/client-cognito-identity-provider')
+const { captureAWSv3Client } = require('aws-xray-sdk-core')
 
 const log = require('slic-tools/log')
 
-const cognitoCore = new AWS.CognitoIdentityServiceProvider()
+const cognitoCore = new CognitoIdentityProviderClient({ region: process.env.AWS_REGION })
 /* istanbul ignore next */
-const cognito = process.env.SLIC_STAGE === 'test' ? cognitoCore : awsXray.captureAWSClient(cognitoCore)
+const cognitoClient = process.env.SLIC_STAGE === 'test' ? cognitoCore : captureAWSv3Client(cognitoCore)
 
 async function get ({ userId }) {
   const params = {
@@ -14,7 +17,7 @@ async function get ({ userId }) {
   }
   log.info({ params }, 'User Pool Parameters')
 
-  const cognitoUser = await cognito.adminGetUser(params).promise()
+  const cognitoUser = await cognitoClient.send(new AdminGetUserCommand(params))
   log.info({ cognitoUser }, 'Got user')
   const result = {}
   cognitoUser.UserAttributes.forEach(({ Name, Value }) => {

@@ -1,49 +1,44 @@
-const path = require('path')
-const awsMock = require('aws-sdk-mock')
-const { test } = require('tap')
+const { v4: uuid } = require('uuid')
+const { mockClient } = require('aws-sdk-client-mock')
+const {
+  CognitoIdentityProviderClient,
+  AdminGetUserCommand
+} = require('@aws-sdk/client-cognito-identity-provider')
+const t = require('tap')
 
-awsMock.setSDK(path.resolve(__dirname, '../../../../../node_modules/aws-sdk'))
+const userService = require('../../../services/users/user')
+
 process.env.USER_POOL_ID = 'User_pool123'
-
 const testEmail = 'email@example.com'
 
-const user = {
-  Users: [{ Username: '123' }]
-}
+const cognitoMock = mockClient(CognitoIdentityProviderClient)
 
-awsMock.mock('SSM', 'getParameter', function (params, callback) {
-  callback(null, { Parameter: { Value: 'test-user-pool-id' } })
+t.beforeEach(async function () {
+  await cognitoMock.reset()
+  cognitoMock.on(AdminGetUserCommand).resolves({ UserAttributes: [{ Name: 'email', Value: testEmail }] })
 })
 
-awsMock.mock('CognitoIdentityServiceProvider', 'adminGetUser', function (
-  params,
-  callback
-) {
-  const UserAttributes = [{ Name: 'email', Value: testEmail }]
-  callback(null, { UserAttributes })
-})
+t.test('user service retrieves cognito user information', async t => {
+  const userId = uuid()
 
-awsMock.mock('CognitoIdentityServiceProvider', 'listUsers', function (
-  params,
-  callback
-) {
-  callback(null, user)
-})
-
-test('user service retrieves cognito user information', async t => {
-  const userService = require('../../../services/users/user')
   const response = await userService.get({
-    userId: 'userId'
+    userId
   })
   t.match(response, {
     email: testEmail
   })
 
   // Run again to test pre-cached user ID
-  const responser2 = await userService.get({
-    userId: 'userId'
+  const response2 = await userService.get({
+    userId
   })
-  t.match(responser2, {
+  t.match(response2, {
     email: testEmail
+  })
+
+  t.equal(cognitoMock.send.callCount, 2)
+  t.same(cognitoMock.send.firstCall.args[0].input, {
+    UserPoolId: 'User_pool123',
+    Username: userId
   })
 })
