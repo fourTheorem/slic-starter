@@ -1,11 +1,11 @@
-import {
+const {
   BatchGetCommand,
   DeleteCommand,
   GetCommand,
   PutCommand,
   QueryCommand,
   UpdateCommand
-} from '@aws-sdk/lib-dynamodb'
+} = require('@aws-sdk/lib-dynamodb')
 const { v4: uuid } = require('uuid')
 const { dispatchEvent } = require('slic-tools/event-dispatcher')
 const { dynamoDocClient } = require('slic-tools/aws')
@@ -84,7 +84,7 @@ async function list ({ userId }) {
   // Find all lists accessible by the user, including
   // shared lists which have sharedListOwner set but no values
   // for name, description or createdAt
-  const { Items: lists = [] } = await dynamo.send(new QueryCommand({
+  const { Items: lists } = await dynamo.send(new QueryCommand({
     TableName,
     ProjectionExpression: '#listId, #name, #description, #createdAt, #sharedListOwner, #userId',
     KeyConditionExpression: 'userId = :userId',
@@ -98,8 +98,7 @@ async function list ({ userId }) {
     },
     ExpressionAttributeValues: {
       ':userId': userId
-    },
-    FilterExpression: 'attribute_exists(#sharedListOwner)'
+    }
   }))
 
   const sharedListKeys = lists
@@ -128,7 +127,7 @@ async function list ({ userId }) {
 
     const {
       Responses: {
-        TableName: sharedLists
+        [TableName]: sharedLists
       }
     } = await dynamo.send(new BatchGetCommand(params))
 
