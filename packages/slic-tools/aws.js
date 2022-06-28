@@ -1,5 +1,5 @@
-import { DynamoDBClient } from '@aws-sdk/client-dynamodb'
-import { DynamoDBDocumentClient } from '@aws-sdk/lib-dynamodb'
+const { DynamoDBClient } = require('@aws-sdk/client-dynamodb')
+const { DynamoDBDocumentClient } = require('@aws-sdk/lib-dynamodb')
 const { captureAWSv3Client } = require('aws-xray-sdk-core')
 
 const defaultOptions = {
@@ -11,7 +11,6 @@ const defaultOptions = {
 /*
  * Adapted from https://github.com/99xt/serverless-dynamodb-client/blob/master/index.js
  */
-
 const localDynamoPort = process.env.DYNAMODB_LOCAL_PORT || 8000
 
 const options = process.env.IS_OFFLINE
