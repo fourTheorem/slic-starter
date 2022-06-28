@@ -1,9 +1,9 @@
 const AWS = require('aws-sdk')
 const docClient = new AWS.DynamoDB.DocumentClient({
-  endpoint: process.env.DYNAMODB_ENDPOINT_URL
+    region: 'eu-west-1'
 })
 
-const tableName = 'checklists'
+const tableName = 'prodChecklists'
 
 /*
 testaccount1@example.com UserId: mock-auth-dGVzdGFjY291bnQxQGV4YW1wbGUuY29t
@@ -11,7 +11,7 @@ testaccount2@example.com mock-auth-dGVzdGFjY291bnQyQGV4YW1wbGUuY29t
 */
 async function run () {
   console.log('Querying records')
-  const userId = 'mock-auth-dGVzdGFjY291bnQyQGV4YW1wbGUuY29t' // testaccount2
+  const userId = '3ec193ed-ae07-42f0-bcca-bc98075398cf' // testaccount2
   const lists = (await docClient
     .query({
       TableName: tableName,
