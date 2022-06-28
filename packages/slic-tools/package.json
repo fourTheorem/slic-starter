@@ -7,5 +7,9 @@
     "type": "git",
     "url": "https://github.com/fourTheorem/slic-starter"
   },
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "@aws-sdk/client-dynamodb": "^3.118.1",
+    "@aws-sdk/lib-dynamodb": "^3.118.1"
+  }
 }

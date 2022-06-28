@@ -1,14 +1,11 @@
-const awsXray = require('aws-xray-sdk-core')
-const coreAws = require('aws-sdk')
-/* istanbul ignore next */
-const AWS = process.env.IS_OFFLINE || process.env.SLIC_STAGE === 'test' ? coreAws : awsXray.captureAWS(coreAws) // TODO - Revisit this to enable XRay always
+import { DynamoDBClient } from '@aws-sdk/client-dynamodb'
+import { DynamoDBDocumentClient } from '@aws-sdk/lib-dynamodb'
+const { captureAWSv3Client } = require('aws-xray-sdk-core')
 
 const defaultOptions = {
-  // If this is not set, empty strings cause an error. This converts them automatically to NULL
-  convertEmptyValues: true,
   // Prevent long-running retry loops caused by the default SDK DDB retry count of 10 with
-  // exponential backoff with dealys up to 25 seconds
-  maxRetries: 3
+  // exponential backoff with deals up to 25 seconds
+  maxAttempts: 4
 }
 
 /*
@@ -25,11 +22,21 @@ const options = process.env.IS_OFFLINE
     }
   : defaultOptions
 
+const dynamoDbClient = new DynamoDBClient(options)
+const dynamoDbDocClient = DynamoDBDocumentClient.from(dynamoDbClient, {
+  marshallOptions: {
+    convertEmptyValues: true,
+    removeUndefinedValues: true
+  }
+})
+
+/* istanbul ignore next */
+const ddb = process.env.IS_OFFLINE || process.env.SLIC_STAGE === 'test' ? dynamoDbDocClient : captureAWSv3Client(dynamoDbDocClient) // TODO - Revisit this to enable XRay always
+
 function dynamoDocClient () {
-  return new AWS.DynamoDB.DocumentClient(options)
+  return ddb
 }
 
 module.exports = {
-  dynamoDocClient,
-  AWS
+  dynamoDocClient
 }
