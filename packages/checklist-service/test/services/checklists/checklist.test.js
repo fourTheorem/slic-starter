@@ -1,14 +1,17 @@
-const path = require('path')
-const proxyquire = require('proxyquire')
-const awsMock = require('aws-sdk-mock')
-awsMock.setSDK(path.resolve(__dirname, '../../../../../node_modules/aws-sdk'))
-
-const { test } = require('tap')
-
-const userId = 'ownerA'
+const {
+  BatchGetCommand,
+  DynamoDBDocumentClient,
+  GetCommand,
+  QueryCommand
+} = require('@aws-sdk/lib-dynamodb')
+const { mockClient } = require('aws-sdk-client-mock')
+const t = require('tap')
 
 process.env.CHECKLIST_TABLE_NAME = 'checklists'
 
+const dynamoMock = mockClient(DynamoDBDocumentClient)
+
+const userId = 'ownerA'
 const list1 = {
   userId: 'ownerA',
   listId: 'list1',
@@ -35,7 +38,6 @@ const testLists = {
       description: 'List three Description',
       entries: {}
     },
-
     {
       userId: 'ownerB',
       listId: 'list1',
@@ -44,178 +46,151 @@ const testLists = {
   ]
 }
 
-const received = {
-  dynamoDb: {}
-}
-
-awsMock.mock('DynamoDB.DocumentClient', 'put', function (params, callback) {
-  received.dynamoDb.put = params
-  callback(null, { ...params })
-})
-
-awsMock.mock('DynamoDB.DocumentClient', 'update', function (params, callback) {
-  received.dynamoDb.update = params
-  callback(null, { ...params })
-})
-
-awsMock.mock('DynamoDB.DocumentClient', 'get', function (params, callback) {
-  received.dynamoDb.get = params
-  const userId = params.Key.userId
-  const listId = params.Key.listId
-  callback(null, {
-    Item: testLists[userId].find(list => list.listId === listId)
-  })
-})
-
-awsMock.mock('DynamoDB.DocumentClient', 'batchGet', function (
-  params,
-  callback
-) {
-  callback(null, { Responses: { checklists: [list1] } })
-})
-
-awsMock.mock('DynamoDB.DocumentClient', 'delete', function (params, callback) {
-  received.dynamoDb.delete = params
-  callback(null, { ...params })
-})
-
-awsMock.mock('DynamoDB.DocumentClient', 'query', function (params, callback) {
-  received.dynamoDb.query = params
-  const userId = params.ExpressionAttributeValues[':userId']
-  callback(null, {
-    Items: testLists[userId]
-  })
-})
-
-test('create puts a dynamodb item', async t => {
-  const record = {
-    userId,
-    name: 'Test List',
-    description: 'Test Description'
-  }
-
-  const checklist = proxyquire('../../../services/checklists/checklist', {
-    'slic-tools/event-dispatcher': {
-      dispatchEvent: (...args) => {
-        received.eventArgs = args
-        return Promise.resolve()
-      }
+let dispatchEventArgs = []
+const checklist = t.mock('../../../services/checklists/checklist', {
+  'slic-tools/event-dispatcher': {
+    dispatchEvent: (...args) => {
+      dispatchEventArgs.push(...args)
+      return Promise.resolve()
     }
-  })
-
-  const response = await checklist.create(record)
-  t.equal(received.dynamoDb.put.Item.userId, userId)
-  t.equal(received.dynamoDb.put.Item.name, record.name)
-  t.ok(received.dynamoDb.put.Item.createdAt)
-  t.ok(received.dynamoDb.put.Item.listId)
-  t.same(received.dynamoDb.put.Item.entries, {})
-
-  t.match(received.eventArgs[1], record)
-
-  t.equal(received.dynamoDb.put.Item.description, record.description)
-  t.match(response, record)
-
-  t.end()
+  }
 })
 
-test('update function updates current checklists', async t => {
-  const record = {
+t.beforeEach(async function () {
+  await dynamoMock.reset()
+  dynamoMock.resolves({})
+
+  dispatchEventArgs = []
+})
+
+t.test('create puts a dynamodb item', async t => {
+  const listName = 'Test List'
+  const listDescription = 'Test Description'
+
+  const response = await checklist.create({
+    userId,
+    name: listName,
+    description: listDescription
+  })
+
+  t.equal(dynamoMock.send.callCount, 1)
+  t.equal(dynamoMock.send.firstCall.args[0].input.TableName, process.env.CHECKLIST_TABLE_NAME)
+  t.equal(dynamoMock.send.firstCall.args[0].input.Item.userId, userId)
+  t.equal(dynamoMock.send.firstCall.args[0].input.Item.name, listName)
+  t.ok(dynamoMock.send.firstCall.args[0].input.Item.createdAt)
+  t.ok(dynamoMock.send.firstCall.args[0].input.Item.listId)
+  t.same(dynamoMock.send.firstCall.args[0].input.Item.entries, {})
+  t.equal(dynamoMock.send.firstCall.args[0].input.Item.description, listDescription)
+
+  t.same(dispatchEventArgs, ['LIST_CREATED_EVENT', { ...dynamoMock.send.firstCall.args[0].input.Item }])
+
+  t.match(response, {
+    userId,
+    name: listName,
+    description: listDescription
+  })
+})
+
+t.test('update function updates current checklists', async t => {
+  const list = {
     listId: '1234',
     userId,
     name: 'New title',
     description: 'New Description'
   }
 
-  const checklist = require('../../../services/checklists/checklist')
+  await checklist.update(list)
 
-  await checklist.update(record)
-  t.ok(received.dynamoDb.update.ExpressionAttributeValues[':name'])
-  t.ok(received.dynamoDb.update.ExpressionAttributeValues[':description'])
-  t.ok(received.dynamoDb.update.ExpressionAttributeValues[':updatedAt'])
-  t.equal(received.dynamoDb.update.Key.userId, record.userId)
-  t.equal(received.dynamoDb.update.Key.listId, record.listId)
-  t.end()
+  t.equal(dynamoMock.send.callCount, 1)
+  t.equal(dynamoMock.send.firstCall.args[0].input.TableName, process.env.CHECKLIST_TABLE_NAME)
+  t.hasProps(dynamoMock.send.firstCall.args[0].input.ExpressionAttributeValues, [
+    ':name',
+    ':updatedAt',
+    ':description'
+  ])
+  t.same(dynamoMock.send.firstCall.args[0].input.Key, { userId: list.userId, listId: list.listId })
 })
 
-test('update function updates current checklists when name not specified', async t => {
-  const record = {
+t.test('update function updates current checklists when name not specified', async t => {
+  const list = {
     listId: '1234',
     userId
   }
 
-  const checklist = require('../../../services/checklists/checklist')
+  await checklist.update(list)
 
-  await checklist.update(record)
-
-  t.equal(received.dynamoDb.update.ExpressionAttributeValues[':name'], null)
-  t.equal(
-    received.dynamoDb.update.ExpressionAttributeValues[':description'],
-    null
-  )
-  t.ok(received.dynamoDb.update.ExpressionAttributeValues[':updatedAt'])
-  t.equal(received.dynamoDb.update.Key.userId, record.userId)
-  t.equal(received.dynamoDb.update.Key.listId, record.listId)
-  t.end()
+  t.equal(dynamoMock.send.callCount, 1)
+  t.equal(dynamoMock.send.firstCall.args[0].input.TableName, process.env.CHECKLIST_TABLE_NAME)
+  t.match(dynamoMock.send.firstCall.args[0].input.ExpressionAttributeValues, {
+    ':name': null,
+    ':description': null
+  })
+  t.ok(dynamoMock.send.firstCall.args[0].input.ExpressionAttributeValues[':updatedAt'])
 })
 
-test('Get a checklist based on a listId and userId', async t => {
-  const record = {
+t.test('Get a checklist based on a listId and userId', async t => {
+  const list = {
     listId: list1.listId,
     userId: list1.userId
   }
 
-  const checklist = require('../../../services/checklists/checklist')
+  dynamoMock.on(GetCommand).resolvesOnce({
+    Item: list1
+  })
 
-  const response = await checklist.get(record)
+  const response = await checklist.get(list)
+
   t.same(response, list1)
-  t.equal(received.dynamoDb.get.Key.listId, record.listId)
-  t.equal(received.dynamoDb.get.Key.userId, record.userId)
-
-  t.end()
+  t.equal(dynamoMock.send.callCount, 1)
+  t.equal(dynamoMock.send.firstCall.args[0].input.TableName, process.env.CHECKLIST_TABLE_NAME)
+  t.same(dynamoMock.send.firstCall.args[0].input.Key, { userId: list.userId, listId: list.listId })
 })
 
-test('remove a checklist', async t => {
-  const checklist = require('../../../services/checklists/checklist')
-
-  const record = {
+t.test('remove a checklist', async t => {
+  const list = {
     listId: '1234',
     userId
   }
 
-  await checklist.remove(record)
+  await checklist.remove(list)
 
-  t.equal(received.dynamoDb.delete.Key.userId, record.userId)
-  t.equal(received.dynamoDb.delete.Key.listId, record.listId)
-  t.end()
+  t.equal(dynamoMock.send.callCount, 1)
+  t.equal(dynamoMock.send.firstCall.args[0].input.TableName, process.env.CHECKLIST_TABLE_NAME)
+  t.same(dynamoMock.send.firstCall.args[0].input.Key, { userId: list.userId, listId: list.listId })
 })
 
-test('list all checklists', async t => {
-  const checklist = require('../../../services/checklists/checklist')
+t.test('list all checklists for user', async t => {
+  dynamoMock.on(QueryCommand).resolvesOnce({
+    Items: testLists[userId]
+  })
 
-  const record = {
-    userId
-  }
-
-  const response = await checklist.list(record)
+  const response = await checklist.list({ userId })
 
   t.same(response, testLists[userId])
+  t.equal(dynamoMock.send.callCount, 1)
+  t.equal(dynamoMock.send.firstCall.args[0].input.TableName, process.env.CHECKLIST_TABLE_NAME)
   t.equal(
-    received.dynamoDb.query.ExpressionAttributeValues[':userId'],
-    record.userId
+    dynamoMock.send.firstCall.args[0].input.ExpressionAttributeValues[':userId'],
+    userId
   )
-
-  t.end()
 })
 
-test('list all checklists including shared lists', async t => {
-  const checklist = require('../../../services/checklists/checklist')
+t.test('list all checklists including shared lists', async t => {
+  const userId = 'ownerB'
 
-  const record = {
-    userId: 'ownerB'
-  }
+  dynamoMock.on(QueryCommand).resolvesOnce({
+    Items: testLists[userId]
+  })
 
-  const response = await checklist.list(record)
+  dynamoMock.on(BatchGetCommand).resolvesOnce({
+    Responses: {
+      [process.env.CHECKLIST_TABLE_NAME]: [list1]
+    }
+  })
 
+  const response = await checklist.list({ userId })
+
+  t.equal(dynamoMock.send.callCount, 2)
   t.match(response, testLists.ownerB)
 
   const shared = response.find(share => share.sharedListOwner)
@@ -226,24 +201,18 @@ test('list all checklists including shared lists', async t => {
 
   t.equal(shared.name, originalList.name)
   t.equal(shared.description, originalList.description)
-
-  t.end()
 })
 
-test('add a collaborator', async t => {
-  const checklist = require('../../../services/checklists/checklist')
-
-  const record = {
+t.test('add a collaborator', async t => {
+  const list = {
     sharedListOwner: 'list-owner',
     listId: 'list-shared',
     userId
   }
 
-  await checklist.addCollaborator(record)
+  await checklist.addCollaborator(list)
 
-  t.equal(received.dynamoDb.put.Item.listId, record.listId)
-  t.equal(received.dynamoDb.put.Item.userId, record.userId)
-  t.equal(received.dynamoDb.put.Item.sharedListOwner, record.sharedListOwner)
-
-  t.end()
+  t.equal(dynamoMock.send.callCount, 1)
+  t.equal(dynamoMock.send.firstCall.args[0].input.TableName, process.env.CHECKLIST_TABLE_NAME)
+  t.same(dynamoMock.send.firstCall.args[0].input.Item, { userId: list.userId, listId: list.listId, sharedListOwner: list.sharedListOwner })
 })
