@@ -1,3 +1,10 @@
+# [1.2.0](https://github.com/fourTheorem/slic-starter/compare/1.1.0...1.2.0) (2022-06-28)
+
+
+### Features
+
+* **user-service:** use aws-sdk v3 ([49a93e1](https://github.com/fourTheorem/slic-starter/commit/49a93e182373b792d726f1365d0f1fc6c3fe6d0e))
+
 # [1.1.0](https://github.com/fourTheorem/slic-starter/compare/1.0.0...1.1.0) (2022-06-28)
 
 

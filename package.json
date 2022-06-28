@@ -1,6 +1,6 @@
 {
   "name": "slic-starter",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "A complete serverless starter application",
   "engines": {
     "node": ">=16.15"
@@ -48,7 +48,11 @@
       "@commitlint/config-conventional"
     ],
     "rules": {
-      "body-max-line-length": [0, "always", 200]
+      "body-max-line-length": [
+        0,
+        "always",
+        200
+      ]
     }
   },
   "release": {
