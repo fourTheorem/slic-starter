@@ -1,29 +1,38 @@
 const t = require('tap')
-
-const { userId } = require('../../fixtures')
+const { v4: uuid } = require('uuid')
 
 let addCollaboratorParams = {}
-
+let addCollaboratorReturnVal = {}
 const addCollaboratorHandler = t.mock('../../../services/checklists/add-collaborator.js', {
   '../../../services/checklists/checklist.js': {
     addCollaborator: params => {
       addCollaboratorParams = { ...params }
-      return Promise.resolve(addCollaboratorParams)
+      return Promise.resolve(addCollaboratorReturnVal)
     }
   }
 })
 
 t.beforeEach(async () => {
   addCollaboratorParams = {}
+  addCollaboratorReturnVal = {}
 })
 
 t.test('addCollaborator adds collaborators to existing lists', async t => {
-  const collaboratorUserId = 'collaborator123'
+  const userId = uuid()
+  const listId = uuid()
+  const collaboratorUserId = uuid()
   const event = {
-    detail: { userId, listId: 'list123', collaboratorUserId }
+    detail: { userId, listId, collaboratorUserId }
   }
 
-  await addCollaboratorHandler.main(event)
+  addCollaboratorReturnVal = {
+    listId,
+    userId,
+    sharedListOwner: collaboratorUserId
+  }
+
+  const res = await addCollaboratorHandler.main(event)
   t.equal(addCollaboratorParams.userId, userId)
   t.equal(addCollaboratorParams.collaboratorUserId, collaboratorUserId)
+  t.same(res, addCollaboratorReturnVal)
 })
