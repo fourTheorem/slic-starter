@@ -1,19 +1,22 @@
-const proxyquire = require('proxyquire')
-const { test } = require('tap')
+const t = require('tap')
 
 const { userId, userRequestContext } = require('../../fixtures')
 
-const received = {}
-const getHandler = proxyquire('../../../services/checklists/get', {
-  './checklist': {
+let getParams = {}
+const getHandler = t.mock('../../../services/checklists/get', {
+  '../../../services/checklists/checklist.js': {
     get: params => {
-      received.getParams = params
-      return received
+      getParams = { ...params }
+      return Promise.resolve(getParams)
     }
   }
 })
 
-test('get handler gets checklists', async t => {
+t.beforeEach(async () => {
+  getParams = {}
+})
+
+t.test('get handler gets checklists', async t => {
   const event = {
     requestContext: userRequestContext,
     pathParameters: {
@@ -23,8 +26,7 @@ test('get handler gets checklists', async t => {
 
   const result = await getHandler.main(event)
 
-  t.equal(received.getParams.listId, event.pathParameters.id)
-  t.equal(received.getParams.userId, userId)
   t.equal(result.statusCode, 200)
-  t.end()
+  t.equal(getParams.listId, event.pathParameters.id)
+  t.equal(getParams.userId, userId)
 })
