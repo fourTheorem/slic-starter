@@ -6,7 +6,7 @@ const { captureAWSv3Client } = require('aws-xray-sdk-core')
 
 const log = require('slic-tools/log')
 
-const cognitoCore = new CognitoIdentityProviderClient({ region: process.env.AWS_REGION })
+const cognitoCore = new CognitoIdentityProviderClient({})
 /* istanbul ignore next */
 const cognitoClient = process.env.SLIC_STAGE === 'test' ? cognitoCore : captureAWSv3Client(cognitoCore)
 

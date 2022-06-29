@@ -2,7 +2,7 @@ const { DynamoDBDocumentClient } = require('@aws-sdk/lib-dynamodb')
 const t = require('tap')
 
 t.beforeEach(async (t) => {
-  delete require.cache[require.resolve('../dynamo.js')]
+  delete require.cache[require.resolve('../dynamo')]
 })
 
 t.test('A DynamoDB client is provided', async t => {

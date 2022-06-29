@@ -1,14 +1,17 @@
-const awsXray = require('aws-xray-sdk-core')
-const coreAws = require('aws-sdk')
-const AWS = process.env.IS_OFFLINE ? coreAws : awsXray.captureAWS(coreAws) // TODO - Revisit this to enable XRay always
+const {
+  GetQueueUrlCommand,
+  SendMessageCommand,
+  SQSClient
+} = require('@aws-sdk/client-sqs')
+const { captureAWSv3Client } = require('aws-xray-sdk-core')
 
 const log = require('./log')
 
-const SQS = awsXray.captureAWSClient(
-  new AWS.SQS({ endpoint: process.env.SQS_ENDPOINT_URL })
+const sqsClient = captureAWSv3Client(
+  new SQSClient({ endpoint: process.env.SQS_ENDPOINT_URL })
 )
 
-const queueName = process.env.EMAIL_QUEUE_NAME
+const { EMAIL_QUEUE_NAME: queueName } = process.env
 
 if (!queueName) {
   throw new Error('EMAIL_QUEUE_NAME must be set')
@@ -17,37 +20,30 @@ if (!queueName) {
 }
 
 async function sendEmail (message) {
+  const QueueUrl = await fetchQueueUrl()
   const params = {
     MessageBody: JSON.stringify(message),
-    QueueUrl: await fetchQueueUrl()
+    QueueUrl
   }
 
-  const result = await SQS.sendMessage(params).promise()
+  const result = await sqsClient.send(new SendMessageCommand(params))
   log.debug({ result }, 'Sent SQS Message')
 }
 
-let queueUrlPromise
-
-function fetchQueueUrl () {
-  if (queueUrlPromise) {
-    return queueUrlPromise
+async function fetchQueueUrl () {
+  const params = {
+    QueueName: queueName
   }
 
-  queueUrlPromise = SQS.getQueueUrl({
-    QueueName: queueName
-  })
-    .promise()
-    .then(result => {
-      const queueUrl = result.QueueUrl
-      log.info({ queueUrl }, 'Using queue URL')
-      return queueUrl
-    })
-    .catch(err => {
-      log.error({ err }, 'Failed to read queue URL')
-      queueUrlPromise = null
-      throw err
-    })
-  return queueUrlPromise
+  try {
+    const { QueueUrl } = await sqsClient.send(new GetQueueUrlCommand(params))
+    log.info({ QueueUrl }, 'Using queue URL')
+
+    return QueueUrl
+  } catch (err) {
+    log.error({ err }, 'Failed to read queue URL')
+    throw err
+  }
 }
 
 module.exports = {
