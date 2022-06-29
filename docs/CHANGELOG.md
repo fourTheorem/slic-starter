@@ -1,3 +1,17 @@
+# [1.3.0](https://github.com/fourTheorem/slic-starter/compare/1.2.0...1.3.0) (2022-06-29)
+
+
+### Bug Fixes
+
+* **checklist-service:** use cjs require for aws-sdk v3 dynamo ([c3ea5be](https://github.com/fourTheorem/slic-starter/commit/c3ea5be84be40d53b621fcb0fbe352822a7f0297))
+
+
+### Features
+
+* **checklist-service:** migrate entries db ops to aws sdk v3 ([1ebfd54](https://github.com/fourTheorem/slic-starter/commit/1ebfd546d585927c6c664977d5c95e4b07742a7d))
+* **checklist-service:** upgrade checklist db ops to use aws-sdk v3 ([4078080](https://github.com/fourTheorem/slic-starter/commit/4078080122fde18d63c28606fb9c8aae2051256e))
+* **slic-tools:** update event-dispatcher to use aws sdk v3 ([e2a260d](https://github.com/fourTheorem/slic-starter/commit/e2a260dd9af7f2b4366bfdb53d49bf686674599f))
+
 # [1.2.0](https://github.com/fourTheorem/slic-starter/compare/1.1.0...1.2.0) (2022-06-28)
 
 
