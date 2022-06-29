@@ -1,33 +1,38 @@
-const proxyquire = require('proxyquire')
-const { test } = require('tap')
+const t = require('tap')
+const { v4: uuid } = require('uuid')
 
-const { userRequestContext } = require('../../../fixtures')
+const { userRequestContext, userId } = require('../../../fixtures')
 
-const received = {}
-const listEntriesHandler = proxyquire(
-  '../../../../services/checklists/entries/list',
-  {
-    './entries': {
-      listEntries: params => {
-        received.listEntriesParams = params
-        return received
-      }
+let listEntriesParams = {}
+let listEntriesReturnVal = {}
+const listEntriesHandler = t.mock('../../../../services/checklists/entries/list', {
+  '../../../../services/checklists/entries/entries.js': {
+    listEntries: params => {
+      listEntriesParams = { ...params }
+      return Promise.resolve(listEntriesReturnVal)
     }
   }
-)
+})
 
-test('list entry handler lists entries contained in a checklists', async t => {
+t.beforeEach(async () => {
+  listEntriesParams = {}
+  listEntriesReturnVal = {}
+})
+
+t.test('list entry handler lists entries contained in a checklists', async t => {
+  const listId = uuid()
   const event = {
     requestContext: userRequestContext,
     pathParameters: {
-      id: '1234'
+      id: listId
     }
   }
+  listEntriesReturnVal = { entries: { [uuid()]: { title: 'test-title', value: 'test-val' } } }
 
   const result = await listEntriesHandler.main(event)
 
-  t.equal(received.listEntriesParams.listId, event.pathParameters.id)
+  t.equal(listEntriesParams.listId, listId)
+  t.equal(listEntriesParams.userId, userId)
   t.equal(result.statusCode, 200)
-
-  t.end()
+  t.same(JSON.parse(result.body), listEntriesReturnVal)
 })

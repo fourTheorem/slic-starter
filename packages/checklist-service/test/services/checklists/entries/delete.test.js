@@ -1,37 +1,38 @@
-const proxyquire = require('proxyquire')
-const { test } = require('tap')
+const t = require('tap')
+const { v4: uuid } = require('uuid')
 
 const { userId, userRequestContext } = require('../../../fixtures')
 
-const received = {}
-
-const deleteEntryHandler = proxyquire(
-  '../../../../services/checklists/entries/delete',
-  {
-    './entries': {
-      deleteEntry: params => {
-        received.deleteEntryParams = params
-        return received
-      }
+let deleteEntryParams = {}
+const deleteEntryHandler = t.mock('../../../../services/checklists/entries/delete', {
+  '../../../../services/checklists/entries/entries.js': {
+    deleteEntry: params => {
+      deleteEntryParams = { ...params }
+      return Promise.resolve()
     }
   }
-)
+})
 
-test('delete entry handler removes entries from checklists', async t => {
+t.beforeEach(async () => {
+  deleteEntryParams = {}
+})
+
+t.test('delete entry handler removes entries from checklists', async t => {
+  const listId = uuid()
+  const entryId = uuid()
   const event = {
     requestContext: userRequestContext,
     pathParameters: {
-      id: '1234',
-      endId: '1'
+      id: listId,
+      entId: entryId
     }
   }
 
   const result = await deleteEntryHandler.main(event)
 
-  t.equal(received.deleteEntryParams.userId, userId)
-  t.equal(received.deleteEntryParams.listId, event.pathParameters.id)
-  t.equal(received.deleteEntryParams.entId, event.pathParameters.entId)
+  t.equal(deleteEntryParams.userId, userId)
+  t.equal(deleteEntryParams.listId, listId)
+  t.equal(deleteEntryParams.entId, entryId)
   t.equal(result.statusCode, 200)
-
-  t.end()
+  t.same(JSON.parse(result.body), {})
 })

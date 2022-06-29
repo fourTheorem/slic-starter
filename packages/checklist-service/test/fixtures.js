@@ -1,4 +1,5 @@
-const userId = 'testUser'
+const { v4: uuid } = require('uuid')
+const userId = uuid()
 
 const userRequestContext = {
   authorizer: {
