@@ -1,20 +1,22 @@
-const proxyquire = require('proxyquire')
-const { test } = require('tap')
+const t = require('tap')
 
 const { userId, userRequestContext } = require('../../fixtures')
 
-const received = {}
-
-const updateHandler = proxyquire('../../../services/checklists/update', {
-  './checklist.js': {
+let updateParams = {}
+const updateHandler = t.mock('../../../services/checklists/update', {
+  '../../../services/checklists/checklist.js': {
     update: params => {
-      received.updateParams = params
-      return received
+      updateParams = { ...params }
+      return Promise.resolve(updateParams)
     }
   }
 })
 
-test('update handler updates current checklist', async t => {
+t.beforeEach(async () => {
+  updateParams = {}
+})
+
+t.test('update handler updates current checklist', async t => {
   const payload = {
     name: 'checklist name',
     description: 'Checklist Description'
@@ -28,14 +30,9 @@ test('update handler updates current checklist', async t => {
   }
 
   const result = await updateHandler.main(event)
-  t.match(result, {
-    statusCode: 200
-  })
-  t.equal(received.updateParams.userId, userId)
-  t.equal(received.updateParams.name, payload.name)
-  t.equal(received.updateParams.description, payload.description)
-  t.notEqual(received.updateParams.name, null)
-  t.notEqual(received.updateParams.description, null)
 
-  t.end()
+  t.equal(result.statusCode, 200)
+  t.equal(updateParams.userId, userId)
+  t.equal(updateParams.name, payload.name)
+  t.equal(updateParams.description, payload.description)
 })

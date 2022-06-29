@@ -1,19 +1,22 @@
-const proxyquire = require('proxyquire')
-const { test } = require('tap')
+const t = require('tap')
 
 const { userId, userRequestContext } = require('../../fixtures')
 
-const received = {}
-const deleteHandler = proxyquire('../../../services/checklists/delete', {
-  './checklist.js': {
+let deleteParams = {}
+const deleteHandler = t.mock('../../../services/checklists/delete', {
+  '../../../services/checklists/checklist.js': {
     remove: params => {
-      received.deleteParams = params
-      return received
+      deleteParams = { ...params }
+      return Promise.resolve(deleteParams)
     }
   }
 })
 
-test('list handler executes checklist service', async t => {
+t.beforeEach(async () => {
+  deleteParams = {}
+})
+
+t.test('list handler executes checklist service', async t => {
   const event = {
     requestContext: userRequestContext,
     pathParameters: {
@@ -22,8 +25,8 @@ test('list handler executes checklist service', async t => {
   }
 
   const result = await deleteHandler.main(event)
-  t.equal(received.deleteParams.listId, event.pathParameters.id)
-  t.equal(received.deleteParams.userId, userId)
+
+  t.equal(deleteParams.listId, event.pathParameters.id)
+  t.equal(deleteParams.userId, userId)
   t.equal(result.statusCode, 200)
-  t.end()
 })

@@ -56,7 +56,7 @@ const checklist = t.mock('../../../services/checklists/checklist', {
   }
 })
 
-t.beforeEach(async function () {
+t.beforeEach(async () => {
   await dynamoMock.reset()
   dynamoMock.resolves({})
 
