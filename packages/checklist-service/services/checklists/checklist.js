@@ -8,7 +8,7 @@ const {
 } = require('@aws-sdk/lib-dynamodb')
 const { v4: uuid } = require('uuid')
 const { dispatchEvent } = require('slic-tools/event-dispatcher')
-const { dynamoDocClient } = require('slic-tools/aws')
+const { dynamoDocClient } = require('slic-tools/dynamo')
 
 const TableName = process.env.CHECKLIST_TABLE_NAME
 const dynamo = dynamoDocClient()
