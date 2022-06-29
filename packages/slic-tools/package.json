@@ -9,6 +9,7 @@
   },
   "license": "MIT",
   "devDependencies": {
+    "@aws-sdk/client-cloudwatch-events": "^3.118.1",
     "@aws-sdk/client-dynamodb": "^3.118.1",
     "@aws-sdk/lib-dynamodb": "^3.118.1"
   }

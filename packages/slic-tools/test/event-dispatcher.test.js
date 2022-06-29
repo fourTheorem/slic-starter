@@ -1,34 +1,38 @@
-const path = require('path')
-const { test } = require('tap')
-const awsMock = require('aws-sdk-mock')
+const {
+  CloudWatchEventsClient,
+  PutEventsCommand
+} = require('@aws-sdk/client-cloudwatch-events')
+const { mockClient } = require('aws-sdk-client-mock')
+const t = require('tap')
 
-awsMock.setSDK(path.resolve('./node_modules/aws-sdk'))
+const { dispatchEvent } = require('../event-dispatcher')
 
-const received = {
-  cwEvents: {}
-}
+const cwEventsMock = mockClient(CloudWatchEventsClient)
 
-awsMock.mock('CloudWatchEvents', 'putEvents', function (params, callback) {
-  received.cwEvents.putEvents = params
-  callback(null, { ...params })
+t.beforeEach(async () => {
+  cwEventsMock.reset()
+  cwEventsMock.on(PutEventsCommand).resolves({})
 })
 
-test('dispatchEvent dispatches a CloudWatch custom event', async t => {
-  const eventDispatcher = require('../event-dispatcher')
-
+t.test('dispatchEvent dispatches a CloudWatch custom event', async t => {
   const type = 'LIST_CREATED_EVENT'
   const testList = {
     name: 'Test List',
     userId: 'user123'
   }
 
-  await eventDispatcher.dispatchEvent(type, testList)
+  const expectedInput = {
+    Entries: [
+      {
+        Detail: JSON.stringify(testList),
+        DetailType: type,
+        Source: 'default-service'
+      }
+    ]
+  }
 
-  const cwEntries = received.cwEvents.putEvents.Entries
-  t.ok(cwEntries[0])
-  t.same(JSON.parse(cwEntries[0].Detail), testList)
-  t.equal(cwEntries[0].DetailType, 'LIST_CREATED_EVENT')
-  t.equal(cwEntries[0].Source, 'default-service')
+  await dispatchEvent(type, testList)
 
-  t.end()
+  t.equal(cwEventsMock.send.callCount, 1)
+  t.same(cwEventsMock.send.firstCall.args[0].input, expectedInput)
 })
