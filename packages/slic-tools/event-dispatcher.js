@@ -1,10 +1,18 @@
-const awsXray = require('aws-xray-sdk-core')
-const { AWS } = require('./aws')
-const cwEventsCore = new AWS.CloudWatchEvents({ endpoint: process.env.EVENTS_ENDPOINT_URL })
-/* istanbul ignore next */
-const cwEvents = process.env.IS_OFFLINE ? cwEventsCore : awsXray.captureAWSClient(cwEventsCore) // TODO Re-enable X-Ray always
+const {
+  CloudWatchEventsClient,
+  PutEventsCommand
+} = require('@aws-sdk/client-cloudwatch-events')
+const { captureAWSv3Client } = require('aws-xray-sdk-core')
+
 const log = require('./log')
 const { name: serviceName } = require('./service-info')
+
+const cwEvents = new CloudWatchEventsClient({
+  endpoint: process.env.EVENTS_ENDPOINT_URL
+})
+
+/* istanbul ignore next */
+const cwEventsClient = process.env.IS_OFFLINE ? cwEvents : captureAWSv3Client(cwEvents) // TODO Re-enable X-Ray always
 
 async function dispatchEvent (type, detail) {
   const params = {
@@ -17,7 +25,7 @@ async function dispatchEvent (type, detail) {
     ]
   }
   log.info({ params }, 'Sending EventBridge event')
-  await cwEvents.putEvents(params).promise()
+  await cwEventsClient.send(new PutEventsCommand(params))
 }
 
 module.exports = {
