@@ -88,8 +88,8 @@ async function listEntries ({ listId, userId }) {
     ProjectionExpression: 'entries'
   }
 
-  const { Item } = await dynamo.send(new GetCommand(params))
-  return Item.entries
+  const { Item: { entries } } = await dynamo.send(new GetCommand(params))
+  return entries
 }
 
 async function deleteEntry ({ userId, listId, entId }) {

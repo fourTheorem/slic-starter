@@ -11,8 +11,7 @@ const addCollaboratorHandler = t.mock('../../../services/checklists/add-collabor
       return Promise.resolve(addCollaboratorParams)
     }
   }
-}
-)
+})
 
 t.beforeEach(async () => {
   addCollaboratorParams = {}

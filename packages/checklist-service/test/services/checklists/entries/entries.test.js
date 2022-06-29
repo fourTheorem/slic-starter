@@ -1,46 +1,101 @@
-process.env.AWS_LAMBDA_FUNCTION_NAME = 'unknown_unit_test'
+const {
+  DynamoDBDocumentClient,
+  GetCommand,
+  UpdateCommand
+} = require('@aws-sdk/lib-dynamodb')
+const { mockClient } = require('aws-sdk-client-mock')
+const t = require('tap')
+const { v4: uuid } = require('uuid')
 
-const path = require('path')
-const { test } = require('tap')
-const awsMock = require('aws-sdk-mock')
-awsMock.setSDK(path.resolve(__dirname, '../../../../../../node_modules/aws-sdk'))
+process.env.CHECKLIST_TABLE_NAME = 'checklists'
 
-const entries = require('../../../../services/checklists/entries/entries')
+const dynamoMock = mockClient(DynamoDBDocumentClient)
+
+let putMetricArgs = []
+let metricsFlushCallCount = 0
+const entries = t.mock('../../../../services/checklists/entries/entries', {
+  'aws-embedded-metrics': {
+    createMetricsLogger: () => {
+      return {
+        putMetric: (...args) => { putMetricArgs.push([...args]) },
+        flush: () => {
+          metricsFlushCallCount += 1
+          Promise.resolve({})
+        }
+      }
+    },
+    Unit: {
+      Count: 'Count'
+    }
+  }
+})
 
 const userId = 'my-test-user'
-const entId = '4'
-const listId = 'a432'
+const entId = uuid()
+const listId = uuid()
 const testEntries = [
   { entId: 'ent1', title: 'Entry One' },
   { entId: 'ent2', title: 'Entry Two' }
 ]
-const testEntriesObj = {}
-testEntries.forEach(({ entId, ...rest }) => {
-  testEntriesObj[entId] = rest
+const testEntriesObj = testEntries.reduce((acc, { entId, ...rest }) => {
+  acc[entId] = rest
+  return acc
+}, {})
+
+t.beforeEach(async () => {
+  await dynamoMock.reset()
+  dynamoMock.resolves({})
+
+  putMetricArgs = []
+  metricsFlushCallCount = 0
 })
 
-const received = {
-  dynamoDb: {}
-}
+t.test('add new list entry', async t => {
+  const entry = {
+    userId,
+    listId,
+    title: 'new entry',
+    value: 'not done'
+  }
 
-awsMock.mock('DynamoDB.DocumentClient', 'put', function (params, callback) {
-  received.dynamoDb.put = params
-  callback(null, { ...params })
+  dynamoMock.on(UpdateCommand).resolvesOnce({
+    Attributes: {
+      entries: { ...testEntries }
+    }
+  })
+
+  const res = await entries.addEntry(entry)
+
+  t.equal(dynamoMock.send.callCount, 1)
+  t.equal(dynamoMock.send.firstCall.args[0].input.TableName, process.env.CHECKLIST_TABLE_NAME)
+  t.same(dynamoMock.send.firstCall.args[0].input.Key, {
+    userId,
+    listId
+  })
+  t.same(dynamoMock.send.firstCall.args[0].input.ExpressionAttributeValues[':entry'], {
+    title: entry.title,
+    value: entry.value
+  })
+  t.match(res, {
+    title: entry.title,
+    value: entry.value
+  })
+  t.ok(res.entId)
+
+  t.same(putMetricArgs, [
+    ['NumEntries', testEntries.length, 'Count'],
+    ['EntryWords', 1, 'Count']
+  ])
+  t.equal(metricsFlushCallCount, 1)
 })
 
-awsMock.mock('DynamoDB.DocumentClient', 'update', function (params, callback) {
-  received.dynamoDb.update = params
-  callback(null, { Attributes: { entries: testEntries } })
-})
+t.test('List all entries', async t => {
+  const list = {
+    userId,
+    listId
+  }
 
-awsMock.mock('DynamoDB.DocumentClient', 'query', function (params, callback) {
-  received.dynamoDb.query = params
-  callback(null, { Items: testEntries })
-})
-
-awsMock.mock('DynamoDB.DocumentClient', 'get', function (params, callback) {
-  received.dynamoDb.get = params
-  callback(null, {
+  dynamoMock.on(GetCommand).resolvesOnce({
     Item: {
       userId,
       listId,
@@ -49,75 +104,58 @@ awsMock.mock('DynamoDB.DocumentClient', 'get', function (params, callback) {
       entries: testEntriesObj
     }
   })
-})
 
-test('add new list entry', async t => {
-  const record = {
-    userId,
-    listId,
-    title: 'new entry',
-    value: 'not done'
-  }
+  const response = await entries.listEntries(list)
 
-  await entries.addEntry(record)
-
-  t.ok(received.dynamoDb.update.Key.userId)
-  t.ok(received.dynamoDb.update.Key.listId)
-  t.equal(
-    received.dynamoDb.update.ExpressionAttributeValues[':entry'].title,
-    record.title
-  )
-
-  t.equal(
-    received.dynamoDb.update.ExpressionAttributeValues[':entry'].value,
-    record.value
-  )
-
-  t.end()
-})
-
-test('List all entries', async t => {
-  const record = {
-    userId,
-    listId
-  }
-
-  const response = await entries.listEntries(record)
-  t.same(received.dynamoDb.get.Key, record)
+  t.equal(dynamoMock.send.callCount, 1)
+  t.equal(dynamoMock.send.firstCall.args[0].input.TableName, process.env.CHECKLIST_TABLE_NAME)
+  t.same(dynamoMock.send.firstCall.args[0].input.Key, list)
   t.same(response, testEntriesObj)
-  t.end()
 })
 
-test('Update entry', async t => {
-  const record = {
+t.test('Update entry', async t => {
+  const entry = {
     listId,
     userId,
     entId,
     title: 'New Title',
     value: 'Complete'
   }
-  await entries.updateEntry(record)
-  t.equal(
-    received.dynamoDb.update.ExpressionAttributeValues[':value'],
-    record.value
-  )
-  t.same(received.dynamoDb.update.Key, { userId, listId })
-  t.end()
+  const res = await entries.updateEntry(entry)
+
+  t.equal(dynamoMock.send.callCount, 1)
+  t.equal(dynamoMock.send.firstCall.args[0].input.TableName, process.env.CHECKLIST_TABLE_NAME)
+  t.match(dynamoMock.send.firstCall.args[0].input.ExpressionAttributeNames, {
+    '#entId': entId
+  })
+  t.same(dynamoMock.send.firstCall.args[0].input.ExpressionAttributeValues, {
+    ':title': entry.title,
+    ':value': entry.value
+  })
+  t.same(dynamoMock.send.firstCall.args[0].input.Key, { userId, listId })
+  t.match(res, {
+    title: entry.title,
+    value: entry.value,
+    entId
+  })
+
+  t.same(putMetricArgs, [
+    ['EntryWords', 1, 'Count']
+  ])
+  t.equal(metricsFlushCallCount, 1)
 })
 
-test('Delete Entry', async t => {
-  const record = {
+t.test('Delete Entry', async t => {
+  const entry = {
     userId,
     entId,
     listId
   }
-  await entries.deleteEntry(record)
-  t.equal(
-    received.dynamoDb.update.ExpressionAttributeNames['#entId'],
-    record.entId
-  )
-  t.equal(received.dynamoDb.update.Key.userId, record.userId)
-  t.equal(received.dynamoDb.update.Key.listId, record.listId)
+  await entries.deleteEntry(entry)
 
-  t.end()
+  t.equal(dynamoMock.send.callCount, 1)
+  t.equal(dynamoMock.send.firstCall.args[0].input.TableName, process.env.CHECKLIST_TABLE_NAME)
+  t.match(dynamoMock.send.firstCall.args[0].input.UpdateExpression, 'REMOVE')
+  t.equal(dynamoMock.send.firstCall.args[0].input.ExpressionAttributeNames['#entId'], entId)
+  t.same(dynamoMock.send.firstCall.args[0].input.Key, { userId, listId })
 })
