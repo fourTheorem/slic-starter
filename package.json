@@ -108,7 +108,6 @@
     "@commitlint/config-conventional": "^17.0.2",
     "@semantic-release/changelog": "^6.0.1",
     "@semantic-release/git": "^10.0.1",
-    "aws-sdk-mock": "^5.7.0",
     "awscred": "^1.5.0",
     "cz-conventional-changelog": "^3.3.0",
     "eslint": "^8.17.0",
