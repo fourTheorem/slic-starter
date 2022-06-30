@@ -4,8 +4,12 @@ const { sendEmail } = require('slic-tools/email-util')
 const log = require('slic-tools/log')
 
 async function handleNewChecklist (event, context) {
-  const checklist = event.detail
-  const { userId, name } = checklist
+  const {
+    detail: {
+      userId,
+      name
+    }
+  } = event
 
   log.info({ context }, 'context')
   const { email } = await getUser(userId, context.userServiceUrl)
