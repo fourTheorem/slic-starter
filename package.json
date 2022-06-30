@@ -104,6 +104,7 @@
     ]
   },
   "devDependencies": {
+    "@aws-sdk/client-ssm": "^3.118.1",
     "@commitlint/cli": "^17.0.2",
     "@commitlint/config-conventional": "^17.0.2",
     "@semantic-release/changelog": "^6.0.1",

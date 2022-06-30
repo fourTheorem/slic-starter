@@ -1,12 +1,14 @@
 #!/usr/bin/env node
 
-const AWS = require('aws-sdk')
+const {
+  SSMClient,
+  DescribeParametersCommand,
+  GetParameterCommand
+} = require('@aws-sdk/client-ssm')
 
-const ssm = new AWS.SSM({ endpoint: process.env.SSM_ENDPOINT_URL })
+const ssmClient = new SSMClient({ endpoint: process.env.SSM_ENDPOINT_URL })
 
-ssm
-  .describeParameters()
-  .promise()
+ssmClient.send(new DescribeParametersCommand({}))
   .then(({ Parameters: params }) => fetchParams(params))
   .then(output => console.log(output.join('\n')))
 
@@ -16,9 +18,7 @@ function fetchParams (params) {
       if (param.Type === 'SecureString') {
         return `${param.Name}: ****SECRET****`
       }
-      return ssm
-        .getParameter({ Name: param.Name })
-        .promise()
+      return ssmClient.send(new GetParameterCommand({ Name: param.Name }))
         .then(paramResult => `${param.Name}: ${paramResult.Parameter.Value}`)
     })
   )
