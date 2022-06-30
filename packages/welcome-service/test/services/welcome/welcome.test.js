@@ -1,7 +1,5 @@
 const { v4: uuid } = require('uuid')
-
-const proxyquire = require('proxyquire').noPreserveCache()
-const { test } = require('tap')
+const t = require('tap')
 
 const userId = uuid()
 const testUser = {
@@ -9,38 +7,48 @@ const testUser = {
   email: 'test-user@example.com'
 }
 
-const received = {}
+let getUserArgs = []
+let sendEmailArgs = []
 
-test('handleNewChecklist sends an email message', async t => {
+const checklistHandler = t.mock('../../../services/welcome/new-checklist-handler', {
+  'slic-tools/user-util': {
+    getUser: (...args) => {
+      getUserArgs = [...args]
+      return Promise.resolve(testUser)
+    }
+  },
+  'slic-tools/email-util': {
+    sendEmail: (...args) => {
+      sendEmailArgs = [...args]
+      return Promise.resolve()
+    }
+  }
+})
+
+t.beforeEach(async () => {
+  getUserArgs = []
+  sendEmailArgs = []
+})
+
+t.test('handleNewChecklist sends an email message', async t => {
   const event = {
     detail: {
       userId,
       name: 'New Checklist'
     }
   }
+  const ctx = {
+    userServiceUrl: 'http://user-service.example.com'
+  }
 
-  const checklistHandler = proxyquire(
-    '../../../services/welcome/new-checklist-handler',
+  await checklistHandler.handleNewChecklist(event, ctx)
+
+  t.same(getUserArgs, [userId, ctx.userServiceUrl])
+  t.match(sendEmailArgs, [
     {
-      'slic-tools/user-util': {
-        getUser: () => Promise.resolve(testUser),
-        '@noCallThru': true
-      },
-      'slic-tools/email-util': {
-        sendEmail: (...args) => {
-          received.sendEmailArgs = args
-          return Promise.resolve()
-        },
-        '@noCallThru': true
-      }
+      to: testUser.email,
+      subject: 'Your SLIC List',
+      body: new RegExp(`.*${event.detail.name}$`)
     }
-  )
-
-  await checklistHandler.handleNewChecklist(event, {})
-  t.match(received.sendEmailArgs[0], {
-    to: testUser.email,
-    subject: 'Your SLIC List'
-  })
-  t.ok(received.sendEmailArgs[0].body)
-  t.end()
+  ])
 })
