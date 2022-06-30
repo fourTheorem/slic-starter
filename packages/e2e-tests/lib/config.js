@@ -1,16 +1,18 @@
+const {
+  GetParameterCommand,
+  SSMClient
+} = require('@aws-sdk/client-ssm')
+
 const localConfig = require('./local-email-config.js')
 const realConfig = require('test-common/real-email-config')
-const AWS = require('aws-sdk')
-const ssm = new AWS.SSM()
 
+const ssmClient = new SSMClient({})
 const stage = process.env.SLIC_STAGE
 
 const frontendUrlPromise =
   stage === 'local'
     ? Promise.resolve('http://localhost:3000')
-    : ssm
-      .getParameter({ Name: `/${stage}/frontend/url` })
-      .promise()
+    : ssmClient.send(new GetParameterCommand({ Name: `/${stage}/frontend/url` }))
       .then(data => data.Parameter.Value)
 
 export function getBaseUrl () {

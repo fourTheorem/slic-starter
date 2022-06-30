@@ -18,6 +18,8 @@
     "url": "https://github.com/fourTheorem/slic-starter"
   },
   "devDependencies": {
+    "@aws-sdk/client-dynamodb": "^3.118.1",
+    "@aws-sdk/lib-dynamodb": "^3.118.1",
     "@babel/core": "^7.18.5",
     "@babel/preset-env": "^7.18.2",
     "aws-sdk-client-mock": "^1.0.0",

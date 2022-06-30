@@ -1,5 +1,11 @@
+const {
+  AdminCreateUserCommand,
+  AdminDeleteUserCommand,
+  AdminInitiateAuthCommand,
+  AdminRespondToAuthChallengeCommand,
+  CognitoIdentityProviderClient
+} = require('@aws-sdk/client-cognito-identity-provider')
 const awscred = require('awscred')
-const AWS = require('aws-sdk')
 const jwt = require('jsonwebtoken')
 const chance = require('chance').Chance()
 
@@ -9,7 +15,7 @@ const { loadBackendConfig } = require('./backend-config')
 const generatePassword = () => `${chance.string({ length: 10 })}!Aa0`
 
 const awsRegion = awscred.loadRegionSync()
-const cognitoServiceProvider = new AWS.CognitoIdentityServiceProvider({ region: awsRegion })
+const cognitoServiceProvider = new CognitoIdentityProviderClient({ region: awsRegion })
 
 async function createUser () {
   const email = generateEmailAddress()
@@ -25,7 +31,7 @@ async function createUser () {
     UserAttributes: [{ Name: 'email', Value: email }]
   }
 
-  await cognitoServiceProvider.adminCreateUser(createRequest).promise()
+  await cognitoServiceProvider.send(new AdminCreateUserCommand(createRequest))
 
   const authRequest = {
     AuthFlow: 'ADMIN_NO_SRP_AUTH',
@@ -37,9 +43,7 @@ async function createUser () {
     }
   }
 
-  const authResponse = await cognitoServiceProvider
-    .adminInitiateAuth(authRequest)
-    .promise()
+  const authResponse = await cognitoServiceProvider.send(new AdminInitiateAuthCommand(authRequest))
 
   const challengeRequest = {
     UserPoolId: backendConfig.userPoolId,
@@ -52,9 +56,7 @@ async function createUser () {
     }
   }
 
-  const challengeResponse = await cognitoServiceProvider
-    .adminRespondToAuthChallenge(challengeRequest)
-    .promise()
+  const challengeResponse = await cognitoServiceProvider.send(new AdminRespondToAuthChallengeCommand(challengeRequest))
 
   const { 'cognito:username': userId } = jwt.decode(
     challengeResponse.AuthenticationResult.IdToken
@@ -76,7 +78,7 @@ async function deleteUser (user) {
     UserPoolId: backendConfig.userPoolId,
     Username: user.email
   }
-  await cognitoServiceProvider.adminDeleteUser(deleteRequest).promise()
+  await cognitoServiceProvider.send(new AdminDeleteUserCommand(deleteRequest))
 }
 
 module.exports = {
