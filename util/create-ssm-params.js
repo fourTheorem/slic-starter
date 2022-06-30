@@ -1,6 +1,9 @@
 #!/usr/bin/env node
 
-const AWS = require('aws-sdk')
+const {
+  SSMClient,
+  PutParameterCommand
+} = require('@aws-sdk/client-ssm')
 
 const jsonFile = process.argv[2]
 if (!jsonFile) {
@@ -10,19 +13,18 @@ if (!jsonFile) {
 
 const inputs = require(jsonFile)
 
-const ssm = new AWS.SSM()
+const ssmClient = new SSMClient({})
 
 Promise.all(
   inputs.map(({ name, type, value }) => {
     console.log(`Creating ${name}`)
-    return ssm
-      .putParameter({
-        Name: name,
-        Type: type,
-        Value: value,
-        Overwrite: true
-      })
-      .promise()
+
+    return ssmClient.send(new PutParameterCommand({
+      Name: name,
+      Type: type,
+      Value: value,
+      Overwrite: true
+    }))
       .then(() => name)
       .catch(err => `${name} FAILED with ${err}`)
   })
