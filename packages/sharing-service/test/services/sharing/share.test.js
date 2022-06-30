@@ -1,48 +1,48 @@
-const proxyquire = require('proxyquire')
-const { test } = require('tap')
+const t = require('tap')
 const { v4: uuid } = require('uuid')
 
-const { userId } = require('../../fixtures')
+const invitationUtil = require('../../../lib/invitation')
 
-process.env.EMAIL_QUEUE_NAME = 'test-email-queue'
-process.env.SLIC_STAGE = 'dev'
-process.env.SLIC_NS_DOMAIN = 'localhost.localhost'
-const codeSecret = 'p@ssw0rd'
-
-const { createCode } = require('../../../lib/invitation')(codeSecret)
-
+const userId = uuid()
+const codeSecret = uuid()
+const { createCode } = invitationUtil(codeSecret)
 const testUser = {
   userId,
-  email: 'userId@example.com'
+  email: `userId+${uuid()}@example.com`
 }
-const listName = 'A Test List'
+const listName = `Test List - ${uuid()}`
 
-const received = {}
-
-const shareService = proxyquire('../../../services/sharing/share', {
+let sendEmailArgs = []
+let getUserArgs = []
+let dispatchEventArgs = []
+const shareService = t.mock('../../../services/sharing/share', {
   'slic-tools/email-util': {
     sendEmail: (...args) => {
-      received.sendEmailParams = args
+      sendEmailArgs.push(...args)
       return Promise.resolve()
-    },
-    '@noCallThru': true
+    }
   },
   'slic-tools/user-util': {
     getUser: (...args) => {
-      received.getUserParams = args
+      getUserArgs.push(...args)
       return Promise.resolve(testUser)
-    },
-    '@noCallThru': true
+    }
   },
   'slic-tools/event-dispatcher': {
     dispatchEvent: (...args) => {
-      received.dispatchEventParams = args
+      dispatchEventArgs.push(...args)
       return Promise.resolve()
     }
   }
 })
 
-test('An email is sent when a list is shared', async t => {
+t.beforeEach(async () => {
+  sendEmailArgs = []
+  getUserArgs = []
+  dispatchEventArgs = []
+})
+
+t.test('An email is sent when a list is shared', async t => {
   const payload = {
     ...testUser,
     listId: uuid(),
@@ -50,23 +50,26 @@ test('An email is sent when a list is shared', async t => {
   }
 
   await shareService.create(payload, codeSecret)
-  t.match(received.sendEmailParams[0].to, testUser.email)
-  t.ok(received.sendEmailParams[0].subject)
-  t.ok(received.sendEmailParams[0].body.indexOf(payload.listName) > -1)
+
+  t.match(sendEmailArgs, [{
+    to: testUser.email,
+    subject: new RegExp(`.*${payload.listName}$`),
+    body: new RegExp(`.*${payload.listName}*`, 'm')
+  }])
 })
 
-test('An event is dispatched when a code is confirmed', async t => {
+t.test('An event is dispatched when a code is confirmed', async t => {
   const params = {
     listName,
     userId,
-    email: 'invitee@example.com',
+    email: `invitee+${uuid()}@example.com`,
     listId: uuid()
   }
   const code = createCode(params)
 
   const collaboratorUserId = uuid()
   await shareService.confirm({ code, userId: collaboratorUserId }, codeSecret)
-  t.same(received.dispatchEventParams, [
+  t.same(dispatchEventArgs, [
     'COLLABORATOR_ACCEPTED_EVENT',
     {
       listId: params.listId,
@@ -76,14 +79,11 @@ test('An event is dispatched when a code is confirmed', async t => {
   ])
 })
 
-test('An error is thrown when an invalid code is provided', async t => {
-  const code = 'blah'
+t.test('An error is thrown when an invalid code is provided', async t => {
+  const invalidCode = `some-random-code-${uuid()}`
 
-  try {
-    await shareService.confirm({ code, userId: uuid() }, codeSecret)
-    t.fail('Error excepted for invalid code')
-  } catch (err) {
-    t.equal(err.statusCode, 400)
-  }
-  t.end()
+  await t.rejects(
+    shareService.confirm({ code: invalidCode, userId: uuid() }, codeSecret),
+    { statusCode: 400 }
+  )
 })

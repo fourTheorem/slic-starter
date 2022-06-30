@@ -6,13 +6,12 @@ async function main (event, context) {
   const { body, userId } = processEvent(event)
   const { email, listId, listName } = body
 
-  const result = await share.create(
+  await share.create(
     { email, listId, listName, userId },
     context.codeSecret, context.userServiceUrl, context.frontendUrl
   )
   return {
-    statusCode: 201,
-    body: result
+    statusCode: 201
   }
 }
 
