@@ -26,6 +26,7 @@
     "@aws-amplify/api": "^4.0.42",
     "@aws-amplify/auth": "^4.5.6",
     "@aws-amplify/core": "^4.5.6",
+    "@aws-sdk/client-cloudformation": "^3.118.1",
     "@material-ui/core": "^4.12.4",
     "@material-ui/icons": "^4.11.3",
     "awscred": "^1.5.0",

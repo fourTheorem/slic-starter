@@ -1,5 +1,8 @@
+const {
+  CloudFormationClient,
+  DescribeStacksCommand
+} = require('@aws-sdk/client-cloudformation')
 const awscred = require('awscred')
-const { CloudFormation } = require('aws-sdk')
 
 const stage = process.env.SLIC_STAGE || 'local'
 const domainSuffix = stage === 'prod' ? '' : `${stage}.`
@@ -18,7 +21,7 @@ if (!awsRegion) {
     'The region must be set using any of the AWS-SDK-supported methods to the region of the deployed backend'
   )
 }
-const cf = new CloudFormation({ region: awsRegion })
+const cf = new CloudFormationClient({ region: awsRegion })
 
 let backendConfig
 
@@ -42,11 +45,10 @@ async function loadBackendConfig () {
       }
     }
 
-    const apiEndpoints = await getApiEndpoints(cf)
+    const apiEndpoints = await getApiEndpoints()
 
     backendConfig = await cf
-      .describeStacks({ StackName: stackName })
-      .promise()
+      .send(new DescribeStacksCommand({ StackName: stackName }))
       .then(data => {
         if (data.Stacks && data.Stacks[0]) {
           const exportBackendPairs = data.Stacks[0].Outputs.filter(
@@ -81,8 +83,7 @@ function getApiEndpoints () {
             `https://api.${domainSuffix}${nsDomain}${apiStackPaths[apiName]}`
         )
         : cf
-          .describeStacks({ StackName: `${apiName}-${stage}` })
-          .promise()
+          .send(new DescribeStacksCommand({ StackName: `${apiName}-${stage}` }))
           .then(
             data =>
               data.Stacks[0].Outputs.find(

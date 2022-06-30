@@ -1,10 +1,13 @@
-const AWS = require('aws-sdk')
+const { DynamoDBClient } = require('@aws-sdk/client-dynamodb')
+const {
+  DynamoDBDocumentClient,
+  UpdateCommand
+} = require('@aws-sdk/lib-dynamodb')
 
-AWS.config.update({ region: process.env.AWS_REGION })
+const dynamoClient = new DynamoDBClient({ region: process.env.AWS_REGION })
+const docClient = DynamoDBDocumentClient.from(dynamoClient)
 
-const dynamoDb = new AWS.DynamoDB.DocumentClient()
-
-const tableName = 'checklists'
+const TableName = 'checklists'
 
 const userId = 'TODO1'
 const listId = 'TODO1'
@@ -15,17 +18,16 @@ async function test () {
 
   console.log('Executing update')
 
-  const result = await dynamoDb
-    .update({
-      TableName: tableName,
+  const result = await docClient
+    .send(new UpdateCommand({
+      TableName,
       Key: { userId, listId },
       UpdateExpression: 'SET entries= :entries, updatedAt = :updatedAt',
       ExpressionAttributeValues: {
         ':entries': entries,
         ':updatedAt': updatedAt
       }
-    })
-    .promise()
+    }))
 
   console.log('DONE', result)
 }

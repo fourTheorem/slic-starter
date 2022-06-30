@@ -1,9 +1,14 @@
-const AWS = require('aws-sdk')
-const docClient = new AWS.DynamoDB.DocumentClient({
-  endpoint: process.env.DYNAMODB_ENDPOINT_URL
-})
+const { DynamoDBClient } = require('@aws-sdk/client-dynamodb')
+const {
+  BatchGetCommand,
+  DynamoDBDocumentClient,
+  QueryCommand
+} = require('@aws-sdk/lib-dynamodb')
 
-const tableName = 'checklists'
+const dynamoClient = new DynamoDBClient({ endpoint: process.env.DYNAMODB_ENDPOINT_URL })
+const docClient = DynamoDBDocumentClient.from(dynamoClient)
+
+const TableName = 'checklists'
 
 /*
 testaccount1@example.com UserId: mock-auth-dGVzdGFjY291bnQxQGV4YW1wbGUuY29t
@@ -13,8 +18,8 @@ async function run () {
   console.log('Querying records')
   const userId = 'mock-auth-dGVzdGFjY291bnQyQGV4YW1wbGUuY29t' // testaccount2
   const lists = (await docClient
-    .query({
-      TableName: tableName,
+    .send(new QueryCommand({
+      TableName,
       ProjectionExpression:
         'listId, #nm, #description, createdAt, sharedListOwner, userId',
       KeyConditionExpression: 'userId = :userId',
@@ -25,8 +30,7 @@ async function run () {
       ExpressionAttributeValues: {
         ':userId': userId
       }
-    })
-    .promise()).Items
+    }))).Items
 
   console.log({ lists })
   const sharedListKeys = lists
@@ -36,9 +40,9 @@ async function run () {
   // Next, find the actual records for shared lists with name, description and createdAt values
   if (sharedListKeys.length) {
     const sharedLists = (await docClient
-      .batchGet({
+      .send(new BatchGetCommand({
         RequestItems: {
-          [tableName]: {
+          [TableName]: {
             Keys: sharedListKeys,
             ProjectionExpression:
               'listId, #nm, #description, createdAt, userId',
@@ -48,8 +52,7 @@ async function run () {
             }
           }
         }
-      })
-      .promise()).Responses[tableName]
+      }))).Responses[TableName]
     // Merge values from actual records into shared list records
     console.log('sharedlists***', { sharedLists })
     sharedLists.forEach(sharedList => {

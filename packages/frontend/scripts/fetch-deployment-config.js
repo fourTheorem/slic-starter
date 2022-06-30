@@ -1,8 +1,10 @@
+const {
+  CloudFormationClient,
+  DescribeStacksCommand
+} = require('@aws-sdk/client-cloudformation');
 const fs = require('fs')
 const path = require('path')
-
 const awscred = require('awscred')
-const { CloudFormation } = require('aws-sdk')
 const yaml = require('js-yaml')
 
 const appConfig = yaml.load(fs.readFileSync(path.resolve(__dirname, '..', '..', '..', 'app.yml'), 'utf8'))
@@ -37,7 +39,7 @@ if (!awsRegion) {
 
 console.log('Using region', awsRegion)
 
-const cf = new CloudFormation({ region: awsRegion })
+const cf = new CloudFormationClient({ region: awsRegion })
 
 const envFilename = '.env.production'
 fs.writeFileSync(
@@ -61,9 +63,7 @@ Promise.all([getUserServiceEnv(), getApiEndpointsEnv()])
 
 function getUserServiceEnv () {
   console.log(userServiceStackName)
-  return cf
-    .describeStacks({ StackName: userServiceStackName })
-    .promise()
+  return cf.send(new DescribeStacksCommand({ StackName: userServiceStackName }))
     .then((data) => {
       if (data.Stacks && data.Stacks[0]) {
         const stageEnvContents = data.Stacks[0].Outputs.filter(
@@ -96,9 +96,7 @@ function getApiEndpointsEnv () {
         ? Promise.resolve(
             `https://api.${domainSuffix}${nsDomain}${apiStackPaths[stackNamePrefix]}`
         )
-        : cf
-          .describeStacks({ StackName: `${stackNamePrefix}-${stage}` })
-          .promise()
+        : cf.send(new DescribeStacksCommand({ StackName: `${stackNamePrefix}-${stage}` }))
           .then(
             (data) =>
               data.Stacks[0].Outputs.find(

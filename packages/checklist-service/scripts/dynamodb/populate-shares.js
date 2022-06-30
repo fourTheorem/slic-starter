@@ -1,7 +1,11 @@
-const AWS = require('aws-sdk')
-const docClient = new AWS.DynamoDB.DocumentClient({
-  endpoint: process.env.DYNAMODB_ENDPOINT_URL
-})
+const { DynamoDBClient } = require('@aws-sdk/client-dynamodb')
+const {
+  DynamoDBDocumentClient,
+  PutCommand
+} = require('@aws-sdk/lib-dynamodb')
+
+const dynamoClient = new DynamoDBClient({ endpoint: process.env.DYNAMODB_ENDPOINT_URL })
+const docClient = DynamoDBDocumentClient.from(dynamoClient)
 
 /*
 testaccount1@example.com UserId: mock-auth-dGVzdGFjY291bnQxQGV4YW1wbGUuY29t
@@ -40,11 +44,10 @@ async function run () {
   await Promise.all(
     records.map(record =>
       docClient
-        .put({
+        .send(new PutCommand({
           TableName: 'checklists',
           Item: record
-        })
-        .promise()
+        }))
     )
   )
   console.log('Finished querying records')
