@@ -1,8 +1,8 @@
 // @ts-check
 // Note: type annotations allow type checking and IDEs autocompletion
 
-const lightCodeTheme = require('prism-react-renderer/themes/github')
-const darkCodeTheme = require('prism-react-renderer/themes/dracula')
+const lightCodeTheme = require('prism-react-renderer/themes/github');
+const darkCodeTheme = require('prism-react-renderer/themes/dracula');
 // baseUrl: the name of the repository
 // url: after your githup name .github.io
 // github user or organization that own the repository
@@ -11,7 +11,8 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula')
 /** @type {import('@docusaurus/types').Config} */
 const config = {
   title: 'SLIC Starter',
-  tagline: 'SLIC Starter is a complete starter project for production-grade serverless applications on AWS.',
+  tagline:
+    'SLIC Starter is a complete starter project for production-grade serverless applications on AWS.',
   url: 'https://fourTheorem.github.io',
   baseUrl: '/slic-starter/',
   onBrokenLinks: 'throw',
@@ -34,8 +35,7 @@ const config = {
         blog: {
           showReadingTime: true,
           // Please change this to your repo.
-          editUrl:
-            'https://github.com/fourTheorem/slic-starter/tree/main'
+          editUrl: 'https://github.com/fourTheorem/slic-starter/tree/main'
         },
         theme: {
           customCss: require.resolve('./src/css/custom.css')
@@ -118,6 +118,6 @@ const config = {
         darkTheme: darkCodeTheme
       }
     })
-}
+};
 
-module.exports = config
+module.exports = config;

@@ -1,49 +1,43 @@
-const axios = require('axios')
-const { toneAxiosError } = require('./axios-util')
-const { loadBackendConfig } = require('./backend-config')
-const { getUser } = require('./user-util')
+const axios = require('axios');
+const { toneAxiosError } = require('./axios-util');
+const { loadBackendConfig } = require('./backend-config');
+const { getUser } = require('./user-util');
 
-async function getHttpClient (apiName = 'checklist-service') {
-  const { apiEndpoints } = await loadBackendConfig()
-  const { idToken } = await getUser()
+async function getHttpClient(apiName = 'checklist-service') {
+  const { apiEndpoints } = await loadBackendConfig();
+  const { idToken } = await getUser();
 
-  const headers = { Authorization: idToken }
+  const headers = { Authorization: idToken };
 
   const axiosClient = axios.create({
     baseURL: apiEndpoints[apiName],
-    headers
-  })
+    headers,
+  });
 
   axiosClient.interceptors.request.use(
-    config => config,
-    error => {
-      return Promise.reject(toneAxiosError(error))
-    }
-  )
+    (config) => config,
+    (error) => toneAxiosError(error)
+  );
 
   axiosClient.interceptors.response.use(
-    config => config,
-    error => {
-      return Promise.reject(toneAxiosError(error))
-    }
-  )
-  return axiosClient
+    (config) => config,
+    (error) => toneAxiosError(error)
+  );
+  return axiosClient;
 }
 
-const httpClientPromise = getHttpClient()
+const httpClientPromise = getHttpClient();
 
 const proxy = new Proxy(
   {},
   {
-    get: (target, name) => {
-      return function proxyRequest () {
-        const requestArgs = arguments
-        return httpClientPromise.then(axiosClient => {
-          return axiosClient[name].apply(axiosClient, requestArgs)
-        })
-      }
-    }
+    get: (target, name, ...args) =>
+      function proxyRequest() {
+        return httpClientPromise.then((axiosClient) =>
+          axiosClient[name](...args)
+        );
+      },
   }
-)
+);
 
-module.exports = proxy
+module.exports = proxy;

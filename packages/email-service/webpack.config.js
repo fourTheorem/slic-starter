@@ -1,5 +1,5 @@
-const path = require('path')
-const slsw = require('serverless-webpack')
+const path = require('path');
+const slsw = require('serverless-webpack');
 
 module.exports = {
   entry: slsw.lib.entries,
@@ -7,7 +7,7 @@ module.exports = {
   mode: slsw.lib.webpack.isLocal ? 'development' : 'production',
   performance: {
     // Turn off size warnings for entry points
-    hints: false
+    hints: false,
   },
   devtool: slsw.lib.webpack.isLocal ? 'source-map' : 'nosources-source-map',
   module: {
@@ -26,19 +26,19 @@ module.exports = {
                 [
                   '@babel/preset-env',
                   // commonjs setting here required to avoid https://github.com/webpack/webpack/issues/4039
-                  { modules: 'commonjs', targets: { node: true } }
-                ]
-              ]
-            }
-          }
-        ]
-      }
-    ]
+                  { modules: 'commonjs', targets: { node: true } },
+                ],
+              ],
+            },
+          },
+        ],
+      },
+    ],
   },
   output: {
     libraryTarget: 'commonjs2',
     path: path.join(__dirname, '.webpack'),
     filename: '[name].js',
-    sourceMapFilename: '[file].map'
-  }
-}
+    sourceMapFilename: '[file].map',
+  },
+};

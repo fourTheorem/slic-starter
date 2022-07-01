@@ -1,54 +1,57 @@
-const { v4: uuid } = require('uuid')
-const t = require('tap')
+const { v4: uuid } = require('uuid');
+const t = require('tap');
 
-const userId = uuid()
+const userId = uuid();
 const testUser = {
   userId,
-  email: 'test-user@example.com'
-}
+  email: 'test-user@example.com',
+};
 
-let getUserArgs = []
-let sendEmailArgs = []
+let getUserArgs = [];
+let sendEmailArgs = [];
 
-const checklistHandler = t.mock('../../../services/welcome/new-checklist-handler', {
-  'slic-tools/user-util': {
-    getUser: (...args) => {
-      getUserArgs = [...args]
-      return Promise.resolve(testUser)
-    }
-  },
-  'slic-tools/email-util': {
-    sendEmail: (...args) => {
-      sendEmailArgs = [...args]
-      return Promise.resolve()
-    }
+const checklistHandler = t.mock(
+  '../../../services/welcome/new-checklist-handler',
+  {
+    'slic-tools/user-util': {
+      getUser: (...args) => {
+        getUserArgs = [...args];
+        return Promise.resolve(testUser);
+      },
+    },
+    'slic-tools/email-util': {
+      sendEmail: (...args) => {
+        sendEmailArgs = [...args];
+        return Promise.resolve();
+      },
+    },
   }
-})
+);
 
 t.beforeEach(async () => {
-  getUserArgs = []
-  sendEmailArgs = []
-})
+  getUserArgs = [];
+  sendEmailArgs = [];
+});
 
-t.test('handleNewChecklist sends an email message', async t => {
+t.test('handleNewChecklist sends an email message', async (t) => {
   const event = {
     detail: {
       userId,
-      name: 'New Checklist'
-    }
-  }
+      name: 'New Checklist',
+    },
+  };
   const ctx = {
-    userServiceUrl: 'http://user-service.example.com'
-  }
+    userServiceUrl: 'http://user-service.example.com',
+  };
 
-  await checklistHandler.handleNewChecklist(event, ctx)
+  await checklistHandler.handleNewChecklist(event, ctx);
 
-  t.same(getUserArgs, [userId, ctx.userServiceUrl])
+  t.same(getUserArgs, [userId, ctx.userServiceUrl]);
   t.match(sendEmailArgs, [
     {
       to: testUser.email,
       subject: 'Your SLIC List',
-      body: new RegExp(`.*${event.detail.name}$`)
-    }
-  ])
-})
+      body: new RegExp(`.*${event.detail.name}$`),
+    },
+  ]);
+});

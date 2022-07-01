@@ -2,6 +2,9 @@
   "name": "integration-tests",
   "version": "1.0.0",
   "description": "Integration tests",
+  "engines": {
+    "node": ">=16.15"
+  },
   "main": "index.js",
   "scripts": {
     "test": "tap --no-coverage \"test/**/*.test.js\""
