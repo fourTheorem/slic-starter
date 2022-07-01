@@ -1,3 +1,11 @@
+# [1.4.0](https://github.com/fourTheorem/slic-starter/compare/1.3.0...1.4.0) (2022-07-01)
+
+
+### Features
+
+* replace all aws-sdk v2 usages with aws sdk v3 clients ([c0fa19a](https://github.com/fourTheorem/slic-starter/commit/c0fa19a2b6da099129737551d8c2fd4765525c42))
+* **util:** use aws sdk v3 client for ssm ([237e0dc](https://github.com/fourTheorem/slic-starter/commit/237e0dc38526cb8f443c12d4bff94e0ea2974dc3))
+
 # [1.3.0](https://github.com/fourTheorem/slic-starter/compare/1.2.0...1.3.0) (2022-06-29)
 
 
