@@ -1,6 +1,6 @@
-const pino = require('pino')
+const pino = require('pino');
 
-const { name } = require('./service-info')
+const { name } = require('./service-info');
 
 module.exports = pino({
   name,
@@ -9,5 +9,5 @@ module.exports = pino({
     process.env.IS_OFFLINE ||
     process.env.SLIC_STAGE === 'dev'
       ? 'debug'
-      : 'info'
-})
+      : 'info',
+});

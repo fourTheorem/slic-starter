@@ -1,10 +1,10 @@
-const pick = require('lodash/pick')
+const pick = require('lodash/pick');
 
-const suppressedProperties = ['nativeProtocols']
+const suppressedProperties = ['nativeProtocols'];
 
-function toneAxiosError (error) {
+function toneAxiosError(error) {
   if (!process.env.VERBOSE_AXIOS_ERRORS) {
-    const summarized = {}
+    const summarized = {};
 
     // Remove verbose properties from request options
     if (error.request) {
@@ -12,18 +12,19 @@ function toneAxiosError (error) {
         'headers',
         'method',
         'path',
-        '_header'
-      ])
+        '_header',
+      ]);
+      /* eslint-disable no-underscore-dangle, no-param-reassign */
       if (error.request._options) {
-        const requestOptions = { ...error.request._options }
-        Object.keys(error.request._options).forEach(property => {
+        const requestOptions = { ...error.request._options };
+        Object.keys(error.request._options).forEach((property) => {
           if (suppressedProperties.indexOf(property) > -1) {
-            delete requestOptions[property]
+            delete requestOptions[property];
           }
-        })
+        });
         summarized.request = {
-          _options: requestOptions
-        }
+          _options: requestOptions,
+        };
       }
     }
 
@@ -33,22 +34,24 @@ function toneAxiosError (error) {
         'status',
         'statusText',
         'config.url',
-        'data'
-      ])
+        'data',
+      ]);
     }
 
-    error._full_request = error.request
-    error._full_response = error.response
-    Object.assign(error, summarized)
+    error._full_request = error.request;
+    error._full_response = error.response;
+    /* eslint-enable no-underscore-dangle, no-param-reassign */
+
+    Object.assign(error, summarized);
 
     // Make large objects non-enumerable to remove excessive verbosity from logs
-    ;['config', '_full_request', '_full_response'].forEach(property =>
+    ['config', '_full_request', '_full_response'].forEach((property) =>
       Object.defineProperty(error, property, { enumerable: false })
-    )
+    );
   }
-  return error
+  return error;
 }
 
 module.exports = {
-  toneAxiosError
-}
+  toneAxiosError,
+};

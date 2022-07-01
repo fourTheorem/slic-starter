@@ -1,22 +1,22 @@
-const { v4: uuid } = require('uuid')
+const { v4: uuid } = require('uuid');
 
-const userId = uuid()
+const userId = uuid();
 
 const userRequestContext = {
   authorizer: {
     claims: {
-      'cognito:username': userId
-    }
-  }
-}
+      'cognito:username': userId,
+    },
+  },
+};
 
 const commonEventProps = {
   httpMethod: 'GET',
-  headers: {}
-}
+  headers: {},
+};
 
 module.exports = {
   userId,
   userRequestContext,
-  commonEventProps
-}
+  commonEventProps,
+};

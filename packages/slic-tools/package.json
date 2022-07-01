@@ -2,6 +2,9 @@
   "name": "slic-tools",
   "version": "1.0.0",
   "description": "Utilities for services",
+  "engines": {
+    "node": ">=16.15"
+  },
   "scripts": {},
   "repository": {
     "type": "git",

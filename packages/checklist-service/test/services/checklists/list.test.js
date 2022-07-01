@@ -1,43 +1,43 @@
-const t = require('tap')
+const t = require('tap');
 
-const { userId, userRequestContext } = require('../../fixtures')
+const { userId, userRequestContext } = require('../../fixtures');
 
-let listParams = {}
+let listParams = {};
 const testLists = [
   {
     listId: 1,
     name: 'List One',
     description: 'List One Description',
-    category: 'In Progress'
+    category: 'In Progress',
   },
   {
     listId: 2,
     name: 'List Two',
     description: 'List Two Description',
-    category: 'TODO'
-  }
-]
+    category: 'TODO',
+  },
+];
 
 const listHandler = t.mock('../../../services/checklists/list', {
   '../../../services/checklists/checklist.js': {
-    list: params => {
-      listParams = { ...params }
-      return Promise.resolve(testLists)
-    }
-  }
-})
+    list: (params) => {
+      listParams = { ...params };
+      return Promise.resolve(testLists);
+    },
+  },
+});
 
 t.beforeEach(async () => {
-  listParams = {}
-})
+  listParams = {};
+});
 
-t.test('list handler executes checklist service', async t => {
+t.test('list handler executes checklist service', async (t) => {
   const event = {
-    requestContext: userRequestContext
-  }
+    requestContext: userRequestContext,
+  };
 
-  const result = await listHandler.main(event)
-  t.equal(listParams.userId, userId)
-  t.equal(result.statusCode, 200)
-  t.same(JSON.parse(result.body), testLists)
-})
+  const result = await listHandler.main(event);
+  t.equal(listParams.userId, userId);
+  t.equal(result.statusCode, 200);
+  t.same(JSON.parse(result.body), testLists);
+});

@@ -1,12 +1,12 @@
-const { extractEmail } = require('mock-amplify-auth')
+const { extractEmail } = require('mock-amplify-auth');
 
-function get ({ userId }) {
+function get({ userId }) {
   return {
     userId,
-    email: extractEmail(userId)
-  }
+    email: extractEmail(userId),
+  };
 }
 
 module.exports = {
-  get
-}
+  get,
+};

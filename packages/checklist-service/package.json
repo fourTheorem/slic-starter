@@ -2,6 +2,9 @@
   "name": "checklist-service",
   "version": "1.0.0",
   "description": "Checklist Service",
+  "engines": {
+    "node": ">=16.15"
+  },
   "scripts": {
     "sls": "serverless",
     "prestart": "source ../../localstack.env",

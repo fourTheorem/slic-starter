@@ -2,6 +2,9 @@
   "name": "sharing-service",
   "version": "1.0.0",
   "description": "Sharing Service",
+  "engines": {
+    "node": ">=16.15"
+  },
   "scripts": {
     "prestart": "source ../../localstack.env",
     "start": "sls offline start --region us-east-1",

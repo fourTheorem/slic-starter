@@ -1,17 +1,13 @@
 module.exports = {
-  root: true,
-  extends: ['standard', 'react-app'],
-  plugins: [],
+  extends: ['standard', 'react-app', 'prettier'],
   parserOptions: {
     ecmaVersion: 2018,
     sourceType: 'module',
     ecmaFeatures: {
-      jsx: true
-    }
+      jsx: true,
+    },
   },
-  ignorePatterns: ['build/static/**'],
   rules: {
     'no-underscore-dangle': 'off',
-    semi: 'off'
-  }
+  },
 };

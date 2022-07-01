@@ -2,23 +2,23 @@ const {
   BatchGetCommand,
   DynamoDBDocumentClient,
   GetCommand,
-  QueryCommand
-} = require('@aws-sdk/lib-dynamodb')
-const { mockClient } = require('aws-sdk-client-mock')
-const t = require('tap')
+  QueryCommand,
+} = require('@aws-sdk/lib-dynamodb');
+const { mockClient } = require('aws-sdk-client-mock');
+const t = require('tap');
 
-process.env.CHECKLIST_TABLE_NAME = 'checklists'
+process.env.CHECKLIST_TABLE_NAME = 'checklists';
 
-const dynamoMock = mockClient(DynamoDBDocumentClient)
+const dynamoMock = mockClient(DynamoDBDocumentClient);
 
-const userId = 'ownerA'
+const userId = 'ownerA';
 const list1 = {
   userId: 'ownerA',
   listId: 'list1',
   name: 'List One',
   description: 'List One Description',
-  entries: {}
-}
+  entries: {},
+};
 const testLists = {
   ownerA: [
     list1,
@@ -27,8 +27,8 @@ const testLists = {
       listId: 'list2',
       name: 'List Two',
       description: 'List Two Description',
-      entries: {}
-    }
+      entries: {},
+    },
   ],
   ownerB: [
     {
@@ -36,183 +36,231 @@ const testLists = {
       listId: 'list3',
       name: 'List Three',
       description: 'List three Description',
-      entries: {}
+      entries: {},
     },
     {
       userId: 'ownerB',
       listId: 'list1',
-      sharedListOwner: 'ownerA'
-    }
-  ]
-}
+      sharedListOwner: 'ownerA',
+    },
+  ],
+};
 
-let dispatchEventArgs = []
+let dispatchEventArgs = [];
 const checklist = t.mock('../../../services/checklists/checklist', {
   'slic-tools/event-dispatcher': {
     dispatchEvent: (...args) => {
-      dispatchEventArgs.push(...args)
-      return Promise.resolve()
-    }
-  }
-})
+      dispatchEventArgs.push(...args);
+      return Promise.resolve();
+    },
+  },
+});
 
 t.beforeEach(async () => {
-  await dynamoMock.reset()
-  dynamoMock.resolves({})
+  await dynamoMock.reset();
+  dynamoMock.resolves({});
 
-  dispatchEventArgs = []
-})
+  dispatchEventArgs = [];
+});
 
-t.test('create puts a dynamodb item', async t => {
-  const listName = 'Test List'
-  const listDescription = 'Test Description'
+t.test('create puts a dynamodb item', async (t) => {
+  const listName = 'Test List';
+  const listDescription = 'Test Description';
 
   const response = await checklist.create({
     userId,
     name: listName,
-    description: listDescription
-  })
+    description: listDescription,
+  });
 
-  t.equal(dynamoMock.send.callCount, 1)
-  t.equal(dynamoMock.send.firstCall.args[0].input.TableName, process.env.CHECKLIST_TABLE_NAME)
-  t.equal(dynamoMock.send.firstCall.args[0].input.Item.userId, userId)
-  t.equal(dynamoMock.send.firstCall.args[0].input.Item.name, listName)
-  t.ok(dynamoMock.send.firstCall.args[0].input.Item.createdAt)
-  t.ok(dynamoMock.send.firstCall.args[0].input.Item.listId)
-  t.same(dynamoMock.send.firstCall.args[0].input.Item.entries, {})
-  t.equal(dynamoMock.send.firstCall.args[0].input.Item.description, listDescription)
+  t.equal(dynamoMock.send.callCount, 1);
+  t.equal(
+    dynamoMock.send.firstCall.args[0].input.TableName,
+    process.env.CHECKLIST_TABLE_NAME
+  );
+  t.equal(dynamoMock.send.firstCall.args[0].input.Item.userId, userId);
+  t.equal(dynamoMock.send.firstCall.args[0].input.Item.name, listName);
+  t.ok(dynamoMock.send.firstCall.args[0].input.Item.createdAt);
+  t.ok(dynamoMock.send.firstCall.args[0].input.Item.listId);
+  t.same(dynamoMock.send.firstCall.args[0].input.Item.entries, {});
+  t.equal(
+    dynamoMock.send.firstCall.args[0].input.Item.description,
+    listDescription
+  );
 
-  t.same(dispatchEventArgs, ['LIST_CREATED_EVENT', { ...dynamoMock.send.firstCall.args[0].input.Item }])
+  t.same(dispatchEventArgs, [
+    'LIST_CREATED_EVENT',
+    { ...dynamoMock.send.firstCall.args[0].input.Item },
+  ]);
 
   t.match(response, {
     userId,
     name: listName,
-    description: listDescription
-  })
-})
+    description: listDescription,
+  });
+});
 
-t.test('update function updates current checklists', async t => {
+t.test('update function updates current checklists', async (t) => {
   const list = {
     listId: '1234',
     userId,
     name: 'New title',
-    description: 'New Description'
+    description: 'New Description',
+  };
+
+  await checklist.update(list);
+
+  t.equal(dynamoMock.send.callCount, 1);
+  t.equal(
+    dynamoMock.send.firstCall.args[0].input.TableName,
+    process.env.CHECKLIST_TABLE_NAME
+  );
+  t.hasProps(
+    dynamoMock.send.firstCall.args[0].input.ExpressionAttributeValues,
+    [':name', ':updatedAt', ':description']
+  );
+  t.same(dynamoMock.send.firstCall.args[0].input.Key, {
+    userId: list.userId,
+    listId: list.listId,
+  });
+});
+
+t.test(
+  'update function updates current checklists when name not specified',
+  async (t) => {
+    const list = {
+      listId: '1234',
+      userId,
+    };
+
+    await checklist.update(list);
+
+    t.equal(dynamoMock.send.callCount, 1);
+    t.equal(
+      dynamoMock.send.firstCall.args[0].input.TableName,
+      process.env.CHECKLIST_TABLE_NAME
+    );
+    t.match(dynamoMock.send.firstCall.args[0].input.ExpressionAttributeValues, {
+      ':name': null,
+      ':description': null,
+    });
+    t.ok(
+      dynamoMock.send.firstCall.args[0].input.ExpressionAttributeValues[
+        ':updatedAt'
+      ]
+    );
   }
+);
 
-  await checklist.update(list)
-
-  t.equal(dynamoMock.send.callCount, 1)
-  t.equal(dynamoMock.send.firstCall.args[0].input.TableName, process.env.CHECKLIST_TABLE_NAME)
-  t.hasProps(dynamoMock.send.firstCall.args[0].input.ExpressionAttributeValues, [
-    ':name',
-    ':updatedAt',
-    ':description'
-  ])
-  t.same(dynamoMock.send.firstCall.args[0].input.Key, { userId: list.userId, listId: list.listId })
-})
-
-t.test('update function updates current checklists when name not specified', async t => {
-  const list = {
-    listId: '1234',
-    userId
-  }
-
-  await checklist.update(list)
-
-  t.equal(dynamoMock.send.callCount, 1)
-  t.equal(dynamoMock.send.firstCall.args[0].input.TableName, process.env.CHECKLIST_TABLE_NAME)
-  t.match(dynamoMock.send.firstCall.args[0].input.ExpressionAttributeValues, {
-    ':name': null,
-    ':description': null
-  })
-  t.ok(dynamoMock.send.firstCall.args[0].input.ExpressionAttributeValues[':updatedAt'])
-})
-
-t.test('Get a checklist based on a listId and userId', async t => {
+t.test('Get a checklist based on a listId and userId', async (t) => {
   const list = {
     listId: list1.listId,
-    userId: list1.userId
-  }
+    userId: list1.userId,
+  };
 
   dynamoMock.on(GetCommand).resolvesOnce({
-    Item: list1
-  })
+    Item: list1,
+  });
 
-  const response = await checklist.get(list)
+  const response = await checklist.get(list);
 
-  t.same(response, list1)
-  t.equal(dynamoMock.send.callCount, 1)
-  t.equal(dynamoMock.send.firstCall.args[0].input.TableName, process.env.CHECKLIST_TABLE_NAME)
-  t.same(dynamoMock.send.firstCall.args[0].input.Key, { userId: list.userId, listId: list.listId })
-})
+  t.same(response, list1);
+  t.equal(dynamoMock.send.callCount, 1);
+  t.equal(
+    dynamoMock.send.firstCall.args[0].input.TableName,
+    process.env.CHECKLIST_TABLE_NAME
+  );
+  t.same(dynamoMock.send.firstCall.args[0].input.Key, {
+    userId: list.userId,
+    listId: list.listId,
+  });
+});
 
-t.test('remove a checklist', async t => {
+t.test('remove a checklist', async (t) => {
   const list = {
     listId: '1234',
-    userId
-  }
+    userId,
+  };
 
-  await checklist.remove(list)
+  await checklist.remove(list);
 
-  t.equal(dynamoMock.send.callCount, 1)
-  t.equal(dynamoMock.send.firstCall.args[0].input.TableName, process.env.CHECKLIST_TABLE_NAME)
-  t.same(dynamoMock.send.firstCall.args[0].input.Key, { userId: list.userId, listId: list.listId })
-})
-
-t.test('list all checklists for user', async t => {
-  dynamoMock.on(QueryCommand).resolvesOnce({
-    Items: testLists[userId]
-  })
-
-  const response = await checklist.list({ userId })
-
-  t.same(response, testLists[userId])
-  t.equal(dynamoMock.send.callCount, 1)
-  t.equal(dynamoMock.send.firstCall.args[0].input.TableName, process.env.CHECKLIST_TABLE_NAME)
+  t.equal(dynamoMock.send.callCount, 1);
   t.equal(
-    dynamoMock.send.firstCall.args[0].input.ExpressionAttributeValues[':userId'],
-    userId
-  )
-})
+    dynamoMock.send.firstCall.args[0].input.TableName,
+    process.env.CHECKLIST_TABLE_NAME
+  );
+  t.same(dynamoMock.send.firstCall.args[0].input.Key, {
+    userId: list.userId,
+    listId: list.listId,
+  });
+});
 
-t.test('list all checklists including shared lists', async t => {
-  const userId = 'ownerB'
+t.test('list all checklists for user', async (t) => {
+  dynamoMock.on(QueryCommand).resolvesOnce({
+    Items: testLists[userId],
+  });
+
+  const response = await checklist.list({ userId });
+
+  t.same(response, testLists[userId]);
+  t.equal(dynamoMock.send.callCount, 1);
+  t.equal(
+    dynamoMock.send.firstCall.args[0].input.TableName,
+    process.env.CHECKLIST_TABLE_NAME
+  );
+  t.equal(
+    dynamoMock.send.firstCall.args[0].input.ExpressionAttributeValues[
+      ':userId'
+    ],
+    userId
+  );
+});
+
+t.test('list all checklists including shared lists', async (t) => {
+  const userIdB = 'ownerB';
 
   dynamoMock.on(QueryCommand).resolvesOnce({
-    Items: testLists[userId]
-  })
+    Items: testLists[userIdB],
+  });
 
   dynamoMock.on(BatchGetCommand).resolvesOnce({
     Responses: {
-      [process.env.CHECKLIST_TABLE_NAME]: [list1]
-    }
-  })
+      [process.env.CHECKLIST_TABLE_NAME]: [list1],
+    },
+  });
 
-  const response = await checklist.list({ userId })
+  const response = await checklist.list({ userId: userIdB });
 
-  t.equal(dynamoMock.send.callCount, 2)
-  t.match(response, testLists.ownerB)
+  t.equal(dynamoMock.send.callCount, 2);
+  t.match(response, testLists.ownerB);
 
-  const shared = response.find(share => share.sharedListOwner)
+  const shared = response.find((share) => share.sharedListOwner);
 
   const originalList = testLists.ownerB.find(
-    list => list.listId === shared.listId
-  )
+    (list) => list.listId === shared.listId
+  );
 
-  t.equal(shared.name, originalList.name)
-  t.equal(shared.description, originalList.description)
-})
+  t.equal(shared.name, originalList.name);
+  t.equal(shared.description, originalList.description);
+});
 
-t.test('add a collaborator', async t => {
+t.test('add a collaborator', async (t) => {
   const list = {
     sharedListOwner: 'list-owner',
     listId: 'list-shared',
-    userId
-  }
+    userId,
+  };
 
-  await checklist.addCollaborator(list)
+  await checklist.addCollaborator(list);
 
-  t.equal(dynamoMock.send.callCount, 1)
-  t.equal(dynamoMock.send.firstCall.args[0].input.TableName, process.env.CHECKLIST_TABLE_NAME)
-  t.same(dynamoMock.send.firstCall.args[0].input.Item, { userId: list.userId, listId: list.listId, sharedListOwner: list.sharedListOwner })
-})
+  t.equal(dynamoMock.send.callCount, 1);
+  t.equal(
+    dynamoMock.send.firstCall.args[0].input.TableName,
+    process.env.CHECKLIST_TABLE_NAME
+  );
+  t.same(dynamoMock.send.firstCall.args[0].input.Item, {
+    userId: list.userId,
+    listId: list.listId,
+    sharedListOwner: list.sharedListOwner,
+  });
+});
