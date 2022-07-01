@@ -101,10 +101,10 @@ export class PipelineStack extends Stack {
         version: '0.2',
         phases: {
           install: {
-            commands: [`n ${NODE_VERSION}`, 'cd packages/cicd', 'npm ci']
+            commands: [`n ${NODE_VERSION}`, 'npm ci']
           },
           build: {
-            commands: ['npm run build', `npm run cdk -- synth ${cdkContextArgs.join(' ')}`]
+            commands: ['cd packages/cicd', 'npm run build', `npm run cdk -- synth ${cdkContextArgs.join(' ')}`]
           },
         },
         artifacts: {
