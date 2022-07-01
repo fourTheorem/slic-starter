@@ -31,8 +31,8 @@ const httpClientPromise = getHttpClient();
 const proxy = new Proxy(
   {},
   {
-    get: (target, name, ...args) =>
-      function proxyRequest() {
+    get: (target, name) =>
+      function proxyRequest(...args) {
         return httpClientPromise.then((axiosClient) =>
           axiosClient[name](...args)
         );
