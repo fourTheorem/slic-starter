@@ -25,9 +25,9 @@ async function fetchQueueUrl() {
     log.info({ QueueUrl }, 'Using queue URL');
 
     return QueueUrl;
-  } catch (err) {
-    log.error({ err }, 'Failed to read queue URL');
-    throw err;
+  } catch (error) {
+    log.error({ error }, 'Failed to read queue URL');
+    throw error;
   }
 }
 

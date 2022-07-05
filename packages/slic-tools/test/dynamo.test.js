@@ -1,12 +1,9 @@
-const { DynamoDBDocumentClient } = require('@aws-sdk/lib-dynamodb');
-const t = require('tap');
-
-t.beforeEach(async (t) => {
-  delete require.cache[require.resolve('../dynamo')];
-});
+import { DynamoDBDocumentClient } from '@aws-sdk/lib-dynamodb';
+import t from 'tap';
+import { v4 as uuid } from 'uuid';
 
 t.test('A DynamoDB client is provided', async (t) => {
-  const { dynamoDocClient } = require('../dynamo');
+  const { dynamoDocClient } = await import('../dynamo.js');
   const client = dynamoDocClient();
   t.type(client, DynamoDBDocumentClient);
 });
@@ -15,7 +12,8 @@ t.test(
   'A standard DynamoDB client is provided when the port is specified but is offline env var not set',
   async (t) => {
     process.env.DYNAMODB_LOCAL_PORT = '9000';
-    const { dynamoDocClient } = require('../dynamo');
+    // eslint-disable-next-line import/no-unresolved
+    const { dynamoDocClient } = await import(`../dynamo.js?update=${uuid()}`); // to force a new version of the module
     const client = dynamoDocClient();
 
     t.type(client, DynamoDBDocumentClient);
@@ -25,7 +23,8 @@ t.test(
 
 t.test('A local DynamoDB client is provided when offline', async (t) => {
   process.env.IS_OFFLINE = 'true';
-  const { dynamoDocClient } = require('../dynamo');
+  // eslint-disable-next-line import/no-unresolved
+  const { dynamoDocClient } = await import(`../dynamo.js?update=${uuid()}`); // to force a new version of the module
 
   const client = dynamoDocClient();
   t.type(client, DynamoDBDocumentClient);

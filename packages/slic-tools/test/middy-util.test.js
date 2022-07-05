@@ -1,17 +1,6 @@
-const { test } = require('tap');
-const { middify } = require('../middy-util');
+import { test } from 'tap';
+import { middify } from '../middy-util.js';
 
-test('middify handles empty export', (t) => {
-  middify({});
-  t.end();
-});
-
-test('middify handles multiple exports', (t) => {
-  middify(
-    {
-      handler: () => {},
-    },
-    {}
-  );
-  t.end();
+test('middify handles empty export', async (t) => {
+  t.ok(middify(async (event, ctx) => {}));
 });

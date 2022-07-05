@@ -1,15 +1,13 @@
-const { test } = require('tap');
+import { test } from 'tap';
 
-test('log at debug level', (t) => {
+test('log at debug level', async (t) => {
   process.env.DEBUG = 'true';
-  delete require.cache[require.resolve('../log')];
-  require('../log').debug('debug test');
-  t.end();
+  const { log } = await import('../log.js');
+  log.debug('debug test');
 });
 
-test('log at info level', (t) => {
+test('log at info level', async (t) => {
   delete process.env.DEBUG;
-  delete require.cache[require.resolve('../log')];
-  require('../log').debug('info test');
-  t.end();
+  const { log } = await import('../log.js');
+  log.debug('info test');
 });
