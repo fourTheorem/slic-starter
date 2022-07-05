@@ -14,7 +14,7 @@
     "format": "eslint --cache --fix .",
     "test:lint": "eslint .",
     "tap": "AWS_XRAY_CONTEXT_MISSING=LOG_ERROR AWS_XRAY_LOG_LEVEL=silent tap",
-    "test:packages": "npm run tap -- --branches=100 --statements=100 --functions=100 --lines=100",
+    "test:packages": "npm run tap -- --branches=100 --statements=100 --functions=100 --lines=100 --node-arg=--loader=testdouble",
     "test": "npm run test:lint && npm run test:packages",
     "prepare": "husky install",
     "release": "semantic-release"
@@ -125,7 +125,8 @@
     "prettier": "2.7.1",
     "semantic-release": "^19.0.3",
     "serverless": "^3.19.0",
-    "tap": "^16.2.0"
+    "tap": "^16.2.0",
+    "testdouble": "^3.16.6"
   },
   "dependencies": {
     "@aws-cdk/aws-iam": "^1.159.0",
