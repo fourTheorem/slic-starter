@@ -1,8 +1,8 @@
-const { mockClient } = require('aws-sdk-client-mock');
-const { SESv2Client, SendEmailCommand } = require('@aws-sdk/client-sesv2');
-const t = require('tap');
+import { mockClient } from 'aws-sdk-client-mock';
+import { SESv2Client, SendEmailCommand } from '@aws-sdk/client-sesv2';
+import t from 'tap';
 
-const emailHandler = require('../../../services/email/email-handler');
+import * as emailHandler from '../../../services/email/email-handler.js';
 
 const sesMock = mockClient(SESv2Client);
 
@@ -32,12 +32,12 @@ t.test('email sends an email', async (t) => {
         Body: {
           Text: {
             Data: 'hello',
-            Charset: 'UTF-8',
+            Charset: 'UTF-8', // eslint-disable-line unicorn/text-encoding-identifier-case
           },
         },
         Subject: {
           Data: 'SLIC List',
-          Charset: 'UTF-8',
+          Charset: 'UTF-8', // eslint-disable-line unicorn/text-encoding-identifier-case
         },
       },
     },

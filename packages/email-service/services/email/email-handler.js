@@ -1,19 +1,18 @@
-const { middify } = require('slic-tools/middy-util');
-const log = require('slic-tools/log');
-const { SESv2Client, SendEmailCommand } = require('@aws-sdk/client-sesv2');
-const { captureAWSv3Client } = require('aws-xray-sdk-core');
+import { middify, log } from 'slic-tools';
+import { SESv2Client, SendEmailCommand } from '@aws-sdk/client-sesv2';
+import AWSXRay from 'aws-xray-sdk-core';
 
-const sesClient = captureAWSv3Client(
+const sesClient = AWSXRay.captureAWSv3Client(
   new SESv2Client({
     endpoint: process.env.SES_ENDPOINT_URL,
     region: process.env.SES_REGION,
   })
 );
 
-async function sendEmail(message, context) {
-  log.info({ message }, 'sendEmail');
+export async function innerHandler(event, ctx) {
+  log.info({ event }, 'sendEmail');
 
-  const { to, subject, body } = JSON.parse(message.Records[0].body);
+  const { to, subject, body } = JSON.parse(event.Records[0].body);
 
   const params = {
     Destination: {
@@ -23,28 +22,25 @@ async function sendEmail(message, context) {
       Simple: {
         Body: {
           Text: {
-            Charset: 'UTF-8',
+            Charset: 'UTF-8', // eslint-disable-line unicorn/text-encoding-identifier-case
             Data: body,
           },
         },
         Subject: {
-          Charset: 'UTF-8',
+          Charset: 'UTF-8', // eslint-disable-line unicorn/text-encoding-identifier-case
           Data: subject,
         },
       },
     },
-    FromEmailAddress: context.emailFromAddress,
+    FromEmailAddress: ctx.emailFromAddress,
   };
 
   const result = await sesClient.send(new SendEmailCommand(params));
   log.info({ result }, 'Sent email');
 }
 
-module.exports = middify(
-  { sendEmail },
-  {
-    ssmParameters: {
-      emailFromAddress: `/${process.env.SLIC_STAGE}/email-service/from-address`,
-    },
-  }
-);
+export const sendEmail = middify(innerHandler, {
+  ssmParameters: {
+    emailFromAddress: `/${process.env.SLIC_STAGE}/email-service/from-address`,
+  },
+});
