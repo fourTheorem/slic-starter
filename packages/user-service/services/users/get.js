@@ -1,16 +1,14 @@
-const { middify } = require('slic-tools/middy-util');
+import { createResponse, processEvent, middify } from 'slic-tools';
 
 const user = process.env.IS_OFFLINE
-  ? require('./user-offline')
-  : require('./user');
+  ? await import('./user-offline.js')
+  : await import('./user.js');
 
-const { processEvent } = require('slic-tools/event-util');
-const { createResponse } = require('slic-tools/response');
-
-async function main(event) {
+async function innerHandler(event) {
   const { pathParameters } = processEvent(event);
   const { id: userId } = pathParameters;
+
   return createResponse(user.get({ userId }));
 }
 
-module.exports = middify({ main }, { isHttpHandler: true });
+export const handler = middify(innerHandler, { isHttpHandler: true });

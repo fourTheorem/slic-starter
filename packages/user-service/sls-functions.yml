@@ -1,5 +1,5 @@
 get:
-  handler: services/users/get.main
+  handler: services/users/get.handler
   environment:
     USER_POOL_ID: !Ref slicUserPool
   events:
