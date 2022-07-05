@@ -5,33 +5,33 @@ const params = {
     {
       // Required HASH type attribute
       AttributeName: 'userId',
-      KeyType: 'HASH'
+      KeyType: 'HASH',
     },
     {
       // Optional RANGE key type for HASH + RANGE tables
       AttributeName: 'listId',
-      KeyType: 'RANGE'
-    }
+      KeyType: 'RANGE',
+    },
   ],
   AttributeDefinitions: [
     // The names and types of all primary and index key attributes only
     {
       AttributeName: 'userId',
-      AttributeType: 'S'
+      AttributeType: 'S',
     },
     {
       AttributeName: 'listId',
-      AttributeType: 'S'
-    }
+      AttributeType: 'S',
+    },
   ],
   ProvisionedThroughput: {
     // required provisioned throughput for the table
     ReadCapacityUnits: 1,
-    WriteCapacityUnits: 1
-  }
-}
+    WriteCapacityUnits: 1,
+  },
+};
 
-dynamodb.createTable(params, function (err, data) {
-  if (err) ppJson(err)
-  else ppJson(data)
-})
+dynamodb.createTable(params, (err, data) => {
+  if (err) ppJson(err);
+  else ppJson(data);
+});

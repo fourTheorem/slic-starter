@@ -1,11 +1,12 @@
-const {
+import {
   UpdateCommand,
   DynamoDBDocumentClient,
   GetCommand,
-} = require('@aws-sdk/lib-dynamodb');
-const { mockClient } = require('aws-sdk-client-mock');
-const t = require('tap');
-const { v4: uuid } = require('uuid');
+} from '@aws-sdk/lib-dynamodb';
+import { mockClient } from 'aws-sdk-client-mock';
+import t from 'tap';
+import { v4 as uuid } from 'uuid';
+import * as td from 'testdouble';
 
 process.env.CHECKLIST_TABLE_NAME = 'checklists';
 
@@ -13,22 +14,25 @@ const dynamoMock = mockClient(DynamoDBDocumentClient);
 
 let putMetricArgs = [];
 let metricsFlushCallCount = 0;
-const entries = t.mock('../../../../services/checklists/entries/entries', {
-  'aws-embedded-metrics': {
-    createMetricsLogger: () => ({
-      putMetric: (...args) => {
-        putMetricArgs.push([...args]);
-      },
-      flush: () => {
-        metricsFlushCallCount += 1;
-        return Promise.resolve({});
-      },
-    }),
-    Unit: {
-      Count: 'Count',
+
+await td.replaceEsm('aws-embedded-metrics', {
+  createMetricsLogger: () => ({
+    putMetric: (...args) => {
+      putMetricArgs.push([...args]);
     },
+    flush: () => {
+      metricsFlushCallCount += 1;
+      return Promise.resolve({});
+    },
+  }),
+  Unit: {
+    Count: 'Count',
   },
 });
+
+const entries = await import(
+  '../../../../services/checklists/entries/entries.js'
+);
 
 const userId = 'my-test-user';
 const entId = uuid();
@@ -37,15 +41,17 @@ const testEntries = [
   { entId: 'ent1', title: 'Entry One' },
   { entId: 'ent2', title: 'Entry Two' },
 ];
+
+// eslint-disable-next-line unicorn/no-array-reduce
 const testEntriesObj = testEntries.reduce((acc, { entId, ...rest }) => {
   acc[entId] = rest;
   return acc;
 }, {});
 
 t.beforeEach(async () => {
+  td.reset();
   await dynamoMock.reset();
   dynamoMock.resolves({});
-
   putMetricArgs = [];
   metricsFlushCallCount = 0;
 });

@@ -1,13 +1,13 @@
-const get = require('lodash/get');
-const bourne = require('@hapi/bourne'); // Used instead of JSON.parse to protect against protype poisoning
+import get from 'lodash/get.js';
+import bourne from '@hapi/bourne'; // Used instead of JSON.parse to protect against protype poisoning
 
-const log = require('./log');
+import { log } from './log.js';
 
 /*
  * Utilities for Lambda events
  */
 
-function processEvent(event) {
+export function processEvent(event) {
   const { body, pathParameters, queryStringParameters, requestContext } = event;
   const { httpMethod, resourceId, resourcePath, requestId } = requestContext;
   // The following works for offline mode as well as real
@@ -26,7 +26,3 @@ function processEvent(event) {
     userId,
   };
 }
-
-module.exports = {
-  processEvent,
-};

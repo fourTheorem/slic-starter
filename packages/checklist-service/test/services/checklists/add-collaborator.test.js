@@ -1,21 +1,23 @@
-const t = require('tap');
-const { v4: uuid } = require('uuid');
+import t from 'tap';
+import { v4 as uuid } from 'uuid';
+import * as td from 'testdouble';
 
 let addCollaboratorParams = {};
 let addCollaboratorReturnVal = {};
-const addCollaboratorHandler = t.mock(
-  '../../../services/checklists/add-collaborator.js',
-  {
-    '../../../services/checklists/checklist.js': {
-      addCollaborator: (params) => {
-        addCollaboratorParams = { ...params };
-        return Promise.resolve(addCollaboratorReturnVal);
-      },
-    },
-  }
+
+await td.replaceEsm('../../../services/checklists/checklist.js', {
+  addCollaborator: (params) => {
+    addCollaboratorParams = { ...params };
+    return Promise.resolve(addCollaboratorReturnVal);
+  },
+});
+
+const addCollaboratorHandler = await import(
+  '../../../services/checklists/add-collaborator.js'
 );
 
 t.beforeEach(async () => {
+  td.reset();
   addCollaboratorParams = {};
   addCollaboratorReturnVal = {};
 });

@@ -1,6 +1,7 @@
-const t = require('tap');
+import t from 'tap';
+import * as td from 'testdouble';
 
-const { userId, userRequestContext } = require('../../fixtures');
+import { userId, userRequestContext } from '../../fixtures.js';
 
 let listParams = {};
 const testLists = [
@@ -18,16 +19,17 @@ const testLists = [
   },
 ];
 
-const listHandler = t.mock('../../../services/checklists/list', {
-  '../../../services/checklists/checklist.js': {
-    list: (params) => {
-      listParams = { ...params };
-      return Promise.resolve(testLists);
-    },
+await td.replaceEsm('../../../services/checklists/checklist.js', {
+  list: (params) => {
+    listParams = { ...params };
+    return Promise.resolve(testLists);
   },
 });
 
+const listHandler = await import('../../../services/checklists/list.js');
+
 t.beforeEach(async () => {
+  td.reset();
   listParams = {};
 });
 

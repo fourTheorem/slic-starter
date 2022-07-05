@@ -1,20 +1,24 @@
-const t = require('tap');
-const { v4: uuid } = require('uuid');
+import t from 'tap';
+import { v4 as uuid } from 'uuid';
+import * as td from 'testdouble';
 
-const { userId, userRequestContext } = require('../../../fixtures');
+import { userId, userRequestContext } from '../../../fixtures.js';
 
 let addEntryParams = {};
 let addEntryReturnVal = {};
-const addEntryHandler = t.mock('../../../../services/checklists/entries/add', {
-  '../../../../services/checklists/entries/entries.js': {
-    addEntry: (params) => {
-      addEntryParams = { ...params };
-      return Promise.resolve(addEntryReturnVal);
-    },
+await td.replaceEsm('../../../../services/checklists/entries/entries.js', {
+  addEntry: (params) => {
+    addEntryParams = { ...params };
+    return Promise.resolve(addEntryReturnVal);
   },
 });
 
+const addEntryHandler = await import(
+  '../../../../services/checklists/entries/add.js'
+);
+
 t.beforeEach(async () => {
+  td.reset();
   addEntryParams = {};
   addEntryReturnVal = {};
 });

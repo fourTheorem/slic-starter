@@ -1,8 +1,8 @@
-const pino = require('pino');
+import pino from 'pino';
 
-const { name } = require('./service-info');
+import { name } from './service-info.js';
 
-module.exports = pino({
+export const log = pino({
   name,
   level:
     process.env.DEBUG ||

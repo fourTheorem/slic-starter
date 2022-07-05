@@ -1,11 +1,10 @@
 module.exports = {
   extends: [
-    'plugin:node/recommended',
     'plugin:prettier/recommended',
     'eslint-config-airbnb-base',
     'plugin:eslint-comments/recommended',
     'plugin:promise/recommended',
-    // 'plugin:unicorn/recommended', TODO: wait for esm support
+    'plugin:unicorn/recommended',
     'standard',
     'prettier',
   ],
@@ -32,7 +31,6 @@ module.exports = {
     '**/.webpack',
     'frontend/build/static/',
     'cicd/**/*.js',
-    '**/scripts/*',
     '**/*.json',
   ],
   env: {
@@ -49,6 +47,8 @@ module.exports = {
     'class-methods-use-this': 'off',
     'node/no-unpublished-import': 'off',
     'node/no-extraneous-import': 'off',
+    'unicorn/prevent-abbreviations': 'off',
+    'unicorn/no-array-reduce': ["error", {"allowSimpleOperations": true}],
     'no-restricted-syntax': [
       'error',
       {
@@ -76,20 +76,28 @@ module.exports = {
         case: 'kebabCase',
       },
     ],
+    'import/extensions': ['error', 'ignorePackages', {
+      js: 'always',
+    }],
   },
   overrides: [
     {
-      files: ['**/*.test.*', 'test/**', 'util/**', '**/scripts/**'],
+      files: ['**/*.test.*', 'test/**', 'util/**'],
       rules: {
         '@typescript-eslint/explicit-function-return-type': 'off',
         complexity: 'off',
         'global-require': 'off',
-        'import/extensions': 'off',
-        // 'import/no-unresolved': 'off',
         'no-await-in-loop': 'off',
         'no-console': 'off',
         'no-underscore-dangle': 'off',
         'no-shadow': 'off',
+      },
+    },
+    {
+      files: ['**/scripts/**'],
+      rules: {
+        'no-console': 'off',
+        'no-undef': 'off',
       },
     },
   ],

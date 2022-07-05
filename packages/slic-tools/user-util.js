@@ -1,8 +1,8 @@
-const signedAxios = require('aws-signed-axios');
+import signedAxios from 'aws-signed-axios';
 
-const log = require('./log');
+import { log } from './log.js';
 
-async function getUser(userId, userServiceUrl) {
+export async function getUser(userId, userServiceUrl) {
   const userUrl = `${userServiceUrl}${userId}`;
   try {
     const { data: result } = await signedAxios({
@@ -29,7 +29,3 @@ async function getUser(userId, userServiceUrl) {
     throw err;
   }
 }
-
-module.exports = {
-  getUser,
-};

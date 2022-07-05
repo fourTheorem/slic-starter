@@ -1,11 +1,10 @@
-const { processEvent } = require('slic-tools/event-util');
-const { createResponse } = require('slic-tools/response');
-const entries = require('./entries');
+import { processEvent, createResponse } from 'slic-tools';
 
-async function main(event) {
+import { listEntries } from './entries.js';
+
+export async function main(event) {
   const { pathParameters, userId } = processEvent(event);
   const { id: listId } = pathParameters;
-  return createResponse(entries.listEntries({ listId, userId }));
-}
 
-module.exports = { main };
+  return createResponse(listEntries({ listId, userId }));
+}

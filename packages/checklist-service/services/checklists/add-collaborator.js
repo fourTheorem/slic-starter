@@ -1,9 +1,8 @@
-const checklist = require('./checklist');
+import { addCollaborator } from './checklist.js';
 
 /**
  * Handle an "Add collaborator" CloudWatch Event
  */
-async function main(event) {
-  return checklist.addCollaborator(event.detail);
+export async function main(event) {
+  return addCollaborator(event.detail);
 }
-module.exports = { main };

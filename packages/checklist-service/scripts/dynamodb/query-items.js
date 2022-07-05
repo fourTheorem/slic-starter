@@ -4,11 +4,11 @@ const params = {
   ExpressionAttributeValues: {
     // a map of substitutions for all attribute values
     // ':userId': 'eoin'
-    ':userId': 'offlineContext_cognitoIdentityId'
-  }
-}
-docClient.query(params, function (err, data) {
-  if (err) ppJson(err)
+    ':userId': 'offlineContext_cognitoIdentityId',
+  },
+};
+docClient.query(params, (err, data) => {
+  if (err) ppJson(err);
   // an error occurred
-  else ppJson(data) // successful response
-})
+  else ppJson(data); // successful response
+});

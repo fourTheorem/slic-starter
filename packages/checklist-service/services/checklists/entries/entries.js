@@ -1,13 +1,12 @@
-const { GetCommand, UpdateCommand } = require('@aws-sdk/lib-dynamodb');
-const { v4: uuid } = require('uuid');
-const { dynamoDocClient } = require('slic-tools/dynamo');
-
-const { createMetricsLogger, Unit } = require('aws-embedded-metrics');
+import { GetCommand, UpdateCommand } from '@aws-sdk/lib-dynamodb';
+import { v4 as uuid } from 'uuid';
+import { dynamoDocClient } from 'slic-tools';
+import { createMetricsLogger, Unit } from 'aws-embedded-metrics';
 
 const TableName = process.env.CHECKLIST_TABLE_NAME;
 const dynamo = dynamoDocClient();
 
-async function addEntry({ userId, listId, title, value }) {
+export async function addEntry({ userId, listId, title, value }) {
   const entId = uuid();
   const params = {
     TableName,
@@ -45,7 +44,7 @@ async function addEntry({ userId, listId, title, value }) {
   };
 }
 
-async function updateEntry({ userId, listId, entId, title, value }) {
+export async function updateEntry({ userId, listId, entId, title, value }) {
   const params = {
     TableName,
     Key: {
@@ -80,7 +79,7 @@ async function updateEntry({ userId, listId, entId, title, value }) {
   };
 }
 
-async function listEntries({ listId, userId }) {
+export async function listEntries({ listId, userId }) {
   const params = {
     TableName,
     Key: { userId, listId },
@@ -93,7 +92,7 @@ async function listEntries({ listId, userId }) {
   return entries;
 }
 
-async function deleteEntry({ userId, listId, entId }) {
+export async function deleteEntry({ userId, listId, entId }) {
   const params = {
     TableName,
     Key: {
@@ -109,10 +108,3 @@ async function deleteEntry({ userId, listId, entId }) {
 
   await dynamo.send(new UpdateCommand(params));
 }
-
-module.exports = {
-  addEntry,
-  updateEntry,
-  listEntries,
-  deleteEntry,
-};

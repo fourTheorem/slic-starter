@@ -1,16 +1,11 @@
-const { v4: uuid } = require('uuid');
+import { v4 as uuid } from 'uuid';
 
-const userId = uuid();
+export const userId = uuid();
 
-const userRequestContext = {
+export const userRequestContext = {
   authorizer: {
     claims: {
       'cognito:username': userId,
     },
   },
-};
-
-module.exports = {
-  userId,
-  userRequestContext,
 };

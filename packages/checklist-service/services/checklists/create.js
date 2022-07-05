@@ -1,12 +1,12 @@
-const { createResponse } = require('slic-tools/response');
-const { processEvent } = require('slic-tools/event-util');
-const checklist = require('./checklist');
+import { createResponse, processEvent } from 'slic-tools';
 
-async function main(event) {
+import { create } from './checklist.js';
+
+export async function main(event) {
   const { body, userId } = processEvent(event);
   const { name, description } = body;
-  return createResponse(checklist.create({ userId, name, description }), {
+
+  return createResponse(create({ userId, name, description }), {
     successCode: 201,
   });
 }
-module.exports = { main };

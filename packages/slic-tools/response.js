@@ -1,11 +1,11 @@
-const log = require('./log');
+import { log } from './log.js';
 
 const headers = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Credentials': true,
 };
 
-async function createResponse(promise, options) {
+export async function createResponse(promise, options) {
   const successCode = (options && options.successCode) || 200;
   try {
     const result = await promise;
@@ -25,7 +25,3 @@ async function createResponse(promise, options) {
     };
   }
 }
-
-module.exports = {
-  createResponse,
-};

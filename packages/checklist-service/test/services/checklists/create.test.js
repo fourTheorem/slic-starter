@@ -1,20 +1,22 @@
-const t = require('tap');
-const { v4: uuid } = require('uuid');
+import t from 'tap';
+import { v4 as uuid } from 'uuid';
+import * as td from 'testdouble';
 
-const { userId, userRequestContext } = require('../../fixtures');
+import { userId, userRequestContext } from '../../fixtures.js';
 
 let createParams = {};
 let createReturnVal = {};
-const createHandler = t.mock('../../../services/checklists/create', {
-  '../../../services/checklists/checklist.js': {
-    create: (params) => {
-      createParams = { ...params };
-      return Promise.resolve(createReturnVal);
-    },
+
+await td.replaceEsm('../../../services/checklists/checklist.js', {
+  create: (params) => {
+    createParams = { ...params };
+    return Promise.resolve(createReturnVal);
   },
 });
+const createHandler = await import('../../../services/checklists/create.js');
 
 t.beforeEach(async () => {
+  td.reset();
   createParams = {};
   createReturnVal = {};
 });

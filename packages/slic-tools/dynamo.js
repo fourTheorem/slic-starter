@@ -1,6 +1,6 @@
-const { DynamoDBClient } = require('@aws-sdk/client-dynamodb');
-const { DynamoDBDocumentClient } = require('@aws-sdk/lib-dynamodb');
-const { captureAWSv3Client } = require('aws-xray-sdk-core');
+import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
+import { DynamoDBDocumentClient } from '@aws-sdk/lib-dynamodb';
+import AWSXRay from 'aws-xray-sdk-core';
 
 const defaultOptions = {
   // Prevent long-running retry loops caused by the default SDK DDB retry count of 10 with
@@ -33,12 +33,8 @@ const dynamoDbDocClient = DynamoDBDocumentClient.from(dynamoDbClient, {
 const ddb =
   process.env.IS_OFFLINE || process.env.SLIC_STAGE === 'test'
     ? dynamoDbDocClient
-    : captureAWSv3Client(dynamoDbDocClient); // TODO - Revisit this to enable XRay always
+    : AWSXRay.captureAWSv3Client(dynamoDbDocClient); // TODO - Revisit this to enable XRay always
 
-function dynamoDocClient() {
+export function dynamoDocClient() {
   return ddb;
 }
-
-module.exports = {
-  dynamoDocClient,
-};
