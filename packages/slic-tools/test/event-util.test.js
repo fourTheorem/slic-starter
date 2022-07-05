@@ -1,9 +1,9 @@
-const { test } = require('tap');
-const { v4: uuid } = require('uuid');
+import { test } from 'tap';
+import { v4 as uuid } from 'uuid';
 
-const { processEvent } = require('../event-util');
+import { processEvent } from '../event-util.js';
 
-test('userId is extracted from the cognito lambda-proxy-mapped authorizer claims', (t) => {
+test('userId is extracted from the cognito lambda-proxy-mapped authorizer claims', async (t) => {
   const testUserId = uuid();
   const event = {
     requestContext: {
@@ -17,10 +17,9 @@ test('userId is extracted from the cognito lambda-proxy-mapped authorizer claims
 
   const { userId } = processEvent(event);
   t.equal(userId, testUserId);
-  t.end();
 });
 
-test('body is parsed from the JSON body', (t) => {
+test('body is parsed from the JSON body', async (t) => {
   const testUserId = uuid();
   const testBody = { a: 1, b: 2 };
   const event = {
@@ -37,5 +36,4 @@ test('body is parsed from the JSON body', (t) => {
   const { body, userId } = processEvent(event);
   t.equal(userId, testUserId);
   t.same(body, testBody);
-  t.end();
 });

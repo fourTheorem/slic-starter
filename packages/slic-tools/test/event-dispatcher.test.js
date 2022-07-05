@@ -1,11 +1,11 @@
-const {
+import {
   CloudWatchEventsClient,
   PutEventsCommand,
-} = require('@aws-sdk/client-cloudwatch-events');
-const { mockClient } = require('aws-sdk-client-mock');
-const t = require('tap');
+} from '@aws-sdk/client-cloudwatch-events';
+import { mockClient } from 'aws-sdk-client-mock';
+import t from 'tap';
 
-const { dispatchEvent } = require('../event-dispatcher');
+import { dispatchEvent } from '../event-dispatcher.js';
 
 const cwEventsMock = mockClient(CloudWatchEventsClient);
 

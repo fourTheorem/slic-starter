@@ -10,9 +10,9 @@ export async function getUser(userId, userServiceUrl) {
       url: userUrl,
     });
     return result;
-  } catch (err) {
-    const response = err.response || {};
-    const request = err.request || {};
+  } catch (error) {
+    const response = error.response || {};
+    const request = error.request || {};
     if (response.status) {
       log.error(
         {
@@ -26,6 +26,6 @@ export async function getUser(userId, userServiceUrl) {
         'Error retrieving user'
       );
     }
-    throw err;
+    throw error;
   }
 }

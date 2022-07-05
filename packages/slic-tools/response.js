@@ -16,8 +16,8 @@ export async function createResponse(promise, options) {
       body: JSON.stringify(result || {}),
       headers,
     };
-  } catch (err) {
-    log.error({ err }, 'Request implementation failed');
+  } catch (error) {
+    log.error({ error }, 'Request implementation failed');
     return {
       statusCode: 500,
       body: JSON.stringify({ ok: false }),

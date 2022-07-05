@@ -1,6 +1,6 @@
-const { test } = require('tap');
+import { test } from 'tap';
 
-const { createResponse } = require('../response');
+import { createResponse } from '../response.js';
 
 test('create response returns an error code when a promise reject', async (t) => {
   const failedPromise = new Promise((resolve, reject) => {
@@ -13,8 +13,6 @@ test('create response returns an error code when a promise reject', async (t) =>
   const parsedBody = JSON.parse(result.body);
   t.match(parsedBody, { ok: false });
   t.ok(result.headers);
-
-  t.end();
 });
 
 const testInputs = [
@@ -36,7 +34,7 @@ const testInputs = [
   },
 ];
 
-testInputs.forEach(({ options, response, expectedCode, expectedBody }) => {
+for (const { options, response, expectedCode, expectedBody } of testInputs) {
   test(`create response returns a success code when a promise resolves with ${JSON.stringify(
     response
   )} and options is ${JSON.stringify(options)}`, async (t) => {
@@ -50,7 +48,5 @@ testInputs.forEach(({ options, response, expectedCode, expectedBody }) => {
     const parsedBody = JSON.parse(result.body);
     t.match(parsedBody, expectedBody);
     t.ok(result.headers);
-
-    t.end();
   });
-});
+}
