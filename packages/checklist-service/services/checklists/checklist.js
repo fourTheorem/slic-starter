@@ -1,19 +1,18 @@
-const {
+import {
   BatchGetCommand,
   DeleteCommand,
   GetCommand,
   PutCommand,
   QueryCommand,
   UpdateCommand,
-} = require('@aws-sdk/lib-dynamodb');
-const { v4: uuid } = require('uuid');
-const { dispatchEvent } = require('slic-tools/event-dispatcher');
-const { dynamoDocClient } = require('slic-tools/dynamo');
+} from '@aws-sdk/lib-dynamodb';
+import { v4 as uuid } from 'uuid';
+import { dispatchEvent, dynamoDocClient } from 'slic-tools';
 
 const TableName = process.env.CHECKLIST_TABLE_NAME;
 const dynamo = dynamoDocClient();
 
-async function create({ userId, name, description }) {
+export async function create({ userId, name, description }) {
   const Item = {
     userId,
     name,
@@ -35,7 +34,7 @@ async function create({ userId, name, description }) {
   return Item;
 }
 
-async function update({ listId, userId, name = null, description = null }) {
+export async function update({ listId, userId, name, description }) {
   const params = {
     TableName,
     Key: { userId, listId },
@@ -58,7 +57,7 @@ async function update({ listId, userId, name = null, description = null }) {
   return Attributes;
 }
 
-async function remove({ listId, userId }) {
+export async function remove({ listId, userId }) {
   await dynamo.send(
     new DeleteCommand({
       TableName,
@@ -67,7 +66,7 @@ async function remove({ listId, userId }) {
   );
 }
 
-async function get({ listId, userId }) {
+export async function get({ listId, userId }) {
   const params = {
     TableName,
     Key: { userId, listId },
@@ -84,7 +83,7 @@ async function get({ listId, userId }) {
   return Item;
 }
 
-async function list({ userId }) {
+export async function list({ userId }) {
   // Find all lists accessible by the user, including
   // shared lists which have sharedListOwner set but no values
   // for name, description or createdAt
@@ -137,7 +136,7 @@ async function list({ userId }) {
     } = await dynamo.send(new BatchGetCommand(params));
 
     // Merge values from shared list records into user list records
-    sharedLists.forEach((sharedList) => {
+    for (const sharedList of sharedLists) {
       const sharedListIndex = lists.findIndex(
         (l) => l.listId === sharedList.listId
       );
@@ -147,13 +146,13 @@ async function list({ userId }) {
         description: sharedList.description,
         createdAt: sharedList.createdAt,
       };
-    });
+    }
   }
 
   return lists;
 }
 
-async function addCollaborator({ sharedListOwner, listId, userId }) {
+export async function addCollaborator({ sharedListOwner, listId, userId }) {
   const Item = {
     sharedListOwner,
     listId,
@@ -169,12 +168,3 @@ async function addCollaborator({ sharedListOwner, listId, userId }) {
 
   return Item;
 }
-
-module.exports = {
-  create,
-  update,
-  remove,
-  get,
-  list,
-  addCollaborator,
-};

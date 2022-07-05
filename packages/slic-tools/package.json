@@ -5,6 +5,8 @@
   "engines": {
     "node": ">=16.15"
   },
+  "type": "module",
+  "exports": "./index.js",
   "scripts": {},
   "repository": {
     "type": "git",

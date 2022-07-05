@@ -1,11 +1,12 @@
-const {
+import {
   BatchGetCommand,
   DynamoDBDocumentClient,
   GetCommand,
   QueryCommand,
-} = require('@aws-sdk/lib-dynamodb');
-const { mockClient } = require('aws-sdk-client-mock');
-const t = require('tap');
+} from '@aws-sdk/lib-dynamodb';
+import { mockClient } from 'aws-sdk-client-mock';
+import t from 'tap';
+import * as td from 'testdouble';
 
 process.env.CHECKLIST_TABLE_NAME = 'checklists';
 
@@ -47,19 +48,21 @@ const testLists = {
 };
 
 let dispatchEventArgs = [];
-const checklist = t.mock('../../../services/checklists/checklist', {
-  'slic-tools/event-dispatcher': {
-    dispatchEvent: (...args) => {
-      dispatchEventArgs.push(...args);
-      return Promise.resolve();
-    },
+
+await td.replaceEsm('slic-tools', {
+  ...(await import('slic-tools')),
+  dispatchEvent: (...args) => {
+    dispatchEventArgs.push(...args);
+    return Promise.resolve();
   },
 });
 
+const checklist = await import('../../../services/checklists/checklist.js');
+
 t.beforeEach(async () => {
+  td.reset();
   await dynamoMock.reset();
   dynamoMock.resolves({});
-
   dispatchEventArgs = [];
 });
 
@@ -141,8 +144,8 @@ t.test(
       process.env.CHECKLIST_TABLE_NAME
     );
     t.match(dynamoMock.send.firstCall.args[0].input.ExpressionAttributeValues, {
-      ':name': null,
-      ':description': null,
+      ':name': undefined,
+      ':description': undefined,
     });
     t.ok(
       dynamoMock.send.firstCall.args[0].input.ExpressionAttributeValues[

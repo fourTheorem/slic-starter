@@ -1,14 +1,14 @@
-const middy = require('@middy/core');
-const httpCors = require('@middy/http-cors');
-const httpEventNormalizer = require('@middy/http-event-normalizer');
-const httpJsonBodyParser = require('@middy/http-json-body-parser');
-const httpErrorHandler = require('@middy/http-error-handler');
-const ssm = require('@middy/ssm');
-const inputOutputLogger = require('@middy/input-output-logger');
+import middy from '@middy/core';
+import httpCors from '@middy/http-cors';
+import httpEventNormalizer from '@middy/http-event-normalizer';
+import httpJsonBodyParser from '@middy/http-json-body-parser';
+import httpErrorHandler from '@middy/http-error-handler';
+import ssm from '@middy/ssm';
+import inputOutputLogger from '@middy/input-output-logger';
 
-const log = require('./log');
+import { log } from './log.js';
 
-function middify(exports, options = {}) {
+export function middify(exports, options = {}) {
   const result = {};
   Object.keys(exports).forEach((key) => {
     const handler = middy(exports[key]).use(
@@ -44,7 +44,3 @@ function middify(exports, options = {}) {
   });
   return result;
 }
-
-module.exports = {
-  middify,
-};

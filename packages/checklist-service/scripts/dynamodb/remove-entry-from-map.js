@@ -2,17 +2,17 @@ const params = {
   TableName: 'checklists',
   Key: {
     userId: 'eoin',
-    listId: 'eoin-first-list'
+    listId: 'eoin-first-list',
   },
   UpdateExpression: 'REMOVE #ent.#entId',
   ExpressionAttributeNames: {
     '#ent': 'entries',
-    '#entId': 'ent124'
+    '#entId': 'ent124',
   },
-  ReturnValues: 'ALL_NEW'
-}
-docClient.update(params, function (err, data) {
-  if (err) ppJson(err)
+  ReturnValues: 'ALL_NEW',
+};
+docClient.update(params, (err, data) => {
+  if (err) ppJson(err);
   // an error occurred
-  else ppJson(data) // successful response
-})
+  else ppJson(data); // successful response
+});

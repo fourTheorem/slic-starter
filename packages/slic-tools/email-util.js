@@ -1,23 +1,20 @@
-const {
+import {
   GetQueueUrlCommand,
   SendMessageCommand,
   SQSClient,
-} = require('@aws-sdk/client-sqs');
-const { captureAWSv3Client } = require('aws-xray-sdk-core');
+} from '@aws-sdk/client-sqs';
+import AWSXRay from 'aws-xray-sdk-core';
 
-const log = require('./log');
+import { log } from './log.js';
 
-const sqsClient = captureAWSv3Client(
+const sqsClient = AWSXRay.captureAWSv3Client(
   new SQSClient({ endpoint: process.env.SQS_ENDPOINT_URL })
 );
 
-const { EMAIL_QUEUE_NAME: queueName } = process.env;
+const { EMAIL_QUEUE_NAME: queueName = 'email-queue' } = process.env;
 
-if (!queueName) {
-  throw new Error('EMAIL_QUEUE_NAME must be set');
-} else {
-  log.info({ queueName }, 'Using queue');
-}
+log.info({ queueName }, 'Using queue');
+
 async function fetchQueueUrl() {
   const params = {
     QueueName: queueName,
@@ -34,7 +31,7 @@ async function fetchQueueUrl() {
   }
 }
 
-async function sendEmail(message) {
+export async function sendEmail(message) {
   const QueueUrl = await fetchQueueUrl();
   const params = {
     MessageBody: JSON.stringify(message),
@@ -44,7 +41,3 @@ async function sendEmail(message) {
   const result = await sqsClient.send(new SendMessageCommand(params));
   log.debug({ result }, 'Sent SQS Message');
 }
-
-module.exports = {
-  sendEmail,
-};
