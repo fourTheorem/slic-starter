@@ -1,5 +1,6 @@
-const { v4: uuid } = require('uuid');
-const t = require('tap');
+import { v4 as uuid } from 'uuid';
+import t from 'tap';
+import * as td from 'testdouble';
 
 const userId = uuid();
 const testUser = {
@@ -10,25 +11,24 @@ const testUser = {
 let getUserArgs = [];
 let sendEmailArgs = [];
 
-const checklistHandler = t.mock(
-  '../../../services/welcome/new-checklist-handler',
-  {
-    'slic-tools/user-util': {
-      getUser: (...args) => {
-        getUserArgs = [...args];
-        return Promise.resolve(testUser);
-      },
-    },
-    'slic-tools/email-util': {
-      sendEmail: (...args) => {
-        sendEmailArgs = [...args];
-        return Promise.resolve();
-      },
-    },
-  }
+await td.replaceEsm('slic-tools', {
+  ...(await import('slic-tools')),
+  getUser: (...args) => {
+    getUserArgs = [...args];
+    return Promise.resolve(testUser);
+  },
+  sendEmail: (...args) => {
+    sendEmailArgs = [...args];
+    return Promise.resolve();
+  },
+});
+
+const { handler: checklistHandler } = await import(
+  '../../../services/welcome/new-checklist.js'
 );
 
 t.beforeEach(async () => {
+  td.reset();
   getUserArgs = [];
   sendEmailArgs = [];
 });
@@ -44,7 +44,7 @@ t.test('handleNewChecklist sends an email message', async (t) => {
     userServiceUrl: 'http://user-service.example.com',
   };
 
-  await checklistHandler.handleNewChecklist(event, ctx);
+  await checklistHandler(event, ctx);
 
   t.same(getUserArgs, [userId, ctx.userServiceUrl]);
   t.match(sendEmailArgs, [
