@@ -3,15 +3,14 @@ import fs from 'node:fs/promises';
 
 const jsonFile = process.argv[2];
 if (!jsonFile) {
-  console.error(`Usage: ${process.argv[1]} JSON_FILE`);
-  process.exit(1);
+  throw new Error(`Usage: ${process.argv[1]} JSON_FILE`);
 }
 
 const inputs = JSON.parse(await fs.readFile(jsonFile));
 
 const ssmClient = new SSMClient({});
 
-Promise.all(
+const result = await Promise.all(
   inputs.map(({ name, type, value }) => {
     console.log(`Creating ${name}`);
 
@@ -25,11 +24,7 @@ Promise.all(
         })
       )
       .then(() => name)
-      .catch((err) => `${name} FAILED with ${err}`);
+      .catch((error) => `${name} FAILED with ${error}`);
   })
-)
-  .then((result) => console.log(result.join('\n')))
-  .catch((err) => {
-    console.error(err);
-    process.exit(1);
-  });
+);
+console.log(result.join('\n'));
