@@ -1,4 +1,5 @@
-const { SSMClient, PutParameterCommand } = require('@aws-sdk/client-ssm');
+import { SSMClient, PutParameterCommand } from '@aws-sdk/client-ssm';
+import fs from 'node:fs/promises';
 
 const jsonFile = process.argv[2];
 if (!jsonFile) {
@@ -6,8 +7,7 @@ if (!jsonFile) {
   process.exit(1);
 }
 
-// eslint-disable-next-line import/no-dynamic-require
-const inputs = require(jsonFile);
+const inputs = JSON.parse(await fs.readFile(jsonFile));
 
 const ssmClient = new SSMClient({});
 

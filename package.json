@@ -5,6 +5,7 @@
   "engines": {
     "node": ">=16.15"
   },
+  "type": "module",
   "workspaces": [
     "packages/*"
   ],
