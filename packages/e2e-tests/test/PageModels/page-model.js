@@ -1,5 +1,6 @@
 import { Selector } from 'testcafe';
 
+// eslint-disable-next-line import/no-default-export
 export default class Page {
   constructor() {
     this.emailInput = Selector('#email');

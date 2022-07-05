@@ -1,7 +1,7 @@
-const axios = require('axios');
-const { toneAxiosError } = require('./axios-util');
-const { loadBackendConfig } = require('./backend-config');
-const { getUser } = require('./user-util');
+import axios from 'axios';
+import { toneAxiosError } from './axios-util.js';
+import { loadBackendConfig } from './backend-config.js';
+import { getUser } from './user-util.js';
 
 async function getHttpClient(apiName = 'checklist-service') {
   const { apiEndpoints } = await loadBackendConfig();
@@ -28,7 +28,7 @@ async function getHttpClient(apiName = 'checklist-service') {
 
 const httpClientPromise = getHttpClient();
 
-const proxy = new Proxy(
+export const httpClient = new Proxy(
   {},
   {
     get: (target, name) =>
@@ -39,5 +39,3 @@ const proxy = new Proxy(
       },
   }
 );
-
-module.exports = proxy;

@@ -5,7 +5,6 @@ phases:
     commands:
       - n 16.15
       - cd packages/integration-tests
-#      - npm ci
   build:
     commands:
       - bash ./codebuild-run-tests.sh

@@ -2,6 +2,10 @@
   "name": "test-common",
   "version": "1.0.0",
   "description": "Common utilities for integration and E2E tests",
+  "engines": {
+    "node": ">=16.15"
+  },
+  "type": "module",
   "author": "Eoin Shanaghy <eoin.shanaghy@fourtheorem.com>",
   "license": "MIT",
   "repository": {

@@ -1,7 +1,13 @@
-const { GetParameterCommand, SSMClient } = require('@aws-sdk/client-ssm');
+import { GetParameterCommand, SSMClient } from '@aws-sdk/client-ssm';
 
-const realConfig = require('test-common/real-email-config');
-const localConfig = require('./local-email-config');
+import {
+  generateEmailAddress as realGenerateEmailAddress,
+  retrieveCode as realRetrieveCode,
+} from 'test-common/real-email-config.js';
+import {
+  generateEmailAddress as localGenerateEmailAddress,
+  retrieveCode as localRetrieveCode,
+} from './local-email-config.js';
 
 const ssmClient = new SSMClient({});
 const stage = process.env.SLIC_STAGE;
@@ -18,23 +24,13 @@ export function getBaseUrl() {
 }
 
 export function getEmail() {
-  let config;
-  if (stage === 'local') {
-    config = localConfig;
-  } else {
-    config = realConfig;
-  }
-
-  const email = config.generateEmailAddress();
-  return email;
+  return stage === 'local'
+    ? localGenerateEmailAddress()
+    : realGenerateEmailAddress();
 }
 
-export function getCode(email) {
-  switch (stage) {
-    case 'local':
-      return localConfig.retrieveCode(email);
-
-    default:
-      return realConfig.retrieveCode(email).then((result) => result);
-  }
+export async function getCode(email) {
+  return stage === 'local'
+    ? localRetrieveCode(email)
+    : realRetrieveCode(email).then((result) => result);
 }
