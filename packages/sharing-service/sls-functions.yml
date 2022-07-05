@@ -1,5 +1,5 @@
 create:
-  handler: services/sharing/create.main
+  handler: services/sharing/create.handler
   events:
     - http:
         path: /
@@ -37,7 +37,7 @@ create:
         - !Sub arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:*/${self:provider.stage}/GET/user/*
 
 confirm:
-  handler: services/sharing/confirm.main
+  handler: services/sharing/confirm.handler
   events:
     - http:
         path: /{code}

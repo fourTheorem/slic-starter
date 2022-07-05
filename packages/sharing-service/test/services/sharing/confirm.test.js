@@ -1,15 +1,16 @@
-const t = require('tap');
-const { v4: uuid } = require('uuid');
+import t from 'tap';
+import { v4 as uuid } from 'uuid';
+import * as td from 'testdouble';
 
-const {
+import {
   userId,
   userRequestContext,
   commonEventProps,
-} = require('../../fixtures');
-const invitationUtil = require('../../../lib/invitation');
+} from '../../fixtures.js';
+import { invitation } from '../../../lib/invitation.js';
 
 const codeSecret = uuid();
-const { createCode } = invitationUtil(codeSecret);
+const { createCode } = invitation(codeSecret);
 const params = {
   listName: 'A Test List',
   listId: uuid(),
@@ -18,16 +19,17 @@ const params = {
 };
 
 let confirmArgs = [];
-const confirmHandler = t.mock('../../../services/sharing/confirm', {
-  '../../../services/sharing/share': {
-    confirm: (...args) => {
-      confirmArgs.push(...args);
-      return Promise.resolve();
-    },
+await td.replaceEsm('../../../services/sharing/share.js', {
+  confirm: (...args) => {
+    confirmArgs.push(...args);
+    return Promise.resolve();
   },
 });
 
+const { handler } = await import('../../../services/sharing/confirm.js');
+
 t.beforeEach(async () => {
+  td.reset();
   confirmArgs = [];
 });
 
@@ -43,7 +45,7 @@ t.test('An invitation can be confirmed', async (t) => {
   };
   const ctx = { codeSecret };
 
-  const res = await confirmHandler.main(event, ctx);
+  const res = await handler(event, ctx);
 
   t.same(confirmArgs, [{ code, userId }, codeSecret]);
   t.match(res, { statusCode: 204 });

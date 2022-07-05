@@ -1,11 +1,12 @@
-const t = require('tap');
-const { v4: uuid } = require('uuid');
+import t from 'tap';
+import { v4 as uuid } from 'uuid';
+import * as td from 'testdouble';
 
-const invitationUtil = require('../../../lib/invitation');
+import { invitation } from '../../../lib/invitation.js';
 
 const userId = uuid();
 const codeSecret = uuid();
-const { createCode } = invitationUtil(codeSecret);
+const { createCode } = invitation(codeSecret);
 const testUser = {
   userId,
   email: `userId+${uuid()}@example.com`,
@@ -15,28 +16,26 @@ const listName = `Test List - ${uuid()}`;
 let sendEmailArgs = [];
 let getUserArgs = [];
 let dispatchEventArgs = [];
-const shareService = t.mock('../../../services/sharing/share', {
-  'slic-tools/email-util': {
-    sendEmail: (...args) => {
-      sendEmailArgs.push(...args);
-      return Promise.resolve();
-    },
+await td.replaceEsm('slic-tools', {
+  ...(await import('slic-tools')),
+  sendEmail: (...args) => {
+    sendEmailArgs.push(...args);
+    return Promise.resolve();
   },
-  'slic-tools/user-util': {
-    getUser: (...args) => {
-      getUserArgs.push(...args);
-      return Promise.resolve(testUser);
-    },
+  getUser: (...args) => {
+    getUserArgs.push(...args);
+    return Promise.resolve(testUser);
   },
-  'slic-tools/event-dispatcher': {
-    dispatchEvent: (...args) => {
-      dispatchEventArgs.push(...args);
-      return Promise.resolve();
-    },
+  dispatchEvent: (...args) => {
+    dispatchEventArgs.push(...args);
+    return Promise.resolve();
   },
 });
 
+const shareService = await import('../../../services/sharing/share.js');
+
 t.beforeEach(async () => {
+  td.reset();
   sendEmailArgs = [];
   getUserArgs = [];
   dispatchEventArgs = [];

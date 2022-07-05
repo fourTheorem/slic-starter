@@ -1,11 +1,8 @@
-const { getUser } = require('slic-tools/user-util');
-const { sendEmail } = require('slic-tools/email-util');
-const { dispatchEvent } = require('slic-tools/event-dispatcher');
-const log = require('slic-tools/log');
+import { dispatchEvent, getUser, log, sendEmail } from 'slic-tools';
 
-const invitation = require('../../lib/invitation');
+import { invitation } from '../../lib/invitation.js';
 
-async function create(
+export async function create(
   { email, listId, listName, userId },
   codeSecret,
   userServiceUrl,
@@ -36,12 +33,12 @@ SLIC Lists
   await sendEmail(message);
 }
 
-async function confirm({ code, userId }, codeSecret) {
+export async function confirm({ code, userId }, codeSecret) {
   const { parseCode } = invitation(codeSecret);
   let parsedCode;
   try {
     parsedCode = parseCode(code);
-  } catch (err) {
+  } catch {
     const error = new Error('Invalid code');
     error.statusCode = 400;
     throw error;
@@ -52,8 +49,3 @@ async function confirm({ code, userId }, codeSecret) {
     userId,
   });
 }
-
-module.exports = {
-  create,
-  confirm,
-};

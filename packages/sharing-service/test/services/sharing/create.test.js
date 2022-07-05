@@ -1,11 +1,12 @@
-const t = require('tap');
-const { v4: uuid } = require('uuid');
+import t from 'tap';
+import { v4 as uuid } from 'uuid';
+import * as td from 'testdouble';
 
-const {
+import {
   userId,
   userRequestContext,
   commonEventProps,
-} = require('../../fixtures');
+} from '../../fixtures.js';
 
 const payload = {
   email: 'email@example.com',
@@ -14,16 +15,17 @@ const payload = {
 };
 
 let createArgs = [];
-const createHandler = t.mock('../../../services/sharing/create', {
-  '../../../services/sharing/share': {
-    create: (...args) => {
-      createArgs.push(...args);
-      return Promise.resolve();
-    },
+await td.replaceEsm('../../../services/sharing/share.js', {
+  create: (...args) => {
+    createArgs.push(...args);
+    return Promise.resolve();
   },
 });
 
+const { handler } = await import('../../../services/sharing/create.js');
+
 t.beforeEach(async () => {
+  td.reset();
   createArgs = [];
 });
 
@@ -39,7 +41,7 @@ t.test('A checklist can be shared with another user', async (t) => {
     frontendUrl: 'http://frontend.com',
   };
 
-  const res = await createHandler.main(event, ctx);
+  const res = await handler(event, ctx);
   t.same(createArgs, [
     {
       email: payload.email,

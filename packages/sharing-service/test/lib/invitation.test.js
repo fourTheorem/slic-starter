@@ -1,28 +1,27 @@
-const { v4: uuid } = require('uuid');
-const { test } = require('tap');
+import { v4 as uuid } from 'uuid';
+import { test } from 'tap';
 
-const invitation = require('../../lib/invitation');
+import { invitation, parseCode } from '../../lib/invitation.js';
 
 const listName = 'The quick fox jumps over the lazy dog';
 const userId = uuid();
 const listId = uuid();
 const email = 'example@example.com';
 
-test('A code can be created and parsed', (t) => {
-  const secret = 'passw0rd';
-  const { createCode, parseCode } = require('../../lib/invitation')(secret);
+test('A code can be created and parsed', async (t) => {
+  const secret = `passw0rd+${uuid()}`;
+  const { createCode, parseCode } = invitation(secret);
 
   const code = createCode({ userId, listId, listName, email });
   t.equal(typeof code, 'string');
   const parsedCode = parseCode(code);
 
   t.same(parsedCode, { userId, listId, listName, email });
-  t.end();
 });
 
 test('A code can be created and parsed without a secret', (t) => {
-  const basicParseCode = invitation.parseCode;
-  const secret = 'passw0rd';
+  const basicParseCode = parseCode;
+  const secret = `passw0rd+${uuid()}`;
   const { createCode } = invitation(secret);
   const code = createCode({ userId, listId, listName, email });
   const parsedCode = basicParseCode(code);
@@ -30,9 +29,10 @@ test('A code can be created and parsed without a secret', (t) => {
   t.end();
 });
 
-test('A code is different for a different email address', (t) => {
-  const secret = 'passw0rd';
-  const { createCode } = require('../../lib/invitation')(secret);
+test('A code is different for a different email address', async (t) => {
+  const secret = `passw0rd+${uuid()}`;
+
+  const { createCode } = invitation(secret);
 
   const userId = uuid();
   const listId = uuid();
@@ -48,13 +48,12 @@ test('A code is different for a different email address', (t) => {
     email: newEmail,
   });
   t.notEqual(code, differentCode);
-
-  t.end();
 });
 
-test('A listname can be extracted from the code', (t) => {
-  const secret = 'passw0rd';
-  const { createCode } = require('../../lib/invitation')(secret);
+test('A listname can be extracted from the code', async (t) => {
+  const secret = `passw0rd+${uuid()}`;
+
+  const { createCode } = invitation(secret);
 
   const userId = uuid();
   const listId = uuid();
@@ -71,32 +70,28 @@ test('A listname can be extracted from the code', (t) => {
   // ...ends here
 
   t.equal(name, listName);
-
-  t.end();
 });
 
-test('A code does not match with a different secret', (t) => {
-  const invitation1 = require('../../lib/invitation')('passw0rd');
+test('A code does not match with a different secret', async (t) => {
+  const { createCode: invite1CreateCode, parseCode: invite1ParseCode } =
+    invitation(`'passw0rd${uuid()}`);
 
-  const code = invitation1.createCode({ userId, listId, listName, email });
-  t.equal(typeof code, 'string');
-  invitation1.parseCode(code);
+  const invite1code = invite1CreateCode({ userId, listId, listName, email });
+  t.type(invite1code, 'string');
+  t.ok(invite1ParseCode(invite1code));
 
-  const invitation2 = require('../../lib/invitation')('n3ws3cr3t');
-  t.throws(() => invitation2.parseCode(code));
-  t.end();
+  const { parseCode: invite2ParseCode } = invitation(`'n3ws3cr3t${uuid()}`);
+  t.throws(() => invite2ParseCode(invite1code));
 });
 
-test('A code will not be created if missing required data', (t) => {
+test('A code will not be created if missing required data', async (t) => {
   const secret = 'secret';
-  const { createCode } = require('../../lib/invitation')(secret);
+  const { createCode } = invitation(secret);
   t.throws(() => createCode({ userId, email }));
-  t.end();
 });
 
-test('An invalid code with throw an error', (t) => {
+test('An invalid code with throw an error', async (t) => {
   const secret = 'secret';
-  const { parseCode } = require('../../lib/invitation')(secret);
+  const { parseCode } = invitation(secret);
   t.throws(() => parseCode('abcdefg'));
-  t.end();
 });
