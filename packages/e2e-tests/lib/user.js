@@ -1,16 +1,12 @@
-const nid = require('nid');
+import nid from 'nid';
 
-const config = require('./config');
+import { getEmail } from './config.js';
 
-module.exports = {
-  generateUser,
-};
-
-function generateUser() {
-  const user = {};
-  user.email = config.getEmail(); // Generate a unique address for each user
-  user.password = `${nid(4).toUpperCase()}${nid(6)}${Math.floor(
-    Math.random() * 100
-  )}!$`;
-  return user;
+export function generateUser() {
+  return {
+    email: getEmail(),
+    password: `${nid(4).toUpperCase()}${nid(6)}${Math.floor(
+      Math.random() * 100
+    )}!$`,
+  };
 }

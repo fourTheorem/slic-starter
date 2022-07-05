@@ -1,8 +1,8 @@
-const {
+import {
   CloudFormationClient,
   DescribeStacksCommand,
-} = require('@aws-sdk/client-cloudformation');
-const awscred = require('awscred');
+} from '@aws-sdk/client-cloudformation';
+import awscred from 'awscred';
 
 const stage = process.env.SLIC_STAGE || 'local';
 const domainSuffix = stage === 'prod' ? '' : `${stage}.`;
@@ -55,7 +55,7 @@ function getApiEndpoints() {
   ).then((results) => Object.assign({}, ...results));
 }
 
-async function loadBackendConfig() {
+export async function loadBackendConfig() {
   if (!backendConfig) {
     if (stage === 'local') {
       return {
@@ -86,7 +86,7 @@ async function loadBackendConfig() {
           const beConfig = {
             apiEndpoints,
           };
-          exportBackendPairs.forEach((pair) => Object.assign(beConfig, pair));
+          for (const pair of exportBackendPairs) Object.assign(beConfig, pair);
           return beConfig;
         }
         throw new Error('Backend config not found');
@@ -94,7 +94,3 @@ async function loadBackendConfig() {
   }
   return backendConfig;
 }
-
-module.exports = {
-  loadBackendConfig,
-};

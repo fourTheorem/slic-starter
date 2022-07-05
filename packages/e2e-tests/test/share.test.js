@@ -1,10 +1,10 @@
 import { ClientFunction, Role, Selector } from 'testcafe';
 import { retrieveEmail } from 'test-common/real-email-config';
 import { waitForReact } from 'testcafe-react-selectors';
-import Page from './PageModels/page-model';
 
-const config = require('../lib/config');
-const { generateUser } = require('../lib/user');
+import Page from './PageModels/page-model.js';
+import * as config from '../lib/config.js';
+import { generateUser } from '../lib/user.js';
 
 const page = new Page();
 
@@ -12,6 +12,7 @@ const users = [{}, {}];
 
 const getLocation = ClientFunction(() => document.location.href);
 
+// eslint-disable-next-line guard-for-in, no-restricted-syntax
 for (const index in users) {
   const user = users[index];
   Object.assign(user, generateUser());
@@ -37,7 +38,7 @@ for (const index in users) {
           .click(page.loginBtn);
         await t.wait(1000);
         await t
-          .expect(Selector('#new-list-button', { timeout: 155000 }).exists)
+          .expect(Selector('#new-list-button', { timeout: 155_000 }).exists)
           .ok();
       },
       { preserveUrl: true }
@@ -65,7 +66,7 @@ test('User can share a list after creation', async (t) => {
     .click(Selector('#share-list-btn'))
     .typeText(Selector('#email-textfield'), users[1].email)
     .click('#share-btn');
-  await t.wait(15000);
+  await t.wait(15_000);
   const content = await retrieveEmail(users[1].email, 'Invitation to join');
   invitationCodeLink = content.text.links[0].href;
   await t.expect(invitationCodeLink).ok();
@@ -85,7 +86,7 @@ test('Second user can confirm and access the shared list', async (t) => {
       Selector('p', { timeout: 5000 }).withText('You now have access to').exists
     )
     .ok();
-  await t.wait(10000); // Await for list share action to settle
+  await t.wait(10_000); // Await for list share action to settle
   await t
     .navigateTo(baseUrl)
     .expect(Selector('#new-list-button', { timeout: 5000 }).exists)

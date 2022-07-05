@@ -1,8 +1,8 @@
-const pick = require('lodash/pick');
+import pick from 'lodash/pick.js';
 
-const suppressedProperties = ['nativeProtocols'];
+const suppressedProperties = new Set(['nativeProtocols']);
 
-function toneAxiosError(error) {
+export function toneAxiosError(error) {
   if (!process.env.VERBOSE_AXIOS_ERRORS) {
     const summarized = {};
 
@@ -17,11 +17,11 @@ function toneAxiosError(error) {
       /* eslint-disable no-underscore-dangle, no-param-reassign */
       if (error.request._options) {
         const requestOptions = { ...error.request._options };
-        Object.keys(error.request._options).forEach((property) => {
-          if (suppressedProperties.indexOf(property) > -1) {
+        for (const property of Object.keys(error.request._options)) {
+          if (suppressedProperties.has(property)) {
             delete requestOptions[property];
           }
-        });
+        }
         summarized.request = {
           _options: requestOptions,
         };
@@ -45,13 +45,8 @@ function toneAxiosError(error) {
     Object.assign(error, summarized);
 
     // Make large objects non-enumerable to remove excessive verbosity from logs
-    ['config', '_full_request', '_full_response'].forEach((property) =>
-      Object.defineProperty(error, property, { enumerable: false })
-    );
+    for (const property of ['config', '_full_request', '_full_response'])
+      Object.defineProperty(error, property, { enumerable: false });
   }
   return error;
 }
-
-module.exports = {
-  toneAxiosError,
-};

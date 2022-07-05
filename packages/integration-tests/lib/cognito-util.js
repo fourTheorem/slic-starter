@@ -1,25 +1,25 @@
-const {
+import {
   AdminCreateUserCommand,
   AdminDeleteUserCommand,
   AdminInitiateAuthCommand,
   AdminRespondToAuthChallengeCommand,
   CognitoIdentityProviderClient,
-} = require('@aws-sdk/client-cognito-identity-provider');
-const awscred = require('awscred');
-const jwt = require('jsonwebtoken');
-const chance = require('chance').Chance();
+} from '@aws-sdk/client-cognito-identity-provider';
+import awscred from 'awscred';
+import jwt from 'jsonwebtoken';
+import { Chance } from 'chance';
 
-const { generateEmailAddress } = require('test-common/real-email-config');
-const { loadBackendConfig } = require('./backend-config');
+import { generateEmailAddress } from 'test-common/real-email-config';
+import { loadBackendConfig } from './backend-config.js';
 
-const generatePassword = () => `${chance.string({ length: 10 })}!Aa0`;
+const generatePassword = () => `${Chance().string({ length: 10 })}!Aa0`;
 
 const awsRegion = awscred.loadRegionSync();
 const cognitoServiceProvider = new CognitoIdentityProviderClient({
   region: awsRegion,
 });
 
-async function createUser() {
+export async function createUser() {
   const email = generateEmailAddress();
   const password = generatePassword();
 
@@ -78,7 +78,7 @@ async function createUser() {
   return user;
 }
 
-async function deleteUser(user) {
+export async function deleteUser(user) {
   const backendConfig = await loadBackendConfig();
   const deleteRequest = {
     UserPoolId: backendConfig.userPoolId,
@@ -86,8 +86,3 @@ async function deleteUser(user) {
   };
   await cognitoServiceProvider.send(new AdminDeleteUserCommand(deleteRequest));
 }
-
-module.exports = {
-  createUser,
-  deleteUser,
-};

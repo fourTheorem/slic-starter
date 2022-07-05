@@ -1,9 +1,9 @@
 import { ClientFunction, Role, Selector } from 'testcafe';
 import { waitForReact } from 'testcafe-react-selectors';
-import Page from './PageModels/page-model';
+import Page from './PageModels/page-model.js';
 
-const config = require('../lib/config');
-const { generateUser } = require('../lib/user');
+import { getBaseUrl, getCode } from '../lib/config.js';
+import { generateUser } from '../lib/user.js';
 
 const page = new Page();
 
@@ -11,7 +11,7 @@ const getLocation = ClientFunction(() => document.location.href);
 
 const user = generateUser();
 
-const rolePromise = config.getBaseUrl().then((baseUrl) =>
+const rolePromise = getBaseUrl().then((baseUrl) =>
   Role(
     `${baseUrl}/login`,
     async (t) => {
@@ -22,7 +22,7 @@ const rolePromise = config.getBaseUrl().then((baseUrl) =>
         .typeText(page.passInput, user.password)
         .click('#signup-btn');
 
-      const code = await config.getCode(user.email);
+      const code = await getCode(user.email);
       await t
         .typeText(Selector('#confirmation-code'), code)
         .click(Selector('#confirm-signup-btn'));
@@ -34,7 +34,7 @@ const rolePromise = config.getBaseUrl().then((baseUrl) =>
 
       await t.wait(1000);
       await t
-        .expect(Selector('#new-list-button', { timeout: 155000 }).exists)
+        .expect(Selector('#new-list-button', { timeout: 155_000 }).exists)
         .ok();
     },
     { preserveUrl: true }
@@ -45,7 +45,9 @@ fixture('Checklist test');
 
 test('User can create a new List', async (t) => {
   const role = await rolePromise;
-  await t.useRole(role).click(Selector('#new-list-button', { timeout: 15000 }));
+  await t
+    .useRole(role)
+    .click(Selector('#new-list-button', { timeout: 15_000 }));
 
   const listNameInput = Selector('#name');
   await t

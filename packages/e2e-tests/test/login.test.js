@@ -1,8 +1,8 @@
 import { Selector } from 'testcafe';
 import { waitForReact } from 'testcafe-react-selectors';
-import Page from './PageModels/page-model';
 
-const config = require('../lib/config.js');
+import Page from './PageModels/page-model.js';
+import * as config from '../lib/config.js';
 
 const page = new Page();
 const email = config.getEmail();

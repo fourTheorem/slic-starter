@@ -1,7 +1,8 @@
-const t = require('tap');
-const { retrieveEmail } = require('test-common/real-email-config');
-const httpClient = require('../../lib/http-client');
-const { getUser } = require('../../lib/user-util');
+import t from 'tap';
+import { retrieveEmail } from 'test-common/real-email-config';
+
+import { httpClient } from '../../lib/http-client.js';
+import { getUser } from '../../lib/user-util.js';
 
 const testList = {
   name: 'New Checklist',
@@ -30,6 +31,5 @@ t.test(
       message.text.body,
       `Congratulations! You created the list ${testList.name}`
     );
-    t.end();
   }
 );

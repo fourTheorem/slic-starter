@@ -1,6 +1,6 @@
-const jwt = require('jsonwebtoken');
-const { rword } = require('rword');
-const { createUser, deleteUser } = require('./cognito-util');
+import jwt from 'jsonwebtoken';
+import { rword } from 'rword';
+import { createUser, deleteUser } from './cognito-util.js';
 
 const stage = process.env.SLIC_STAGE || 'local';
 
@@ -21,22 +21,17 @@ async function createActualUser() {
   return createUser();
 }
 
-function getUser() {
+export function getUser() {
   if (!userPromise) {
     userPromise = createActualUser();
   }
   return userPromise;
 }
 
-async function removeUser() {
+export async function removeUser() {
   const user = await getUser();
   if (stage !== 'local') {
     await deleteUser(user);
-    userPromise = null;
+    userPromise = undefined;
   }
 }
-
-module.exports = {
-  getUser,
-  removeUser,
-};

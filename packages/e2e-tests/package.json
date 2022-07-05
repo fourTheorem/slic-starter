@@ -2,7 +2,10 @@
   "name": "e2e-tests",
   "version": "1.0.0",
   "description": "",
-  "main": "*.test.js",
+  "engines": {
+    "node": ">=16.15"
+  },
+  "type": "module",
   "scripts": {
     "testcafe": "testcafe chrome",
     "test": "testcafe \"chrome\" \"test/**/*.test.js\"",
