@@ -1,12 +1,12 @@
-const { processEvent } = require('slic-tools/event-util');
-const { middify } = require('slic-tools/middy-util');
-const share = require('./share');
+import { middify, processEvent } from 'slic-tools';
 
-async function main(event, context) {
+import { create } from './share.js';
+
+async function innerHandler(event, context) {
   const { body, userId } = processEvent(event);
   const { email, listId, listName } = body;
 
-  await share.create(
+  await create(
     { email, listId, listName, userId },
     context.codeSecret,
     context.userServiceUrl,
@@ -17,14 +17,11 @@ async function main(event, context) {
   };
 }
 
-module.exports = middify(
-  { main },
-  {
-    ssmParameters: {
-      codeSecret: `/${process.env.SLIC_STAGE}/sharing-service/code-secret`,
-      userServiceUrl: `/${process.env.SLIC_STAGE}/user-service/url`,
-      frontendUrl: `/${process.env.SLIC_STAGE}/frontend/url`,
-    },
-    isHttpHandler: true,
-  }
-);
+export const handler = middify(innerHandler, {
+  ssmParameters: {
+    codeSecret: `/${process.env.SLIC_STAGE}/sharing-service/code-secret`,
+    userServiceUrl: `/${process.env.SLIC_STAGE}/user-service/url`,
+    frontendUrl: `/${process.env.SLIC_STAGE}/frontend/url`,
+  },
+  isHttpHandler: true,
+});
