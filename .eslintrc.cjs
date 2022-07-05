@@ -18,8 +18,8 @@ module.exports = {
       configFile: false,
       presets: ['@babel/preset-env'],
     },
-    sourceType: 'script', // TODO: change to module when migrating to esm
-    allowImportExportEverywhere: true, // TODO: change to false when migrating to esm
+    sourceType: 'module',
+    allowImportExportEverywhere: false,
     codeFrame: true,
   },
   ignorePatterns: [
@@ -37,7 +37,7 @@ module.exports = {
   ],
   env: {
     node: true,
-    commonjs: true,
+    browser: true,
   },
   rules: {
     indent: 'off', // Disable indent since prettier will do this
@@ -47,8 +47,8 @@ module.exports = {
     'import/no-default-export': 'error',
     'import/no-extraneous-dependencies': 'off',
     'class-methods-use-this': 'off',
-    'node/no-unpublished-require': 'off',
-    'node/no-extraneous-require': 'off',
+    'node/no-unpublished-import': 'off',
+    'node/no-extraneous-import': 'off',
     'no-restricted-syntax': [
       'error',
       {
@@ -85,7 +85,7 @@ module.exports = {
         complexity: 'off',
         'global-require': 'off',
         'import/extensions': 'off',
-        'import/no-unresolved': 'off',
+        // 'import/no-unresolved': 'off',
         'no-await-in-loop': 'off',
         'no-console': 'off',
         'no-underscore-dangle': 'off',
