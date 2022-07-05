@@ -1,5 +1,5 @@
 handleNewChecklist:
-  handler: services/welcome/new-checklist-handler.handleNewChecklist
+  handler: services/welcome/new-checklist.handler
   environment:
     EMAIL_QUEUE_NAME: ${self:custom.emailQueueName}
   events:

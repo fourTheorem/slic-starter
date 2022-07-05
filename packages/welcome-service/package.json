@@ -2,13 +2,17 @@
   "name": "welcome-service",
   "version": "1.0.0",
   "description": "Welcome Service for SLIC Starter",
+  "engines": {
+    "node": ">=16.15"
+  },
+  "type": "module",
   "scripts": {
     "prestart": "source ../../localstack.env",
     "start": "sls offline start --region us-east-1",
     "lint": "eslint .",
     "format": "eslint --cache --fix \"**/*.js\"",
     "coverage": "npm run test -- --cov --coverage-report=html",
-    "test": "SLIC_STAGE=test tap \"test/**/*.test.js\" --branches=100 --statements=100 --functions=100 --lines=100"
+    "test": "SLIC_STAGE=test tap \"test/**/*.test.js\" --branches=100 --statements=100 --functions=100 --lines=100 --node-arg=--loader=testdouble"
   },
   "author": "Eoin Shanaghy <eoin.shanaghy@fourtheorem.com>",
   "license": "MIT",
@@ -24,7 +28,8 @@
     "serverless-iam-roles-per-function": "^3.2.0",
     "serverless-offline": "^8.8.0",
     "serverless-prune-plugin": "^2.0.1",
-    "serverless-slic-watch-plugin": "^1.2.0"
+    "serverless-slic-watch-plugin": "^1.2.0",
+    "testdouble": "^3.16.6"
   },
   "dependencies": {
     "aws4": "^1.11.0",
