@@ -6,6 +6,7 @@
     "node": ">=16.15"
   },
   "type": "module",
+  "exports": "./index.js",
   "author": "Eoin Shanaghy <eoin.shanaghy@fourtheorem.com>",
   "license": "MIT",
   "repository": {

@@ -9,7 +9,7 @@ import awscred from 'awscred';
 import jwt from 'jsonwebtoken';
 import { Chance } from 'chance';
 
-import { generateEmailAddress } from 'test-common/real-email-config';
+import { generateEmailAddress } from 'test-common';
 import { loadBackendConfig } from './backend-config.js';
 
 const generatePassword = () => `${Chance().string({ length: 10 })}!Aa0`;

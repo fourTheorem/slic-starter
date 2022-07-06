@@ -1,5 +1,5 @@
 import t from 'tap';
-import { retrieveEmail } from 'test-common/real-email-config';
+import { retrieveEmail } from 'test-common';
 
 import { httpClient } from '../../lib/http-client.js';
 import { getUser } from '../../lib/user-util.js';
