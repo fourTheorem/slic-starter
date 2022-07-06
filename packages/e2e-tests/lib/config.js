@@ -3,7 +3,7 @@ import { GetParameterCommand, SSMClient } from '@aws-sdk/client-ssm';
 import {
   generateEmailAddress as realGenerateEmailAddress,
   retrieveCode as realRetrieveCode,
-} from 'test-common/real-email-config.js';
+} from 'test-common';
 import {
   generateEmailAddress as localGenerateEmailAddress,
   retrieveCode as localRetrieveCode,

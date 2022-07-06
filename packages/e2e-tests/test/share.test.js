@@ -1,5 +1,5 @@
 import { ClientFunction, Role, Selector } from 'testcafe';
-import { retrieveEmail } from 'test-common/real-email-config';
+import { retrieveEmail } from 'test-common';
 import { waitForReact } from 'testcafe-react-selectors';
 
 import Page from './PageModels/page-model.js';
