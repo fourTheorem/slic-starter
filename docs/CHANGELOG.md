@@ -1,3 +1,10 @@
+## [1.4.1](https://github.com/fourTheorem/slic-starter/compare/1.4.0...1.4.1) (2022-07-06)
+
+
+### Bug Fixes
+
+* **int-test:** ensure the correct args are passed to the http client ([87ab426](https://github.com/fourTheorem/slic-starter/commit/87ab4266c4be6deca0dc7641a0e98b7786c48cae))
+
 # [1.4.0](https://github.com/fourTheorem/slic-starter/compare/1.3.0...1.4.0) (2022-07-01)
 
 
