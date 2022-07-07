@@ -10,4 +10,5 @@ export const log = pino({
     process.env.SLIC_STAGE === 'dev'
       ? 'debug'
       : 'info',
+  enabled: !(process.env.NO_LOGS === 'true'),
 });
