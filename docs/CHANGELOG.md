@@ -1,3 +1,22 @@
+# [1.5.0](https://github.com/fourTheorem/slic-starter/compare/1.4.1...1.5.0) (2022-07-07)
+
+
+### Bug Fixes
+
+* ensure test-common package is imported and exported correctly ([c9373f3](https://github.com/fourTheorem/slic-starter/commit/c9373f3d55da59063de4d5eb2166805f29094b1b))
+
+
+### Features
+
+* **email-service:** convert package to esm ([ed6d79c](https://github.com/fourTheorem/slic-starter/commit/ed6d79cea337dcd526e7100e1a6bf929dc41a05b))
+* move checklist-service and slic tools to esm ([fdb14f0](https://github.com/fourTheorem/slic-starter/commit/fdb14f0712d6346bf3bee30c0f9d713a0bee69c8))
+* replace nyc with c8 to work with esm modules ([0c50a58](https://github.com/fourTheorem/slic-starter/commit/0c50a58267f3fc1e9846a2a6c1d7a38a3352c3de))
+* **sharing-service:** convert package to esm ([0912c1f](https://github.com/fourTheorem/slic-starter/commit/0912c1f64ab2e6aa8bdaf1612a360b9407512e9b))
+* update all int and e2e tests packages to esm ([5a8afd3](https://github.com/fourTheorem/slic-starter/commit/5a8afd309c189c8c88654f3824d43e28ee13029d))
+* update root to esm ([9e704c2](https://github.com/fourTheorem/slic-starter/commit/9e704c24e877ff4e92100b99b032f77e571eef5e))
+* **user-service:** convert package to esm ([d612051](https://github.com/fourTheorem/slic-starter/commit/d61205104d8508125c1dcf5fb6f0157893269dde))
+* **user-service:** convert package to esm ([e79d366](https://github.com/fourTheorem/slic-starter/commit/e79d366cc6d57865a13bda40be8aa12622580a77))
+
 ## [1.4.1](https://github.com/fourTheorem/slic-starter/compare/1.4.0...1.4.1) (2022-07-06)
 
 
