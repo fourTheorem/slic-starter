@@ -6,11 +6,10 @@ import AWSXray from 'aws-xray-sdk-core';
 import { log } from 'slic-tools';
 
 const cognitoCore = new CognitoIdentityProviderClient({});
-/* istanbul ignore next */
 const cognitoClient =
   process.env.SLIC_STAGE === 'test'
     ? cognitoCore
-    : AWSXray.captureAWSv3Client(cognitoCore);
+    : /* c8 ignore next */ AWSXray.captureAWSv3Client(cognitoCore);
 
 export async function get({ userId }) {
   const params = {

@@ -26,7 +26,8 @@ export function middify(handler, options = {}) {
     ]);
   }
 
-  /* istanbul ignore next */
+  // TODO: add tests for this
+  /* c8 ignore start */
   if (options.ssmParameters && process.env.SLIC_STAGE !== 'test') {
     innerHandler.use(
       ssm({

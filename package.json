@@ -10,11 +10,10 @@
     "packages/*"
   ],
   "scripts": {
-    "coverage": "npm run test:packages -- --cov --coverage-report=html",
     "format": "eslint --cache --fix .",
     "test:lint": "eslint .",
-    "tap": "AWS_XRAY_CONTEXT_MISSING=LOG_ERROR AWS_XRAY_LOG_LEVEL=silent tap",
-    "test:packages": "npm run tap -- --branches=100 --statements=100 --functions=100 --lines=100 --node-arg=--loader=testdouble",
+    "tap": "c8 --100 -r text -r lcov tap",
+    "test:packages": "npm run tap",
     "test": "npm run test:lint && npm run test:packages",
     "prepare": "husky install",
     "release": "semantic-release"
@@ -108,6 +107,7 @@
     "@semantic-release/changelog": "^6.0.1",
     "@semantic-release/git": "^10.0.1",
     "awscred": "^1.5.0",
+    "c8": "^7.11.3",
     "cz-conventional-changelog": "^3.3.0",
     "eslint": "^8.18.0",
     "eslint-config-airbnb-base": "^15.0.0",

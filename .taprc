@@ -1,2 +1,10 @@
 test-ignore: (integration-tests|e2e-tests|test-common|frontend|fixtures.js|cicd|cicd2)
-test-env: SLIC_STAGE=test
+test-env:
+  - SLIC_STAGE=test
+  - AWS_XRAY_CONTEXT_MISSING=LOG_ERROR
+  - AWS_XRAY_LOG_LEVEL=silent
+coverage: false
+node-arg:
+  - --loader=testdouble
+  - --no-warnings
+

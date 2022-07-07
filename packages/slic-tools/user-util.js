@@ -2,6 +2,8 @@ import signedAxios from 'aws-signed-axios';
 
 import { log } from './log.js';
 
+// TODO: add tests for this
+/* c8 ignore start */
 export async function getUser(userId, userServiceUrl) {
   const userUrl = `${userServiceUrl}${userId}`;
   try {

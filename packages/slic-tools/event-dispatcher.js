@@ -11,9 +11,8 @@ const cwEvents = new CloudWatchEventsClient({
   endpoint: process.env.EVENTS_ENDPOINT_URL,
 });
 
-/* istanbul ignore next */
 const cwEventsClient = process.env.IS_OFFLINE
-  ? cwEvents
+  ? /* c8 ignore next */ cwEvents
   : AWSXRay.captureAWSv3Client(cwEvents); // TODO Re-enable X-Ray always
 
 export async function dispatchEvent(type, detail) {
