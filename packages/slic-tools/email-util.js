@@ -15,6 +15,8 @@ const { EMAIL_QUEUE_NAME: queueName = 'email-queue' } = process.env;
 
 log.info({ queueName }, 'Using queue');
 
+// TODO: add tests for this
+/* c8 ignore start */
 async function fetchQueueUrl() {
   const params = {
     QueueName: queueName,

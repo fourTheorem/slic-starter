@@ -29,11 +29,11 @@ const dynamoDbDocClient = DynamoDBDocumentClient.from(dynamoDbClient, {
   },
 });
 
-/* istanbul ignore next */
 const ddb =
   process.env.IS_OFFLINE || process.env.SLIC_STAGE === 'test'
     ? dynamoDbDocClient
-    : AWSXRay.captureAWSv3Client(dynamoDbDocClient); // TODO - Revisit this to enable XRay always
+    : /* c8 ignore next */
+      AWSXRay.captureAWSv3Client(dynamoDbDocClient); // TODO - Revisit this to enable XRay always
 
 export function dynamoDocClient() {
   return ddb;
