@@ -94,6 +94,90 @@ resources:
         ProviderARNs:
           - !Ref UserPoolArnParameter
 
+    tableStream:
+      Type: AWS::Kinesis::Stream
+      Properties:
+        Name: table-stream-${self:provider.stage} 
+        ShardCount: 1
+        StreamEncryption: 
+          EncryptionType: KMS
+          KeyId: alias/aws/kinesis
+        StreamModeDetails:
+          StreamMode: PROVISIONED
+
+    tableStreamBucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: table-stream-store-${self:provider.stage}
+        PublicAccessBlockConfiguration:
+          BlockPublicAcls: true
+          BlockPublicPolicy: true
+          IgnorePublicAcls: true
+          RestrictPublicBuckets: true
+        BucketEncryption:
+          ServerSideEncryptionConfiguration:
+            - BucketKeyEnabled: true
+              ServerSideEncryptionByDefault:
+                SSEAlgorithm: aws:kms
+        NotificationConfiguration:
+          EventBridgeConfiguration:
+            EventBridgeEnabled: true
+
+    tableStreamFirehose:
+      Type: AWS::KinesisFirehose::DeliveryStream
+      Properties: 
+        DeliveryStreamName: firehose-${self:provider.stage}
+        DeliveryStreamType: KinesisStreamAsSource
+        KinesisStreamSourceConfiguration: 
+          KinesisStreamARN: !GetAtt tableStream.Arn
+          RoleARN: !GetAtt firehoseRole.Arn
+        ExtendedS3DestinationConfiguration:
+          BucketARN: !GetAtt tableStreamBucket.Arn
+          RoleARN: !GetAtt tableStreamRole.Arn
+
+    tableStreamRole:
+      Type: AWS::IAM::Role
+      Properties:
+        AssumeRolePolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+            - Effect: Allow
+              Principal:
+                Service: firehose.amazonaws.com
+              Action: sts:AssumeRole
+        Policies:
+          - PolicyName: kinesis-firehose-policy-${self:provider.stage}
+            PolicyDocument:
+              Version: '2012-10-17'
+              Statement:
+                - Effect: Allow
+                  Action:
+                    - s3:PutObject
+                    - s3:ListBucket
+                  Resource: !Sub 'arn:aws:s3:::${tableStreamBucket}/*'
+
+    firehoseRole:
+      Type: AWS::IAM::Role
+      Properties:
+        AssumeRolePolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+            - Effect: Allow
+              Principal:
+                Service: firehose.amazonaws.com
+              Action: sts:AssumeRole
+        Policies:
+          - PolicyName: firehose-policy-${self:provider.stage}
+            PolicyDocument:
+              Version: '2012-10-17'
+              Statement:
+                - Effect: Allow
+                  Action:
+                    - kinesis:DescribeStream
+                    - kinesis:GetShardIterator
+                    - kinesis:GetRecords
+                  Resource: !GetAtt tableStream.Arn
+
     slicTable:
       Type: AWS::DynamoDB::Table
       DeletionPolicy: Retain
@@ -110,6 +194,8 @@ resources:
           - AttributeName: listId
             KeyType: RANGE
         BillingMode: PAY_PER_REQUEST
+        KinesisStreamSpecification: 
+          StreamArn: !GetAtt tableStream.Arn
 
     checklistServiceNameParameter:
       Type: AWS::SSM::Parameter
