@@ -178,3 +178,8 @@ addCollaborator:
       Action:
         - dynamodb:PutItem
       Resource: !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${self:custom.checklistTableName}
+
+firehoseProcessFunction:
+  handler: services/checklists/transformer.handleTransformer
+  timeout: 60
+

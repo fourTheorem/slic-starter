@@ -134,6 +134,13 @@ resources:
         ExtendedS3DestinationConfiguration:
           BucketARN: !GetAtt tableStreamBucket.Arn
           RoleARN: !GetAtt tableStreamRole.Arn
+          ProcessingConfiguration: 
+            Enabled: true
+            Processors: 
+              - Type: "Lambda"
+                Parameters: 
+                  - ParameterName: "LambdaArn"
+                    ParameterValue: !GetAtt FirehoseProcessFunctionLambdaFunction.Arn
 
     tableStreamRole:
       Type: AWS::IAM::Role
@@ -155,6 +162,25 @@ resources:
                     - s3:PutObject
                     - s3:ListBucket
                   Resource: !Sub 'arn:aws:s3:::${tableStreamBucket}/*'
+          - PolicyName: InvokeDestinationLambdaFunction
+            PolicyDocument:
+              Version: '2012-10-17'
+              Statement:
+                - Effect: Allow
+                  Action:
+                    - lambda:InvokeFunction
+                    - lambda:GetFunctionConfiguration
+                  Resource: !GetAtt FirehoseProcessFunctionLambdaFunction.Arn
+          - PolicyName: ReadInputKinesis
+            PolicyDocument:
+              Version: '2012-10-17'
+              Statement:
+                - Effect: Allow
+                  Action:
+                    - kinesis:DescribeStream
+                    - kinesis:GetShardIterator
+                    - kinesis:GetRecords
+                  Resource: !Sub "arn:aws:kinesis:${AWS::Region}:${AWS::AccountId}:stream/table-stream-dev"
 
     firehoseRole:
       Type: AWS::IAM::Role
