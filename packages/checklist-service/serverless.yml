@@ -130,10 +130,10 @@ resources:
         DeliveryStreamType: KinesisStreamAsSource
         KinesisStreamSourceConfiguration: 
           KinesisStreamARN: !GetAtt tableStream.Arn
-          RoleARN: !GetAtt firehoseRole.Arn
+          RoleARN: !GetAtt firehoseDataStreamRole.Arn
         ExtendedS3DestinationConfiguration:
           BucketARN: !GetAtt tableStreamBucket.Arn
-          RoleARN: !GetAtt tableStreamRole.Arn
+          RoleARN: !GetAtt firehoseS3DestinationRole.Arn
           BufferingHints:
             IntervalInSeconds: 60
             SizeInMBs: 1
@@ -145,7 +145,7 @@ resources:
                   - ParameterName: "LambdaArn"
                     ParameterValue: !GetAtt FirehoseProcessFunctionLambdaFunction.Arn
 
-    tableStreamRole:
+    firehoseS3DestinationRole:
       Type: AWS::IAM::Role
       Properties:
         AssumeRolePolicyDocument:
@@ -185,7 +185,7 @@ resources:
                     - kinesis:GetRecords
                   Resource: !Sub "arn:aws:kinesis:${AWS::Region}:${AWS::AccountId}:stream/table-stream-dev"
 
-    firehoseRole:
+    firehoseDataStreamRole:
       Type: AWS::IAM::Role
       Properties:
         AssumeRolePolicyDocument:
