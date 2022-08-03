@@ -1,8 +1,13 @@
 import { log } from 'slic-tools';
 
-log.info('Loading function');
+export function handleTransformer(event, context, callback) {
+  /**
+   * Prevent stalling before sending the event. Added after Lambda errored with:
+   * "SonicBoom destroyed"
+   * See https://stackoverflow.com/questions/73181929/aws-lambda-timeout-using-fastify-and-serverless-framework
+   */
+  context.callbackWaitsForEmptyEventLoop = true;
 
-export function handleTransformer(event) {
   log.debug({ event: JSON.stringify(event) }, 'Event');
   let success = 0; // Number of valid entries found
   let failure = 0; // Number of invalid entries found
@@ -30,7 +35,7 @@ export function handleTransformer(event) {
       return {
         recordId: record.recordId,
         result: 'Dropped',
-        data: entry,
+        data: record.data,
       };
     } catch (error) {
       log.error({ err: error, entry }, 'Failed to process record');
@@ -38,11 +43,13 @@ export function handleTransformer(event) {
       return {
         recordId: record.recordId,
         result: 'ProcessingFailed',
-        data: entry,
+        data: record.data,
       };
     }
   });
 
   log.info({ success, failure, dropped }, 'Processing completed');
-  return { records: output };
+  const result = { records: output };
+  log.info(result);
+  callback(undefined, result);
 }

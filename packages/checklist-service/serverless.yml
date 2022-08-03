@@ -134,6 +134,9 @@ resources:
         ExtendedS3DestinationConfiguration:
           BucketARN: !GetAtt tableStreamBucket.Arn
           RoleARN: !GetAtt tableStreamRole.Arn
+          BufferingHints:
+            IntervalInSeconds: 60
+            SizeInMBs: 1
           ProcessingConfiguration: 
             Enabled: true
             Processors: 

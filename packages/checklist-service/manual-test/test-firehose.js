@@ -3,4 +3,7 @@ import { handleTransformer } from '../services/checklists/transformer.js';
 
 const eventJson = readFileSync('./test-events/firehose-event.json');
 const event = JSON.parse(eventJson);
-handleTransformer(event);
+
+function callback() {}
+
+handleTransformer(event, {}, callback);
