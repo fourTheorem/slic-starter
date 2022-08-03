@@ -124,7 +124,7 @@
     "husky": "^8.0.1",
     "prettier": "2.7.1",
     "semantic-release": "^19.0.3",
-    "serverless": "^3.19.0",
+    "serverless": "^3.21.0",
     "tap": "^16.2.0",
     "testdouble": "^3.16.6"
   },
