@@ -29,7 +29,7 @@
     "serverless-offline": "^8.8.0",
     "serverless-offline-sqs": "^6.0.0",
     "serverless-prune-plugin": "^2.0.1",
-    "serverless-slic-watch-plugin": "^1.2.0"
+    "serverless-slic-watch-plugin": "^2.0.0-rc4"
   },
   "dependencies": {
     "slic-tools": "*"
