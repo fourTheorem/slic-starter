@@ -146,7 +146,7 @@ npx cdk -c stages=prod -c deploy-account=${DEPLOY_ACCOUNT} deploy prodCrossAccou
 
 To deploy a development CICD pipeline that targets the development account only:
 ```
-npx cdk -c stages=dev -c dev-account=${DEV_ACCOUNT} deploy PipelineStack
+npx cdk -c stages=dev -c dev-account=${DEV_ACCOUNT} -c deploy-account=${DEPLOY_ACCOUNT} deploy PipelineStack
 ```
 
 To deploy a production CICD pipeline that targets the staging and production accounts:
