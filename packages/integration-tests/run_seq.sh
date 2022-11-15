@@ -5,7 +5,7 @@ set -Eeuxo pipefail
 num=$1
 
 echo Starting run of $num
-for i in seq 1 $num; do
+for i in $(seq 1 $num); do
   npm t 2>&1 >> $i.log &
   pids[${i}]=$!
 done
