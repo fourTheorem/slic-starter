@@ -62,7 +62,7 @@ test('A listname can be extracted from the code', async (t) => {
   const code = createCode({ userId, listId, listName, email });
 
   // Front end code for extracting list name starts here
-  const normalized = code.replace(/-/g, '+').replace(/_/g, '/');
+  const normalized = code.replaceAll('-', '+').replaceAll('_', '/');
   const codeBuffer = Buffer.from(normalized, 'base64');
   const dataBuffer = codeBuffer.subarray(32);
   const nameLength = dataBuffer.readUInt8();

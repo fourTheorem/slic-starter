@@ -11,7 +11,7 @@ function bufferToUuid(buffer) {
 }
 
 export function parseCode(code, secret) {
-  const normalized = code.replace(/-/g, '+').replace(/_/g, '/');
+  const normalized = code.replaceAll('-', '+').replaceAll('_', '/');
   const codeBuffer = Buffer.from(normalized, 'base64');
   const digestBuffer = codeBuffer.subarray(0, 32);
   const dataBuffer = codeBuffer.subarray(32);
@@ -53,8 +53,8 @@ export function invitation(secret) {
     const bufferConcat = Buffer.concat([
       lenBuf,
       Buffer.from(listName),
-      Buffer.from(listId.replace(/-/g, ''), 'hex'),
-      Buffer.from(userId.replace(/-/g, ''), 'hex'),
+      Buffer.from(listId.replaceAll('-', ''), 'hex'),
+      Buffer.from(userId.replaceAll('-', ''), 'hex'),
       Buffer.from(email),
     ]);
 
@@ -65,9 +65,9 @@ export function invitation(secret) {
 
     const code = Buffer.concat([digest, bufferConcat])
       .toString('base64')
-      .replace(/=/g, '')
-      .replace(/\+/g, '-')
-      .replace(/\//g, '_');
+      .replaceAll('=', '')
+      .replaceAll('+', '-')
+      .replaceAll('/', '_');
     return code;
   }
 }

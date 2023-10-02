@@ -75,7 +75,7 @@ t.test('lists can be added', async (t) => {
     t.match(data, testLists.slice(1));
   });
 
-  const entries = [...Array.from({ length: 9 })].map((val, idx) => ({
+  const entries = Array.from({ length: 9 }).map((val, idx) => ({
     title: `Entry ${idx + 1}`,
   }));
 
