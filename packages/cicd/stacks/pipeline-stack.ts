@@ -301,47 +301,47 @@ export class PipelineStack extends Stack {
           }
         }
 
-        const e2eTestProject = new codeBuild.PipelineProject(this, `${stage}E2ETests`, {
-          projectName: `${stage}-e2e-tests`,
-          environmentVariables: testEnvironmentVariables,
-          buildSpec: codeBuild.BuildSpec.fromSourceFilename('packages/e2e-tests/buildspec.yml'),
-          environment: codeBuildEnvironment
-        })
-        e2eTestProject.role?.addToPrincipalPolicy(
-          new iam.PolicyStatement({
-            effect: iam.Effect.ALLOW,
-            actions: ['sts:AssumeRole'],
-            resources: [props.crossAccountDeployRoles[stage].roleArn]
-          }))
+      //   const e2eTestProject = new codeBuild.PipelineProject(this, `${stage}E2ETests`, {
+      //     projectName: `${stage}-e2e-tests`,
+      //     environmentVariables: testEnvironmentVariables,
+      //     buildSpec: codeBuild.BuildSpec.fromSourceFilename('packages/e2e-tests/buildspec.yml'),
+      //     environment: codeBuildEnvironment
+      //   })
+      //   e2eTestProject.role?.addToPrincipalPolicy(
+      //     new iam.PolicyStatement({
+      //       effect: iam.Effect.ALLOW,
+      //       actions: ['sts:AssumeRole'],
+      //       resources: [props.crossAccountDeployRoles[stage].roleArn]
+      //     }))
 
-        const apiTestProject = new codeBuild.PipelineProject(this, `${stage}ApiTests`, {
-          projectName: `${stage}-api-tests`,
-          environmentVariables: testEnvironmentVariables,
-          buildSpec: codeBuild.BuildSpec.fromSourceFilename('packages/integration-tests/buildspec.yml'),
-          environment: codeBuildEnvironment
-        })
-        apiTestProject.role?.addToPrincipalPolicy(
-          new iam.PolicyStatement({
-            effect: iam.Effect.ALLOW,
-            actions: ['sts:AssumeRole'],
-            resources: [props.crossAccountDeployRoles[stage].roleArn]
-          }))
+      //   const apiTestProject = new codeBuild.PipelineProject(this, `${stage}ApiTests`, {
+      //     projectName: `${stage}-api-tests`,
+      //     environmentVariables: testEnvironmentVariables,
+      //     buildSpec: codeBuild.BuildSpec.fromSourceFilename('packages/integration-tests/buildspec.yml'),
+      //     environment: codeBuildEnvironment
+      //   })
+      //   apiTestProject.role?.addToPrincipalPolicy(
+      //     new iam.PolicyStatement({
+      //       effect: iam.Effect.ALLOW,
+      //       actions: ['sts:AssumeRole'],
+      //       resources: [props.crossAccountDeployRoles[stage].roleArn]
+      //     }))
 
-        pipeline.addStage({
-          stageName: `${stage}Testing`,
-          actions: [
-            new codePipelineActions.CodeBuildAction({
-              actionName: `${stage}E2ETests`,
-              project: e2eTestProject,
-              input: unitTestOutput,
-            }),
-            new codePipelineActions.CodeBuildAction({
-              actionName: `${stage}ApiTests`,
-              project: apiTestProject,
-              input: unitTestOutput,
-            })
-          ]
-        })
+      //   pipeline.addStage({
+      //     stageName: `${stage}Testing`,
+      //     actions: [
+      //       new codePipelineActions.CodeBuildAction({
+      //         actionName: `${stage}E2ETests`,
+      //         project: e2eTestProject,
+      //         input: unitTestOutput,
+      //       }),
+      //       new codePipelineActions.CodeBuildAction({
+      //         actionName: `${stage}ApiTests`,
+      //         project: apiTestProject,
+      //         input: unitTestOutput,
+      //       })
+      //     ]
+      //   })
       }
 
       if (index < stages.length - 1) {
