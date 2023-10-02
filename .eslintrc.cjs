@@ -48,6 +48,7 @@ module.exports = {
     'node/no-unpublished-import': 'off',
     'node/no-extraneous-import': 'off',
     'unicorn/prevent-abbreviations': 'off',
+    'unicorn/prefer-top-level-await': 'off',
     'unicorn/no-array-reduce': ["error", {"allowSimpleOperations": true}],
     'no-restricted-syntax': [
       'error',

@@ -29,7 +29,7 @@ export async function retrieveCode(emailAddress) {
   const email = await retrieveEmail(emailAddress);
   const emailBody = email.html.body;
   const splitBody = emailBody.split(' ');
-  const confirmationCode = splitBody[splitBody.length - 1];
+  const confirmationCode = splitBody.at(-1);
 
   return confirmationCode;
 }

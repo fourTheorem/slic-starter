@@ -21,7 +21,7 @@
     "eslint-plugin-testcafe": "^0.2.1",
     "nid": "^2.0.0",
     "synchronized-promise": "^0.3.1",
-    "testcafe": "^1.19.0",
+    "testcafe": "^1.20.1",
     "testcafe-react-selectors": "^5.0.2"
   }
 }
