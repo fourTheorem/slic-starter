@@ -1,4 +1,4 @@
-import { Stack, StackProps } from 'aws-cdk-lib'
+import { Duration, Stack, StackProps } from 'aws-cdk-lib'
 import { Construct } from 'constructs'
 import * as iam from 'aws-cdk-lib/aws-iam'
 import * as codeBuild from 'aws-cdk-lib/aws-codebuild'
@@ -33,7 +33,17 @@ export class PipelineStack extends Stack {
 
     const artifactBucket = new s3.Bucket(this, 'ArtifactBucket', {
       encryption: s3.BucketEncryption.S3_MANAGED,
-      blockPublicAccess: s3.BlockPublicAccess.BLOCK_ALL
+      blockPublicAccess: s3.BlockPublicAccess.BLOCK_ALL,
+      lifecycleRules: [{
+        abortIncompleteMultipartUploadAfter: Duration.days(5),
+        expiration: Duration.days(90),
+        transitions: [
+          {
+            storageClass: s3.StorageClass.INFREQUENT_ACCESS,
+            transitionAfter: Duration.days(30),
+          }
+        ]
+      }]
     })
 
     const pipeline = new codePipeline.Pipeline(this, `pipeline_${lastStage}`, {
