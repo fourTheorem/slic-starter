@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkmdocs_docusaurus=self.webpackChunkmdocs_docusaurus||[]).push([[6142],{8539:s=>{s.exports=JSON.parse('{"permalink":"/slic-starter/blog","page":1,"postsPerPage":10,"totalPages":1,"totalCount":4,"blogDescription":"Blog","blogTitle":"Blog"}')}}]);
