@@ -1,3 +1,16 @@
+# [1.6.0](https://github.com/fourTheorem/slic-starter/compare/1.5.0...1.6.0) (2023-10-03)
+
+
+### Bug Fixes
+
+* support Node 16.17 or later with testdouble/quibble fix ([ff28ba6](https://github.com/fourTheorem/slic-starter/commit/ff28ba6dd6bbaa617231a4ce4881b92fe2611b20))
+* update mergify syntax ([654c864](https://github.com/fourTheorem/slic-starter/commit/654c86453101ca483fdd5a02fdc2d124d41c4457))
+
+
+### Features
+
+* expire artifacts in bucket to avoid cost accumulation ([5f27091](https://github.com/fourTheorem/slic-starter/commit/5f27091e996cb1b279853e79f5ae4557557a5c02))
+
 # [1.5.0](https://github.com/fourTheorem/slic-starter/compare/1.4.1...1.5.0) (2022-07-07)
 
 
