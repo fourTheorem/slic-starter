@@ -27,4 +27,4 @@ slicWatch:
   topicArn: ${ssm:/${self:provider.stage}/slicWatch/topicArn}
   # If you are not sure what to do, or don't want the additional
   # cost of alarms and dashboards, set 'enabled' to false
-  enabled: false
+  enabled: true
