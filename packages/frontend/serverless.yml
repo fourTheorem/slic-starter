@@ -116,6 +116,17 @@ resources:
                 Forward: none
             ViewerProtocolPolicy: redirect-to-https
           ViewerCertificate: ${self:custom.siteConfig.distributionViewerCertificate}
+          CacheBehaviors:
+            - PathPattern: index.html
+              MaxTTL: 0
+              MinTTL: 0
+              TargetOriginId: ${self:custom.siteConfig.bucketName}-origin
+              ViewerProtocolPolicy: redirect-to-https
+              ForwardedValues:
+                QueryString: 'false'
+                Cookies:
+                  Forward: none
+              
           CustomErrorResponses:
             - ErrorCode: 403
               ResponseCode: 200

@@ -1,6 +1,7 @@
 import React from 'react'
 import { render } from 'react-dom'
 import { Amplify } from '@aws-amplify/core'
+import { Analytics } from '@aws-amplify/analytics'
 import { createBrowserHistory } from 'history'
 
 import './index.css'
@@ -10,6 +11,7 @@ import configureStore from './configureStore'
 import amplifyConfig from './amplifyConfig'
 
 Amplify.configure(amplifyConfig)
+Analytics.record({ name: 'init' })
 
 const history = createBrowserHistory()
 const store = configureStore(history)

@@ -51,14 +51,30 @@ const amplifyConfig = {
         ...commonEndpointConfig
       }
     ]
+  },
+  Analytics: {
+    // AWSPinpoint: {
+    // Amazon Pinpoint App Client ID
+    appId: 'f372bb5285ef4e8eaa697bac737bc002',
+    // Amazon service region
+    region: 'eu-west-1',
+    mandatorySignIn: false
+    // }
   }
 }
 
 if (!simulatedAuth) {
   amplifyConfig.Auth = {
-    mandatorySignIn: true,
+    mandatorySignIn: false,
     ...authConfig
   }
 }
+console.log({ amplifyConfig })
+
+// const analyticsConfig = {
+// }
+
+// Analytics.configure(analyticsConfig)
+// Analytics.record('init');
 
 export default amplifyConfig

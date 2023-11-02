@@ -17,7 +17,7 @@ slicUserPoolClient:
 slicIdentityPool:
   Type: AWS::Cognito::IdentityPool
   Properties:
-    AllowUnauthenticatedIdentities: false
+    AllowUnauthenticatedIdentities: true
     CognitoIdentityProviders:
       - ClientId:
           Ref: slicUserPoolClient
@@ -73,9 +73,58 @@ slicAuthenticatedIdentityPoolRole:
           Statement:
             - Effect: Allow
               Action:
+                - mobiletargeting:PutEvents
+              Resource:
+                - "*"
+            - Effect: Allow
+              Action:
+                - mobiletargeting:UpdateEndpoint
+              Resource:
+                - "arn:aws:mobiletargeting:eu-west-1:935672627075:apps/f372bb5285ef4e8eaa697bac737bc002/*"
+            - Effect: Allow
+              Action:
                 - cognito-identity:*
                 - cognito-sync:*
               Resource: '*'
+              
+slicUnauthenticatedIdentityPoolRole:
+  Type: AWS::IAM::Role
+  Properties:
+    AssumeRolePolicyDocument:
+      Version: '2012-10-17'
+      Statement:
+        - Effect: 'Allow'
+          Principal:
+            Federated: 'cognito-identity.amazonaws.com'
+          Action:
+            - 'sts:AssumeRoleWithWebIdentity'
+          Condition:
+            StringEquals:
+              'cognito-identity.amazonaws.com:aud':
+                Ref: slicIdentityPool
+            ForAnyValue:StringLike:
+              'cognito-identity.amazonaws.com:amr': unauthenticated
+    Policies:
+      - PolicyName: ${self:provider.stage}-cognito-authenticated-policy
+        PolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+            - Effect: Allow
+              Action:
+                - cognito-identity:*
+                - cognito-sync:*
+              Resource: '*'
+            - Effect: Allow
+              Action:
+                - mobiletargeting:PutEvents
+              Resource:
+                - "*"
+            - Effect: Allow
+              Action:
+                - mobiletargeting:UpdateEndpoint
+              Resource:
+                - "arn:aws:mobiletargeting:eu-west-1:935672627075:apps/f372bb5285ef4e8eaa697bac737bc002/*"
+            
 
 slicIdentityPoolRoleAttachment:
   Type: AWS::Cognito::IdentityPoolRoleAttachment
@@ -84,3 +133,5 @@ slicIdentityPoolRoleAttachment:
       Ref: slicIdentityPool
     Roles:
       authenticated: { Fn::GetAtt: [slicAuthenticatedIdentityPoolRole, Arn] }
+      unauthenticated: { Fn::GetAtt: [slicUnauthenticatedIdentityPoolRole, Arn] }
+      

@@ -1,5 +1,6 @@
 import { API as AmplifyApi } from '@aws-amplify/api'
 import { translateError } from '../errors'
+import { Analytics } from '@aws-amplify/analytics'
 
 export const LOAD_LISTS_REQUEST = 'LOAD_LISTS_REQUEST'
 export const LOAD_LISTS_SUCCESS = 'LOAD_LISTS_SUCCESS'
@@ -23,6 +24,7 @@ export const CREATE_LIST_SUCCESS = 'CREATE_LIST_SUCCESS'
 export const CREATE_LIST_FAILURE = 'CREATE_LIST_FAILURE'
 
 export function createList ({ name, description }) {
+  Analytics.record({ name: 'List' })
   return function (dispatch) {
     dispatch({ type: CREATE_LIST_REQUEST })
     AmplifyApi.post('checklist-api', '', {

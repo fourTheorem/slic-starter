@@ -142,3 +142,15 @@ resources:
         DomainName: api.${self:custom.app.domainConfig.domainPrefixes.${self:provider.stage}}${self:custom.nsDomain}
         Stage: ${self:provider.stage}
       DependsOn: resApiGatewayDeployment
+
+    pinpointProject:
+      Type: AWS::Pinpoint::App
+      Properties:
+        Name: slic-${sls:stage}
+
+    pinpointProjectSettings:
+      Type: AWS::Pinpoint::ApplicationSettings
+      Properties:
+        ApplicationId: !Ref pinpointProject
+        CloudWatchMetricsEnabled: true
+        

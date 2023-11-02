@@ -44,10 +44,19 @@ export const LOGIN_INVALIDATED = 'LOGIN_INVALIDATED'
 
 export function checkAuthentication () {
   return function (dispatch) {
-    Auth.currentSession().then(
-      () => dispatch({ type: LOGIN_VALIDATED }),
-      (err) => dispatch({ type: LOGIN_INVALIDATED, error: translateCognitoError(err) })
-    )
+    Auth.currentSession().then((session) => {
+      console.log(session)
+      return Auth.currentUserCredentials()
+    })
+      .then((creds) => {
+        console.log({ creds })
+      })
+      .then(() => Auth.currentAuthenticatedUser())
+      .then((user) => { console.log({ user }) })
+      .then(() => {
+        dispatch({ type: LOGIN_VALIDATED })
+      })
+      .catch((err) => dispatch({ type: LOGIN_INVALIDATED, error: translateCognitoError(err) }))
   }
 }
 
