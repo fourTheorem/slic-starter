@@ -1,8 +1,12 @@
 # SLIC Starter
 
+**ℹ️ Note**
+SLIC Starter is an archived project. It's a useful reference for ideas on building serverless applications with AWS but is not actively maintained.  If you have any questions or need any help building modern applications on AWS, reach out to us on [by email](hello@fourtheorem.com).
+
+---
+
 [![serverless](http://public.serverless.com/badges/v3.svg)](http://www.serverless.com)
 [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
-[![semantic-release: angular](https://img.shields.io/badge/semantic--release-angular-e10079?logo=semantic-release)](https://github.com/semantic-release/semantic-release)
 [![Commitizen friendly](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg)](http://commitizen.github.io/cz-cli/)
 [![license](https://img.shields.io/npm/l/slic-starter.svg)](./LICENSE)
 
@@ -16,31 +20,32 @@
 
 <!-- TOC -->
 
-- [1. How does SLIC starter help you?](#1-how-does-slic-starter-help-you)
-- [2. Application Architecture](#2-application-architecture)
-- [3. What does it provide?](#3-what-does-it-provide)
-  - [3.1. Structure](#31-structure)
-  - [3.2. Tooling Choice](#32-tooling-choice)
-  - [3.3. Authentication](#33-authentication)
-  - [3.4. Data Access with a RESTful API](#34-data-access-with-a-restful-api)
-  - [3.5. Messaging](#35-messaging)
-  - [3.6. Front End](#36-front-end)
-  - [3.7. CI/CD](#37-cicd)
-  - [3.8. Testing](#38-testing)
-  - [3.9. Monitoring and Observability](#39-observability)
-  - [3.10. Secret Management](#310-secret-management)
-- [4. Before you Begin!](#4-before-you-begin)
-- [5. Getting Started](#5-getting-started)
-- [6. Getting to your First Successful Deployment](#6-getting-to-your-first-successful-deployment)
-  - [6.1. Set up your domain for email](#61-set-up-your-domain-for-email)
-- [7. Local Execution](#7-local-execution)
-- [8. Frontend development with a real back end](#8-frontend-development-with-a-real-back-end)
-- [9. Demo](#9-demo)
-- [10. Code Style and Syntax](#10-code-style-and-syntax)
-- [11. Who is behind it?](#11-who-is-behind-it)
-- [12. Other Resources](#12-other-resources)
-- [13. Contributing](#13-contributing)
-- [14. License](#14-license)
+- [SLIC Starter](#slic-starter)
+  - [1. How does SLIC starter help you?](#1-how-does-slic-starter-help-you)
+  - [2. Application Architecture](#2-application-architecture)
+  - [3. What does it provide?](#3-what-does-it-provide)
+    - [3.1. Structure](#31-structure)
+    - [3.2. Tooling Choice](#32-tooling-choice)
+    - [3.3. Authentication](#33-authentication)
+    - [3.4. Data Access with a RESTful API](#34-data-access-with-a-restful-api)
+    - [3.5. Messaging](#35-messaging)
+    - [3.6. Front End](#36-front-end)
+    - [3.7. CI/CD](#37-cicd)
+    - [3.8. Testing](#38-testing)
+    - [3.9. Observability](#39-observability)
+    - [3.10. Secret Management](#310-secret-management)
+  - [4. Before you Begin!](#4-before-you-begin)
+  - [5. Getting Started](#5-getting-started)
+  - [6. Getting to your First Successful Deployment](#6-getting-to-your-first-successful-deployment)
+    - [6.1. Set up your domain for email](#61-set-up-your-domain-for-email)
+  - [7. Local Execution](#7-local-execution)
+  - [8. Frontend development with a real back end](#8-frontend-development-with-a-real-back-end)
+  - [9. Demo](#9-demo)
+  - [10. Code Style and Syntax](#10-code-style-and-syntax)
+  - [11. Who is behind it?](#11-who-is-behind-it)
+  - [12. Other Resources](#12-other-resources)
+  - [13. Contributing](#13-contributing)
+  - [14. License](#14-license)
 
 <!-- /TOC -->
 
